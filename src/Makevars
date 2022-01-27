@@ -1,0 +1,2 @@
+PKG_CPPFLAGS=-I../src -I/opt/homebrew/Cellar/protobuf/3.19.3/include
+PKG_LIBS=-L/opt/homebrew/Cellar/protobuf/3.19.3/lib -lprotobuf
