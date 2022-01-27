@@ -4,6 +4,8 @@
 # substrait
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/paleolimbot/substrait/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/substrait/actions)
 <!-- badges: end -->
 
 The goal of substrait is to provide an R interface to the
