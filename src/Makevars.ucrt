@@ -1,0 +1,4 @@
+PKG_LIBS= -lprotobuf
+all: clean
+clean:
+	rm -f $(OBJECTS) $(SHLIB)

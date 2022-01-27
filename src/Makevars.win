@@ -1,0 +1,12 @@
+VERSION = 3.8.0
+RWINLIB = ../windows/protobuf-${VERSION}
+PKG_CPPFLAGS= -I$(RWINLIB)/include
+PKG_LIBS= -L$(RWINLIB)/lib${subst gcc,,${COMPILED_BY}}${R_ARCH} -L$(RWINLIB)/lib${R_ARCH}${CRT} -lprotobuf
+
+all: clean winlibs
+
+clean:
+	rm -f $(OBJECTS) $(SHLIB)
+
+winlibs:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" $(VERSION)

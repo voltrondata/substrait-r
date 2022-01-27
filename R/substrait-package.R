@@ -3,5 +3,6 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @useDynLib substrait, .registration = TRUE
 ## usethis namespace: end
 NULL
