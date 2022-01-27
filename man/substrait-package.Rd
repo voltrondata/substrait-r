@@ -2,8 +2,6 @@
 % Please edit documentation in R/substrait-package.R
 \docType{package}
 \name{substrait-package}
-\alias{substrait}
-\alias{substrait-package}
 \title{substrait: 'Substrait' Cross-Language Serialization for Relational Algebra}
 \description{
 Provides an R interface to the 'Substrait' cross-language serialization for relational algebra.
