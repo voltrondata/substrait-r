@@ -11,8 +11,8 @@
 
 /* Struct definitions */
 typedef struct _substrait_Any { 
-    pb_callback_t type_url; 
-    pb_callback_t value; 
+    char *type_url; 
+    pb_bytes_array_t *value; 
 } substrait_Any;
 
 
@@ -21,8 +21,8 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_Any_init_default               {{{NULL}, NULL}, {{NULL}, NULL}}
-#define substrait_Any_init_zero                  {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Any_init_default               {NULL, NULL}
+#define substrait_Any_init_zero                  {NULL, NULL}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_Any_type_url_tag               1
@@ -30,9 +30,9 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_Any_FIELDLIST(X, a) \
-X(a, CALLBACK, SINGULAR, STRING,   type_url,          1) \
-X(a, CALLBACK, SINGULAR, BYTES,    value,             2)
-#define substrait_Any_CALLBACK pb_default_field_callback
+X(a, POINTER,  SINGULAR, STRING,   type_url,          1) \
+X(a, POINTER,  SINGULAR, BYTES,    value,             2)
+#define substrait_Any_CALLBACK NULL
 #define substrait_Any_DEFAULT NULL
 
 extern const pb_msgdesc_t substrait_Any_msg;

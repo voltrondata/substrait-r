@@ -5,18 +5,17 @@
 #include "cpp11/declarations.hpp"
 #include <R_ext/Visibility.h>
 
-// code.cpp
-void fun();
-extern "C" SEXP _substrait_fun() {
+// test-encode.cpp
+raws r_encode_substrait_Type_Boolean(int type_variation_reference, int nullablity);
+extern "C" SEXP _substrait_r_encode_substrait_Type_Boolean(SEXP type_variation_reference, SEXP nullablity) {
   BEGIN_CPP11
-    fun();
-    return R_NilValue;
+    return cpp11::as_sexp(r_encode_substrait_Type_Boolean(cpp11::as_cpp<cpp11::decay_t<int>>(type_variation_reference), cpp11::as_cpp<cpp11::decay_t<int>>(nullablity)));
   END_CPP11
 }
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_substrait_fun", (DL_FUNC) &_substrait_fun, 0},
+    {"_substrait_r_encode_substrait_Type_Boolean", (DL_FUNC) &_substrait_r_encode_substrait_Type_Boolean, 2},
     {NULL, NULL, 0}
 };
 }
