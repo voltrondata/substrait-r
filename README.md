@@ -34,5 +34,27 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(substrait)
-## basic example code
+library(RProtoBuf)
+
+files <- list.files(
+  system.file("substrait/proto", package = "substrait"),
+  "\\.proto$", recursive = TRUE
+)
+
+readProtoFiles2(
+  files,
+  protoPath = system.file("substrait/proto", package = "substrait")
+)
+
+(raw_type_boolean <- substrait:::r_encode_substrait_Type_Boolean(
+  type_variation_reference = 10,
+  nullablity = 2
+))
+#> [1] 08 0a 10 02
+
+d <- P("substrait.Type.Boolean")
+message <- d$read(raw_type_boolean)
+cat(message$toString())
+#> type_variation_reference: 10
+#> nullability: NULLABILITY_REQUIRED
 ```
