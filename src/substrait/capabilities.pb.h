@@ -13,25 +13,19 @@
 /* Defines a set of Capabilities that a system (producer or consumer) supports. */
 typedef struct _substrait_Capabilities { 
     /* List of Substrait versions this system supports */
-    pb_size_t substrait_versions_count;
-    char **substrait_versions; 
+    pb_callback_t substrait_versions; 
     /* list of com.google.Any message types this system supports for advanced
  extensions. */
-    pb_size_t advanced_extension_type_urls_count;
-    char **advanced_extension_type_urls; 
+    pb_callback_t advanced_extension_type_urls; 
     /* list of simple extensions this system supports. */
-    pb_size_t simple_extensions_count;
-    struct _substrait_Capabilities_SimpleExtension *simple_extensions; 
+    pb_callback_t simple_extensions; 
 } substrait_Capabilities;
 
 typedef struct _substrait_Capabilities_SimpleExtension { 
-    char *uri; 
-    pb_size_t function_keys_count;
-    char **function_keys; 
-    pb_size_t type_keys_count;
-    char **type_keys; 
-    pb_size_t type_variation_keys_count;
-    char **type_variation_keys; 
+    pb_callback_t uri; 
+    pb_callback_t function_keys; 
+    pb_callback_t type_keys; 
+    pb_callback_t type_variation_keys; 
 } substrait_Capabilities_SimpleExtension;
 
 
@@ -40,10 +34,10 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_Capabilities_init_default      {0, NULL, 0, NULL, 0, NULL}
-#define substrait_Capabilities_SimpleExtension_init_default {NULL, 0, NULL, 0, NULL, 0, NULL}
-#define substrait_Capabilities_init_zero         {0, NULL, 0, NULL, 0, NULL}
-#define substrait_Capabilities_SimpleExtension_init_zero {NULL, 0, NULL, 0, NULL, 0, NULL}
+#define substrait_Capabilities_init_default      {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Capabilities_SimpleExtension_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Capabilities_init_zero         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Capabilities_SimpleExtension_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_Capabilities_substrait_versions_tag 1
@@ -56,19 +50,19 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_Capabilities_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, STRING,   substrait_versions,   1) \
-X(a, POINTER,  REPEATED, STRING,   advanced_extension_type_urls,   2) \
-X(a, POINTER,  REPEATED, MESSAGE,  simple_extensions,   3)
-#define substrait_Capabilities_CALLBACK NULL
+X(a, CALLBACK, REPEATED, STRING,   substrait_versions,   1) \
+X(a, CALLBACK, REPEATED, STRING,   advanced_extension_type_urls,   2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  simple_extensions,   3)
+#define substrait_Capabilities_CALLBACK pb_default_field_callback
 #define substrait_Capabilities_DEFAULT NULL
 #define substrait_Capabilities_simple_extensions_MSGTYPE substrait_Capabilities_SimpleExtension
 
 #define substrait_Capabilities_SimpleExtension_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   uri,               1) \
-X(a, POINTER,  REPEATED, STRING,   function_keys,     2) \
-X(a, POINTER,  REPEATED, STRING,   type_keys,         3) \
-X(a, POINTER,  REPEATED, STRING,   type_variation_keys,   4)
-#define substrait_Capabilities_SimpleExtension_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   uri,               1) \
+X(a, CALLBACK, REPEATED, STRING,   function_keys,     2) \
+X(a, CALLBACK, REPEATED, STRING,   type_keys,         3) \
+X(a, CALLBACK, REPEATED, STRING,   type_variation_keys,   4)
+#define substrait_Capabilities_SimpleExtension_CALLBACK pb_default_field_callback
 #define substrait_Capabilities_SimpleExtension_DEFAULT NULL
 
 extern const pb_msgdesc_t substrait_Capabilities_msg;

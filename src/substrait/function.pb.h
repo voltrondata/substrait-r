@@ -38,53 +38,50 @@ typedef struct _substrait_FunctionSignature {
 } substrait_FunctionSignature;
 
 typedef struct _substrait_FunctionSignature_Aggregate { 
-    pb_size_t arguments_count;
-    struct _substrait_FunctionSignature_Argument *arguments; 
-    char *name; 
-    struct _substrait_FunctionSignature_Description *description; 
-    bool *deterministic; 
-    bool *session_dependent; 
-    struct _substrait_DerivationExpression *output_type; 
+    pb_callback_t arguments; 
+    pb_callback_t name; 
+    pb_callback_t description; 
+    pb_callback_t deterministic; 
+    pb_callback_t session_dependent; 
+    pb_callback_t output_type; 
     pb_size_t which_final_variable_behavior;
     union {
-        struct _substrait_FunctionSignature_FinalArgVariadic *variadic;
-        struct _substrait_FunctionSignature_FinalArgNormal *normal;
+        pb_callback_t variadic;
+        pb_callback_t normal;
     } final_variable_behavior; 
-    uint64_t *max_set; 
-    struct _substrait_Type *intermediate_type; 
-    bool *ordered; 
-    pb_size_t implementations_count;
-    struct _substrait_FunctionSignature_Implementation *implementations; 
+    pb_callback_t max_set; 
+    pb_callback_t intermediate_type; 
+    pb_callback_t ordered; 
+    pb_callback_t implementations; 
 } substrait_FunctionSignature_Aggregate;
 
 typedef struct _substrait_FunctionSignature_Argument { 
-    char *name; 
+    pb_callback_t name; 
     pb_size_t which_argument_kind;
     union {
-        struct _substrait_FunctionSignature_Argument_ValueArgument *value;
-        struct _substrait_FunctionSignature_Argument_TypeArgument *type;
-        struct _substrait_FunctionSignature_Argument_EnumArgument *enum_;
+        pb_callback_t value;
+        pb_callback_t type;
+        pb_callback_t enum_;
     } argument_kind; 
 } substrait_FunctionSignature_Argument;
 
 typedef struct _substrait_FunctionSignature_Argument_EnumArgument { 
-    pb_size_t options_count;
-    char **options; 
-    bool *optional; 
+    pb_callback_t options; 
+    pb_callback_t optional; 
 } substrait_FunctionSignature_Argument_EnumArgument;
 
 typedef struct _substrait_FunctionSignature_Argument_TypeArgument { 
-    struct _substrait_ParameterizedType *type; 
+    pb_callback_t type; 
 } substrait_FunctionSignature_Argument_TypeArgument;
 
 typedef struct _substrait_FunctionSignature_Argument_ValueArgument { 
-    struct _substrait_ParameterizedType *type; 
-    bool *constant; 
+    pb_callback_t type; 
+    pb_callback_t constant; 
 } substrait_FunctionSignature_Argument_ValueArgument;
 
 typedef struct _substrait_FunctionSignature_Description { 
-    char *language; 
-    char *body; 
+    pb_callback_t language; 
+    pb_callback_t body; 
 } substrait_FunctionSignature_Description;
 
 typedef struct _substrait_FunctionSignature_FinalArgNormal { 
@@ -92,53 +89,47 @@ typedef struct _substrait_FunctionSignature_FinalArgNormal {
 } substrait_FunctionSignature_FinalArgNormal;
 
 typedef struct _substrait_FunctionSignature_FinalArgVariadic { 
-    int64_t *min_args; 
-    int64_t *max_args; 
-    substrait_FunctionSignature_FinalArgVariadic_ParameterConsistency *consistency; 
+    pb_callback_t min_args; 
+    pb_callback_t max_args; 
+    pb_callback_t consistency; 
 } substrait_FunctionSignature_FinalArgVariadic;
 
 typedef struct _substrait_FunctionSignature_Implementation { 
-    substrait_FunctionSignature_Implementation_Type *type; 
-    char *uri; 
+    pb_callback_t type; 
+    pb_callback_t uri; 
 } substrait_FunctionSignature_Implementation;
 
 typedef struct _substrait_FunctionSignature_Scalar { 
-    pb_size_t arguments_count;
-    struct _substrait_FunctionSignature_Argument *arguments; 
-    pb_size_t name_count;
-    char **name; 
-    struct _substrait_FunctionSignature_Description *description; 
-    bool *deterministic; 
-    bool *session_dependent; 
-    struct _substrait_DerivationExpression *output_type; 
+    pb_callback_t arguments; 
+    pb_callback_t name; 
+    pb_callback_t description; 
+    pb_callback_t deterministic; 
+    pb_callback_t session_dependent; 
+    pb_callback_t output_type; 
     pb_size_t which_final_variable_behavior;
     union {
-        struct _substrait_FunctionSignature_FinalArgVariadic *variadic;
-        struct _substrait_FunctionSignature_FinalArgNormal *normal;
+        pb_callback_t variadic;
+        pb_callback_t normal;
     } final_variable_behavior; 
-    pb_size_t implementations_count;
-    struct _substrait_FunctionSignature_Implementation *implementations; 
+    pb_callback_t implementations; 
 } substrait_FunctionSignature_Scalar;
 
 typedef struct _substrait_FunctionSignature_Window { 
-    pb_size_t arguments_count;
-    struct _substrait_FunctionSignature_Argument *arguments; 
-    pb_size_t name_count;
-    char **name; 
-    struct _substrait_FunctionSignature_Description *description; 
-    bool *deterministic; 
-    bool *session_dependent; 
-    struct _substrait_DerivationExpression *intermediate_type; 
-    struct _substrait_DerivationExpression *output_type; 
-    bool *ordered; 
-    uint64_t *max_set; 
-    substrait_FunctionSignature_Window_WindowType *window_type; 
-    pb_size_t implementations_count;
-    struct _substrait_FunctionSignature_Implementation *implementations; 
+    pb_callback_t arguments; 
+    pb_callback_t name; 
+    pb_callback_t description; 
+    pb_callback_t deterministic; 
+    pb_callback_t session_dependent; 
+    pb_callback_t intermediate_type; 
+    pb_callback_t output_type; 
+    pb_callback_t ordered; 
+    pb_callback_t max_set; 
+    pb_callback_t window_type; 
+    pb_callback_t implementations; 
     pb_size_t which_final_variable_behavior;
     union {
-        struct _substrait_FunctionSignature_FinalArgVariadic *variadic;
-        struct _substrait_FunctionSignature_FinalArgNormal *normal;
+        pb_callback_t variadic;
+        pb_callback_t normal;
     } final_variable_behavior; 
 } substrait_FunctionSignature_Window;
 
@@ -163,29 +154,29 @@ extern "C" {
 
 /* Initializer values for message structs */
 #define substrait_FunctionSignature_init_default {0}
-#define substrait_FunctionSignature_FinalArgVariadic_init_default {NULL, NULL, NULL}
+#define substrait_FunctionSignature_FinalArgVariadic_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define substrait_FunctionSignature_FinalArgNormal_init_default {0}
-#define substrait_FunctionSignature_Scalar_init_default {0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, {NULL}, 0, NULL}
-#define substrait_FunctionSignature_Aggregate_init_default {0, NULL, NULL, NULL, NULL, NULL, NULL, 0, {NULL}, NULL, NULL, NULL, 0, NULL}
-#define substrait_FunctionSignature_Window_init_default {0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, {NULL}}
-#define substrait_FunctionSignature_Description_init_default {NULL, NULL}
-#define substrait_FunctionSignature_Implementation_init_default {NULL, NULL}
-#define substrait_FunctionSignature_Argument_init_default {NULL, 0, {NULL}}
-#define substrait_FunctionSignature_Argument_ValueArgument_init_default {NULL, NULL}
-#define substrait_FunctionSignature_Argument_TypeArgument_init_default {NULL}
-#define substrait_FunctionSignature_Argument_EnumArgument_init_default {0, NULL, NULL}
+#define substrait_FunctionSignature_Scalar_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Aggregate_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Window_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_FunctionSignature_Description_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Implementation_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Argument_init_default {{{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_FunctionSignature_Argument_ValueArgument_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Argument_TypeArgument_init_default {{{NULL}, NULL}}
+#define substrait_FunctionSignature_Argument_EnumArgument_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
 #define substrait_FunctionSignature_init_zero    {0}
-#define substrait_FunctionSignature_FinalArgVariadic_init_zero {NULL, NULL, NULL}
+#define substrait_FunctionSignature_FinalArgVariadic_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define substrait_FunctionSignature_FinalArgNormal_init_zero {0}
-#define substrait_FunctionSignature_Scalar_init_zero {0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, {NULL}, 0, NULL}
-#define substrait_FunctionSignature_Aggregate_init_zero {0, NULL, NULL, NULL, NULL, NULL, NULL, 0, {NULL}, NULL, NULL, NULL, 0, NULL}
-#define substrait_FunctionSignature_Window_init_zero {0, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, {NULL}}
-#define substrait_FunctionSignature_Description_init_zero {NULL, NULL}
-#define substrait_FunctionSignature_Implementation_init_zero {NULL, NULL}
-#define substrait_FunctionSignature_Argument_init_zero {NULL, 0, {NULL}}
-#define substrait_FunctionSignature_Argument_ValueArgument_init_zero {NULL, NULL}
-#define substrait_FunctionSignature_Argument_TypeArgument_init_zero {NULL}
-#define substrait_FunctionSignature_Argument_EnumArgument_init_zero {0, NULL, NULL}
+#define substrait_FunctionSignature_Scalar_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Aggregate_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Window_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_FunctionSignature_Description_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Implementation_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Argument_init_zero {{{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_FunctionSignature_Argument_ValueArgument_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FunctionSignature_Argument_TypeArgument_init_zero {{{NULL}, NULL}}
+#define substrait_FunctionSignature_Argument_EnumArgument_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_FunctionSignature_Aggregate_arguments_tag 2
@@ -246,10 +237,10 @@ extern "C" {
 #define substrait_FunctionSignature_DEFAULT NULL
 
 #define substrait_FunctionSignature_FinalArgVariadic_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT64,    min_args,          1) \
-X(a, POINTER,  SINGULAR, INT64,    max_args,          2) \
-X(a, POINTER,  SINGULAR, UENUM,    consistency,       3)
-#define substrait_FunctionSignature_FinalArgVariadic_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT64,    min_args,          1) \
+X(a, CALLBACK, SINGULAR, INT64,    max_args,          2) \
+X(a, CALLBACK, SINGULAR, UENUM,    consistency,       3)
+#define substrait_FunctionSignature_FinalArgVariadic_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_FinalArgVariadic_DEFAULT NULL
 
 #define substrait_FunctionSignature_FinalArgNormal_FIELDLIST(X, a) \
@@ -258,16 +249,16 @@ X(a, POINTER,  SINGULAR, UENUM,    consistency,       3)
 #define substrait_FunctionSignature_FinalArgNormal_DEFAULT NULL
 
 #define substrait_FunctionSignature_Scalar_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  arguments,         2) \
-X(a, POINTER,  REPEATED, STRING,   name,              3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  description,       4) \
-X(a, POINTER,  SINGULAR, BOOL,     deterministic,     7) \
-X(a, POINTER,  SINGULAR, BOOL,     session_dependent,   8) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       9) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (final_variable_behavior,variadic,final_variable_behavior.variadic),  10) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (final_variable_behavior,normal,final_variable_behavior.normal),  11) \
-X(a, POINTER,  REPEATED, MESSAGE,  implementations,  12)
-#define substrait_FunctionSignature_Scalar_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  arguments,         2) \
+X(a, CALLBACK, REPEATED, STRING,   name,              3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  description,       4) \
+X(a, CALLBACK, SINGULAR, BOOL,     deterministic,     7) \
+X(a, CALLBACK, SINGULAR, BOOL,     session_dependent,   8) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  output_type,       9) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (final_variable_behavior,variadic,final_variable_behavior.variadic),  10) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (final_variable_behavior,normal,final_variable_behavior.normal),  11) \
+X(a, CALLBACK, REPEATED, MESSAGE,  implementations,  12)
+#define substrait_FunctionSignature_Scalar_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Scalar_DEFAULT NULL
 #define substrait_FunctionSignature_Scalar_arguments_MSGTYPE substrait_FunctionSignature_Argument
 #define substrait_FunctionSignature_Scalar_description_MSGTYPE substrait_FunctionSignature_Description
@@ -277,19 +268,19 @@ X(a, POINTER,  REPEATED, MESSAGE,  implementations,  12)
 #define substrait_FunctionSignature_Scalar_implementations_MSGTYPE substrait_FunctionSignature_Implementation
 
 #define substrait_FunctionSignature_Aggregate_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  arguments,         2) \
-X(a, POINTER,  SINGULAR, STRING,   name,              3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  description,       4) \
-X(a, POINTER,  SINGULAR, BOOL,     deterministic,     7) \
-X(a, POINTER,  SINGULAR, BOOL,     session_dependent,   8) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       9) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (final_variable_behavior,variadic,final_variable_behavior.variadic),  10) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (final_variable_behavior,normal,final_variable_behavior.normal),  11) \
-X(a, POINTER,  SINGULAR, UINT64,   max_set,          12) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  intermediate_type,  13) \
-X(a, POINTER,  SINGULAR, BOOL,     ordered,          14) \
-X(a, POINTER,  REPEATED, MESSAGE,  implementations,  15)
-#define substrait_FunctionSignature_Aggregate_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  arguments,         2) \
+X(a, CALLBACK, SINGULAR, STRING,   name,              3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  description,       4) \
+X(a, CALLBACK, SINGULAR, BOOL,     deterministic,     7) \
+X(a, CALLBACK, SINGULAR, BOOL,     session_dependent,   8) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  output_type,       9) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (final_variable_behavior,variadic,final_variable_behavior.variadic),  10) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (final_variable_behavior,normal,final_variable_behavior.normal),  11) \
+X(a, CALLBACK, SINGULAR, UINT64,   max_set,          12) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  intermediate_type,  13) \
+X(a, CALLBACK, SINGULAR, BOOL,     ordered,          14) \
+X(a, CALLBACK, REPEATED, MESSAGE,  implementations,  15)
+#define substrait_FunctionSignature_Aggregate_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Aggregate_DEFAULT NULL
 #define substrait_FunctionSignature_Aggregate_arguments_MSGTYPE substrait_FunctionSignature_Argument
 #define substrait_FunctionSignature_Aggregate_description_MSGTYPE substrait_FunctionSignature_Description
@@ -300,20 +291,20 @@ X(a, POINTER,  REPEATED, MESSAGE,  implementations,  15)
 #define substrait_FunctionSignature_Aggregate_implementations_MSGTYPE substrait_FunctionSignature_Implementation
 
 #define substrait_FunctionSignature_Window_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  arguments,         2) \
-X(a, POINTER,  REPEATED, STRING,   name,              3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  description,       4) \
-X(a, POINTER,  SINGULAR, BOOL,     deterministic,     7) \
-X(a, POINTER,  SINGULAR, BOOL,     session_dependent,   8) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  intermediate_type,   9) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,      10) \
-X(a, POINTER,  SINGULAR, BOOL,     ordered,          11) \
-X(a, POINTER,  SINGULAR, UINT64,   max_set,          12) \
-X(a, POINTER,  SINGULAR, UENUM,    window_type,      14) \
-X(a, POINTER,  REPEATED, MESSAGE,  implementations,  15) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (final_variable_behavior,variadic,final_variable_behavior.variadic),  16) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (final_variable_behavior,normal,final_variable_behavior.normal),  17)
-#define substrait_FunctionSignature_Window_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  arguments,         2) \
+X(a, CALLBACK, REPEATED, STRING,   name,              3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  description,       4) \
+X(a, CALLBACK, SINGULAR, BOOL,     deterministic,     7) \
+X(a, CALLBACK, SINGULAR, BOOL,     session_dependent,   8) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  intermediate_type,   9) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  output_type,      10) \
+X(a, CALLBACK, SINGULAR, BOOL,     ordered,          11) \
+X(a, CALLBACK, SINGULAR, UINT64,   max_set,          12) \
+X(a, CALLBACK, SINGULAR, UENUM,    window_type,      14) \
+X(a, CALLBACK, REPEATED, MESSAGE,  implementations,  15) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (final_variable_behavior,variadic,final_variable_behavior.variadic),  16) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (final_variable_behavior,normal,final_variable_behavior.normal),  17)
+#define substrait_FunctionSignature_Window_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Window_DEFAULT NULL
 #define substrait_FunctionSignature_Window_arguments_MSGTYPE substrait_FunctionSignature_Argument
 #define substrait_FunctionSignature_Window_description_MSGTYPE substrait_FunctionSignature_Description
@@ -324,45 +315,45 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (final_variable_behavior,normal,final_variabl
 #define substrait_FunctionSignature_Window_final_variable_behavior_normal_MSGTYPE substrait_FunctionSignature_FinalArgNormal
 
 #define substrait_FunctionSignature_Description_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   language,          1) \
-X(a, POINTER,  SINGULAR, STRING,   body,              2)
-#define substrait_FunctionSignature_Description_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   language,          1) \
+X(a, CALLBACK, SINGULAR, STRING,   body,              2)
+#define substrait_FunctionSignature_Description_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Description_DEFAULT NULL
 
 #define substrait_FunctionSignature_Implementation_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UENUM,    type,              1) \
-X(a, POINTER,  SINGULAR, STRING,   uri,               2)
-#define substrait_FunctionSignature_Implementation_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UENUM,    type,              1) \
+X(a, CALLBACK, SINGULAR, STRING,   uri,               2)
+#define substrait_FunctionSignature_Implementation_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Implementation_DEFAULT NULL
 
 #define substrait_FunctionSignature_Argument_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   name,              1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (argument_kind,value,argument_kind.value),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (argument_kind,type,argument_kind.type),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (argument_kind,enum_,argument_kind.enum_),   4)
-#define substrait_FunctionSignature_Argument_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   name,              1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (argument_kind,value,argument_kind.value),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (argument_kind,type,argument_kind.type),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (argument_kind,enum_,argument_kind.enum_),   4)
+#define substrait_FunctionSignature_Argument_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Argument_DEFAULT NULL
 #define substrait_FunctionSignature_Argument_argument_kind_value_MSGTYPE substrait_FunctionSignature_Argument_ValueArgument
 #define substrait_FunctionSignature_Argument_argument_kind_type_MSGTYPE substrait_FunctionSignature_Argument_TypeArgument
 #define substrait_FunctionSignature_Argument_argument_kind_enum__MSGTYPE substrait_FunctionSignature_Argument_EnumArgument
 
 #define substrait_FunctionSignature_Argument_ValueArgument_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  type,              1) \
-X(a, POINTER,  SINGULAR, BOOL,     constant,          2)
-#define substrait_FunctionSignature_Argument_ValueArgument_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  type,              1) \
+X(a, CALLBACK, SINGULAR, BOOL,     constant,          2)
+#define substrait_FunctionSignature_Argument_ValueArgument_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Argument_ValueArgument_DEFAULT NULL
 #define substrait_FunctionSignature_Argument_ValueArgument_type_MSGTYPE substrait_ParameterizedType
 
 #define substrait_FunctionSignature_Argument_TypeArgument_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  type,              1)
-#define substrait_FunctionSignature_Argument_TypeArgument_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  type,              1)
+#define substrait_FunctionSignature_Argument_TypeArgument_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Argument_TypeArgument_DEFAULT NULL
 #define substrait_FunctionSignature_Argument_TypeArgument_type_MSGTYPE substrait_ParameterizedType
 
 #define substrait_FunctionSignature_Argument_EnumArgument_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, STRING,   options,           1) \
-X(a, POINTER,  SINGULAR, BOOL,     optional,          2)
-#define substrait_FunctionSignature_Argument_EnumArgument_CALLBACK NULL
+X(a, CALLBACK, REPEATED, STRING,   options,           1) \
+X(a, CALLBACK, SINGULAR, BOOL,     optional,          2)
+#define substrait_FunctionSignature_Argument_EnumArgument_CALLBACK pb_default_field_callback
 #define substrait_FunctionSignature_Argument_EnumArgument_DEFAULT NULL
 
 extern const pb_msgdesc_t substrait_FunctionSignature_msg;

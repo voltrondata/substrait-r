@@ -14,107 +14,104 @@
 typedef struct _substrait_ParameterizedType { 
     pb_size_t which_kind;
     union {
-        struct _substrait_Type_Boolean *bool_;
-        struct _substrait_Type_I8 *i8;
-        struct _substrait_Type_I16 *i16;
-        struct _substrait_Type_I32 *i32;
-        struct _substrait_Type_I64 *i64;
-        struct _substrait_Type_FP32 *fp32;
-        struct _substrait_Type_FP64 *fp64;
-        struct _substrait_Type_String *string;
-        struct _substrait_Type_Binary *binary;
-        struct _substrait_Type_Timestamp *timestamp;
-        struct _substrait_Type_Date *date;
-        struct _substrait_Type_Time *time;
-        struct _substrait_Type_IntervalYear *interval_year;
-        struct _substrait_Type_IntervalDay *interval_day;
-        struct _substrait_ParameterizedType_ParameterizedFixedChar *fixed_char;
-        struct _substrait_ParameterizedType_ParameterizedVarChar *varchar;
-        struct _substrait_ParameterizedType_ParameterizedFixedBinary *fixed_binary;
-        struct _substrait_ParameterizedType_ParameterizedDecimal *decimal;
-        struct _substrait_ParameterizedType_ParameterizedStruct *struct_;
-        struct _substrait_ParameterizedType_ParameterizedList *list;
-        struct _substrait_ParameterizedType_ParameterizedMap *map;
-        struct _substrait_Type_TimestampTZ *timestamp_tz;
-        uint32_t *user_defined_pointer;
-        struct _substrait_Type_UUID *uuid;
-        struct _substrait_ParameterizedType_TypeParameter *type_parameter;
+        pb_callback_t bool_;
+        pb_callback_t i8;
+        pb_callback_t i16;
+        pb_callback_t i32;
+        pb_callback_t i64;
+        pb_callback_t fp32;
+        pb_callback_t fp64;
+        pb_callback_t string;
+        pb_callback_t binary;
+        pb_callback_t timestamp;
+        pb_callback_t date;
+        pb_callback_t time;
+        pb_callback_t interval_year;
+        pb_callback_t interval_day;
+        pb_callback_t fixed_char;
+        pb_callback_t varchar;
+        pb_callback_t fixed_binary;
+        pb_callback_t decimal;
+        pb_callback_t struct_;
+        pb_callback_t list;
+        pb_callback_t map;
+        pb_callback_t timestamp_tz;
+        pb_callback_t user_defined_pointer;
+        pb_callback_t uuid;
+        pb_callback_t type_parameter;
     } kind; 
 } substrait_ParameterizedType;
 
 typedef struct _substrait_ParameterizedType_IntegerOption { 
     pb_size_t which_integer_type;
     union {
-        int32_t *literal;
-        struct _substrait_ParameterizedType_IntegerParameter *parameter;
+        pb_callback_t literal;
+        pb_callback_t parameter;
     } integer_type; 
 } substrait_ParameterizedType_IntegerOption;
 
 typedef struct _substrait_ParameterizedType_IntegerParameter { 
-    char *name; 
-    struct _substrait_ParameterizedType_NullableInteger *range_start_inclusive; 
-    struct _substrait_ParameterizedType_NullableInteger *range_end_exclusive; 
+    pb_callback_t name; 
+    pb_callback_t range_start_inclusive; 
+    pb_callback_t range_end_exclusive; 
 } substrait_ParameterizedType_IntegerParameter;
 
 typedef struct _substrait_ParameterizedType_NullableInteger { 
-    int64_t *value; 
+    pb_callback_t value; 
 } substrait_ParameterizedType_NullableInteger;
 
 typedef struct _substrait_ParameterizedType_ParameterizedDecimal { 
-    struct _substrait_ParameterizedType_IntegerOption *scale; 
-    struct _substrait_ParameterizedType_IntegerOption *precision; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t scale; 
+    pb_callback_t precision; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_ParameterizedType_ParameterizedDecimal;
 
 typedef struct _substrait_ParameterizedType_ParameterizedFixedBinary { 
-    struct _substrait_ParameterizedType_IntegerOption *length; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_ParameterizedType_ParameterizedFixedBinary;
 
 typedef struct _substrait_ParameterizedType_ParameterizedFixedChar { 
-    struct _substrait_ParameterizedType_IntegerOption *length; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_ParameterizedType_ParameterizedFixedChar;
 
 typedef struct _substrait_ParameterizedType_ParameterizedList { 
-    struct _substrait_ParameterizedType *type; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_ParameterizedType_ParameterizedList;
 
 typedef struct _substrait_ParameterizedType_ParameterizedMap { 
-    struct _substrait_ParameterizedType *key; 
-    struct _substrait_ParameterizedType *value; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t key; 
+    pb_callback_t value; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_ParameterizedType_ParameterizedMap;
 
 typedef struct _substrait_ParameterizedType_ParameterizedNamedStruct { 
-    pb_size_t names_count;
-    char **names; 
-    struct _substrait_ParameterizedType_ParameterizedStruct *struct_; 
+    pb_callback_t names; 
+    pb_callback_t struct_; 
 } substrait_ParameterizedType_ParameterizedNamedStruct;
 
 typedef struct _substrait_ParameterizedType_ParameterizedStruct { 
-    pb_size_t types_count;
-    struct _substrait_ParameterizedType *types; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t types; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_ParameterizedType_ParameterizedStruct;
 
 typedef struct _substrait_ParameterizedType_ParameterizedVarChar { 
-    struct _substrait_ParameterizedType_IntegerOption *length; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_ParameterizedType_ParameterizedVarChar;
 
 typedef struct _substrait_ParameterizedType_TypeParameter { 
-    char *name; 
-    pb_size_t bounds_count;
-    struct _substrait_ParameterizedType *bounds; 
+    pb_callback_t name; 
+    pb_callback_t bounds; 
 } substrait_ParameterizedType_TypeParameter;
 
 
@@ -123,32 +120,32 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_ParameterizedType_init_default {0, {NULL}}
-#define substrait_ParameterizedType_TypeParameter_init_default {NULL, 0, NULL}
-#define substrait_ParameterizedType_IntegerParameter_init_default {NULL, NULL, NULL}
-#define substrait_ParameterizedType_NullableInteger_init_default {NULL}
-#define substrait_ParameterizedType_ParameterizedFixedChar_init_default {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedVarChar_init_default {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedFixedBinary_init_default {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedDecimal_init_default {NULL, NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedStruct_init_default {0, NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedNamedStruct_init_default {0, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedList_init_default {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedMap_init_default {NULL, NULL, NULL, NULL}
-#define substrait_ParameterizedType_IntegerOption_init_default {0, {NULL}}
-#define substrait_ParameterizedType_init_zero    {0, {NULL}}
-#define substrait_ParameterizedType_TypeParameter_init_zero {NULL, 0, NULL}
-#define substrait_ParameterizedType_IntegerParameter_init_zero {NULL, NULL, NULL}
-#define substrait_ParameterizedType_NullableInteger_init_zero {NULL}
-#define substrait_ParameterizedType_ParameterizedFixedChar_init_zero {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedVarChar_init_zero {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedFixedBinary_init_zero {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedDecimal_init_zero {NULL, NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedStruct_init_zero {0, NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedNamedStruct_init_zero {0, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedList_init_zero {NULL, NULL, NULL}
-#define substrait_ParameterizedType_ParameterizedMap_init_zero {NULL, NULL, NULL, NULL}
-#define substrait_ParameterizedType_IntegerOption_init_zero {0, {NULL}}
+#define substrait_ParameterizedType_init_default {0, {{{NULL}, NULL}}}
+#define substrait_ParameterizedType_TypeParameter_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_IntegerParameter_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_NullableInteger_init_default {{{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedFixedChar_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedVarChar_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedFixedBinary_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedDecimal_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedStruct_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedNamedStruct_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedList_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedMap_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_IntegerOption_init_default {0, {{{NULL}, NULL}}}
+#define substrait_ParameterizedType_init_zero    {0, {{{NULL}, NULL}}}
+#define substrait_ParameterizedType_TypeParameter_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_IntegerParameter_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_NullableInteger_init_zero {{{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedFixedChar_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedVarChar_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedFixedBinary_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedDecimal_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedStruct_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedNamedStruct_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedList_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_ParameterizedMap_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ParameterizedType_IntegerOption_init_zero {0, {{{NULL}, NULL}}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_ParameterizedType_bool__tag    1
@@ -212,32 +209,32 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_ParameterizedType_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,bool_,kind.bool_),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i8,kind.i8),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i16,kind.i16),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i32,kind.i32),   5) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i64,kind.i64),   7) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fp32,kind.fp32),  10) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fp64,kind.fp64),  11) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,string,kind.string),  12) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,binary,kind.binary),  13) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,timestamp,kind.timestamp),  14) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,date,kind.date),  16) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,time,kind.time),  17) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,interval_year,kind.interval_year),  19) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,interval_day,kind.interval_day),  20) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fixed_char,kind.fixed_char),  21) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,varchar,kind.varchar),  22) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fixed_binary,kind.fixed_binary),  23) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,decimal,kind.decimal),  24) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,struct_,kind.struct_),  25) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,list,kind.list),  27) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,map,kind.map),  28) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,timestamp_tz,kind.timestamp_tz),  29) \
-X(a, POINTER,  ONEOF,    UINT32,   (kind,user_defined_pointer,kind.user_defined_pointer),  31) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,uuid,kind.uuid),  32) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,type_parameter,kind.type_parameter),  33)
-#define substrait_ParameterizedType_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,bool_,kind.bool_),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i8,kind.i8),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i16,kind.i16),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i32,kind.i32),   5) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i64,kind.i64),   7) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fp32,kind.fp32),  10) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fp64,kind.fp64),  11) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,string,kind.string),  12) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,binary,kind.binary),  13) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,timestamp,kind.timestamp),  14) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,date,kind.date),  16) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,time,kind.time),  17) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,interval_year,kind.interval_year),  19) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,interval_day,kind.interval_day),  20) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fixed_char,kind.fixed_char),  21) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,varchar,kind.varchar),  22) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fixed_binary,kind.fixed_binary),  23) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,decimal,kind.decimal),  24) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,struct_,kind.struct_),  25) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,list,kind.list),  27) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,map,kind.map),  28) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,timestamp_tz,kind.timestamp_tz),  29) \
+X(a, CALLBACK, ONEOF,    UINT32,   (kind,user_defined_pointer,kind.user_defined_pointer),  31) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,uuid,kind.uuid),  32) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,type_parameter,kind.type_parameter),  33)
+#define substrait_ParameterizedType_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_DEFAULT NULL
 #define substrait_ParameterizedType_kind_bool__MSGTYPE substrait_Type_Boolean
 #define substrait_ParameterizedType_kind_i8_MSGTYPE substrait_Type_I8
@@ -265,97 +262,97 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (kind,type_parameter,kind.type_parameter),  3
 #define substrait_ParameterizedType_kind_type_parameter_MSGTYPE substrait_ParameterizedType_TypeParameter
 
 #define substrait_ParameterizedType_TypeParameter_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   name,              1) \
-X(a, POINTER,  REPEATED, MESSAGE,  bounds,            2)
-#define substrait_ParameterizedType_TypeParameter_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   name,              1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  bounds,            2)
+#define substrait_ParameterizedType_TypeParameter_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_TypeParameter_DEFAULT NULL
 #define substrait_ParameterizedType_TypeParameter_bounds_MSGTYPE substrait_ParameterizedType
 
 #define substrait_ParameterizedType_IntegerParameter_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   name,              1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  range_start_inclusive,   2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  range_end_exclusive,   3)
-#define substrait_ParameterizedType_IntegerParameter_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   name,              1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  range_start_inclusive,   2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  range_end_exclusive,   3)
+#define substrait_ParameterizedType_IntegerParameter_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_IntegerParameter_DEFAULT NULL
 #define substrait_ParameterizedType_IntegerParameter_range_start_inclusive_MSGTYPE substrait_ParameterizedType_NullableInteger
 #define substrait_ParameterizedType_IntegerParameter_range_end_exclusive_MSGTYPE substrait_ParameterizedType_NullableInteger
 
 #define substrait_ParameterizedType_NullableInteger_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT64,    value,             1)
-#define substrait_ParameterizedType_NullableInteger_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT64,    value,             1)
+#define substrait_ParameterizedType_NullableInteger_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_NullableInteger_DEFAULT NULL
 
 #define substrait_ParameterizedType_ParameterizedFixedChar_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_ParameterizedType_ParameterizedFixedChar_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_ParameterizedType_ParameterizedFixedChar_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedFixedChar_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedFixedChar_length_MSGTYPE substrait_ParameterizedType_IntegerOption
 
 #define substrait_ParameterizedType_ParameterizedVarChar_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_ParameterizedType_ParameterizedVarChar_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_ParameterizedType_ParameterizedVarChar_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedVarChar_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedVarChar_length_MSGTYPE substrait_ParameterizedType_IntegerOption
 
 #define substrait_ParameterizedType_ParameterizedFixedBinary_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_ParameterizedType_ParameterizedFixedBinary_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_ParameterizedType_ParameterizedFixedBinary_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedFixedBinary_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedFixedBinary_length_MSGTYPE substrait_ParameterizedType_IntegerOption
 
 #define substrait_ParameterizedType_ParameterizedDecimal_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  scale,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  precision,         2) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   3) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       4)
-#define substrait_ParameterizedType_ParameterizedDecimal_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  scale,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  precision,         2) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   3) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       4)
+#define substrait_ParameterizedType_ParameterizedDecimal_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedDecimal_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedDecimal_scale_MSGTYPE substrait_ParameterizedType_IntegerOption
 #define substrait_ParameterizedType_ParameterizedDecimal_precision_MSGTYPE substrait_ParameterizedType_IntegerOption
 
 #define substrait_ParameterizedType_ParameterizedStruct_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  types,             1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_ParameterizedType_ParameterizedStruct_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  types,             1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_ParameterizedType_ParameterizedStruct_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedStruct_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedStruct_types_MSGTYPE substrait_ParameterizedType
 
 #define substrait_ParameterizedType_ParameterizedNamedStruct_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, STRING,   names,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  struct_,           2)
-#define substrait_ParameterizedType_ParameterizedNamedStruct_CALLBACK NULL
+X(a, CALLBACK, REPEATED, STRING,   names,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  struct_,           2)
+#define substrait_ParameterizedType_ParameterizedNamedStruct_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedNamedStruct_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedNamedStruct_struct__MSGTYPE substrait_ParameterizedType_ParameterizedStruct
 
 #define substrait_ParameterizedType_ParameterizedList_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  type,              1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_ParameterizedType_ParameterizedList_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  type,              1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_ParameterizedType_ParameterizedList_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedList_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedList_type_MSGTYPE substrait_ParameterizedType
 
 #define substrait_ParameterizedType_ParameterizedMap_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  key,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  value,             2) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   3) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       4)
-#define substrait_ParameterizedType_ParameterizedMap_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  key,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  value,             2) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   3) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       4)
+#define substrait_ParameterizedType_ParameterizedMap_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_ParameterizedMap_DEFAULT NULL
 #define substrait_ParameterizedType_ParameterizedMap_key_MSGTYPE substrait_ParameterizedType
 #define substrait_ParameterizedType_ParameterizedMap_value_MSGTYPE substrait_ParameterizedType
 
 #define substrait_ParameterizedType_IntegerOption_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    INT32,    (integer_type,literal,integer_type.literal),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (integer_type,parameter,integer_type.parameter),   2)
-#define substrait_ParameterizedType_IntegerOption_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    INT32,    (integer_type,literal,integer_type.literal),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (integer_type,parameter,integer_type.parameter),   2)
+#define substrait_ParameterizedType_IntegerOption_CALLBACK pb_default_field_callback
 #define substrait_ParameterizedType_IntegerOption_DEFAULT NULL
 #define substrait_ParameterizedType_IntegerOption_integer_type_parameter_MSGTYPE substrait_ParameterizedType_IntegerParameter
 

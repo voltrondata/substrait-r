@@ -52,7 +52,7 @@ unlink(list.files("src", "\\.pb\\.c$", recursive = TRUE, full.names = TRUE))
 unlink("src/substrait", recursive = TRUE)
 
 # have to figure out the correct nanopb.options
-# to resolve circular references...-s type:FT_POINTER
+# to resolve circular references...-s type:FT_CALLBACK
 # is the workaround but this in theory only needs to exist for
 # a few fields
 proto_files_flat <- paste(proto_files, collapse = " ")
@@ -61,7 +61,7 @@ withr::with_dir("inst/substrait/proto", {
   system(
     glue::glue(
       "../../../data-raw/nanopb-0.4.5-macosx-x86/generator-bin/nanopb_generator \\
-        -s type:FT_POINTER { proto_files_flat } \\
+        -s type:FT_CALLBACK { proto_files_flat } \\
         --output-dir=../../../src"
     )
   )

@@ -41,66 +41,62 @@ typedef enum _substrait_SetRel_SetOp {
 
 /* Struct definitions */
 typedef struct _substrait_AggregateRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_Rel *input; 
-    pb_size_t groupings_count;
-    struct _substrait_AggregateRel_Grouping *groupings; 
-    pb_size_t measures_count;
-    struct _substrait_AggregateRel_Measure *measures; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t common; 
+    pb_callback_t input; 
+    pb_callback_t groupings; 
+    pb_callback_t measures; 
+    pb_callback_t advanced_extension; 
 } substrait_AggregateRel;
 
 typedef struct _substrait_AggregateRel_Grouping { 
-    pb_size_t grouping_expressions_count;
-    struct _substrait_Expression *grouping_expressions; 
+    pb_callback_t grouping_expressions; 
 } substrait_AggregateRel_Grouping;
 
 typedef struct _substrait_AggregateRel_Measure { 
-    struct _substrait_AggregateFunction *measure; 
-    struct _substrait_Expression *filter; 
+    pb_callback_t measure; 
+    pb_callback_t filter; 
 } substrait_AggregateRel_Measure;
 
 typedef struct _substrait_ExtensionLeafRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_Any *detail; 
+    pb_callback_t common; 
+    pb_callback_t detail; 
 } substrait_ExtensionLeafRel;
 
 typedef struct _substrait_ExtensionMultiRel { 
-    struct _substrait_RelCommon *common; 
-    pb_size_t inputs_count;
-    struct _substrait_Rel *inputs; 
-    struct _substrait_Any *detail; 
+    pb_callback_t common; 
+    pb_callback_t inputs; 
+    pb_callback_t detail; 
 } substrait_ExtensionMultiRel;
 
 typedef struct _substrait_ExtensionSingleRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_Rel *input; 
-    struct _substrait_Any *detail; 
+    pb_callback_t common; 
+    pb_callback_t input; 
+    pb_callback_t detail; 
 } substrait_ExtensionSingleRel;
 
 typedef struct _substrait_FetchRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_Rel *input; 
-    int64_t *offset; 
-    int64_t *count; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t common; 
+    pb_callback_t input; 
+    pb_callback_t offset; 
+    pb_callback_t count; 
+    pb_callback_t advanced_extension; 
 } substrait_FetchRel;
 
 typedef struct _substrait_FilterRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_Rel *input; 
-    struct _substrait_Expression *condition; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t common; 
+    pb_callback_t input; 
+    pb_callback_t condition; 
+    pb_callback_t advanced_extension; 
 } substrait_FilterRel;
 
 typedef struct _substrait_JoinRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_Rel *left; 
-    struct _substrait_Rel *right; 
-    struct _substrait_Expression *expression; 
-    struct _substrait_Expression *post_join_filter; 
-    substrait_JoinRel_JoinType *type; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t common; 
+    pb_callback_t left; 
+    pb_callback_t right; 
+    pb_callback_t expression; 
+    pb_callback_t post_join_filter; 
+    pb_callback_t type; 
+    pb_callback_t advanced_extension; 
 } substrait_JoinRel;
 
 /* A relation with output field names.
@@ -108,92 +104,88 @@ typedef struct _substrait_JoinRel {
  This is for use at the root of a `Rel` tree. */
 typedef struct _substrait_ProjectRel { 
     /* A relation */
-    struct _substrait_RelCommon *common; 
+    pb_callback_t common; 
     /* Field names in depth-first order */
-    struct _substrait_Rel *input; 
-    pb_size_t expressions_count;
-    struct _substrait_Expression *expressions; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t input; 
+    pb_callback_t expressions; 
+    pb_callback_t advanced_extension; 
 } substrait_ProjectRel;
 
 typedef struct _substrait_ReadRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_NamedStruct *base_schema; 
-    struct _substrait_Expression *filter; 
-    struct _substrait_Expression_MaskExpression *projection; 
+    pb_callback_t common; 
+    pb_callback_t base_schema; 
+    pb_callback_t filter; 
+    pb_callback_t projection; 
     pb_size_t which_read_type;
     union {
-        struct _substrait_ReadRel_VirtualTable *virtual_table;
-        struct _substrait_ReadRel_LocalFiles *local_files;
-        struct _substrait_ReadRel_NamedTable *named_table;
-        struct _substrait_ReadRel_ExtensionTable *extension_table;
+        pb_callback_t virtual_table;
+        pb_callback_t local_files;
+        pb_callback_t named_table;
+        pb_callback_t extension_table;
     } read_type; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t advanced_extension; 
 } substrait_ReadRel;
 
 /* Stub to support extension with a single input */
 typedef struct _substrait_ReadRel_ExtensionTable { 
-    struct _substrait_Any *detail; 
+    pb_callback_t detail; 
 } substrait_ReadRel_ExtensionTable;
 
 /* Stub to support extension with a zero inputs */
 typedef struct _substrait_ReadRel_LocalFiles { 
-    pb_size_t items_count;
-    struct _substrait_ReadRel_LocalFiles_FileOrFiles *items; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t items; 
+    pb_callback_t advanced_extension; 
 } substrait_ReadRel_LocalFiles;
 
 /* Stub to support extension with multiple inputs */
 typedef struct _substrait_ReadRel_LocalFiles_FileOrFiles { 
     pb_size_t which_path_type;
     union {
-        char *uri_path;
-        char *uri_path_glob;
-        char *uri_file;
-        char *uri_folder;
+        pb_callback_t uri_path;
+        pb_callback_t uri_path_glob;
+        pb_callback_t uri_file;
+        pb_callback_t uri_folder;
     } path_type; 
-    substrait_ReadRel_LocalFiles_FileOrFiles_FileFormat *format; 
-    uint64_t *partition_index; 
-    uint64_t *start; 
-    uint64_t *length; 
+    pb_callback_t format; 
+    pb_callback_t partition_index; 
+    pb_callback_t start; 
+    pb_callback_t length; 
 } substrait_ReadRel_LocalFiles_FileOrFiles;
 
 typedef struct _substrait_ReadRel_NamedTable { 
-    pb_size_t names_count;
-    char **names; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t names; 
+    pb_callback_t advanced_extension; 
 } substrait_ReadRel_NamedTable;
 
 typedef struct _substrait_ReadRel_VirtualTable { 
-    pb_size_t values_count;
-    struct _substrait_Expression_Literal_Struct *values; 
+    pb_callback_t values; 
 } substrait_ReadRel_VirtualTable;
 
 typedef struct _substrait_Rel { 
     pb_size_t which_rel_type;
     union {
-        struct _substrait_ReadRel *read;
-        struct _substrait_FilterRel *filter;
-        struct _substrait_FetchRel *fetch;
-        struct _substrait_AggregateRel *aggregate;
-        struct _substrait_SortRel *sort;
-        struct _substrait_JoinRel *join;
-        struct _substrait_ProjectRel *project;
-        struct _substrait_SetRel *set;
-        struct _substrait_ExtensionSingleRel *extension_single;
-        struct _substrait_ExtensionMultiRel *extension_multi;
-        struct _substrait_ExtensionLeafRel *extension_leaf;
+        pb_callback_t read;
+        pb_callback_t filter;
+        pb_callback_t fetch;
+        pb_callback_t aggregate;
+        pb_callback_t sort;
+        pb_callback_t join;
+        pb_callback_t project;
+        pb_callback_t set;
+        pb_callback_t extension_single;
+        pb_callback_t extension_multi;
+        pb_callback_t extension_leaf;
     } rel_type; 
 } substrait_Rel;
 
 typedef struct _substrait_RelCommon { 
     pb_size_t which_emit_kind;
     union {
-        struct _substrait_RelCommon_Direct *direct;
-        struct _substrait_RelCommon_Emit *emit;
+        pb_callback_t direct;
+        pb_callback_t emit;
     } emit_kind; 
-    struct _substrait_RelCommon_Hint *hint; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t hint; 
+    pb_callback_t advanced_extension; 
 } substrait_RelCommon;
 
 typedef struct _substrait_RelCommon_Direct { 
@@ -201,46 +193,42 @@ typedef struct _substrait_RelCommon_Direct {
 } substrait_RelCommon_Direct;
 
 typedef struct _substrait_RelCommon_Emit { 
-    pb_size_t output_mapping_count;
-    int32_t *output_mapping; 
+    pb_callback_t output_mapping; 
 } substrait_RelCommon_Emit;
 
 typedef struct _substrait_RelCommon_Hint { 
-    struct _substrait_RelCommon_Hint_Stats *stats; 
-    struct _substrait_RelCommon_Hint_RuntimeConstraint *constraint; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t stats; 
+    pb_callback_t constraint; 
+    pb_callback_t advanced_extension; 
 } substrait_RelCommon_Hint;
 
 typedef struct _substrait_RelCommon_Hint_RuntimeConstraint { 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t advanced_extension; 
 } substrait_RelCommon_Hint_RuntimeConstraint;
 
 typedef struct _substrait_RelCommon_Hint_Stats { 
-    double *row_count; 
-    double *record_size; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t row_count; 
+    pb_callback_t record_size; 
+    pb_callback_t advanced_extension; 
 } substrait_RelCommon_Hint_Stats;
 
 typedef struct _substrait_RelRoot { 
-    struct _substrait_Rel *input; 
-    pb_size_t names_count;
-    char **names; 
+    pb_callback_t input; 
+    pb_callback_t names; 
 } substrait_RelRoot;
 
 typedef struct _substrait_SetRel { 
-    struct _substrait_RelCommon *common; 
-    pb_size_t inputs_count;
-    struct _substrait_Rel *inputs; 
-    substrait_SetRel_SetOp *op; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t common; 
+    pb_callback_t inputs; 
+    pb_callback_t op; 
+    pb_callback_t advanced_extension; 
 } substrait_SetRel;
 
 typedef struct _substrait_SortRel { 
-    struct _substrait_RelCommon *common; 
-    struct _substrait_Rel *input; 
-    pb_size_t sorts_count;
-    struct _substrait_SortField *sorts; 
-    struct _substrait_extensions_AdvancedExtension *advanced_extension; 
+    pb_callback_t common; 
+    pb_callback_t input; 
+    pb_callback_t sorts; 
+    pb_callback_t advanced_extension; 
 } substrait_SortRel;
 
 
@@ -263,58 +251,58 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_RelCommon_init_default         {0, {NULL}, NULL, NULL}
+#define substrait_RelCommon_init_default         {0, {{{NULL}, NULL}}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define substrait_RelCommon_Direct_init_default  {0}
-#define substrait_RelCommon_Emit_init_default    {0, NULL}
-#define substrait_RelCommon_Hint_init_default    {NULL, NULL, NULL}
-#define substrait_RelCommon_Hint_Stats_init_default {NULL, NULL, NULL}
-#define substrait_RelCommon_Hint_RuntimeConstraint_init_default {NULL}
-#define substrait_ReadRel_init_default           {NULL, NULL, NULL, NULL, 0, {NULL}, NULL}
-#define substrait_ReadRel_NamedTable_init_default {0, NULL, NULL}
-#define substrait_ReadRel_VirtualTable_init_default {0, NULL}
-#define substrait_ReadRel_ExtensionTable_init_default {NULL}
-#define substrait_ReadRel_LocalFiles_init_default {0, NULL, NULL}
-#define substrait_ReadRel_LocalFiles_FileOrFiles_init_default {0, {NULL}, NULL, NULL, NULL, NULL}
-#define substrait_ProjectRel_init_default        {NULL, NULL, 0, NULL, NULL}
-#define substrait_JoinRel_init_default           {NULL, NULL, NULL, NULL, NULL, NULL, NULL}
-#define substrait_FetchRel_init_default          {NULL, NULL, NULL, NULL, NULL}
-#define substrait_AggregateRel_init_default      {NULL, NULL, 0, NULL, 0, NULL, NULL}
-#define substrait_AggregateRel_Grouping_init_default {0, NULL}
-#define substrait_AggregateRel_Measure_init_default {NULL, NULL}
-#define substrait_SortRel_init_default           {NULL, NULL, 0, NULL, NULL}
-#define substrait_FilterRel_init_default         {NULL, NULL, NULL, NULL}
-#define substrait_SetRel_init_default            {NULL, 0, NULL, NULL, NULL}
-#define substrait_ExtensionSingleRel_init_default {NULL, NULL, NULL}
-#define substrait_ExtensionLeafRel_init_default  {NULL, NULL}
-#define substrait_ExtensionMultiRel_init_default {NULL, 0, NULL, NULL}
-#define substrait_RelRoot_init_default           {NULL, 0, NULL}
-#define substrait_Rel_init_default               {0, {NULL}}
-#define substrait_RelCommon_init_zero            {0, {NULL}, NULL, NULL}
+#define substrait_RelCommon_Emit_init_default    {{{NULL}, NULL}}
+#define substrait_RelCommon_Hint_init_default    {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_RelCommon_Hint_Stats_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_RelCommon_Hint_RuntimeConstraint_init_default {{{NULL}, NULL}}
+#define substrait_ReadRel_init_default           {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_ReadRel_NamedTable_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ReadRel_VirtualTable_init_default {{{NULL}, NULL}}
+#define substrait_ReadRel_ExtensionTable_init_default {{{NULL}, NULL}}
+#define substrait_ReadRel_LocalFiles_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ReadRel_LocalFiles_FileOrFiles_init_default {0, {{{NULL}, NULL}}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ProjectRel_init_default        {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_JoinRel_init_default           {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FetchRel_init_default          {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_AggregateRel_init_default      {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_AggregateRel_Grouping_init_default {{{NULL}, NULL}}
+#define substrait_AggregateRel_Measure_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_SortRel_init_default           {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FilterRel_init_default         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_SetRel_init_default            {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ExtensionSingleRel_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ExtensionLeafRel_init_default  {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ExtensionMultiRel_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_RelRoot_init_default           {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Rel_init_default               {0, {{{NULL}, NULL}}}
+#define substrait_RelCommon_init_zero            {0, {{{NULL}, NULL}}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define substrait_RelCommon_Direct_init_zero     {0}
-#define substrait_RelCommon_Emit_init_zero       {0, NULL}
-#define substrait_RelCommon_Hint_init_zero       {NULL, NULL, NULL}
-#define substrait_RelCommon_Hint_Stats_init_zero {NULL, NULL, NULL}
-#define substrait_RelCommon_Hint_RuntimeConstraint_init_zero {NULL}
-#define substrait_ReadRel_init_zero              {NULL, NULL, NULL, NULL, 0, {NULL}, NULL}
-#define substrait_ReadRel_NamedTable_init_zero   {0, NULL, NULL}
-#define substrait_ReadRel_VirtualTable_init_zero {0, NULL}
-#define substrait_ReadRel_ExtensionTable_init_zero {NULL}
-#define substrait_ReadRel_LocalFiles_init_zero   {0, NULL, NULL}
-#define substrait_ReadRel_LocalFiles_FileOrFiles_init_zero {0, {NULL}, NULL, NULL, NULL, NULL}
-#define substrait_ProjectRel_init_zero           {NULL, NULL, 0, NULL, NULL}
-#define substrait_JoinRel_init_zero              {NULL, NULL, NULL, NULL, NULL, NULL, NULL}
-#define substrait_FetchRel_init_zero             {NULL, NULL, NULL, NULL, NULL}
-#define substrait_AggregateRel_init_zero         {NULL, NULL, 0, NULL, 0, NULL, NULL}
-#define substrait_AggregateRel_Grouping_init_zero {0, NULL}
-#define substrait_AggregateRel_Measure_init_zero {NULL, NULL}
-#define substrait_SortRel_init_zero              {NULL, NULL, 0, NULL, NULL}
-#define substrait_FilterRel_init_zero            {NULL, NULL, NULL, NULL}
-#define substrait_SetRel_init_zero               {NULL, 0, NULL, NULL, NULL}
-#define substrait_ExtensionSingleRel_init_zero   {NULL, NULL, NULL}
-#define substrait_ExtensionLeafRel_init_zero     {NULL, NULL}
-#define substrait_ExtensionMultiRel_init_zero    {NULL, 0, NULL, NULL}
-#define substrait_RelRoot_init_zero              {NULL, 0, NULL}
-#define substrait_Rel_init_zero                  {0, {NULL}}
+#define substrait_RelCommon_Emit_init_zero       {{{NULL}, NULL}}
+#define substrait_RelCommon_Hint_init_zero       {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_RelCommon_Hint_Stats_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_RelCommon_Hint_RuntimeConstraint_init_zero {{{NULL}, NULL}}
+#define substrait_ReadRel_init_zero              {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_ReadRel_NamedTable_init_zero   {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ReadRel_VirtualTable_init_zero {{{NULL}, NULL}}
+#define substrait_ReadRel_ExtensionTable_init_zero {{{NULL}, NULL}}
+#define substrait_ReadRel_LocalFiles_init_zero   {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ReadRel_LocalFiles_FileOrFiles_init_zero {0, {{{NULL}, NULL}}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ProjectRel_init_zero           {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_JoinRel_init_zero              {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FetchRel_init_zero             {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_AggregateRel_init_zero         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_AggregateRel_Grouping_init_zero {{{NULL}, NULL}}
+#define substrait_AggregateRel_Measure_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_SortRel_init_zero              {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_FilterRel_init_zero            {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_SetRel_init_zero               {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ExtensionSingleRel_init_zero   {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ExtensionLeafRel_init_zero     {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_ExtensionMultiRel_init_zero    {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_RelRoot_init_zero              {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Rel_init_zero                  {0, {{{NULL}, NULL}}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_AggregateRel_common_tag        1
@@ -412,11 +400,11 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_RelCommon_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (emit_kind,direct,emit_kind.direct),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (emit_kind,emit,emit_kind.emit),   2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  hint,              3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,   4)
-#define substrait_RelCommon_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (emit_kind,direct,emit_kind.direct),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (emit_kind,emit,emit_kind.emit),   2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  hint,              3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,   4)
+#define substrait_RelCommon_CALLBACK pb_default_field_callback
 #define substrait_RelCommon_DEFAULT NULL
 #define substrait_RelCommon_emit_kind_direct_MSGTYPE substrait_RelCommon_Direct
 #define substrait_RelCommon_emit_kind_emit_MSGTYPE substrait_RelCommon_Emit
@@ -429,45 +417,45 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,   4)
 #define substrait_RelCommon_Direct_DEFAULT NULL
 
 #define substrait_RelCommon_Emit_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, INT32,    output_mapping,    1)
-#define substrait_RelCommon_Emit_CALLBACK NULL
+X(a, CALLBACK, REPEATED, INT32,    output_mapping,    1)
+#define substrait_RelCommon_Emit_CALLBACK pb_default_field_callback
 #define substrait_RelCommon_Emit_DEFAULT NULL
 
 #define substrait_RelCommon_Hint_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  stats,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  constraint,        2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_RelCommon_Hint_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  stats,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  constraint,        2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_RelCommon_Hint_CALLBACK pb_default_field_callback
 #define substrait_RelCommon_Hint_DEFAULT NULL
 #define substrait_RelCommon_Hint_stats_MSGTYPE substrait_RelCommon_Hint_Stats
 #define substrait_RelCommon_Hint_constraint_MSGTYPE substrait_RelCommon_Hint_RuntimeConstraint
 #define substrait_RelCommon_Hint_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_RelCommon_Hint_Stats_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, DOUBLE,   row_count,         1) \
-X(a, POINTER,  SINGULAR, DOUBLE,   record_size,       2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_RelCommon_Hint_Stats_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, DOUBLE,   row_count,         1) \
+X(a, CALLBACK, SINGULAR, DOUBLE,   record_size,       2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_RelCommon_Hint_Stats_CALLBACK pb_default_field_callback
 #define substrait_RelCommon_Hint_Stats_DEFAULT NULL
 #define substrait_RelCommon_Hint_Stats_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_RelCommon_Hint_RuntimeConstraint_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_RelCommon_Hint_RuntimeConstraint_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_RelCommon_Hint_RuntimeConstraint_CALLBACK pb_default_field_callback
 #define substrait_RelCommon_Hint_RuntimeConstraint_DEFAULT NULL
 #define substrait_RelCommon_Hint_RuntimeConstraint_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_ReadRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  base_schema,       2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  filter,            3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  projection,        4) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,virtual_table,read_type.virtual_table),   5) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,local_files,read_type.local_files),   6) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,named_table,read_type.named_table),   7) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,extension_table,read_type.extension_table),   8) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_ReadRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  base_schema,       2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  filter,            3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  projection,        4) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (read_type,virtual_table,read_type.virtual_table),   5) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (read_type,local_files,read_type.local_files),   6) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (read_type,named_table,read_type.named_table),   7) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (read_type,extension_table,read_type.extension_table),   8) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_ReadRel_CALLBACK pb_default_field_callback
 #define substrait_ReadRel_DEFAULT NULL
 #define substrait_ReadRel_common_MSGTYPE substrait_RelCommon
 #define substrait_ReadRel_base_schema_MSGTYPE substrait_NamedStruct
@@ -480,50 +468,50 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
 #define substrait_ReadRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_ReadRel_NamedTable_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, STRING,   names,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_ReadRel_NamedTable_CALLBACK NULL
+X(a, CALLBACK, REPEATED, STRING,   names,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_ReadRel_NamedTable_CALLBACK pb_default_field_callback
 #define substrait_ReadRel_NamedTable_DEFAULT NULL
 #define substrait_ReadRel_NamedTable_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_ReadRel_VirtualTable_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  values,            1)
-#define substrait_ReadRel_VirtualTable_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  values,            1)
+#define substrait_ReadRel_VirtualTable_CALLBACK pb_default_field_callback
 #define substrait_ReadRel_VirtualTable_DEFAULT NULL
 #define substrait_ReadRel_VirtualTable_values_MSGTYPE substrait_Expression_Literal_Struct
 
 #define substrait_ReadRel_ExtensionTable_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  detail,            1)
-#define substrait_ReadRel_ExtensionTable_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  detail,            1)
+#define substrait_ReadRel_ExtensionTable_CALLBACK pb_default_field_callback
 #define substrait_ReadRel_ExtensionTable_DEFAULT NULL
 #define substrait_ReadRel_ExtensionTable_detail_MSGTYPE substrait_Any
 
 #define substrait_ReadRel_LocalFiles_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  items,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_ReadRel_LocalFiles_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  items,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_ReadRel_LocalFiles_CALLBACK pb_default_field_callback
 #define substrait_ReadRel_LocalFiles_DEFAULT NULL
 #define substrait_ReadRel_LocalFiles_items_MSGTYPE substrait_ReadRel_LocalFiles_FileOrFiles
 #define substrait_ReadRel_LocalFiles_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_ReadRel_LocalFiles_FileOrFiles_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    STRING,   (path_type,uri_path,path_type.uri_path),   1) \
-X(a, POINTER,  ONEOF,    STRING,   (path_type,uri_path_glob,path_type.uri_path_glob),   2) \
-X(a, POINTER,  ONEOF,    STRING,   (path_type,uri_file,path_type.uri_file),   3) \
-X(a, POINTER,  ONEOF,    STRING,   (path_type,uri_folder,path_type.uri_folder),   4) \
-X(a, POINTER,  SINGULAR, UENUM,    format,            5) \
-X(a, POINTER,  SINGULAR, UINT64,   partition_index,   6) \
-X(a, POINTER,  SINGULAR, UINT64,   start,             7) \
-X(a, POINTER,  SINGULAR, UINT64,   length,            8)
-#define substrait_ReadRel_LocalFiles_FileOrFiles_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    STRING,   (path_type,uri_path,path_type.uri_path),   1) \
+X(a, CALLBACK, ONEOF,    STRING,   (path_type,uri_path_glob,path_type.uri_path_glob),   2) \
+X(a, CALLBACK, ONEOF,    STRING,   (path_type,uri_file,path_type.uri_file),   3) \
+X(a, CALLBACK, ONEOF,    STRING,   (path_type,uri_folder,path_type.uri_folder),   4) \
+X(a, CALLBACK, SINGULAR, UENUM,    format,            5) \
+X(a, CALLBACK, SINGULAR, UINT64,   partition_index,   6) \
+X(a, CALLBACK, SINGULAR, UINT64,   start,             7) \
+X(a, CALLBACK, SINGULAR, UINT64,   length,            8)
+#define substrait_ReadRel_LocalFiles_FileOrFiles_CALLBACK pb_default_field_callback
 #define substrait_ReadRel_LocalFiles_FileOrFiles_DEFAULT NULL
 
 #define substrait_ProjectRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             2) \
-X(a, POINTER,  REPEATED, MESSAGE,  expressions,       3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_ProjectRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  expressions,       3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_ProjectRel_CALLBACK pb_default_field_callback
 #define substrait_ProjectRel_DEFAULT NULL
 #define substrait_ProjectRel_common_MSGTYPE substrait_RelCommon
 #define substrait_ProjectRel_input_MSGTYPE substrait_Rel
@@ -531,14 +519,14 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
 #define substrait_ProjectRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_JoinRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  left,              2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  right,             3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  expression,        4) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  post_join_filter,   5) \
-X(a, POINTER,  SINGULAR, UENUM,    type,              6) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_JoinRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  left,              2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  right,             3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  expression,        4) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  post_join_filter,   5) \
+X(a, CALLBACK, SINGULAR, UENUM,    type,              6) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_JoinRel_CALLBACK pb_default_field_callback
 #define substrait_JoinRel_DEFAULT NULL
 #define substrait_JoinRel_common_MSGTYPE substrait_RelCommon
 #define substrait_JoinRel_left_MSGTYPE substrait_Rel
@@ -548,24 +536,24 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
 #define substrait_JoinRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_FetchRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             2) \
-X(a, POINTER,  SINGULAR, INT64,    offset,            3) \
-X(a, POINTER,  SINGULAR, INT64,    count,             4) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_FetchRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             2) \
+X(a, CALLBACK, SINGULAR, INT64,    offset,            3) \
+X(a, CALLBACK, SINGULAR, INT64,    count,             4) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_FetchRel_CALLBACK pb_default_field_callback
 #define substrait_FetchRel_DEFAULT NULL
 #define substrait_FetchRel_common_MSGTYPE substrait_RelCommon
 #define substrait_FetchRel_input_MSGTYPE substrait_Rel
 #define substrait_FetchRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_AggregateRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             2) \
-X(a, POINTER,  REPEATED, MESSAGE,  groupings,         3) \
-X(a, POINTER,  REPEATED, MESSAGE,  measures,          4) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_AggregateRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  groupings,         3) \
+X(a, CALLBACK, REPEATED, MESSAGE,  measures,          4) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_AggregateRel_CALLBACK pb_default_field_callback
 #define substrait_AggregateRel_DEFAULT NULL
 #define substrait_AggregateRel_common_MSGTYPE substrait_RelCommon
 #define substrait_AggregateRel_input_MSGTYPE substrait_Rel
@@ -574,25 +562,25 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
 #define substrait_AggregateRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_AggregateRel_Grouping_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  grouping_expressions,   1)
-#define substrait_AggregateRel_Grouping_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  grouping_expressions,   1)
+#define substrait_AggregateRel_Grouping_CALLBACK pb_default_field_callback
 #define substrait_AggregateRel_Grouping_DEFAULT NULL
 #define substrait_AggregateRel_Grouping_grouping_expressions_MSGTYPE substrait_Expression
 
 #define substrait_AggregateRel_Measure_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  measure,           1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  filter,            2)
-#define substrait_AggregateRel_Measure_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  measure,           1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  filter,            2)
+#define substrait_AggregateRel_Measure_CALLBACK pb_default_field_callback
 #define substrait_AggregateRel_Measure_DEFAULT NULL
 #define substrait_AggregateRel_Measure_measure_MSGTYPE substrait_AggregateFunction
 #define substrait_AggregateRel_Measure_filter_MSGTYPE substrait_Expression
 
 #define substrait_SortRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             2) \
-X(a, POINTER,  REPEATED, MESSAGE,  sorts,             3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_SortRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  sorts,             3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_SortRel_CALLBACK pb_default_field_callback
 #define substrait_SortRel_DEFAULT NULL
 #define substrait_SortRel_common_MSGTYPE substrait_RelCommon
 #define substrait_SortRel_input_MSGTYPE substrait_Rel
@@ -600,11 +588,11 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
 #define substrait_SortRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_FilterRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  condition,         3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_FilterRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  condition,         3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_FilterRel_CALLBACK pb_default_field_callback
 #define substrait_FilterRel_DEFAULT NULL
 #define substrait_FilterRel_common_MSGTYPE substrait_RelCommon
 #define substrait_FilterRel_input_MSGTYPE substrait_Rel
@@ -612,64 +600,64 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
 #define substrait_FilterRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_SetRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  REPEATED, MESSAGE,  inputs,            2) \
-X(a, POINTER,  SINGULAR, UENUM,    op,                3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
-#define substrait_SetRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  inputs,            2) \
+X(a, CALLBACK, SINGULAR, UENUM,    op,                3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_SetRel_CALLBACK pb_default_field_callback
 #define substrait_SetRel_DEFAULT NULL
 #define substrait_SetRel_common_MSGTYPE substrait_RelCommon
 #define substrait_SetRel_inputs_MSGTYPE substrait_Rel
 #define substrait_SetRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
 
 #define substrait_ExtensionSingleRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  detail,            3)
-#define substrait_ExtensionSingleRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  detail,            3)
+#define substrait_ExtensionSingleRel_CALLBACK pb_default_field_callback
 #define substrait_ExtensionSingleRel_DEFAULT NULL
 #define substrait_ExtensionSingleRel_common_MSGTYPE substrait_RelCommon
 #define substrait_ExtensionSingleRel_input_MSGTYPE substrait_Rel
 #define substrait_ExtensionSingleRel_detail_MSGTYPE substrait_Any
 
 #define substrait_ExtensionLeafRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  detail,            2)
-#define substrait_ExtensionLeafRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  detail,            2)
+#define substrait_ExtensionLeafRel_CALLBACK pb_default_field_callback
 #define substrait_ExtensionLeafRel_DEFAULT NULL
 #define substrait_ExtensionLeafRel_common_MSGTYPE substrait_RelCommon
 #define substrait_ExtensionLeafRel_detail_MSGTYPE substrait_Any
 
 #define substrait_ExtensionMultiRel_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
-X(a, POINTER,  REPEATED, MESSAGE,  inputs,            2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  detail,            3)
-#define substrait_ExtensionMultiRel_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  common,            1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  inputs,            2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  detail,            3)
+#define substrait_ExtensionMultiRel_CALLBACK pb_default_field_callback
 #define substrait_ExtensionMultiRel_DEFAULT NULL
 #define substrait_ExtensionMultiRel_common_MSGTYPE substrait_RelCommon
 #define substrait_ExtensionMultiRel_inputs_MSGTYPE substrait_Rel
 #define substrait_ExtensionMultiRel_detail_MSGTYPE substrait_Any
 
 #define substrait_RelRoot_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             1) \
-X(a, POINTER,  REPEATED, STRING,   names,             2)
-#define substrait_RelRoot_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             1) \
+X(a, CALLBACK, REPEATED, STRING,   names,             2)
+#define substrait_RelRoot_CALLBACK pb_default_field_callback
 #define substrait_RelRoot_DEFAULT NULL
 #define substrait_RelRoot_input_MSGTYPE substrait_Rel
 
 #define substrait_Rel_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,read,rel_type.read),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,filter,rel_type.filter),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,fetch,rel_type.fetch),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,aggregate,rel_type.aggregate),   4) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,sort,rel_type.sort),   5) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,join,rel_type.join),   6) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,project,rel_type.project),   7) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,set,rel_type.set),   8) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,extension_single,rel_type.extension_single),   9) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,extension_multi,rel_type.extension_multi),  10) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,extension_leaf,rel_type.extension_leaf),  11)
-#define substrait_Rel_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,read,rel_type.read),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,filter,rel_type.filter),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,fetch,rel_type.fetch),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,aggregate,rel_type.aggregate),   4) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,sort,rel_type.sort),   5) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,join,rel_type.join),   6) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,project,rel_type.project),   7) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,set,rel_type.set),   8) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,extension_single,rel_type.extension_single),   9) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,extension_multi,rel_type.extension_multi),  10) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,extension_leaf,rel_type.extension_leaf),  11)
+#define substrait_Rel_CALLBACK pb_default_field_callback
 #define substrait_Rel_DEFAULT NULL
 #define substrait_Rel_rel_type_read_MSGTYPE substrait_ReadRel
 #define substrait_Rel_rel_type_filter_MSGTYPE substrait_FilterRel

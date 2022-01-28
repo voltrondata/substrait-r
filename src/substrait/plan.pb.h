@@ -16,23 +16,19 @@
  For compactness sake, identifiers are normalized at the plan level. */
 typedef struct _substrait_Plan { 
     /* a list of yaml specifications this plan may depend on */
-    pb_size_t extension_uris_count;
-    struct _substrait_extensions_SimpleExtensionURI *extension_uris; 
+    pb_callback_t extension_uris; 
     /* a list of extensions this plan may depend on */
-    pb_size_t extensions_count;
-    struct _substrait_extensions_SimpleExtensionDeclaration *extensions; 
+    pb_callback_t extensions; 
     /* one or more relation trees that are associated with this plan. */
-    pb_size_t relations_count;
-    struct _substrait_PlanRel *relations; 
+    pb_callback_t relations; 
     /* additional extensions associated with this plan. */
-    struct _substrait_extensions_AdvancedExtension *advanced_extensions; 
+    pb_callback_t advanced_extensions; 
     /* A list of com.google.Any entities that this plan may use. Can be used to
  warn if some embedded message types are unknown. Note that this list may
  include message types that are ignorable (optimizations) or that are
  unused. In many cases, a consumer may be able to work with a plan even if
  one or more message types defined here are unknown. */
-    pb_size_t expected_type_urls_count;
-    char **expected_type_urls; 
+    pb_callback_t expected_type_urls; 
 } substrait_Plan;
 
 /* Either a relation or root relation */
@@ -40,8 +36,8 @@ typedef struct _substrait_PlanRel {
     /* Any relation */
     pb_size_t which_rel_type;
     union {
-        struct _substrait_Rel *rel;
-        struct _substrait_RelRoot *root;
+        pb_callback_t rel;
+        pb_callback_t root;
     } rel_type; 
 } substrait_PlanRel;
 
@@ -51,10 +47,10 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_PlanRel_init_default           {0, {NULL}}
-#define substrait_Plan_init_default              {0, NULL, 0, NULL, 0, NULL, NULL, 0, NULL}
-#define substrait_PlanRel_init_zero              {0, {NULL}}
-#define substrait_Plan_init_zero                 {0, NULL, 0, NULL, 0, NULL, NULL, 0, NULL}
+#define substrait_PlanRel_init_default           {0, {{{NULL}, NULL}}}
+#define substrait_Plan_init_default              {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_PlanRel_init_zero              {0, {{{NULL}, NULL}}}
+#define substrait_Plan_init_zero                 {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_Plan_extension_uris_tag        1
@@ -67,20 +63,20 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_PlanRel_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,rel,rel_type.rel),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,root,rel_type.root),   2)
-#define substrait_PlanRel_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,rel,rel_type.rel),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rel_type,root,rel_type.root),   2)
+#define substrait_PlanRel_CALLBACK pb_default_field_callback
 #define substrait_PlanRel_DEFAULT NULL
 #define substrait_PlanRel_rel_type_rel_MSGTYPE substrait_Rel
 #define substrait_PlanRel_rel_type_root_MSGTYPE substrait_RelRoot
 
 #define substrait_Plan_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  extension_uris,    1) \
-X(a, POINTER,  REPEATED, MESSAGE,  extensions,        2) \
-X(a, POINTER,  REPEATED, MESSAGE,  relations,         3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extensions,   4) \
-X(a, POINTER,  REPEATED, STRING,   expected_type_urls,   5)
-#define substrait_Plan_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  extension_uris,    1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  extensions,        2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  relations,         3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  advanced_extensions,   4) \
+X(a, CALLBACK, REPEATED, STRING,   expected_type_urls,   5)
+#define substrait_Plan_CALLBACK pb_default_field_callback
 #define substrait_Plan_DEFAULT NULL
 #define substrait_Plan_extension_uris_MSGTYPE substrait_extensions_SimpleExtensionURI
 #define substrait_Plan_extensions_MSGTYPE substrait_extensions_SimpleExtensionDeclaration

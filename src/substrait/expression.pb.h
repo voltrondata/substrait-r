@@ -30,64 +30,59 @@ typedef enum _substrait_SortField_SortDirection {
 
 /* Struct definitions */
 typedef struct _substrait_AggregateFunction { 
-    uint32_t *function_reference; 
-    pb_size_t args_count;
-    struct _substrait_Expression *args; 
-    pb_size_t sorts_count;
-    struct _substrait_SortField *sorts; 
-    substrait_AggregationPhase *phase; 
-    struct _substrait_Type *output_type; 
+    pb_callback_t function_reference; 
+    pb_callback_t args; 
+    pb_callback_t sorts; 
+    pb_callback_t phase; 
+    pb_callback_t output_type; 
 } substrait_AggregateFunction;
 
 typedef struct _substrait_Expression { 
     pb_size_t which_rex_type;
     union {
-        struct _substrait_Expression_Literal *literal;
-        struct _substrait_Expression_FieldReference *selection;
-        struct _substrait_Expression_ScalarFunction *scalar_function;
-        struct _substrait_Expression_WindowFunction *window_function;
-        struct _substrait_Expression_IfThen *if_then;
-        struct _substrait_Expression_SwitchExpression *switch_expression;
-        struct _substrait_Expression_SingularOrList *singular_or_list;
-        struct _substrait_Expression_MultiOrList *multi_or_list;
-        struct _substrait_Expression_Enum *enum_;
-        struct _substrait_Expression_Cast *cast;
+        pb_callback_t literal;
+        pb_callback_t selection;
+        pb_callback_t scalar_function;
+        pb_callback_t window_function;
+        pb_callback_t if_then;
+        pb_callback_t switch_expression;
+        pb_callback_t singular_or_list;
+        pb_callback_t multi_or_list;
+        pb_callback_t enum_;
+        pb_callback_t cast;
     } rex_type; 
 } substrait_Expression;
 
 typedef struct _substrait_Expression_Cast { 
-    struct _substrait_Type *type; 
-    struct _substrait_Expression *input; 
+    pb_callback_t type; 
+    pb_callback_t input; 
 } substrait_Expression_Cast;
 
 typedef struct _substrait_Expression_EmbeddedFunction { 
-    pb_size_t arguments_count;
-    struct _substrait_Expression *arguments; 
-    struct _substrait_Type *output_type; 
+    pb_callback_t arguments; 
+    pb_callback_t output_type; 
     pb_size_t which_kind;
     union {
-        struct _substrait_Expression_EmbeddedFunction_PythonPickleFunction *python_pickle_function;
-        struct _substrait_Expression_EmbeddedFunction_WebAssemblyFunction *web_assembly_function;
+        pb_callback_t python_pickle_function;
+        pb_callback_t web_assembly_function;
     } kind; 
 } substrait_Expression_EmbeddedFunction;
 
 typedef struct _substrait_Expression_EmbeddedFunction_PythonPickleFunction { 
-    pb_bytes_array_t *function; 
-    pb_size_t prerequisite_count;
-    char **prerequisite; 
+    pb_callback_t function; 
+    pb_callback_t prerequisite; 
 } substrait_Expression_EmbeddedFunction_PythonPickleFunction;
 
 typedef struct _substrait_Expression_EmbeddedFunction_WebAssemblyFunction { 
-    pb_bytes_array_t *script; 
-    pb_size_t prerequisite_count;
-    char **prerequisite; 
+    pb_callback_t script; 
+    pb_callback_t prerequisite; 
 } substrait_Expression_EmbeddedFunction_WebAssemblyFunction;
 
 typedef struct _substrait_Expression_Enum { 
     pb_size_t which_enum_kind;
     union {
-        char *specified;
-        struct _substrait_Expression_Enum_Empty *unspecified;
+        pb_callback_t specified;
+        pb_callback_t unspecified;
     } enum_kind; 
 } substrait_Expression_Enum;
 
@@ -98,13 +93,13 @@ typedef struct _substrait_Expression_Enum_Empty {
 typedef struct _substrait_Expression_FieldReference { 
     pb_size_t which_reference_type;
     union {
-        struct _substrait_Expression_ReferenceSegment *direct_reference;
-        struct _substrait_Expression_MaskExpression *masked_reference;
+        pb_callback_t direct_reference;
+        pb_callback_t masked_reference;
     } reference_type; 
     pb_size_t which_root_type;
     union {
-        struct _substrait_Expression *expression;
-        struct _substrait_Expression_FieldReference_RootReference *root_reference;
+        pb_callback_t expression;
+        pb_callback_t root_reference;
     } root_type; 
 } substrait_Expression_FieldReference;
 
@@ -113,235 +108,220 @@ typedef struct _substrait_Expression_FieldReference_RootReference {
 } substrait_Expression_FieldReference_RootReference;
 
 typedef struct _substrait_Expression_IfThen { 
-    pb_size_t ifs_count;
-    struct _substrait_Expression_IfThen_IfClause *ifs; 
-    struct _substrait_Expression *else_; 
+    pb_callback_t ifs; 
+    pb_callback_t else_; 
 } substrait_Expression_IfThen;
 
 typedef struct _substrait_Expression_IfThen_IfClause { 
-    struct _substrait_Expression *if_; 
-    struct _substrait_Expression *then; 
+    pb_callback_t if_; 
+    pb_callback_t then; 
 } substrait_Expression_IfThen_IfClause;
 
 typedef struct _substrait_Expression_Literal { 
     pb_size_t which_literal_type;
     union {
-        bool *boolean;
-        int32_t *i8;
-        int32_t *i16;
-        int32_t *i32;
-        int64_t *i64;
-        float *fp32;
-        double *fp64;
-        char *string;
-        pb_bytes_array_t *binary;
-        int64_t *timestamp;
-        int32_t *date;
-        int64_t *time;
-        struct _substrait_Expression_Literal_IntervalYearToMonth *interval_year_to_month;
-        struct _substrait_Expression_Literal_IntervalDayToSecond *interval_day_to_second;
-        char *fixed_char;
-        struct _substrait_Expression_Literal_VarChar *var_char;
-        pb_bytes_array_t *fixed_binary;
-        struct _substrait_Expression_Literal_Decimal *decimal;
-        struct _substrait_Expression_Literal_Struct *struct_;
-        struct _substrait_Expression_Literal_Map *map;
-        int64_t *timestamp_tz;
-        pb_bytes_array_t *uuid;
-        struct _substrait_Type *null;
-        struct _substrait_Expression_Literal_List *list;
-        struct _substrait_Type_List *empty_list;
-        struct _substrait_Type_Map *empty_map;
+        pb_callback_t boolean;
+        pb_callback_t i8;
+        pb_callback_t i16;
+        pb_callback_t i32;
+        pb_callback_t i64;
+        pb_callback_t fp32;
+        pb_callback_t fp64;
+        pb_callback_t string;
+        pb_callback_t binary;
+        pb_callback_t timestamp;
+        pb_callback_t date;
+        pb_callback_t time;
+        pb_callback_t interval_year_to_month;
+        pb_callback_t interval_day_to_second;
+        pb_callback_t fixed_char;
+        pb_callback_t var_char;
+        pb_callback_t fixed_binary;
+        pb_callback_t decimal;
+        pb_callback_t struct_;
+        pb_callback_t map;
+        pb_callback_t timestamp_tz;
+        pb_callback_t uuid;
+        pb_callback_t null;
+        pb_callback_t list;
+        pb_callback_t empty_list;
+        pb_callback_t empty_map;
     } literal_type; 
-    bool *nullable; 
+    pb_callback_t nullable; 
 } substrait_Expression_Literal;
 
 typedef struct _substrait_Expression_Literal_Decimal { 
-    pb_bytes_array_t *value; 
-    int32_t *precision; 
-    int32_t *scale; 
+    pb_callback_t value; 
+    pb_callback_t precision; 
+    pb_callback_t scale; 
 } substrait_Expression_Literal_Decimal;
 
 typedef struct _substrait_Expression_Literal_IntervalDayToSecond { 
-    int32_t *days; 
-    int32_t *seconds; 
+    pb_callback_t days; 
+    pb_callback_t seconds; 
 } substrait_Expression_Literal_IntervalDayToSecond;
 
 typedef struct _substrait_Expression_Literal_IntervalYearToMonth { 
-    int32_t *years; 
-    int32_t *months; 
+    pb_callback_t years; 
+    pb_callback_t months; 
 } substrait_Expression_Literal_IntervalYearToMonth;
 
 typedef struct _substrait_Expression_Literal_List { 
-    pb_size_t values_count;
-    struct _substrait_Expression_Literal *values; 
+    pb_callback_t values; 
 } substrait_Expression_Literal_List;
 
 typedef struct _substrait_Expression_Literal_Map { 
-    pb_size_t key_values_count;
-    struct _substrait_Expression_Literal_Map_KeyValue *key_values; 
+    pb_callback_t key_values; 
 } substrait_Expression_Literal_Map;
 
 typedef struct _substrait_Expression_Literal_Map_KeyValue { 
-    struct _substrait_Expression_Literal *key; 
-    struct _substrait_Expression_Literal *value; 
+    pb_callback_t key; 
+    pb_callback_t value; 
 } substrait_Expression_Literal_Map_KeyValue;
 
 typedef struct _substrait_Expression_Literal_Struct { 
-    pb_size_t fields_count;
-    struct _substrait_Expression_Literal *fields; 
+    pb_callback_t fields; 
 } substrait_Expression_Literal_Struct;
 
 typedef struct _substrait_Expression_Literal_VarChar { 
-    char *value; 
-    uint32_t *length; 
+    pb_callback_t value; 
+    pb_callback_t length; 
 } substrait_Expression_Literal_VarChar;
 
 typedef struct _substrait_Expression_MaskExpression { 
-    struct _substrait_Expression_MaskExpression_StructSelect *select; 
-    bool *maintain_singular_struct; 
+    pb_callback_t select; 
+    pb_callback_t maintain_singular_struct; 
 } substrait_Expression_MaskExpression;
 
 typedef struct _substrait_Expression_MaskExpression_ListSelect { 
-    pb_size_t selection_count;
-    struct _substrait_Expression_MaskExpression_ListSelect_ListSelectItem *selection; 
-    struct _substrait_Expression_MaskExpression_Select *child; 
+    pb_callback_t selection; 
+    pb_callback_t child; 
 } substrait_Expression_MaskExpression_ListSelect;
 
 typedef struct _substrait_Expression_MaskExpression_ListSelect_ListSelectItem { 
     pb_size_t which_type;
     union {
-        struct _substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement *item;
-        struct _substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice *slice;
+        pb_callback_t item;
+        pb_callback_t slice;
     } type; 
 } substrait_Expression_MaskExpression_ListSelect_ListSelectItem;
 
 typedef struct _substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement { 
-    int32_t *field; 
+    pb_callback_t field; 
 } substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement;
 
 typedef struct _substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice { 
-    int32_t *start; 
-    int32_t *end; 
+    pb_callback_t start; 
+    pb_callback_t end; 
 } substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice;
 
 typedef struct _substrait_Expression_MaskExpression_MapSelect { 
     pb_size_t which_select;
     union {
-        struct _substrait_Expression_MaskExpression_MapSelect_MapKey *key;
-        struct _substrait_Expression_MaskExpression_MapSelect_MapKeyExpression *expression;
+        pb_callback_t key;
+        pb_callback_t expression;
     } select; 
-    struct _substrait_Expression_MaskExpression_Select *child; 
+    pb_callback_t child; 
 } substrait_Expression_MaskExpression_MapSelect;
 
 typedef struct _substrait_Expression_MaskExpression_MapSelect_MapKey { 
-    char *map_key; 
+    pb_callback_t map_key; 
 } substrait_Expression_MaskExpression_MapSelect_MapKey;
 
 typedef struct _substrait_Expression_MaskExpression_MapSelect_MapKeyExpression { 
-    char *map_key_expression; 
+    pb_callback_t map_key_expression; 
 } substrait_Expression_MaskExpression_MapSelect_MapKeyExpression;
 
 typedef struct _substrait_Expression_MaskExpression_Select { 
     pb_size_t which_type;
     union {
-        struct _substrait_Expression_MaskExpression_StructSelect *struct_;
-        struct _substrait_Expression_MaskExpression_ListSelect *list;
-        struct _substrait_Expression_MaskExpression_MapSelect *map;
+        pb_callback_t struct_;
+        pb_callback_t list;
+        pb_callback_t map;
     } type; 
 } substrait_Expression_MaskExpression_Select;
 
 typedef struct _substrait_Expression_MaskExpression_StructItem { 
-    int32_t *field; 
-    struct _substrait_Expression_MaskExpression_Select *child; 
+    pb_callback_t field; 
+    pb_callback_t child; 
 } substrait_Expression_MaskExpression_StructItem;
 
 typedef struct _substrait_Expression_MaskExpression_StructSelect { 
-    pb_size_t struct_items_count;
-    struct _substrait_Expression_MaskExpression_StructItem *struct_items; 
+    pb_callback_t struct_items; 
 } substrait_Expression_MaskExpression_StructSelect;
 
 typedef struct _substrait_Expression_MultiOrList { 
-    pb_size_t value_count;
-    struct _substrait_Expression *value; 
-    pb_size_t options_count;
-    struct _substrait_Expression_MultiOrList_Record *options; 
+    pb_callback_t value; 
+    pb_callback_t options; 
 } substrait_Expression_MultiOrList;
 
 typedef struct _substrait_Expression_MultiOrList_Record { 
-    pb_size_t fields_count;
-    struct _substrait_Expression *fields; 
+    pb_callback_t fields; 
 } substrait_Expression_MultiOrList_Record;
 
 typedef struct _substrait_Expression_ReferenceSegment { 
     pb_size_t which_reference_type;
     union {
-        struct _substrait_Expression_ReferenceSegment_MapKey *map_key;
-        struct _substrait_Expression_ReferenceSegment_StructField *struct_field;
-        struct _substrait_Expression_ReferenceSegment_ListElement *list_element;
+        pb_callback_t map_key;
+        pb_callback_t struct_field;
+        pb_callback_t list_element;
     } reference_type; 
 } substrait_Expression_ReferenceSegment;
 
 typedef struct _substrait_Expression_ReferenceSegment_ListElement { 
-    int32_t *offset; 
-    struct _substrait_Expression_ReferenceSegment *child; 
+    pb_callback_t offset; 
+    pb_callback_t child; 
 } substrait_Expression_ReferenceSegment_ListElement;
 
 typedef struct _substrait_Expression_ReferenceSegment_MapKey { 
-    struct _substrait_Expression_Literal *map_key; 
-    struct _substrait_Expression_ReferenceSegment *child; 
+    pb_callback_t map_key; 
+    pb_callback_t child; 
 } substrait_Expression_ReferenceSegment_MapKey;
 
 typedef struct _substrait_Expression_ReferenceSegment_StructField { 
-    int32_t *field; 
-    struct _substrait_Expression_ReferenceSegment *child; 
+    pb_callback_t field; 
+    pb_callback_t child; 
 } substrait_Expression_ReferenceSegment_StructField;
 
 typedef struct _substrait_Expression_ScalarFunction { 
-    uint32_t *function_reference; 
-    pb_size_t args_count;
-    struct _substrait_Expression *args; 
-    struct _substrait_Type *output_type; 
+    pb_callback_t function_reference; 
+    pb_callback_t args; 
+    pb_callback_t output_type; 
 } substrait_Expression_ScalarFunction;
 
 typedef struct _substrait_Expression_SingularOrList { 
-    struct _substrait_Expression *value; 
-    pb_size_t options_count;
-    struct _substrait_Expression *options; 
+    pb_callback_t value; 
+    pb_callback_t options; 
 } substrait_Expression_SingularOrList;
 
 typedef struct _substrait_Expression_SwitchExpression { 
-    pb_size_t ifs_count;
-    struct _substrait_Expression_SwitchExpression_IfValue *ifs; 
-    struct _substrait_Expression *else_; 
+    pb_callback_t ifs; 
+    pb_callback_t else_; 
 } substrait_Expression_SwitchExpression;
 
 typedef struct _substrait_Expression_SwitchExpression_IfValue { 
-    struct _substrait_Expression_Literal *if_; 
-    struct _substrait_Expression *then; 
+    pb_callback_t if_; 
+    pb_callback_t then; 
 } substrait_Expression_SwitchExpression_IfValue;
 
 typedef struct _substrait_Expression_WindowFunction { 
-    uint32_t *function_reference; 
-    pb_size_t partitions_count;
-    struct _substrait_Expression *partitions; 
-    pb_size_t sorts_count;
-    struct _substrait_SortField *sorts; 
-    struct _substrait_Expression_WindowFunction_Bound *upper_bound; 
-    struct _substrait_Expression_WindowFunction_Bound *lower_bound; 
-    substrait_AggregationPhase *phase; 
-    struct _substrait_Type *output_type; 
-    pb_size_t args_count;
-    struct _substrait_Expression *args; 
+    pb_callback_t function_reference; 
+    pb_callback_t partitions; 
+    pb_callback_t sorts; 
+    pb_callback_t upper_bound; 
+    pb_callback_t lower_bound; 
+    pb_callback_t phase; 
+    pb_callback_t output_type; 
+    pb_callback_t args; 
 } substrait_Expression_WindowFunction;
 
 typedef struct _substrait_Expression_WindowFunction_Bound { 
     pb_size_t which_kind;
     union {
-        struct _substrait_Expression_WindowFunction_Bound_Preceding *preceding;
-        struct _substrait_Expression_WindowFunction_Bound_Following *following;
-        struct _substrait_Expression_WindowFunction_Bound_CurrentRow *current_row;
-        struct _substrait_Expression_WindowFunction_Bound_Unbounded *unbounded;
+        pb_callback_t preceding;
+        pb_callback_t following;
+        pb_callback_t current_row;
+        pb_callback_t unbounded;
     } kind; 
 } substrait_Expression_WindowFunction_Bound;
 
@@ -350,11 +330,11 @@ typedef struct _substrait_Expression_WindowFunction_Bound_CurrentRow {
 } substrait_Expression_WindowFunction_Bound_CurrentRow;
 
 typedef struct _substrait_Expression_WindowFunction_Bound_Following { 
-    int64_t *offset; 
+    pb_callback_t offset; 
 } substrait_Expression_WindowFunction_Bound_Following;
 
 typedef struct _substrait_Expression_WindowFunction_Bound_Preceding { 
-    int64_t *offset; 
+    pb_callback_t offset; 
 } substrait_Expression_WindowFunction_Bound_Preceding;
 
 typedef struct _substrait_Expression_WindowFunction_Bound_Unbounded { 
@@ -362,11 +342,11 @@ typedef struct _substrait_Expression_WindowFunction_Bound_Unbounded {
 } substrait_Expression_WindowFunction_Bound_Unbounded;
 
 typedef struct _substrait_SortField { 
-    struct _substrait_Expression *expr; 
+    pb_callback_t expr; 
     pb_size_t which_sort_kind;
     union {
-        substrait_SortField_SortDirection *direction;
-        uint32_t *comparison_function_reference;
+        pb_callback_t direction;
+        pb_callback_t comparison_function_reference;
     } sort_kind; 
 } substrait_SortField;
 
@@ -386,104 +366,104 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_Expression_init_default        {0, {NULL}}
-#define substrait_Expression_Enum_init_default   {0, {NULL}}
+#define substrait_Expression_init_default        {0, {{{NULL}, NULL}}}
+#define substrait_Expression_Enum_init_default   {0, {{{NULL}, NULL}}}
 #define substrait_Expression_Enum_Empty_init_default {0}
-#define substrait_Expression_Literal_init_default {0, {NULL}, NULL}
-#define substrait_Expression_Literal_VarChar_init_default {NULL, NULL}
-#define substrait_Expression_Literal_Decimal_init_default {NULL, NULL, NULL}
-#define substrait_Expression_Literal_Map_init_default {0, NULL}
-#define substrait_Expression_Literal_Map_KeyValue_init_default {NULL, NULL}
-#define substrait_Expression_Literal_IntervalYearToMonth_init_default {NULL, NULL}
-#define substrait_Expression_Literal_IntervalDayToSecond_init_default {NULL, NULL}
-#define substrait_Expression_Literal_Struct_init_default {0, NULL}
-#define substrait_Expression_Literal_List_init_default {0, NULL}
-#define substrait_Expression_ScalarFunction_init_default {NULL, 0, NULL, NULL}
-#define substrait_Expression_WindowFunction_init_default {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL}
-#define substrait_Expression_WindowFunction_Bound_init_default {0, {NULL}}
-#define substrait_Expression_WindowFunction_Bound_Preceding_init_default {NULL}
-#define substrait_Expression_WindowFunction_Bound_Following_init_default {NULL}
+#define substrait_Expression_Literal_init_default {0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_VarChar_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_Decimal_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_Map_init_default {{{NULL}, NULL}}
+#define substrait_Expression_Literal_Map_KeyValue_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_IntervalYearToMonth_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_IntervalDayToSecond_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_Struct_init_default {{{NULL}, NULL}}
+#define substrait_Expression_Literal_List_init_default {{{NULL}, NULL}}
+#define substrait_Expression_ScalarFunction_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_WindowFunction_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_WindowFunction_Bound_init_default {0, {{{NULL}, NULL}}}
+#define substrait_Expression_WindowFunction_Bound_Preceding_init_default {{{NULL}, NULL}}
+#define substrait_Expression_WindowFunction_Bound_Following_init_default {{{NULL}, NULL}}
 #define substrait_Expression_WindowFunction_Bound_CurrentRow_init_default {0}
 #define substrait_Expression_WindowFunction_Bound_Unbounded_init_default {0}
-#define substrait_Expression_IfThen_init_default {0, NULL, NULL}
-#define substrait_Expression_IfThen_IfClause_init_default {NULL, NULL}
-#define substrait_Expression_Cast_init_default   {NULL, NULL}
-#define substrait_Expression_SwitchExpression_init_default {0, NULL, NULL}
-#define substrait_Expression_SwitchExpression_IfValue_init_default {NULL, NULL}
-#define substrait_Expression_SingularOrList_init_default {NULL, 0, NULL}
-#define substrait_Expression_MultiOrList_init_default {0, NULL, 0, NULL}
-#define substrait_Expression_MultiOrList_Record_init_default {0, NULL}
-#define substrait_Expression_EmbeddedFunction_init_default {0, NULL, NULL, 0, {NULL}}
-#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_init_default {NULL, 0, NULL}
-#define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_init_default {NULL, 0, NULL}
-#define substrait_Expression_ReferenceSegment_init_default {0, {NULL}}
-#define substrait_Expression_ReferenceSegment_MapKey_init_default {NULL, NULL}
-#define substrait_Expression_ReferenceSegment_StructField_init_default {NULL, NULL}
-#define substrait_Expression_ReferenceSegment_ListElement_init_default {NULL, NULL}
-#define substrait_Expression_MaskExpression_init_default {NULL, NULL}
-#define substrait_Expression_MaskExpression_Select_init_default {0, {NULL}}
-#define substrait_Expression_MaskExpression_StructSelect_init_default {0, NULL}
-#define substrait_Expression_MaskExpression_StructItem_init_default {NULL, NULL}
-#define substrait_Expression_MaskExpression_ListSelect_init_default {0, NULL, NULL}
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_init_default {0, {NULL}}
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_init_default {NULL}
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_init_default {NULL, NULL}
-#define substrait_Expression_MaskExpression_MapSelect_init_default {0, {NULL}, NULL}
-#define substrait_Expression_MaskExpression_MapSelect_MapKey_init_default {NULL}
-#define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_init_default {NULL}
-#define substrait_Expression_FieldReference_init_default {0, {NULL}, 0, {NULL}}
+#define substrait_Expression_IfThen_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_IfThen_IfClause_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Cast_init_default   {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_SwitchExpression_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_SwitchExpression_IfValue_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_SingularOrList_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MultiOrList_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MultiOrList_Record_init_default {{{NULL}, NULL}}
+#define substrait_Expression_EmbeddedFunction_init_default {{{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_ReferenceSegment_init_default {0, {{{NULL}, NULL}}}
+#define substrait_Expression_ReferenceSegment_MapKey_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_ReferenceSegment_StructField_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_ReferenceSegment_ListElement_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_Select_init_default {0, {{{NULL}, NULL}}}
+#define substrait_Expression_MaskExpression_StructSelect_init_default {{{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_StructItem_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_ListSelect_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_init_default {0, {{{NULL}, NULL}}}
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_init_default {{{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_MapSelect_init_default {0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_MapSelect_MapKey_init_default {{{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_init_default {{{NULL}, NULL}}
+#define substrait_Expression_FieldReference_init_default {0, {{{NULL}, NULL}}, 0, {{{NULL}, NULL}}}
 #define substrait_Expression_FieldReference_RootReference_init_default {0}
-#define substrait_SortField_init_default         {NULL, 0, {NULL}}
-#define substrait_AggregateFunction_init_default {NULL, 0, NULL, 0, NULL, NULL, NULL}
-#define substrait_Expression_init_zero           {0, {NULL}}
-#define substrait_Expression_Enum_init_zero      {0, {NULL}}
+#define substrait_SortField_init_default         {{{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_AggregateFunction_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_init_zero           {0, {{{NULL}, NULL}}}
+#define substrait_Expression_Enum_init_zero      {0, {{{NULL}, NULL}}}
 #define substrait_Expression_Enum_Empty_init_zero {0}
-#define substrait_Expression_Literal_init_zero   {0, {NULL}, NULL}
-#define substrait_Expression_Literal_VarChar_init_zero {NULL, NULL}
-#define substrait_Expression_Literal_Decimal_init_zero {NULL, NULL, NULL}
-#define substrait_Expression_Literal_Map_init_zero {0, NULL}
-#define substrait_Expression_Literal_Map_KeyValue_init_zero {NULL, NULL}
-#define substrait_Expression_Literal_IntervalYearToMonth_init_zero {NULL, NULL}
-#define substrait_Expression_Literal_IntervalDayToSecond_init_zero {NULL, NULL}
-#define substrait_Expression_Literal_Struct_init_zero {0, NULL}
-#define substrait_Expression_Literal_List_init_zero {0, NULL}
-#define substrait_Expression_ScalarFunction_init_zero {NULL, 0, NULL, NULL}
-#define substrait_Expression_WindowFunction_init_zero {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL}
-#define substrait_Expression_WindowFunction_Bound_init_zero {0, {NULL}}
-#define substrait_Expression_WindowFunction_Bound_Preceding_init_zero {NULL}
-#define substrait_Expression_WindowFunction_Bound_Following_init_zero {NULL}
+#define substrait_Expression_Literal_init_zero   {0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_VarChar_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_Decimal_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_Map_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_Literal_Map_KeyValue_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_IntervalYearToMonth_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_IntervalDayToSecond_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Literal_Struct_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_Literal_List_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_ScalarFunction_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_WindowFunction_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_WindowFunction_Bound_init_zero {0, {{{NULL}, NULL}}}
+#define substrait_Expression_WindowFunction_Bound_Preceding_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_WindowFunction_Bound_Following_init_zero {{{NULL}, NULL}}
 #define substrait_Expression_WindowFunction_Bound_CurrentRow_init_zero {0}
 #define substrait_Expression_WindowFunction_Bound_Unbounded_init_zero {0}
-#define substrait_Expression_IfThen_init_zero    {0, NULL, NULL}
-#define substrait_Expression_IfThen_IfClause_init_zero {NULL, NULL}
-#define substrait_Expression_Cast_init_zero      {NULL, NULL}
-#define substrait_Expression_SwitchExpression_init_zero {0, NULL, NULL}
-#define substrait_Expression_SwitchExpression_IfValue_init_zero {NULL, NULL}
-#define substrait_Expression_SingularOrList_init_zero {NULL, 0, NULL}
-#define substrait_Expression_MultiOrList_init_zero {0, NULL, 0, NULL}
-#define substrait_Expression_MultiOrList_Record_init_zero {0, NULL}
-#define substrait_Expression_EmbeddedFunction_init_zero {0, NULL, NULL, 0, {NULL}}
-#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_init_zero {NULL, 0, NULL}
-#define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_init_zero {NULL, 0, NULL}
-#define substrait_Expression_ReferenceSegment_init_zero {0, {NULL}}
-#define substrait_Expression_ReferenceSegment_MapKey_init_zero {NULL, NULL}
-#define substrait_Expression_ReferenceSegment_StructField_init_zero {NULL, NULL}
-#define substrait_Expression_ReferenceSegment_ListElement_init_zero {NULL, NULL}
-#define substrait_Expression_MaskExpression_init_zero {NULL, NULL}
-#define substrait_Expression_MaskExpression_Select_init_zero {0, {NULL}}
-#define substrait_Expression_MaskExpression_StructSelect_init_zero {0, NULL}
-#define substrait_Expression_MaskExpression_StructItem_init_zero {NULL, NULL}
-#define substrait_Expression_MaskExpression_ListSelect_init_zero {0, NULL, NULL}
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_init_zero {0, {NULL}}
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_init_zero {NULL}
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_init_zero {NULL, NULL}
-#define substrait_Expression_MaskExpression_MapSelect_init_zero {0, {NULL}, NULL}
-#define substrait_Expression_MaskExpression_MapSelect_MapKey_init_zero {NULL}
-#define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_init_zero {NULL}
-#define substrait_Expression_FieldReference_init_zero {0, {NULL}, 0, {NULL}}
+#define substrait_Expression_IfThen_init_zero    {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_IfThen_IfClause_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_Cast_init_zero      {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_SwitchExpression_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_SwitchExpression_IfValue_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_SingularOrList_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MultiOrList_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MultiOrList_Record_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_EmbeddedFunction_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_ReferenceSegment_init_zero {0, {{{NULL}, NULL}}}
+#define substrait_Expression_ReferenceSegment_MapKey_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_ReferenceSegment_StructField_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_ReferenceSegment_ListElement_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_Select_init_zero {0, {{{NULL}, NULL}}}
+#define substrait_Expression_MaskExpression_StructSelect_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_StructItem_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_ListSelect_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_init_zero {0, {{{NULL}, NULL}}}
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_MapSelect_init_zero {0, {{{NULL}, NULL}}, {{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_MapSelect_MapKey_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_init_zero {{{NULL}, NULL}}
+#define substrait_Expression_FieldReference_init_zero {0, {{{NULL}, NULL}}, 0, {{{NULL}, NULL}}}
 #define substrait_Expression_FieldReference_RootReference_init_zero {0}
-#define substrait_SortField_init_zero            {NULL, 0, {NULL}}
-#define substrait_AggregateFunction_init_zero    {NULL, 0, NULL, 0, NULL, NULL, NULL}
+#define substrait_SortField_init_zero            {{{NULL}, NULL}, 0, {{{NULL}, NULL}}}
+#define substrait_AggregateFunction_init_zero    {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_AggregateFunction_function_reference_tag 1
@@ -623,17 +603,17 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_Expression_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,literal,rex_type.literal),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,selection,rex_type.selection),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,scalar_function,rex_type.scalar_function),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,window_function,rex_type.window_function),   5) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,if_then,rex_type.if_then),   6) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,switch_expression,rex_type.switch_expression),   7) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,singular_or_list,rex_type.singular_or_list),   8) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,multi_or_list,rex_type.multi_or_list),   9) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,enum_,rex_type.enum_),  10) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,cast,rex_type.cast),  11)
-#define substrait_Expression_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,literal,rex_type.literal),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,selection,rex_type.selection),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,scalar_function,rex_type.scalar_function),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,window_function,rex_type.window_function),   5) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,if_then,rex_type.if_then),   6) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,switch_expression,rex_type.switch_expression),   7) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,singular_or_list,rex_type.singular_or_list),   8) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,multi_or_list,rex_type.multi_or_list),   9) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,enum_,rex_type.enum_),  10) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (rex_type,cast,rex_type.cast),  11)
+#define substrait_Expression_CALLBACK pb_default_field_callback
 #define substrait_Expression_DEFAULT NULL
 #define substrait_Expression_rex_type_literal_MSGTYPE substrait_Expression_Literal
 #define substrait_Expression_rex_type_selection_MSGTYPE substrait_Expression_FieldReference
@@ -647,9 +627,9 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,cast,rex_type.cast),  11)
 #define substrait_Expression_rex_type_cast_MSGTYPE substrait_Expression_Cast
 
 #define substrait_Expression_Enum_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    STRING,   (enum_kind,specified,enum_kind.specified),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (enum_kind,unspecified,enum_kind.unspecified),   2)
-#define substrait_Expression_Enum_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    STRING,   (enum_kind,specified,enum_kind.specified),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (enum_kind,unspecified,enum_kind.unspecified),   2)
+#define substrait_Expression_Enum_CALLBACK pb_default_field_callback
 #define substrait_Expression_Enum_DEFAULT NULL
 #define substrait_Expression_Enum_enum_kind_unspecified_MSGTYPE substrait_Expression_Enum_Empty
 
@@ -659,34 +639,34 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (enum_kind,unspecified,enum_kind.unspecified)
 #define substrait_Expression_Enum_Empty_DEFAULT NULL
 
 #define substrait_Expression_Literal_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    BOOL,     (literal_type,boolean,literal_type.boolean),   1) \
-X(a, POINTER,  ONEOF,    INT32,    (literal_type,i8,literal_type.i8),   2) \
-X(a, POINTER,  ONEOF,    INT32,    (literal_type,i16,literal_type.i16),   3) \
-X(a, POINTER,  ONEOF,    INT32,    (literal_type,i32,literal_type.i32),   5) \
-X(a, POINTER,  ONEOF,    INT64,    (literal_type,i64,literal_type.i64),   7) \
-X(a, POINTER,  ONEOF,    FLOAT,    (literal_type,fp32,literal_type.fp32),  10) \
-X(a, POINTER,  ONEOF,    DOUBLE,   (literal_type,fp64,literal_type.fp64),  11) \
-X(a, POINTER,  ONEOF,    STRING,   (literal_type,string,literal_type.string),  12) \
-X(a, POINTER,  ONEOF,    BYTES,    (literal_type,binary,literal_type.binary),  13) \
-X(a, POINTER,  ONEOF,    INT64,    (literal_type,timestamp,literal_type.timestamp),  14) \
-X(a, POINTER,  ONEOF,    INT32,    (literal_type,date,literal_type.date),  16) \
-X(a, POINTER,  ONEOF,    INT64,    (literal_type,time,literal_type.time),  17) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,interval_year_to_month,literal_type.interval_year_to_month),  19) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,interval_day_to_second,literal_type.interval_day_to_second),  20) \
-X(a, POINTER,  ONEOF,    STRING,   (literal_type,fixed_char,literal_type.fixed_char),  21) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,var_char,literal_type.var_char),  22) \
-X(a, POINTER,  ONEOF,    BYTES,    (literal_type,fixed_binary,literal_type.fixed_binary),  23) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,decimal,literal_type.decimal),  24) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,struct_,literal_type.struct_),  25) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,map,literal_type.map),  26) \
-X(a, POINTER,  ONEOF,    INT64,    (literal_type,timestamp_tz,literal_type.timestamp_tz),  27) \
-X(a, POINTER,  ONEOF,    BYTES,    (literal_type,uuid,literal_type.uuid),  28) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,null,literal_type.null),  29) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,list,literal_type.list),  30) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,empty_list,literal_type.empty_list),  31) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (literal_type,empty_map,literal_type.empty_map),  32) \
-X(a, POINTER,  SINGULAR, BOOL,     nullable,         50)
-#define substrait_Expression_Literal_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    BOOL,     (literal_type,boolean,literal_type.boolean),   1) \
+X(a, CALLBACK, ONEOF,    INT32,    (literal_type,i8,literal_type.i8),   2) \
+X(a, CALLBACK, ONEOF,    INT32,    (literal_type,i16,literal_type.i16),   3) \
+X(a, CALLBACK, ONEOF,    INT32,    (literal_type,i32,literal_type.i32),   5) \
+X(a, CALLBACK, ONEOF,    INT64,    (literal_type,i64,literal_type.i64),   7) \
+X(a, CALLBACK, ONEOF,    FLOAT,    (literal_type,fp32,literal_type.fp32),  10) \
+X(a, CALLBACK, ONEOF,    DOUBLE,   (literal_type,fp64,literal_type.fp64),  11) \
+X(a, CALLBACK, ONEOF,    STRING,   (literal_type,string,literal_type.string),  12) \
+X(a, CALLBACK, ONEOF,    BYTES,    (literal_type,binary,literal_type.binary),  13) \
+X(a, CALLBACK, ONEOF,    INT64,    (literal_type,timestamp,literal_type.timestamp),  14) \
+X(a, CALLBACK, ONEOF,    INT32,    (literal_type,date,literal_type.date),  16) \
+X(a, CALLBACK, ONEOF,    INT64,    (literal_type,time,literal_type.time),  17) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,interval_year_to_month,literal_type.interval_year_to_month),  19) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,interval_day_to_second,literal_type.interval_day_to_second),  20) \
+X(a, CALLBACK, ONEOF,    STRING,   (literal_type,fixed_char,literal_type.fixed_char),  21) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,var_char,literal_type.var_char),  22) \
+X(a, CALLBACK, ONEOF,    BYTES,    (literal_type,fixed_binary,literal_type.fixed_binary),  23) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,decimal,literal_type.decimal),  24) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,struct_,literal_type.struct_),  25) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,map,literal_type.map),  26) \
+X(a, CALLBACK, ONEOF,    INT64,    (literal_type,timestamp_tz,literal_type.timestamp_tz),  27) \
+X(a, CALLBACK, ONEOF,    BYTES,    (literal_type,uuid,literal_type.uuid),  28) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,null,literal_type.null),  29) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,list,literal_type.list),  30) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,empty_list,literal_type.empty_list),  31) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (literal_type,empty_map,literal_type.empty_map),  32) \
+X(a, CALLBACK, SINGULAR, BOOL,     nullable,         50)
+#define substrait_Expression_Literal_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_DEFAULT NULL
 #define substrait_Expression_Literal_literal_type_interval_year_to_month_MSGTYPE substrait_Expression_Literal_IntervalYearToMonth
 #define substrait_Expression_Literal_literal_type_interval_day_to_second_MSGTYPE substrait_Expression_Literal_IntervalDayToSecond
@@ -700,75 +680,75 @@ X(a, POINTER,  SINGULAR, BOOL,     nullable,         50)
 #define substrait_Expression_Literal_literal_type_empty_map_MSGTYPE substrait_Type_Map
 
 #define substrait_Expression_Literal_VarChar_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   value,             1) \
-X(a, POINTER,  SINGULAR, UINT32,   length,            2)
-#define substrait_Expression_Literal_VarChar_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   value,             1) \
+X(a, CALLBACK, SINGULAR, UINT32,   length,            2)
+#define substrait_Expression_Literal_VarChar_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_VarChar_DEFAULT NULL
 
 #define substrait_Expression_Literal_Decimal_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, BYTES,    value,             1) \
-X(a, POINTER,  SINGULAR, INT32,    precision,         2) \
-X(a, POINTER,  SINGULAR, INT32,    scale,             3)
-#define substrait_Expression_Literal_Decimal_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, BYTES,    value,             1) \
+X(a, CALLBACK, SINGULAR, INT32,    precision,         2) \
+X(a, CALLBACK, SINGULAR, INT32,    scale,             3)
+#define substrait_Expression_Literal_Decimal_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_Decimal_DEFAULT NULL
 
 #define substrait_Expression_Literal_Map_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  key_values,        1)
-#define substrait_Expression_Literal_Map_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  key_values,        1)
+#define substrait_Expression_Literal_Map_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_Map_DEFAULT NULL
 #define substrait_Expression_Literal_Map_key_values_MSGTYPE substrait_Expression_Literal_Map_KeyValue
 
 #define substrait_Expression_Literal_Map_KeyValue_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  key,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  value,             2)
-#define substrait_Expression_Literal_Map_KeyValue_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  key,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  value,             2)
+#define substrait_Expression_Literal_Map_KeyValue_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_Map_KeyValue_DEFAULT NULL
 #define substrait_Expression_Literal_Map_KeyValue_key_MSGTYPE substrait_Expression_Literal
 #define substrait_Expression_Literal_Map_KeyValue_value_MSGTYPE substrait_Expression_Literal
 
 #define substrait_Expression_Literal_IntervalYearToMonth_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    years,             1) \
-X(a, POINTER,  SINGULAR, INT32,    months,            2)
-#define substrait_Expression_Literal_IntervalYearToMonth_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    years,             1) \
+X(a, CALLBACK, SINGULAR, INT32,    months,            2)
+#define substrait_Expression_Literal_IntervalYearToMonth_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_IntervalYearToMonth_DEFAULT NULL
 
 #define substrait_Expression_Literal_IntervalDayToSecond_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    days,              1) \
-X(a, POINTER,  SINGULAR, INT32,    seconds,           2)
-#define substrait_Expression_Literal_IntervalDayToSecond_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    days,              1) \
+X(a, CALLBACK, SINGULAR, INT32,    seconds,           2)
+#define substrait_Expression_Literal_IntervalDayToSecond_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_IntervalDayToSecond_DEFAULT NULL
 
 #define substrait_Expression_Literal_Struct_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  fields,            1)
-#define substrait_Expression_Literal_Struct_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  fields,            1)
+#define substrait_Expression_Literal_Struct_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_Struct_DEFAULT NULL
 #define substrait_Expression_Literal_Struct_fields_MSGTYPE substrait_Expression_Literal
 
 #define substrait_Expression_Literal_List_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  values,            1)
-#define substrait_Expression_Literal_List_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  values,            1)
+#define substrait_Expression_Literal_List_CALLBACK pb_default_field_callback
 #define substrait_Expression_Literal_List_DEFAULT NULL
 #define substrait_Expression_Literal_List_values_MSGTYPE substrait_Expression_Literal
 
 #define substrait_Expression_ScalarFunction_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   function_reference,   1) \
-X(a, POINTER,  REPEATED, MESSAGE,  args,              2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       3)
-#define substrait_Expression_ScalarFunction_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   function_reference,   1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  args,              2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  output_type,       3)
+#define substrait_Expression_ScalarFunction_CALLBACK pb_default_field_callback
 #define substrait_Expression_ScalarFunction_DEFAULT NULL
 #define substrait_Expression_ScalarFunction_args_MSGTYPE substrait_Expression
 #define substrait_Expression_ScalarFunction_output_type_MSGTYPE substrait_Type
 
 #define substrait_Expression_WindowFunction_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   function_reference,   1) \
-X(a, POINTER,  REPEATED, MESSAGE,  partitions,        2) \
-X(a, POINTER,  REPEATED, MESSAGE,  sorts,             3) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  upper_bound,       4) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  lower_bound,       5) \
-X(a, POINTER,  SINGULAR, UENUM,    phase,             6) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       7) \
-X(a, POINTER,  REPEATED, MESSAGE,  args,              8)
-#define substrait_Expression_WindowFunction_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   function_reference,   1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  partitions,        2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  sorts,             3) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  upper_bound,       4) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  lower_bound,       5) \
+X(a, CALLBACK, SINGULAR, UENUM,    phase,             6) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  output_type,       7) \
+X(a, CALLBACK, REPEATED, MESSAGE,  args,              8)
+#define substrait_Expression_WindowFunction_CALLBACK pb_default_field_callback
 #define substrait_Expression_WindowFunction_DEFAULT NULL
 #define substrait_Expression_WindowFunction_partitions_MSGTYPE substrait_Expression
 #define substrait_Expression_WindowFunction_sorts_MSGTYPE substrait_SortField
@@ -778,11 +758,11 @@ X(a, POINTER,  REPEATED, MESSAGE,  args,              8)
 #define substrait_Expression_WindowFunction_args_MSGTYPE substrait_Expression
 
 #define substrait_Expression_WindowFunction_Bound_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,preceding,kind.preceding),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,following,kind.following),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,current_row,kind.current_row),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,unbounded,kind.unbounded),   4)
-#define substrait_Expression_WindowFunction_Bound_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,preceding,kind.preceding),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,following,kind.following),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,current_row,kind.current_row),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,unbounded,kind.unbounded),   4)
+#define substrait_Expression_WindowFunction_Bound_CALLBACK pb_default_field_callback
 #define substrait_Expression_WindowFunction_Bound_DEFAULT NULL
 #define substrait_Expression_WindowFunction_Bound_kind_preceding_MSGTYPE substrait_Expression_WindowFunction_Bound_Preceding
 #define substrait_Expression_WindowFunction_Bound_kind_following_MSGTYPE substrait_Expression_WindowFunction_Bound_Following
@@ -790,13 +770,13 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (kind,unbounded,kind.unbounded),   4)
 #define substrait_Expression_WindowFunction_Bound_kind_unbounded_MSGTYPE substrait_Expression_WindowFunction_Bound_Unbounded
 
 #define substrait_Expression_WindowFunction_Bound_Preceding_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT64,    offset,            1)
-#define substrait_Expression_WindowFunction_Bound_Preceding_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT64,    offset,            1)
+#define substrait_Expression_WindowFunction_Bound_Preceding_CALLBACK pb_default_field_callback
 #define substrait_Expression_WindowFunction_Bound_Preceding_DEFAULT NULL
 
 #define substrait_Expression_WindowFunction_Bound_Following_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT64,    offset,            1)
-#define substrait_Expression_WindowFunction_Bound_Following_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT64,    offset,            1)
+#define substrait_Expression_WindowFunction_Bound_Following_CALLBACK pb_default_field_callback
 #define substrait_Expression_WindowFunction_Bound_Following_DEFAULT NULL
 
 #define substrait_Expression_WindowFunction_Bound_CurrentRow_FIELDLIST(X, a) \
@@ -810,73 +790,73 @@ X(a, POINTER,  SINGULAR, INT64,    offset,            1)
 #define substrait_Expression_WindowFunction_Bound_Unbounded_DEFAULT NULL
 
 #define substrait_Expression_IfThen_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  ifs,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  else_,             2)
-#define substrait_Expression_IfThen_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  ifs,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  else_,             2)
+#define substrait_Expression_IfThen_CALLBACK pb_default_field_callback
 #define substrait_Expression_IfThen_DEFAULT NULL
 #define substrait_Expression_IfThen_ifs_MSGTYPE substrait_Expression_IfThen_IfClause
 #define substrait_Expression_IfThen_else__MSGTYPE substrait_Expression
 
 #define substrait_Expression_IfThen_IfClause_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  if_,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  then,              2)
-#define substrait_Expression_IfThen_IfClause_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  if_,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  then,              2)
+#define substrait_Expression_IfThen_IfClause_CALLBACK pb_default_field_callback
 #define substrait_Expression_IfThen_IfClause_DEFAULT NULL
 #define substrait_Expression_IfThen_IfClause_if__MSGTYPE substrait_Expression
 #define substrait_Expression_IfThen_IfClause_then_MSGTYPE substrait_Expression
 
 #define substrait_Expression_Cast_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  type,              1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  input,             2)
-#define substrait_Expression_Cast_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  type,              1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  input,             2)
+#define substrait_Expression_Cast_CALLBACK pb_default_field_callback
 #define substrait_Expression_Cast_DEFAULT NULL
 #define substrait_Expression_Cast_type_MSGTYPE substrait_Type
 #define substrait_Expression_Cast_input_MSGTYPE substrait_Expression
 
 #define substrait_Expression_SwitchExpression_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  ifs,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  else_,             2)
-#define substrait_Expression_SwitchExpression_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  ifs,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  else_,             2)
+#define substrait_Expression_SwitchExpression_CALLBACK pb_default_field_callback
 #define substrait_Expression_SwitchExpression_DEFAULT NULL
 #define substrait_Expression_SwitchExpression_ifs_MSGTYPE substrait_Expression_SwitchExpression_IfValue
 #define substrait_Expression_SwitchExpression_else__MSGTYPE substrait_Expression
 
 #define substrait_Expression_SwitchExpression_IfValue_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  if_,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  then,              2)
-#define substrait_Expression_SwitchExpression_IfValue_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  if_,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  then,              2)
+#define substrait_Expression_SwitchExpression_IfValue_CALLBACK pb_default_field_callback
 #define substrait_Expression_SwitchExpression_IfValue_DEFAULT NULL
 #define substrait_Expression_SwitchExpression_IfValue_if__MSGTYPE substrait_Expression_Literal
 #define substrait_Expression_SwitchExpression_IfValue_then_MSGTYPE substrait_Expression
 
 #define substrait_Expression_SingularOrList_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  value,             1) \
-X(a, POINTER,  REPEATED, MESSAGE,  options,           2)
-#define substrait_Expression_SingularOrList_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  value,             1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  options,           2)
+#define substrait_Expression_SingularOrList_CALLBACK pb_default_field_callback
 #define substrait_Expression_SingularOrList_DEFAULT NULL
 #define substrait_Expression_SingularOrList_value_MSGTYPE substrait_Expression
 #define substrait_Expression_SingularOrList_options_MSGTYPE substrait_Expression
 
 #define substrait_Expression_MultiOrList_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  value,             1) \
-X(a, POINTER,  REPEATED, MESSAGE,  options,           2)
-#define substrait_Expression_MultiOrList_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  value,             1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  options,           2)
+#define substrait_Expression_MultiOrList_CALLBACK pb_default_field_callback
 #define substrait_Expression_MultiOrList_DEFAULT NULL
 #define substrait_Expression_MultiOrList_value_MSGTYPE substrait_Expression
 #define substrait_Expression_MultiOrList_options_MSGTYPE substrait_Expression_MultiOrList_Record
 
 #define substrait_Expression_MultiOrList_Record_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  fields,            1)
-#define substrait_Expression_MultiOrList_Record_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  fields,            1)
+#define substrait_Expression_MultiOrList_Record_CALLBACK pb_default_field_callback
 #define substrait_Expression_MultiOrList_Record_DEFAULT NULL
 #define substrait_Expression_MultiOrList_Record_fields_MSGTYPE substrait_Expression
 
 #define substrait_Expression_EmbeddedFunction_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  arguments,         1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,python_pickle_function,kind.python_pickle_function),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,web_assembly_function,kind.web_assembly_function),   4)
-#define substrait_Expression_EmbeddedFunction_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  arguments,         1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  output_type,       2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,python_pickle_function,kind.python_pickle_function),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,web_assembly_function,kind.web_assembly_function),   4)
+#define substrait_Expression_EmbeddedFunction_CALLBACK pb_default_field_callback
 #define substrait_Expression_EmbeddedFunction_DEFAULT NULL
 #define substrait_Expression_EmbeddedFunction_arguments_MSGTYPE substrait_Expression
 #define substrait_Expression_EmbeddedFunction_output_type_MSGTYPE substrait_Type
@@ -884,132 +864,132 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (kind,web_assembly_function,kind.web_assembly
 #define substrait_Expression_EmbeddedFunction_kind_web_assembly_function_MSGTYPE substrait_Expression_EmbeddedFunction_WebAssemblyFunction
 
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, BYTES,    function,          1) \
-X(a, POINTER,  REPEATED, STRING,   prerequisite,      2)
-#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, BYTES,    function,          1) \
+X(a, CALLBACK, REPEATED, STRING,   prerequisite,      2)
+#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_CALLBACK pb_default_field_callback
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_DEFAULT NULL
 
 #define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, BYTES,    script,            1) \
-X(a, POINTER,  REPEATED, STRING,   prerequisite,      2)
-#define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, BYTES,    script,            1) \
+X(a, CALLBACK, REPEATED, STRING,   prerequisite,      2)
+#define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_CALLBACK pb_default_field_callback
 #define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_DEFAULT NULL
 
 #define substrait_Expression_ReferenceSegment_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (reference_type,map_key,reference_type.map_key),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (reference_type,struct_field,reference_type.struct_field),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (reference_type,list_element,reference_type.list_element),   3)
-#define substrait_Expression_ReferenceSegment_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (reference_type,map_key,reference_type.map_key),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (reference_type,struct_field,reference_type.struct_field),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (reference_type,list_element,reference_type.list_element),   3)
+#define substrait_Expression_ReferenceSegment_CALLBACK pb_default_field_callback
 #define substrait_Expression_ReferenceSegment_DEFAULT NULL
 #define substrait_Expression_ReferenceSegment_reference_type_map_key_MSGTYPE substrait_Expression_ReferenceSegment_MapKey
 #define substrait_Expression_ReferenceSegment_reference_type_struct_field_MSGTYPE substrait_Expression_ReferenceSegment_StructField
 #define substrait_Expression_ReferenceSegment_reference_type_list_element_MSGTYPE substrait_Expression_ReferenceSegment_ListElement
 
 #define substrait_Expression_ReferenceSegment_MapKey_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  map_key,           1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  child,             2)
-#define substrait_Expression_ReferenceSegment_MapKey_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  map_key,           1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  child,             2)
+#define substrait_Expression_ReferenceSegment_MapKey_CALLBACK pb_default_field_callback
 #define substrait_Expression_ReferenceSegment_MapKey_DEFAULT NULL
 #define substrait_Expression_ReferenceSegment_MapKey_map_key_MSGTYPE substrait_Expression_Literal
 #define substrait_Expression_ReferenceSegment_MapKey_child_MSGTYPE substrait_Expression_ReferenceSegment
 
 #define substrait_Expression_ReferenceSegment_StructField_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    field,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  child,             2)
-#define substrait_Expression_ReferenceSegment_StructField_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    field,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  child,             2)
+#define substrait_Expression_ReferenceSegment_StructField_CALLBACK pb_default_field_callback
 #define substrait_Expression_ReferenceSegment_StructField_DEFAULT NULL
 #define substrait_Expression_ReferenceSegment_StructField_child_MSGTYPE substrait_Expression_ReferenceSegment
 
 #define substrait_Expression_ReferenceSegment_ListElement_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    offset,            1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  child,             2)
-#define substrait_Expression_ReferenceSegment_ListElement_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    offset,            1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  child,             2)
+#define substrait_Expression_ReferenceSegment_ListElement_CALLBACK pb_default_field_callback
 #define substrait_Expression_ReferenceSegment_ListElement_DEFAULT NULL
 #define substrait_Expression_ReferenceSegment_ListElement_child_MSGTYPE substrait_Expression_ReferenceSegment
 
 #define substrait_Expression_MaskExpression_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  select,            1) \
-X(a, POINTER,  SINGULAR, BOOL,     maintain_singular_struct,   2)
-#define substrait_Expression_MaskExpression_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  select,            1) \
+X(a, CALLBACK, SINGULAR, BOOL,     maintain_singular_struct,   2)
+#define substrait_Expression_MaskExpression_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_DEFAULT NULL
 #define substrait_Expression_MaskExpression_select_MSGTYPE substrait_Expression_MaskExpression_StructSelect
 
 #define substrait_Expression_MaskExpression_Select_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (type,struct_,type.struct_),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (type,list,type.list),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (type,map,type.map),   3)
-#define substrait_Expression_MaskExpression_Select_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (type,struct_,type.struct_),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (type,list,type.list),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (type,map,type.map),   3)
+#define substrait_Expression_MaskExpression_Select_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_Select_DEFAULT NULL
 #define substrait_Expression_MaskExpression_Select_type_struct__MSGTYPE substrait_Expression_MaskExpression_StructSelect
 #define substrait_Expression_MaskExpression_Select_type_list_MSGTYPE substrait_Expression_MaskExpression_ListSelect
 #define substrait_Expression_MaskExpression_Select_type_map_MSGTYPE substrait_Expression_MaskExpression_MapSelect
 
 #define substrait_Expression_MaskExpression_StructSelect_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  struct_items,      1)
-#define substrait_Expression_MaskExpression_StructSelect_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  struct_items,      1)
+#define substrait_Expression_MaskExpression_StructSelect_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_StructSelect_DEFAULT NULL
 #define substrait_Expression_MaskExpression_StructSelect_struct_items_MSGTYPE substrait_Expression_MaskExpression_StructItem
 
 #define substrait_Expression_MaskExpression_StructItem_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    field,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  child,             2)
-#define substrait_Expression_MaskExpression_StructItem_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    field,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  child,             2)
+#define substrait_Expression_MaskExpression_StructItem_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_StructItem_DEFAULT NULL
 #define substrait_Expression_MaskExpression_StructItem_child_MSGTYPE substrait_Expression_MaskExpression_Select
 
 #define substrait_Expression_MaskExpression_ListSelect_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  selection,         1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  child,             2)
-#define substrait_Expression_MaskExpression_ListSelect_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  selection,         1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  child,             2)
+#define substrait_Expression_MaskExpression_ListSelect_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_ListSelect_DEFAULT NULL
 #define substrait_Expression_MaskExpression_ListSelect_selection_MSGTYPE substrait_Expression_MaskExpression_ListSelect_ListSelectItem
 #define substrait_Expression_MaskExpression_ListSelect_child_MSGTYPE substrait_Expression_MaskExpression_Select
 
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (type,item,type.item),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (type,slice,type.slice),   2)
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (type,item,type.item),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (type,slice,type.slice),   2)
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_DEFAULT NULL
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_type_item_MSGTYPE substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_type_slice_MSGTYPE substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice
 
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    field,             1)
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    field,             1)
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListElement_DEFAULT NULL
 
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    start,             1) \
-X(a, POINTER,  SINGULAR, INT32,    end,               2)
-#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    start,             1) \
+X(a, CALLBACK, SINGULAR, INT32,    end,               2)
+#define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_ListSlice_DEFAULT NULL
 
 #define substrait_Expression_MaskExpression_MapSelect_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (select,key,select.key),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (select,expression,select.expression),   2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  child,             3)
-#define substrait_Expression_MaskExpression_MapSelect_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (select,key,select.key),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (select,expression,select.expression),   2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  child,             3)
+#define substrait_Expression_MaskExpression_MapSelect_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_MapSelect_DEFAULT NULL
 #define substrait_Expression_MaskExpression_MapSelect_select_key_MSGTYPE substrait_Expression_MaskExpression_MapSelect_MapKey
 #define substrait_Expression_MaskExpression_MapSelect_select_expression_MSGTYPE substrait_Expression_MaskExpression_MapSelect_MapKeyExpression
 #define substrait_Expression_MaskExpression_MapSelect_child_MSGTYPE substrait_Expression_MaskExpression_Select
 
 #define substrait_Expression_MaskExpression_MapSelect_MapKey_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   map_key,           1)
-#define substrait_Expression_MaskExpression_MapSelect_MapKey_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   map_key,           1)
+#define substrait_Expression_MaskExpression_MapSelect_MapKey_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_MapSelect_MapKey_DEFAULT NULL
 
 #define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   map_key_expression,   1)
-#define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   map_key_expression,   1)
+#define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_CALLBACK pb_default_field_callback
 #define substrait_Expression_MaskExpression_MapSelect_MapKeyExpression_DEFAULT NULL
 
 #define substrait_Expression_FieldReference_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (reference_type,direct_reference,reference_type.direct_reference),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (reference_type,masked_reference,reference_type.masked_reference),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (root_type,expression,root_type.expression),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (root_type,root_reference,root_type.root_reference),   4)
-#define substrait_Expression_FieldReference_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (reference_type,direct_reference,reference_type.direct_reference),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (reference_type,masked_reference,reference_type.masked_reference),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (root_type,expression,root_type.expression),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (root_type,root_reference,root_type.root_reference),   4)
+#define substrait_Expression_FieldReference_CALLBACK pb_default_field_callback
 #define substrait_Expression_FieldReference_DEFAULT NULL
 #define substrait_Expression_FieldReference_reference_type_direct_reference_MSGTYPE substrait_Expression_ReferenceSegment
 #define substrait_Expression_FieldReference_reference_type_masked_reference_MSGTYPE substrait_Expression_MaskExpression
@@ -1022,20 +1002,20 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (root_type,root_reference,root_type.root_refe
 #define substrait_Expression_FieldReference_RootReference_DEFAULT NULL
 
 #define substrait_SortField_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  expr,              1) \
-X(a, POINTER,  ONEOF,    UENUM,    (sort_kind,direction,sort_kind.direction),   2) \
-X(a, POINTER,  ONEOF,    UINT32,   (sort_kind,comparison_function_reference,sort_kind.comparison_function_reference),   3)
-#define substrait_SortField_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  expr,              1) \
+X(a, CALLBACK, ONEOF,    UENUM,    (sort_kind,direction,sort_kind.direction),   2) \
+X(a, CALLBACK, ONEOF,    UINT32,   (sort_kind,comparison_function_reference,sort_kind.comparison_function_reference),   3)
+#define substrait_SortField_CALLBACK pb_default_field_callback
 #define substrait_SortField_DEFAULT NULL
 #define substrait_SortField_expr_MSGTYPE substrait_Expression
 
 #define substrait_AggregateFunction_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   function_reference,   1) \
-X(a, POINTER,  REPEATED, MESSAGE,  args,              2) \
-X(a, POINTER,  REPEATED, MESSAGE,  sorts,             3) \
-X(a, POINTER,  SINGULAR, UENUM,    phase,             4) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       5)
-#define substrait_AggregateFunction_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   function_reference,   1) \
+X(a, CALLBACK, REPEATED, MESSAGE,  args,              2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  sorts,             3) \
+X(a, CALLBACK, SINGULAR, UENUM,    phase,             4) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  output_type,       5)
+#define substrait_AggregateFunction_CALLBACK pb_default_field_callback
 #define substrait_AggregateFunction_DEFAULT NULL
 #define substrait_AggregateFunction_args_MSGTYPE substrait_Expression
 #define substrait_AggregateFunction_sorts_MSGTYPE substrait_SortField

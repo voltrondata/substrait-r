@@ -36,117 +36,114 @@ typedef enum _substrait_DerivationExpression_BinaryOp_BinaryOpType {
 typedef struct _substrait_DerivationExpression { 
     pb_size_t which_kind;
     union {
-        struct _substrait_Type_Boolean *bool_;
-        struct _substrait_Type_I8 *i8;
-        struct _substrait_Type_I16 *i16;
-        struct _substrait_Type_I32 *i32;
-        struct _substrait_Type_I64 *i64;
-        struct _substrait_Type_FP32 *fp32;
-        struct _substrait_Type_FP64 *fp64;
-        struct _substrait_Type_String *string;
-        struct _substrait_Type_Binary *binary;
-        struct _substrait_Type_Timestamp *timestamp;
-        struct _substrait_Type_Date *date;
-        struct _substrait_Type_Time *time;
-        struct _substrait_Type_IntervalYear *interval_year;
-        struct _substrait_Type_IntervalDay *interval_day;
-        struct _substrait_DerivationExpression_ExpressionFixedChar *fixed_char;
-        struct _substrait_DerivationExpression_ExpressionVarChar *varchar;
-        struct _substrait_DerivationExpression_ExpressionFixedBinary *fixed_binary;
-        struct _substrait_DerivationExpression_ExpressionDecimal *decimal;
-        struct _substrait_DerivationExpression_ExpressionStruct *struct_;
-        struct _substrait_DerivationExpression_ExpressionList *list;
-        struct _substrait_DerivationExpression_ExpressionMap *map;
-        struct _substrait_Type_TimestampTZ *timestamp_tz;
-        uint32_t *user_defined_pointer;
-        struct _substrait_Type_UUID *uuid;
-        char *type_parameter_name;
-        char *integer_parameter_name;
-        int32_t *integer_literal;
-        struct _substrait_DerivationExpression_UnaryOp *unary_op;
-        struct _substrait_DerivationExpression_BinaryOp *binary_op;
-        struct _substrait_DerivationExpression_IfElse *if_else;
-        struct _substrait_DerivationExpression_ReturnProgram *return_program;
+        pb_callback_t bool_;
+        pb_callback_t i8;
+        pb_callback_t i16;
+        pb_callback_t i32;
+        pb_callback_t i64;
+        pb_callback_t fp32;
+        pb_callback_t fp64;
+        pb_callback_t string;
+        pb_callback_t binary;
+        pb_callback_t timestamp;
+        pb_callback_t date;
+        pb_callback_t time;
+        pb_callback_t interval_year;
+        pb_callback_t interval_day;
+        pb_callback_t fixed_char;
+        pb_callback_t varchar;
+        pb_callback_t fixed_binary;
+        pb_callback_t decimal;
+        pb_callback_t struct_;
+        pb_callback_t list;
+        pb_callback_t map;
+        pb_callback_t timestamp_tz;
+        pb_callback_t user_defined_pointer;
+        pb_callback_t uuid;
+        pb_callback_t type_parameter_name;
+        pb_callback_t integer_parameter_name;
+        pb_callback_t integer_literal;
+        pb_callback_t unary_op;
+        pb_callback_t binary_op;
+        pb_callback_t if_else;
+        pb_callback_t return_program;
     } kind; 
 } substrait_DerivationExpression;
 
 typedef struct _substrait_DerivationExpression_BinaryOp { 
-    substrait_DerivationExpression_BinaryOp_BinaryOpType *op_type; 
-    struct _substrait_DerivationExpression *arg1; 
-    struct _substrait_DerivationExpression *arg2; 
+    pb_callback_t op_type; 
+    pb_callback_t arg1; 
+    pb_callback_t arg2; 
 } substrait_DerivationExpression_BinaryOp;
 
 typedef struct _substrait_DerivationExpression_ExpressionDecimal { 
-    struct _substrait_DerivationExpression *scale; 
-    struct _substrait_DerivationExpression *precision; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t scale; 
+    pb_callback_t precision; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_DerivationExpression_ExpressionDecimal;
 
 typedef struct _substrait_DerivationExpression_ExpressionFixedBinary { 
-    struct _substrait_DerivationExpression *length; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_DerivationExpression_ExpressionFixedBinary;
 
 typedef struct _substrait_DerivationExpression_ExpressionFixedChar { 
-    struct _substrait_DerivationExpression *length; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_DerivationExpression_ExpressionFixedChar;
 
 typedef struct _substrait_DerivationExpression_ExpressionList { 
-    struct _substrait_DerivationExpression *type; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_DerivationExpression_ExpressionList;
 
 typedef struct _substrait_DerivationExpression_ExpressionMap { 
-    struct _substrait_DerivationExpression *key; 
-    struct _substrait_DerivationExpression *value; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t key; 
+    pb_callback_t value; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_DerivationExpression_ExpressionMap;
 
 typedef struct _substrait_DerivationExpression_ExpressionNamedStruct { 
-    pb_size_t names_count;
-    char **names; 
-    struct _substrait_DerivationExpression_ExpressionStruct *struct_; 
+    pb_callback_t names; 
+    pb_callback_t struct_; 
 } substrait_DerivationExpression_ExpressionNamedStruct;
 
 typedef struct _substrait_DerivationExpression_ExpressionStruct { 
-    pb_size_t types_count;
-    struct _substrait_DerivationExpression *types; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t types; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_DerivationExpression_ExpressionStruct;
 
 typedef struct _substrait_DerivationExpression_ExpressionVarChar { 
-    struct _substrait_DerivationExpression *length; 
-    uint32_t *variation_pointer; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t variation_pointer; 
+    pb_callback_t nullability; 
 } substrait_DerivationExpression_ExpressionVarChar;
 
 typedef struct _substrait_DerivationExpression_IfElse { 
-    struct _substrait_DerivationExpression *if_condition; 
-    struct _substrait_DerivationExpression *if_return; 
-    struct _substrait_DerivationExpression *else_return; 
+    pb_callback_t if_condition; 
+    pb_callback_t if_return; 
+    pb_callback_t else_return; 
 } substrait_DerivationExpression_IfElse;
 
 typedef struct _substrait_DerivationExpression_ReturnProgram { 
-    pb_size_t assignments_count;
-    struct _substrait_DerivationExpression_ReturnProgram_Assignment *assignments; 
-    struct _substrait_DerivationExpression *final_expression; 
+    pb_callback_t assignments; 
+    pb_callback_t final_expression; 
 } substrait_DerivationExpression_ReturnProgram;
 
 typedef struct _substrait_DerivationExpression_ReturnProgram_Assignment { 
-    char *name; 
-    struct _substrait_DerivationExpression *expression; 
+    pb_callback_t name; 
+    pb_callback_t expression; 
 } substrait_DerivationExpression_ReturnProgram_Assignment;
 
 typedef struct _substrait_DerivationExpression_UnaryOp { 
-    substrait_DerivationExpression_UnaryOp_UnaryOpType *op_type; 
-    struct _substrait_DerivationExpression *arg; 
+    pb_callback_t op_type; 
+    pb_callback_t arg; 
 } substrait_DerivationExpression_UnaryOp;
 
 
@@ -165,34 +162,34 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_DerivationExpression_init_default {0, {NULL}}
-#define substrait_DerivationExpression_ExpressionFixedChar_init_default {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionVarChar_init_default {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionFixedBinary_init_default {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionDecimal_init_default {NULL, NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionStruct_init_default {0, NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionNamedStruct_init_default {0, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionList_init_default {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionMap_init_default {NULL, NULL, NULL, NULL}
-#define substrait_DerivationExpression_IfElse_init_default {NULL, NULL, NULL}
-#define substrait_DerivationExpression_UnaryOp_init_default {NULL, NULL}
-#define substrait_DerivationExpression_BinaryOp_init_default {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ReturnProgram_init_default {0, NULL, NULL}
-#define substrait_DerivationExpression_ReturnProgram_Assignment_init_default {NULL, NULL}
-#define substrait_DerivationExpression_init_zero {0, {NULL}}
-#define substrait_DerivationExpression_ExpressionFixedChar_init_zero {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionVarChar_init_zero {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionFixedBinary_init_zero {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionDecimal_init_zero {NULL, NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionStruct_init_zero {0, NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionNamedStruct_init_zero {0, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionList_init_zero {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ExpressionMap_init_zero {NULL, NULL, NULL, NULL}
-#define substrait_DerivationExpression_IfElse_init_zero {NULL, NULL, NULL}
-#define substrait_DerivationExpression_UnaryOp_init_zero {NULL, NULL}
-#define substrait_DerivationExpression_BinaryOp_init_zero {NULL, NULL, NULL}
-#define substrait_DerivationExpression_ReturnProgram_init_zero {0, NULL, NULL}
-#define substrait_DerivationExpression_ReturnProgram_Assignment_init_zero {NULL, NULL}
+#define substrait_DerivationExpression_init_default {0, {{{NULL}, NULL}}}
+#define substrait_DerivationExpression_ExpressionFixedChar_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionVarChar_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionFixedBinary_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionDecimal_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionStruct_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionNamedStruct_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionList_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionMap_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_IfElse_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_UnaryOp_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_BinaryOp_init_default {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ReturnProgram_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ReturnProgram_Assignment_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_init_zero {0, {{{NULL}, NULL}}}
+#define substrait_DerivationExpression_ExpressionFixedChar_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionVarChar_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionFixedBinary_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionDecimal_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionStruct_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionNamedStruct_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionList_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ExpressionMap_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_IfElse_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_UnaryOp_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_BinaryOp_init_zero {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ReturnProgram_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_DerivationExpression_ReturnProgram_Assignment_init_zero {{{NULL}, NULL}, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_DerivationExpression_bool__tag 1
@@ -266,38 +263,38 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_DerivationExpression_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,bool_,kind.bool_),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i8,kind.i8),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i16,kind.i16),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i32,kind.i32),   5) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i64,kind.i64),   7) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fp32,kind.fp32),  10) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fp64,kind.fp64),  11) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,string,kind.string),  12) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,binary,kind.binary),  13) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,timestamp,kind.timestamp),  14) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,date,kind.date),  16) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,time,kind.time),  17) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,interval_year,kind.interval_year),  19) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,interval_day,kind.interval_day),  20) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fixed_char,kind.fixed_char),  21) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,varchar,kind.varchar),  22) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fixed_binary,kind.fixed_binary),  23) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,decimal,kind.decimal),  24) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,struct_,kind.struct_),  25) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,list,kind.list),  27) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,map,kind.map),  28) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,timestamp_tz,kind.timestamp_tz),  29) \
-X(a, POINTER,  ONEOF,    UINT32,   (kind,user_defined_pointer,kind.user_defined_pointer),  31) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,uuid,kind.uuid),  32) \
-X(a, POINTER,  ONEOF,    STRING,   (kind,type_parameter_name,kind.type_parameter_name),  33) \
-X(a, POINTER,  ONEOF,    STRING,   (kind,integer_parameter_name,kind.integer_parameter_name),  34) \
-X(a, POINTER,  ONEOF,    INT32,    (kind,integer_literal,kind.integer_literal),  35) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,unary_op,kind.unary_op),  36) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,binary_op,kind.binary_op),  37) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,if_else,kind.if_else),  38) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,return_program,kind.return_program),  39)
-#define substrait_DerivationExpression_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,bool_,kind.bool_),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i8,kind.i8),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i16,kind.i16),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i32,kind.i32),   5) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i64,kind.i64),   7) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fp32,kind.fp32),  10) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fp64,kind.fp64),  11) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,string,kind.string),  12) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,binary,kind.binary),  13) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,timestamp,kind.timestamp),  14) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,date,kind.date),  16) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,time,kind.time),  17) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,interval_year,kind.interval_year),  19) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,interval_day,kind.interval_day),  20) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fixed_char,kind.fixed_char),  21) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,varchar,kind.varchar),  22) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fixed_binary,kind.fixed_binary),  23) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,decimal,kind.decimal),  24) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,struct_,kind.struct_),  25) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,list,kind.list),  27) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,map,kind.map),  28) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,timestamp_tz,kind.timestamp_tz),  29) \
+X(a, CALLBACK, ONEOF,    UINT32,   (kind,user_defined_pointer,kind.user_defined_pointer),  31) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,uuid,kind.uuid),  32) \
+X(a, CALLBACK, ONEOF,    STRING,   (kind,type_parameter_name,kind.type_parameter_name),  33) \
+X(a, CALLBACK, ONEOF,    STRING,   (kind,integer_parameter_name,kind.integer_parameter_name),  34) \
+X(a, CALLBACK, ONEOF,    INT32,    (kind,integer_literal,kind.integer_literal),  35) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,unary_op,kind.unary_op),  36) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,binary_op,kind.binary_op),  37) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,if_else,kind.if_else),  38) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,return_program,kind.return_program),  39)
+#define substrait_DerivationExpression_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_DEFAULT NULL
 #define substrait_DerivationExpression_kind_bool__MSGTYPE substrait_Type_Boolean
 #define substrait_DerivationExpression_kind_i8_MSGTYPE substrait_Type_I8
@@ -328,110 +325,110 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (kind,return_program,kind.return_program),  3
 #define substrait_DerivationExpression_kind_return_program_MSGTYPE substrait_DerivationExpression_ReturnProgram
 
 #define substrait_DerivationExpression_ExpressionFixedChar_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_DerivationExpression_ExpressionFixedChar_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_DerivationExpression_ExpressionFixedChar_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionFixedChar_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionFixedChar_length_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ExpressionVarChar_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_DerivationExpression_ExpressionVarChar_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_DerivationExpression_ExpressionVarChar_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionVarChar_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionVarChar_length_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ExpressionFixedBinary_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_DerivationExpression_ExpressionFixedBinary_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_DerivationExpression_ExpressionFixedBinary_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionFixedBinary_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionFixedBinary_length_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ExpressionDecimal_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  scale,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  precision,         2) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   3) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       4)
-#define substrait_DerivationExpression_ExpressionDecimal_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  scale,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  precision,         2) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   3) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       4)
+#define substrait_DerivationExpression_ExpressionDecimal_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionDecimal_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionDecimal_scale_MSGTYPE substrait_DerivationExpression
 #define substrait_DerivationExpression_ExpressionDecimal_precision_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ExpressionStruct_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  types,             1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_DerivationExpression_ExpressionStruct_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  types,             1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_DerivationExpression_ExpressionStruct_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionStruct_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionStruct_types_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ExpressionNamedStruct_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, STRING,   names,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  struct_,           2)
-#define substrait_DerivationExpression_ExpressionNamedStruct_CALLBACK NULL
+X(a, CALLBACK, REPEATED, STRING,   names,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  struct_,           2)
+#define substrait_DerivationExpression_ExpressionNamedStruct_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionNamedStruct_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionNamedStruct_struct__MSGTYPE substrait_DerivationExpression_ExpressionStruct
 
 #define substrait_DerivationExpression_ExpressionList_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  type,              1) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_DerivationExpression_ExpressionList_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  type,              1) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_DerivationExpression_ExpressionList_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionList_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionList_type_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ExpressionMap_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  key,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  value,             2) \
-X(a, POINTER,  SINGULAR, UINT32,   variation_pointer,   3) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       4)
-#define substrait_DerivationExpression_ExpressionMap_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  key,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  value,             2) \
+X(a, CALLBACK, SINGULAR, UINT32,   variation_pointer,   3) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       4)
+#define substrait_DerivationExpression_ExpressionMap_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ExpressionMap_DEFAULT NULL
 #define substrait_DerivationExpression_ExpressionMap_key_MSGTYPE substrait_DerivationExpression
 #define substrait_DerivationExpression_ExpressionMap_value_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_IfElse_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  if_condition,      1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  if_return,         2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  else_return,       3)
-#define substrait_DerivationExpression_IfElse_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  if_condition,      1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  if_return,         2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  else_return,       3)
+#define substrait_DerivationExpression_IfElse_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_IfElse_DEFAULT NULL
 #define substrait_DerivationExpression_IfElse_if_condition_MSGTYPE substrait_DerivationExpression
 #define substrait_DerivationExpression_IfElse_if_return_MSGTYPE substrait_DerivationExpression
 #define substrait_DerivationExpression_IfElse_else_return_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_UnaryOp_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UENUM,    op_type,           1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  arg,               2)
-#define substrait_DerivationExpression_UnaryOp_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UENUM,    op_type,           1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  arg,               2)
+#define substrait_DerivationExpression_UnaryOp_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_UnaryOp_DEFAULT NULL
 #define substrait_DerivationExpression_UnaryOp_arg_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_BinaryOp_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UENUM,    op_type,           1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  arg1,              2) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  arg2,              3)
-#define substrait_DerivationExpression_BinaryOp_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UENUM,    op_type,           1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  arg1,              2) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  arg2,              3)
+#define substrait_DerivationExpression_BinaryOp_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_BinaryOp_DEFAULT NULL
 #define substrait_DerivationExpression_BinaryOp_arg1_MSGTYPE substrait_DerivationExpression
 #define substrait_DerivationExpression_BinaryOp_arg2_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ReturnProgram_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  assignments,       1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  final_expression,   2)
-#define substrait_DerivationExpression_ReturnProgram_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  assignments,       1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  final_expression,   2)
+#define substrait_DerivationExpression_ReturnProgram_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ReturnProgram_DEFAULT NULL
 #define substrait_DerivationExpression_ReturnProgram_assignments_MSGTYPE substrait_DerivationExpression_ReturnProgram_Assignment
 #define substrait_DerivationExpression_ReturnProgram_final_expression_MSGTYPE substrait_DerivationExpression
 
 #define substrait_DerivationExpression_ReturnProgram_Assignment_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, STRING,   name,              1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  expression,        2)
-#define substrait_DerivationExpression_ReturnProgram_Assignment_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, STRING,   name,              1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  expression,        2)
+#define substrait_DerivationExpression_ReturnProgram_Assignment_CALLBACK pb_default_field_callback
 #define substrait_DerivationExpression_ReturnProgram_Assignment_DEFAULT NULL
 #define substrait_DerivationExpression_ReturnProgram_Assignment_expression_MSGTYPE substrait_DerivationExpression
 

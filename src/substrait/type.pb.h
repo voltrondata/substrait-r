@@ -18,44 +18,43 @@ typedef enum _substrait_Type_Nullability {
 
 /* Struct definitions */
 typedef struct _substrait_NamedStruct { 
-    pb_size_t names_count;
-    char **names; 
-    struct _substrait_Type_Struct *struct_; 
+    pb_callback_t names; 
+    pb_callback_t struct_; 
 } substrait_NamedStruct;
 
 typedef struct _substrait_Type { 
     pb_size_t which_kind;
     union {
-        struct _substrait_Type_Boolean *bool_;
-        struct _substrait_Type_I8 *i8;
-        struct _substrait_Type_I16 *i16;
-        struct _substrait_Type_I32 *i32;
-        struct _substrait_Type_I64 *i64;
-        struct _substrait_Type_FP32 *fp32;
-        struct _substrait_Type_FP64 *fp64;
-        struct _substrait_Type_String *string;
-        struct _substrait_Type_Binary *binary;
-        struct _substrait_Type_Timestamp *timestamp;
-        struct _substrait_Type_Date *date;
-        struct _substrait_Type_Time *time;
-        struct _substrait_Type_IntervalYear *interval_year;
-        struct _substrait_Type_IntervalDay *interval_day;
-        struct _substrait_Type_FixedChar *fixed_char;
-        struct _substrait_Type_VarChar *varchar;
-        struct _substrait_Type_FixedBinary *fixed_binary;
-        struct _substrait_Type_Decimal *decimal;
-        struct _substrait_Type_Struct *struct_;
-        struct _substrait_Type_List *list;
-        struct _substrait_Type_Map *map;
-        struct _substrait_Type_TimestampTZ *timestamp_tz;
-        uint32_t *user_defined_type_reference;
-        struct _substrait_Type_UUID *uuid;
+        pb_callback_t bool_;
+        pb_callback_t i8;
+        pb_callback_t i16;
+        pb_callback_t i32;
+        pb_callback_t i64;
+        pb_callback_t fp32;
+        pb_callback_t fp64;
+        pb_callback_t string;
+        pb_callback_t binary;
+        pb_callback_t timestamp;
+        pb_callback_t date;
+        pb_callback_t time;
+        pb_callback_t interval_year;
+        pb_callback_t interval_day;
+        pb_callback_t fixed_char;
+        pb_callback_t varchar;
+        pb_callback_t fixed_binary;
+        pb_callback_t decimal;
+        pb_callback_t struct_;
+        pb_callback_t list;
+        pb_callback_t map;
+        pb_callback_t timestamp_tz;
+        pb_callback_t user_defined_type_reference;
+        pb_callback_t uuid;
     } kind; 
 } substrait_Type;
 
 typedef struct _substrait_Type_Binary { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Binary;
 
 /* A message for modeling name/type pairs.
@@ -79,123 +78,122 @@ typedef struct _substrait_Type_Binary {
  * Map keys should be traversed first, then values when producing/consuming */
 typedef struct _substrait_Type_Boolean { 
     /* list of names in dfs order */
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Boolean;
 
 typedef struct _substrait_Type_Date { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Date;
 
 typedef struct _substrait_Type_Decimal { 
-    int32_t *scale; 
-    int32_t *precision; 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t scale; 
+    pb_callback_t precision; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Decimal;
 
 typedef struct _substrait_Type_FP32 { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_FP32;
 
 typedef struct _substrait_Type_FP64 { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_FP64;
 
 typedef struct _substrait_Type_FixedBinary { 
-    int32_t *length; 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_FixedBinary;
 
 typedef struct _substrait_Type_FixedChar { 
-    int32_t *length; 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_FixedChar;
 
 typedef struct _substrait_Type_I16 { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_I16;
 
 typedef struct _substrait_Type_I32 { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_I32;
 
 typedef struct _substrait_Type_I64 { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_I64;
 
 typedef struct _substrait_Type_I8 { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_I8;
 
 typedef struct _substrait_Type_IntervalDay { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_IntervalDay;
 
 typedef struct _substrait_Type_IntervalYear { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_IntervalYear;
 
 typedef struct _substrait_Type_List { 
-    struct _substrait_Type *type; 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_List;
 
 typedef struct _substrait_Type_Map { 
-    struct _substrait_Type *key; 
-    struct _substrait_Type *value; 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t key; 
+    pb_callback_t value; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Map;
 
 typedef struct _substrait_Type_String { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_String;
 
 typedef struct _substrait_Type_Struct { 
-    pb_size_t types_count;
-    struct _substrait_Type *types; 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t types; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Struct;
 
 typedef struct _substrait_Type_Time { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Time;
 
 typedef struct _substrait_Type_Timestamp { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_Timestamp;
 
 typedef struct _substrait_Type_TimestampTZ { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_TimestampTZ;
 
 typedef struct _substrait_Type_UUID { 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_UUID;
 
 typedef struct _substrait_Type_VarChar { 
-    int32_t *length; 
-    uint32_t *type_variation_reference; 
-    substrait_Type_Nullability *nullability; 
+    pb_callback_t length; 
+    pb_callback_t type_variation_reference; 
+    pb_callback_t nullability; 
 } substrait_Type_VarChar;
 
 
@@ -210,56 +208,56 @@ extern "C" {
 #endif
 
 /* Initializer values for message structs */
-#define substrait_Type_init_default              {0, {NULL}}
-#define substrait_Type_Boolean_init_default      {NULL, NULL}
-#define substrait_Type_I8_init_default           {NULL, NULL}
-#define substrait_Type_I16_init_default          {NULL, NULL}
-#define substrait_Type_I32_init_default          {NULL, NULL}
-#define substrait_Type_I64_init_default          {NULL, NULL}
-#define substrait_Type_FP32_init_default         {NULL, NULL}
-#define substrait_Type_FP64_init_default         {NULL, NULL}
-#define substrait_Type_String_init_default       {NULL, NULL}
-#define substrait_Type_Binary_init_default       {NULL, NULL}
-#define substrait_Type_Timestamp_init_default    {NULL, NULL}
-#define substrait_Type_Date_init_default         {NULL, NULL}
-#define substrait_Type_Time_init_default         {NULL, NULL}
-#define substrait_Type_TimestampTZ_init_default  {NULL, NULL}
-#define substrait_Type_IntervalYear_init_default {NULL, NULL}
-#define substrait_Type_IntervalDay_init_default  {NULL, NULL}
-#define substrait_Type_UUID_init_default         {NULL, NULL}
-#define substrait_Type_FixedChar_init_default    {NULL, NULL, NULL}
-#define substrait_Type_VarChar_init_default      {NULL, NULL, NULL}
-#define substrait_Type_FixedBinary_init_default  {NULL, NULL, NULL}
-#define substrait_Type_Decimal_init_default      {NULL, NULL, NULL, NULL}
-#define substrait_Type_Struct_init_default       {0, NULL, NULL, NULL}
-#define substrait_Type_List_init_default         {NULL, NULL, NULL}
-#define substrait_Type_Map_init_default          {NULL, NULL, NULL, NULL}
-#define substrait_NamedStruct_init_default       {0, NULL, NULL}
-#define substrait_Type_init_zero                 {0, {NULL}}
-#define substrait_Type_Boolean_init_zero         {NULL, NULL}
-#define substrait_Type_I8_init_zero              {NULL, NULL}
-#define substrait_Type_I16_init_zero             {NULL, NULL}
-#define substrait_Type_I32_init_zero             {NULL, NULL}
-#define substrait_Type_I64_init_zero             {NULL, NULL}
-#define substrait_Type_FP32_init_zero            {NULL, NULL}
-#define substrait_Type_FP64_init_zero            {NULL, NULL}
-#define substrait_Type_String_init_zero          {NULL, NULL}
-#define substrait_Type_Binary_init_zero          {NULL, NULL}
-#define substrait_Type_Timestamp_init_zero       {NULL, NULL}
-#define substrait_Type_Date_init_zero            {NULL, NULL}
-#define substrait_Type_Time_init_zero            {NULL, NULL}
-#define substrait_Type_TimestampTZ_init_zero     {NULL, NULL}
-#define substrait_Type_IntervalYear_init_zero    {NULL, NULL}
-#define substrait_Type_IntervalDay_init_zero     {NULL, NULL}
-#define substrait_Type_UUID_init_zero            {NULL, NULL}
-#define substrait_Type_FixedChar_init_zero       {NULL, NULL, NULL}
-#define substrait_Type_VarChar_init_zero         {NULL, NULL, NULL}
-#define substrait_Type_FixedBinary_init_zero     {NULL, NULL, NULL}
-#define substrait_Type_Decimal_init_zero         {NULL, NULL, NULL, NULL}
-#define substrait_Type_Struct_init_zero          {0, NULL, NULL, NULL}
-#define substrait_Type_List_init_zero            {NULL, NULL, NULL}
-#define substrait_Type_Map_init_zero             {NULL, NULL, NULL, NULL}
-#define substrait_NamedStruct_init_zero          {0, NULL, NULL}
+#define substrait_Type_init_default              {0, {{{NULL}, NULL}}}
+#define substrait_Type_Boolean_init_default      {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I8_init_default           {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I16_init_default          {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I32_init_default          {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I64_init_default          {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FP32_init_default         {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FP64_init_default         {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_String_init_default       {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Binary_init_default       {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Timestamp_init_default    {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Date_init_default         {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Time_init_default         {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_TimestampTZ_init_default  {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_IntervalYear_init_default {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_IntervalDay_init_default  {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_UUID_init_default         {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FixedChar_init_default    {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_VarChar_init_default      {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FixedBinary_init_default  {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Decimal_init_default      {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Struct_init_default       {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_List_init_default         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Map_init_default          {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_NamedStruct_init_default       {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_init_zero                 {0, {{{NULL}, NULL}}}
+#define substrait_Type_Boolean_init_zero         {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I8_init_zero              {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I16_init_zero             {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I32_init_zero             {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_I64_init_zero             {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FP32_init_zero            {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FP64_init_zero            {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_String_init_zero          {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Binary_init_zero          {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Timestamp_init_zero       {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Date_init_zero            {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Time_init_zero            {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_TimestampTZ_init_zero     {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_IntervalYear_init_zero    {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_IntervalDay_init_zero     {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_UUID_init_zero            {{{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FixedChar_init_zero       {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_VarChar_init_zero         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_FixedBinary_init_zero     {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Decimal_init_zero         {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Struct_init_zero          {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_List_init_zero            {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_Type_Map_init_zero             {{{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define substrait_NamedStruct_init_zero          {{{NULL}, NULL}, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_NamedStruct_names_tag          1
@@ -346,31 +344,31 @@ extern "C" {
 
 /* Struct field encoding specification for nanopb */
 #define substrait_Type_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,bool_,kind.bool_),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i8,kind.i8),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i16,kind.i16),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i32,kind.i32),   5) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,i64,kind.i64),   7) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fp32,kind.fp32),  10) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fp64,kind.fp64),  11) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,string,kind.string),  12) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,binary,kind.binary),  13) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,timestamp,kind.timestamp),  14) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,date,kind.date),  16) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,time,kind.time),  17) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,interval_year,kind.interval_year),  19) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,interval_day,kind.interval_day),  20) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fixed_char,kind.fixed_char),  21) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,varchar,kind.varchar),  22) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,fixed_binary,kind.fixed_binary),  23) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,decimal,kind.decimal),  24) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,struct_,kind.struct_),  25) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,list,kind.list),  27) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,map,kind.map),  28) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,timestamp_tz,kind.timestamp_tz),  29) \
-X(a, POINTER,  ONEOF,    UINT32,   (kind,user_defined_type_reference,kind.user_defined_type_reference),  31) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,uuid,kind.uuid),  32)
-#define substrait_Type_CALLBACK NULL
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,bool_,kind.bool_),   1) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i8,kind.i8),   2) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i16,kind.i16),   3) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i32,kind.i32),   5) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,i64,kind.i64),   7) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fp32,kind.fp32),  10) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fp64,kind.fp64),  11) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,string,kind.string),  12) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,binary,kind.binary),  13) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,timestamp,kind.timestamp),  14) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,date,kind.date),  16) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,time,kind.time),  17) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,interval_year,kind.interval_year),  19) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,interval_day,kind.interval_day),  20) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fixed_char,kind.fixed_char),  21) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,varchar,kind.varchar),  22) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,fixed_binary,kind.fixed_binary),  23) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,decimal,kind.decimal),  24) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,struct_,kind.struct_),  25) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,list,kind.list),  27) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,map,kind.map),  28) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,timestamp_tz,kind.timestamp_tz),  29) \
+X(a, CALLBACK, ONEOF,    UINT32,   (kind,user_defined_type_reference,kind.user_defined_type_reference),  31) \
+X(a, CALLBACK, ONEOF,    MESSAGE,  (kind,uuid,kind.uuid),  32)
+#define substrait_Type_CALLBACK pb_default_field_callback
 #define substrait_Type_DEFAULT NULL
 #define substrait_Type_kind_bool__MSGTYPE substrait_Type_Boolean
 #define substrait_Type_kind_i8_MSGTYPE substrait_Type_I8
@@ -397,160 +395,160 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (kind,uuid,kind.uuid),  32)
 #define substrait_Type_kind_uuid_MSGTYPE substrait_Type_UUID
 
 #define substrait_Type_Boolean_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_Boolean_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_Boolean_CALLBACK pb_default_field_callback
 #define substrait_Type_Boolean_DEFAULT NULL
 
 #define substrait_Type_I8_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_I8_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_I8_CALLBACK pb_default_field_callback
 #define substrait_Type_I8_DEFAULT NULL
 
 #define substrait_Type_I16_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_I16_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_I16_CALLBACK pb_default_field_callback
 #define substrait_Type_I16_DEFAULT NULL
 
 #define substrait_Type_I32_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_I32_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_I32_CALLBACK pb_default_field_callback
 #define substrait_Type_I32_DEFAULT NULL
 
 #define substrait_Type_I64_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_I64_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_I64_CALLBACK pb_default_field_callback
 #define substrait_Type_I64_DEFAULT NULL
 
 #define substrait_Type_FP32_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_FP32_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_FP32_CALLBACK pb_default_field_callback
 #define substrait_Type_FP32_DEFAULT NULL
 
 #define substrait_Type_FP64_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_FP64_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_FP64_CALLBACK pb_default_field_callback
 #define substrait_Type_FP64_DEFAULT NULL
 
 #define substrait_Type_String_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_String_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_String_CALLBACK pb_default_field_callback
 #define substrait_Type_String_DEFAULT NULL
 
 #define substrait_Type_Binary_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_Binary_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_Binary_CALLBACK pb_default_field_callback
 #define substrait_Type_Binary_DEFAULT NULL
 
 #define substrait_Type_Timestamp_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_Timestamp_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_Timestamp_CALLBACK pb_default_field_callback
 #define substrait_Type_Timestamp_DEFAULT NULL
 
 #define substrait_Type_Date_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_Date_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_Date_CALLBACK pb_default_field_callback
 #define substrait_Type_Date_DEFAULT NULL
 
 #define substrait_Type_Time_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_Time_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_Time_CALLBACK pb_default_field_callback
 #define substrait_Type_Time_DEFAULT NULL
 
 #define substrait_Type_TimestampTZ_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_TimestampTZ_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_TimestampTZ_CALLBACK pb_default_field_callback
 #define substrait_Type_TimestampTZ_DEFAULT NULL
 
 #define substrait_Type_IntervalYear_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_IntervalYear_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_IntervalYear_CALLBACK pb_default_field_callback
 #define substrait_Type_IntervalYear_DEFAULT NULL
 
 #define substrait_Type_IntervalDay_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_IntervalDay_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_IntervalDay_CALLBACK pb_default_field_callback
 #define substrait_Type_IntervalDay_DEFAULT NULL
 
 #define substrait_Type_UUID_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   1) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       2)
-#define substrait_Type_UUID_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   1) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       2)
+#define substrait_Type_UUID_CALLBACK pb_default_field_callback
 #define substrait_Type_UUID_DEFAULT NULL
 
 #define substrait_Type_FixedChar_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_Type_FixedChar_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_Type_FixedChar_CALLBACK pb_default_field_callback
 #define substrait_Type_FixedChar_DEFAULT NULL
 
 #define substrait_Type_VarChar_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_Type_VarChar_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_Type_VarChar_CALLBACK pb_default_field_callback
 #define substrait_Type_VarChar_DEFAULT NULL
 
 #define substrait_Type_FixedBinary_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    length,            1) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_Type_FixedBinary_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    length,            1) \
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_Type_FixedBinary_CALLBACK pb_default_field_callback
 #define substrait_Type_FixedBinary_DEFAULT NULL
 
 #define substrait_Type_Decimal_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, INT32,    scale,             1) \
-X(a, POINTER,  SINGULAR, INT32,    precision,         2) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   3) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       4)
-#define substrait_Type_Decimal_CALLBACK NULL
+X(a, CALLBACK, SINGULAR, INT32,    scale,             1) \
+X(a, CALLBACK, SINGULAR, INT32,    precision,         2) \
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   3) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       4)
+#define substrait_Type_Decimal_CALLBACK pb_default_field_callback
 #define substrait_Type_Decimal_DEFAULT NULL
 
 #define substrait_Type_Struct_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, MESSAGE,  types,             1) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_Type_Struct_CALLBACK NULL
+X(a, CALLBACK, REPEATED, MESSAGE,  types,             1) \
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_Type_Struct_CALLBACK pb_default_field_callback
 #define substrait_Type_Struct_DEFAULT NULL
 #define substrait_Type_Struct_types_MSGTYPE substrait_Type
 
 #define substrait_Type_List_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  type,              1) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
-#define substrait_Type_List_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  type,              1) \
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   2) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       3)
+#define substrait_Type_List_CALLBACK pb_default_field_callback
 #define substrait_Type_List_DEFAULT NULL
 #define substrait_Type_List_type_MSGTYPE substrait_Type
 
 #define substrait_Type_Map_FIELDLIST(X, a) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  key,               1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  value,             2) \
-X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   3) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       4)
-#define substrait_Type_Map_CALLBACK NULL
+X(a, CALLBACK, OPTIONAL, MESSAGE,  key,               1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  value,             2) \
+X(a, CALLBACK, SINGULAR, UINT32,   type_variation_reference,   3) \
+X(a, CALLBACK, SINGULAR, UENUM,    nullability,       4)
+#define substrait_Type_Map_CALLBACK pb_default_field_callback
 #define substrait_Type_Map_DEFAULT NULL
 #define substrait_Type_Map_key_MSGTYPE substrait_Type
 #define substrait_Type_Map_value_MSGTYPE substrait_Type
 
 #define substrait_NamedStruct_FIELDLIST(X, a) \
-X(a, POINTER,  REPEATED, STRING,   names,             1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  struct_,           2)
-#define substrait_NamedStruct_CALLBACK NULL
+X(a, CALLBACK, REPEATED, STRING,   names,             1) \
+X(a, CALLBACK, OPTIONAL, MESSAGE,  struct_,           2)
+#define substrait_NamedStruct_CALLBACK pb_default_field_callback
 #define substrait_NamedStruct_DEFAULT NULL
 #define substrait_NamedStruct_struct__MSGTYPE substrait_Type_Struct
 
