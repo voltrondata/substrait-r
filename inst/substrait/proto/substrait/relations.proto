@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package substrait;
 
+import "substrait/any.proto";
 import "substrait/type.proto";
 import "substrait/expression.proto";
 import "substrait/extensions/extensions.proto";
-import "google/protobuf/any.proto";
 
 option java_multiple_files = true;
 option java_package = "io.substrait.proto";
@@ -69,7 +69,7 @@ message ReadRel {
 
   // a stub type that can be used to extend/introduce new table types outside
   // the specification.
-  message ExtensionTable { google.protobuf.Any detail = 1; }
+  message ExtensionTable { Any detail = 1; }
 
   message LocalFiles {
 
@@ -195,20 +195,20 @@ message SetRel {
 message ExtensionSingleRel {
   RelCommon common = 1;
   Rel input = 2;
-  google.protobuf.Any detail = 3;
+  Any detail = 3;
 }
 
 // Stub to support extension with a zero inputs
 message ExtensionLeafRel {
   RelCommon common = 1;
-  google.protobuf.Any detail = 2;
+  Any detail = 2;
 }
 
 // Stub to support extension with multiple inputs
 message ExtensionMultiRel {
   RelCommon common = 1;
   repeated Rel inputs = 2;
-  google.protobuf.Any detail = 3;
+  Any detail = 3;
 }
 
 // A relation with output field names.

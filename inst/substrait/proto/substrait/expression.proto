@@ -18,7 +18,7 @@ message Expression {
     SwitchExpression switch_expression = 7;
     SingularOrList singular_or_list = 8;
     MultiOrList multi_or_list = 9;
-    Enum enum = 10;
+    Enum enum_ = 10;
     Cast cast = 11;
   }
 
@@ -54,7 +54,7 @@ message Expression {
       VarChar var_char = 22;
       bytes fixed_binary = 23;
       Decimal decimal = 24;
-      Struct struct = 25;
+      Struct struct_ = 25;
       Map map = 26;
       // Timestamp in units of microseconds since the UNIX epoch.
       int64 timestamp_tz = 27;
@@ -156,10 +156,10 @@ message Expression {
   message IfThen {
 
     repeated IfClause ifs = 1;
-    Expression else = 2;
+    Expression else_ = 2;
 
     message IfClause {
-      Expression if = 1;
+      Expression if_ = 1;
       Expression then = 2;
     }
   }
@@ -171,10 +171,10 @@ message Expression {
 
   message SwitchExpression {
     repeated IfValue ifs = 1;
-    Expression else = 2;
+    Expression else_ = 2;
 
     message IfValue {
-      Literal if = 1;
+      Literal if_ = 1;
       Expression then = 2;
     }
   }
@@ -266,7 +266,7 @@ message Expression {
 
     message Select {
       oneof type {
-        StructSelect struct = 1;
+        StructSelect struct_ = 1;
         ListSelect list = 2;
         MapSelect map = 3;
       }

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package substrait.extensions;
 
+import "substrait/any.proto";
+
 option java_multiple_files = true;
 option java_package = "io.substrait.proto";
 option csharp_namespace = "Substrait.Protobuf";
-
-import "google/protobuf/any.proto";
 
 message SimpleExtensionURI {
   // A surrogate key used in the context of a single plan used to reference the
@@ -74,8 +74,8 @@ message AdvancedExtension {
 
   // An optimization is helpful information that don't influence semantics. May
   // be ignored by a consumer.
-  google.protobuf.Any optimization = 1;
+  Any optimization = 1;
 
   // An enhancement alter semantics. Cannot be ignored by a consumer.
-  google.protobuf.Any enhancement = 2;
+  Any enhancement = 2;
 }

@@ -10,7 +10,7 @@ option csharp_namespace = "Substrait.Protobuf";
 message ParameterizedType {
 
   oneof kind {
-    Type.Boolean bool = 1;
+    Type.Boolean bool_ = 1;
     Type.I8 i8 = 2;
     Type.I16 i16 = 3;
     Type.I32 i32 = 5;
@@ -32,7 +32,7 @@ message ParameterizedType {
     ParameterizedFixedBinary fixed_binary = 23;
     ParameterizedDecimal decimal = 24;
 
-    ParameterizedStruct struct = 25;
+    ParameterizedStruct struct_ = 25;
     ParameterizedList list = 27;
     ParameterizedMap map = 28;
 
@@ -88,7 +88,7 @@ message ParameterizedType {
   message ParameterizedNamedStruct {
     // list of names in dfs order
     repeated string names = 1;
-    ParameterizedStruct struct = 2;
+    ParameterizedStruct struct_ = 2;
   }
 
   message ParameterizedList {
