@@ -23,21 +23,46 @@ unlink("inst/substrait/site", recursive = TRUE)
 unlink("data-raw/substrait-main", recursive = TRUE)
 unlink("data-raw/substrait.zip")
 
-# clean up previous files
-unlink(list.files("src", "\\.cc$", full.names = TRUE))
-unlink("src/substrait", recursive = TRUE)
+# vendor nanopb
+# https://jpa.kapsi.fi/nanopb/download/
+curl::curl_download(
+  "https://jpa.kapsi.fi/nanopb/download/nanopb-0.4.5-macosx-x86.tar.gz",
+  "data-raw/nanopb.tar.gz"
+)
+
+untar("data-raw/nanopb.tar.gz", exdir = "data-raw")
+
+nanopb_files <- c(
+  "pb_common.c", "pb_common.h",
+  "pb_decode.c", "pb_decode.h",
+  "pb_encode.c", "pb_encode.h",
+  "pb.h"
+)
+
+fs::file_copy(file.path("data-raw/nanopb-0.4.5-macosx-x86", nanopb_files), "src")
 
 # generate the protobuf files
 proto_files <- list.files(
-  "inst/substrait/proto/substrait/", "\\.proto$",
-  full.names = TRUE, recursive = TRUE
+  "inst/substrait/proto", "\\.proto$",
+  recursive = TRUE
 )
 
-# needs 'protoc' installed (e.g., brew install protoc)
-system(glue::glue("protoc --proto_path=inst/substrait/proto { paste(proto_files, collapse = ' ') } --cpp_out=src"))
+# have to figure out the correct nanopb.options
+# to resolve circular references...-s type:FT_CALLBACK
+# is the workaround but this in theory only needs to exist for
+# a few fields
+proto_files_flat <- paste(proto_files, collapse = " ")
 
-# it's slightly easier to pull out the .cc files into the main src/ directory
-cc_files <- list.files("src/substrait", "\\.cc$", full.names = TRUE, recursive = TRUE)
-fs::file_move(cc_files, "src")
+withr::with_dir("inst/substrait/proto", {
+  system(
+    glue::glue(
+      "../../../data-raw/nanopb-0.4.5-macosx-x86/generator-bin/nanopb_generator \\
+        -s type:FT_CALLBACK { proto_files_flat } \\
+        --output-dir=../../../src"
+    )
+  )
+})
 
-
+# pull all the .c files out into src/
+c_files <- list.files("src", "\\.pb\\.c$", recursive = TRUE, full.names = TRUE)
+fs::file_copy(c_files, "src")
