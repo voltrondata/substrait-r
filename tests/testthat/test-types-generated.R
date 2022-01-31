@@ -1,8 +1,14 @@
 
 test_that("at least a few types-generated constructors work", {
-  expect_s3_class(
+  expect_identical(
     substrait$Type$Boolean$create(),
-    "substrait_proto_message"
+    structure(
+      raw(0),
+      class = c(
+        "substrait_Type_Boolean",
+        "substrait_proto_message"
+      )
+    )
   )
 
   expect_identical(
@@ -10,5 +16,35 @@ test_that("at least a few types-generated constructors work", {
     2
   )
 
-  expect_s3_class(substrait$Type$Nullability$create(2), "substrait_proto_value")
+  expect_identical(
+    substrait$Type$Nullability$create(2),
+    structure(
+      2L,
+      class = c(
+        "substrait_Type_Nullability",
+        "substrait_proto_enum"
+      )
+    )
+  )
+
+  expect_identical(
+    substrait$Type$Nullability$create("NULLABILITY_REQUIRED"),
+    structure(
+      2L,
+      class = c(
+        "substrait_Type_Nullability",
+        "substrait_proto_enum"
+      )
+    )
+  )
+
+  expect_error(
+    substrait$Type$Nullability$create(5L),
+    "not a valid identifier"
+  )
+
+  expect_error(
+    substrait$Type$Nullability$create("NULLABILITY_AWESOME"),
+    "not a valid identifier"
+  )
 })
