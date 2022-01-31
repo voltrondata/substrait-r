@@ -72,7 +72,7 @@ typedef struct _substrait_Expression_EmbeddedFunction {
 } substrait_Expression_EmbeddedFunction;
 
 typedef struct _substrait_Expression_EmbeddedFunction_PythonPickleFunction { 
-    pb_bytes_array_t *function; 
+    pb_bytes_array_t *function_; 
     pb_size_t prerequisite_count;
     char **prerequisite; 
 } substrait_Expression_EmbeddedFunction_PythonPickleFunction;
@@ -507,7 +507,7 @@ extern "C" {
 #define substrait_Expression_EmbeddedFunction_output_type_tag 2
 #define substrait_Expression_EmbeddedFunction_python_pickle_function_tag 3
 #define substrait_Expression_EmbeddedFunction_web_assembly_function_tag 4
-#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_function_tag 1
+#define substrait_Expression_EmbeddedFunction_PythonPickleFunction_function__tag 1
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_prerequisite_tag 2
 #define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_script_tag 1
 #define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_prerequisite_tag 2
@@ -884,7 +884,7 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (kind,web_assembly_function,kind.web_assembly
 #define substrait_Expression_EmbeddedFunction_kind_web_assembly_function_MSGTYPE substrait_Expression_EmbeddedFunction_WebAssemblyFunction
 
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_FIELDLIST(X, a) \
-X(a, POINTER,  SINGULAR, BYTES,    function,          1) \
+X(a, POINTER,  SINGULAR, BYTES,    function_,         1) \
 X(a, POINTER,  REPEATED, STRING,   prerequisite,      2)
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_CALLBACK NULL
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_DEFAULT NULL

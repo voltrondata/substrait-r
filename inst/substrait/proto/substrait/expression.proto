@@ -200,7 +200,7 @@ message Expression {
     }
 
     message PythonPickleFunction {
-      bytes function = 1;
+      bytes function_ = 1;
       repeated string prerequisite = 2;
     }
 
