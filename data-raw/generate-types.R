@@ -3,13 +3,13 @@ library(tidyverse)
 library(RProtoBuf)
 
 proto_files <- list.files(
-  system.file("substrait/proto", package = "substrait"),
+  "inst/substrait/proto",
   "\\.proto$", recursive = TRUE
 )
 
 readProtoFiles2(
   proto_files,
-  protoPath = system.file("substrait/proto", package = "substrait")
+  protoPath = "inst/substrait/proto"
 )
 
 # use nanopb defs for now
@@ -55,18 +55,6 @@ rprotobuf_types <- tibble(
 ) %>%
   arrange(rprotobuf_value)
 
-resolve_name <- function(f) {
-  tryCatch(
-    f$message_type()$name(),
-    error = function(e) tryCatch(
-      f$enum_type()$name(),
-      error = function(e) tryCatch(
-        rprotobuf_types$name[match()]
-      )
-    )
-  )
-}
-
 message_types <- proto_types %>%
   filter(!is_enum) %>%
   select(-is_enum) %>%
@@ -94,7 +82,8 @@ message_types <- proto_types %>%
           ],
           field_type_name
         ),
-        has_default_value = map_lgl(fields, ~.x$has_default_value())
+        has_default_value = map_lgl(fields, ~.x$has_default_value()),
+        is_repeated = map_lgl(fields, ~.x$is_repeated())
       )
     })
   ) %>%
@@ -123,17 +112,23 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
     formals_flat <- paste(formals, collapse = ", ")
 
     sanitizers <- glue::glue(
-      '  { type$fields$field_name } = clean_value({ type$fields$field_name }, "{ type$fields$field_type_name_qualified }")'
+      '  { type$fields$field_name } = clean_value({ type$fields$field_name }, "{ type$fields$field_type_name_qualified }", repeated = { type$fields$is_repeated })'
     )
     sanitizers_flat <- paste(sanitizers, collapse = ",\n")
 
-    constructor <- glue::glue(
+    if (identical(formals_flat, "")) {
+      constructor <- glue::glue('\n{ indent }  create = function() create_substrait_message(.qualified_name = "{ type$name_qualified }")')
+    } else {
+
+      constructor <- glue::glue(
 '\n{ indent }  create = function({ formals_flat }) create_substrait_message(
 { sanitizers_flat },
   .qualified_name = "{ type$name_qualified }"
 )
 '
 )
+    }
+
     constructor <- glue::as_glue(str_replace_all(constructor, "\n", paste0("\n", indent, "  ")))
   } else {
     constructor <- ""
@@ -182,8 +177,18 @@ generate_tree_enum <- function(qualified_name = "substrait.AggregationPhase", in
   glue::as_glue(str_replace_all(text, "\n", paste0("\n", indent)))
 }
 
+
 everything <- generate_tree("substrait")
-write_file(everything, "R/types-generated.R")
+
+write_file(glue::glue("
+
+#' Create raw Substrait types
+#'
+#' @export
+{ everything }
 
 
+"), "R/types-generated.R")
+
+styler::style_file("R/types-generated.R")
 
