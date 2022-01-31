@@ -62,6 +62,7 @@ message_types <- proto_types %>%
     fields = map(descriptor, function(d) {
       field_count <- d$field_count()
       fields <- map(seq_len(field_count), d$field)
+      field_type <- map_chr(fields, ~.x$type(as.string = TRUE))
       field_type_name <- map_chr(fields, function(f) {
         tryCatch(
           f$message_type()$name(),
@@ -76,6 +77,7 @@ message_types <- proto_types %>%
 
       tibble(
         field_name = map_chr(fields, ~.$name()),
+        field_type = field_type,
         field_type_name_qualified = dplyr::coalesce(
           proto_types$name_qualified[
             match(field_type_name, proto_types$name)
@@ -112,7 +114,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
     formals_flat <- paste(formals, collapse = ", ")
 
     sanitizers <- glue::glue(
-      '  { type$fields$field_name } = clean_value({ type$fields$field_name }, "{ type$fields$field_type_name_qualified }", repeated = { type$fields$is_repeated })'
+      '  { type$fields$field_name } = clean_value({ type$fields$field_name }, "{ type$fields$field_type }", "{ type$fields$field_type_name_qualified }", repeated = { type$fields$is_repeated })'
     )
     sanitizers_flat <- paste(sanitizers, collapse = ",\n")
 
@@ -154,12 +156,13 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
 
 
 
-generate_tree_enum <- function(qualified_name = "substrait.AggregationPhase", indent = "") {
+generate_tree_enum <- function(qualified_name, indent = "") {
   enum <- enum_types %>%
     filter(name_qualified == !! qualified_name) %>%
     lapply("[[", 1)
 
-  vals <- glue::glue("  { enum$values$name } = { enum$values$value }")
+  cls <- gsub("\\.", "_", enum$name_qualified)
+  vals <- glue::glue('  { enum$values$name } = structure({ enum$values$value }L, class = c("{ cls }", "substrait_proto_enum", "substrait_proto"))')
   vals_flat <- paste(vals, collapse = ",\n")
 
   text <- glue::glue(

@@ -52,7 +52,15 @@ unspecified <- function() {
   structure(list(), class = "substrait_proto_unspecified")
 }
 
-clean_value <- function(value, .qualified_name, repeated = FALSE) {
+clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
+  if (inherits(value, "substrait_proto_unspecified")) {
+    return(value)
+  }
+
+  if (identical(type, "TYPE_ENUM")) {
+    return(create_substrait_enum(value, .qualified_name))
+  }
+
   # eventually this should validate the value in some way
   value
 }

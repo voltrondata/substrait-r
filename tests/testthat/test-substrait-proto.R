@@ -21,7 +21,14 @@ test_that("substrait_proto_message class works", {
 test_that("substrait_proto_enum class works", {
   expect_identical(
     substrait$Type$Nullability$NULLABILITY_REQUIRED,
-    2
+    structure(
+      2L,
+      class = c(
+        "substrait_Type_Nullability",
+        "substrait_proto_enum",
+        "substrait_proto"
+      )
+    )
   )
 
   expect_identical(
