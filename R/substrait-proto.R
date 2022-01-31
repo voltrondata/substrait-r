@@ -10,7 +10,8 @@ create_substrait_message <- function(..., .qualified_name) {
     message$serialize(NULL),
     class = c(
       gsub("\\.", "_", .qualified_name),
-      "substrait_proto_message"
+      "substrait_proto_message",
+      "substrait_proto"
     )
   )
 }
@@ -41,7 +42,8 @@ create_substrait_enum <- function(value, .qualified_name) {
     pb_value$number(),
     class = c(
       gsub("\\.", "_", .qualified_name),
-      "substrait_proto_enum"
+      "substrait_proto_enum",
+      "substrait_proto"
     )
   )
 }

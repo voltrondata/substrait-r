@@ -6,7 +6,8 @@ test_that("at least a few types-generated constructors work", {
       raw(0),
       class = c(
         "substrait_Type_Boolean",
-        "substrait_proto_message"
+        "substrait_proto_message",
+        "substrait_proto"
       )
     )
   )
@@ -22,7 +23,8 @@ test_that("at least a few types-generated constructors work", {
       2L,
       class = c(
         "substrait_Type_Nullability",
-        "substrait_proto_enum"
+        "substrait_proto_enum",
+        "substrait_proto"
       )
     )
   )
@@ -33,7 +35,8 @@ test_that("at least a few types-generated constructors work", {
       2L,
       class = c(
         "substrait_Type_Nullability",
-        "substrait_proto_enum"
+        "substrait_proto_enum",
+        "substrait_proto"
       )
     )
   )
