@@ -1,5 +1,5 @@
 
-test_that("at least a few types-generated constructors work", {
+test_that("substrait_proto_message class works", {
   expect_identical(
     substrait$Type$Boolean$create(),
     structure(
@@ -12,6 +12,13 @@ test_that("at least a few types-generated constructors work", {
     )
   )
 
+  expect_output(
+    print(substrait$Type$Boolean$create()),
+    "substrait.Type.Boolean"
+  )
+})
+
+test_that("substrait_proto_enum class works", {
   expect_identical(
     substrait$Type$Nullability$NULLABILITY_REQUIRED,
     2
@@ -49,5 +56,10 @@ test_that("at least a few types-generated constructors work", {
   expect_error(
     substrait$Type$Nullability$create("NULLABILITY_AWESOME"),
     "not a valid identifier"
+  )
+
+  expect_output(
+    print(substrait$Type$Nullability$create(2)),
+    "substrait.Type.NULLABILITY_REQUIRED"
   )
 })

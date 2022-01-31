@@ -56,3 +56,27 @@ clean_value <- function(value, .qualified_name, repeated = FALSE) {
   # eventually this should validate the value in some way
   value
 }
+
+#' @export
+print.substrait_proto_message <- function(x, ...) {
+  .qualified_name <- gsub("_", ".", class(x)[1])
+  descriptor <- RProtoBuf::P(.qualified_name)
+  pb_message <- descriptor$read(unclass(x))
+
+  print(pb_message, ...)
+  cat(pb_message$toString())
+
+  invisible(x)
+}
+
+#' @export
+print.substrait_proto_enum <- function(x, ...) {
+  .qualified_name <- gsub("_", ".", class(x)[1])
+  descriptor <- RProtoBuf::P(.qualified_name)
+  pb_value <- descriptor$value(number = unclass(x))
+
+  print(pb_value, ...)
+  cat(pb_value$toString())
+
+  invisible(x)
+}
