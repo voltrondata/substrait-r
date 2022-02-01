@@ -131,6 +131,16 @@ cat(RProtoBuf::P("substrait.Type.Boolean")$read(bytes)$toString())
 #> nullability: NULLABILITY_REQUIRED
 ```
 
+A note that I did try to generate bindings using the official Google C++
+code generator (i.e., what you get when you `brew install protobuf` and
+run `protoc`), but this requires linking to the exact version of
+protobuf that generated the C++ readers. This is pretty much impossible
+to make work because everybody ships a slightly different version of
+libprotobuf. The approach taken by RProtoBuf is to link to the system
+protobuf *compiler* library and compile the .proto files at runtime.
+That could work here, too, but would also require linking to a system
+library (the same ones that RProtoBuf does).
+
 There are probably other approaches, but most of them will require some
 type of auto-generated wrapper code and the portability and compile
 speed of nanopb is hard to beat.
