@@ -69,7 +69,11 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
         descriptor <- RProtoBuf::P(.qualified_name)
         return(descriptor$read(unclass(value)))
       } else if (is.list(value)) {
-        create_substrait_message(!!! value, .qualified_name = .qualified_name)
+        clean_value(
+          create_substrait_message(!!! value, .qualified_name = .qualified_name),
+          type,
+          .qualified_name
+        )
       } else {
         stop(sprintf("Can't create '%s' message from passed value", .qualified_name))
       }

@@ -45,6 +45,19 @@ test_that("substrat_proto_message class can be created with a message field", {
     )
   )
 
+  # using list()
+  expect_identical(
+    substrait$Type$create(bool_ = list()),
+    structure(
+      as.raw(c(0x0a, 0x00)),
+      class = c(
+        "substrait_Type",
+        "substrait_proto_message",
+        "substrait_proto"
+      )
+    )
+  )
+
   expect_error(
     substrait$Type$create(i8 = RProtoBuf::P("substrait.Type.Boolean")$new()),
     "wrong message type"
