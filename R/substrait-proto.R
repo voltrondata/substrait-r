@@ -57,12 +57,27 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
     return(value)
   }
 
-  if (identical(type, "TYPE_ENUM")) {
-    return(create_substrait_enum(value, .qualified_name))
-  }
-
-  # eventually this should validate the value in some way
-  value
+  switch(
+    type,
+    TYPE_ENUM = create_substrait_enum(value, .qualified_name),
+    TYPE_MESSAGE = {
+      if (repeated) {
+        lapply(value, clean_value, type, .qualified_name)
+      } else if (inherits(value, "Message")) {
+        value
+      } else if (inherits(value, "substrait_proto_message")) {
+        descriptor <- RProtoBuf::P(.qualified_name)
+        return(descriptor$read(unclass(value)))
+      } else if (is.list(value)) {
+        create_substrait_message(!!! value, .qualified_name = .qualified_name)
+      } else {
+        stop(sprintf("Can't create '%s' message from passed value", .qualified_name))
+      }
+    },
+    # eventually this should validate the value in some way...as it is now
+    # this will get validated by RProtoBuf in the call to descriptor$new()
+    value
+  )
 }
 
 #' @export

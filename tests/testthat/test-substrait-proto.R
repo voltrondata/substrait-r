@@ -18,6 +18,39 @@ test_that("substrait_proto_message class works", {
   )
 })
 
+test_that("substrat_proto_message class can be created with a message field", {
+  # using internal constructor
+  expect_identical(
+    substrait$Type$create(bool_ = substrait$Type$Boolean$create()),
+    structure(
+      as.raw(c(0x0a, 0x00)),
+      class = c(
+        "substrait_Type",
+        "substrait_proto_message",
+        "substrait_proto"
+      )
+    )
+  )
+
+  # using RProtoBuf
+  expect_identical(
+    substrait$Type$create(bool_ = RProtoBuf::P("substrait.Type.Boolean")$new()),
+    structure(
+      as.raw(c(0x0a, 0x00)),
+      class = c(
+        "substrait_Type",
+        "substrait_proto_message",
+        "substrait_proto"
+      )
+    )
+  )
+
+  expect_error(
+    substrait$Type$create(i8 = RProtoBuf::P("substrait.Type.Boolean")$new()),
+    "wrong message type"
+  )
+})
+
 test_that("substrait_proto_enum class works", {
   expect_identical(
     substrait$Type$Nullability$NULLABILITY_REQUIRED,
