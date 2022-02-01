@@ -1,9 +1,9 @@
 
 test_that("substrait_proto_message class works", {
   expect_identical(
-    substrait$Type$Boolean$create(),
+    substrait$Type$Boolean$create(nullability = 1),
     structure(
-      raw(0),
+      as.raw(c(0x10, 0x01)),
       class = c(
         "substrait_Type_Boolean",
         "substrait_proto_message",
@@ -62,6 +62,23 @@ test_that("substrat_proto_message class can be created with a message field", {
     substrait$Type$create(i8 = RProtoBuf::P("substrait.Type.Boolean")$new()),
     "wrong message type"
   )
+
+  expect_error(
+    substrait$Type$create(i8 = environment()),
+    "Can't create 'substrait.Type.I8'"
+  )
+})
+
+test_that("repeated message values work", {
+  expect_identical(
+    clean_value(
+      list(),
+      "TYPE_MESSAGE",
+      "substrait.Type.Boolean",
+      repeated = TRUE
+    ),
+    list()
+  )
 })
 
 test_that("substrait_proto_enum class works", {
@@ -99,6 +116,11 @@ test_that("substrait_proto_enum class works", {
         "substrait_proto"
       )
     )
+  )
+
+  expect_error(
+    substrait$Type$Nullability$create(logical(1)),
+    "Expected character identifier or integer"
   )
 
   expect_error(
