@@ -3,4 +3,5 @@
 S3method(print,substrait_proto_enum)
 S3method(print,substrait_proto_message)
 export(substrait)
+importFrom(rlang,"%||%")
 useDynLib(substrait, .registration = TRUE)

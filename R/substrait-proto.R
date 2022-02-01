@@ -16,8 +16,22 @@ create_substrait_message <- function(..., .qualified_name) {
   )
 }
 
-create_substrait_enum <- function(value, .qualified_name) {
-  descriptor <- RProtoBuf::P(.qualified_name)
+create_substrait_enum <- function(value, .qualified_name, descriptor = NULL) {
+  descriptor <- descriptor %||% RProtoBuf::P(.qualified_name)
+
+  if (length(value) != 1) {
+    result <- vapply(value, create_substrait_enum, integer(1), .qualified_name, descriptor)
+    return(
+      structure(
+        result,
+        class = c(
+          gsub("\\.", "_", .qualified_name),
+          "substrait_proto_enum",
+          "substrait_proto"
+        )
+      )
+    )
+  }
 
   if (is.character(value)) {
     pb_value <- descriptor$value(name = value)
@@ -100,10 +114,15 @@ print.substrait_proto_message <- function(x, ...) {
 print.substrait_proto_enum <- function(x, ...) {
   .qualified_name <- gsub("_", ".", class(x)[1])
   descriptor <- RProtoBuf::P(.qualified_name)
-  pb_value <- descriptor$value(number = unclass(x))
 
-  print(pb_value, ...)
-  cat(pb_value$toString())
+  pb_value <- lapply(unclass(x), function(e) descriptor$value(number = e))
+  numbers <- vapply(pb_value, function(e) e$number(), integer(1))
+  labels <- vapply(pb_value, function(e) e$name(), character(1))
+
+  cat(sprintf("<%s[%d]>\n", .qualified_name, length(pb_value)))
+  for (i in seq_along(numbers)) {
+    cat(sprintf("- %s = %d\n", labels[i], numbers[i]))
+  }
 
   invisible(x)
 }

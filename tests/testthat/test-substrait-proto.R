@@ -113,6 +113,20 @@ test_that("substrait_proto_enum class works", {
 
   expect_output(
     print(substrait$Type$Nullability$create(2)),
-    "substrait.Type.NULLABILITY_REQUIRED"
+    "substrait.Type.Nullability"
+  )
+})
+
+test_that("substrait proto enum class can handle multiple values", {
+  expect_identical(
+    substrait$Type$Nullability$create(0:2),
+    structure(
+      0:2,
+      class = c(
+        "substrait_Type_Nullability",
+        "substrait_proto_enum",
+        "substrait_proto"
+      )
+    )
   )
 })
