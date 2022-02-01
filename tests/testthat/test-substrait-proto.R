@@ -1,4 +1,24 @@
 
+test_that("as_substrait() default error works", {
+  expect_error(as_substrait(3), "Can't create substrait message")
+  expect_error(
+    as_substrait(3, .qualified_name = "substrait.Type"),
+    "Can't create substrait.Type"
+  )
+})
+
+test_that("from_substrait() default errors work", {
+  expect_error(
+    from_substrait(3, list()),
+    "is not TRUE"
+  )
+
+  expect_error(
+    from_substrait(substrait$Type$Boolean$create(), environment()),
+    "Can't restore substrait.Type.Boolean"
+  )
+})
+
 test_that("as_substrait() works for list()", {
   msg <- as_substrait(list(nullability = 1), "substrait.Type.Boolean")
   expect_identical(

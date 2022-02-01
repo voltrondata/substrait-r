@@ -50,15 +50,37 @@ as_substrait <- function(x, .qualified_name, ...) {
 #' @rdname as_substrait
 #' @export
 from_substrait <- function(msg, x, ...) {
-  stopifnot(inherits(msg, "substrait_proto"))
+  stopifnot(inherits(msg, "substrait_proto_message"))
   UseMethod("from_substrait", x)
 }
 
 #' @export
 as_substrait.default <- function(x, .qualified_name = NULL, ...) {
+  if (is.null(.qualified_name)) {
+    stop(
+      sprintf(
+        "Can't create substrait message from object of type '%s'",
+        paste(class(x), collapse = " / ")
+      )
+    )
+  } else {
+    stop(
+      sprintf(
+        "Can't create %s from object of type '%s'",
+        .qualified_name,
+        paste(class(x), collapse = " / ")
+      )
+    )
+  }
+
+}
+
+#' @export
+from_substrait.default <- function(msg, x, ...) {
+  .qualified_name <- gsub("_", ".", class(msg)[1])
   stop(
     sprintf(
-      "Can't create %s from object of type '%s'",
+      "Can't restore %s to object of type '%s'",
       .qualified_name,
       paste(class(x), collapse = " / ")
     )
