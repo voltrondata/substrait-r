@@ -6,6 +6,15 @@ as_substrait.double <- function(x, .ptype = NULL, ...) {
   }
 
   .qualified_name <- make_qualified_name(.ptype)
+
+  if (identical(.qualified_name, "substrait.Expression")) {
+    return(
+      substrait$Expression$create(
+        literal = as_substrait.double(x, "substrait.Expression.Literal")
+      )
+    )
+  }
+
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
     switch(
       .qualified_name,
