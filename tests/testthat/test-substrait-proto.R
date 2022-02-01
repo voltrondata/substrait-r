@@ -32,6 +32,12 @@ test_that("as_substrait() works for list()", {
       )
     )
   )
+
+  # check a recursive list
+  expect_identical(
+    as_substrait(list(i8 = list()), "substrait.Type"),
+    substrait$Type$create(i8 = substrait$Type$I8$create())
+  )
 })
 
 test_that("from_substrait() works for list()", {

@@ -89,7 +89,7 @@ from_substrait.default <- function(msg, x, ...) {
 
 #' @export
 as_substrait.list <- function(x, .qualified_name = NULL, ...) {
-  create_substrait_message(!!! x, .qualified_name = .qualified_name)
+  substrait_create(.qualified_name, !!! x)
 }
 
 #' @export
