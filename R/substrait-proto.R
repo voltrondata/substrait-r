@@ -57,7 +57,8 @@ substrait_create_constructor_expr <- function(item) {
 #'   on `x`.
 #' @param msg A substrait message (e.g., created using [substrait_create()]).
 #' @param ... Passed to S3 methods
-#' @inheritParams substrait_create
+#' @param .ptype A string of the `.qualified_name` or a prototype message
+#'   of the correct type.
 #'
 #' @return An RProtoBuf::Message or substrait_proto_message (e.g.,
 #'   created by [substrait_create()])
@@ -69,7 +70,7 @@ substrait_create_constructor_expr <- function(item) {
 #'   "substrait.Type.Boolean"
 #' )
 #'
-as_substrait <- function(x, .qualified_name, ...) {
+as_substrait <- function(x, .ptype = NULL, ...) {
   UseMethod("as_substrait")
 }
 
@@ -81,8 +82,8 @@ from_substrait <- function(msg, x, ...) {
 }
 
 #' @export
-as_substrait.default <- function(x, .qualified_name = NULL, ...) {
-  if (is.null(.qualified_name)) {
+as_substrait.default <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
     stop(
       sprintf(
         "Can't create substrait message from object of type '%s'",
@@ -93,12 +94,11 @@ as_substrait.default <- function(x, .qualified_name = NULL, ...) {
     stop(
       sprintf(
         "Can't create %s from object of type '%s'",
-        .qualified_name,
+        make_qualified_name(.ptype),
         paste(class(x), collapse = " / ")
       )
     )
   }
-
 }
 
 #' @export
@@ -115,14 +115,15 @@ from_substrait.default <- function(msg, x, ...) {
 
 #' @export
 from_substrait.substrait_proto_message <- function(msg, x, ...) {
-  .qualified_name <- gsub("_", ".", class(msg)[1])
-  qualified_name_x <- gsub("_", ".", class(x)[1])
+  .qualified_name <- make_qualified_name(msg)
+  qualified_name_x <- make_qualified_name(x)
   stopifnot(identical(.qualified_name, qualified_name_x))
   msg
 }
 
 #' @export
-as_substrait.substrait_proto_message <- function(x, .qualified_name = NULL, ...) {
+as_substrait.substrait_proto_message <- function(x, .ptype = NULL, ...) {
+  .qualified_name <- make_qualified_name(.ptype)
   if (is.null(.qualified_name)) {
     return(x)
   }
@@ -134,13 +135,13 @@ as_substrait.substrait_proto_message <- function(x, .qualified_name = NULL, ...)
 }
 
 #' @export
-as_substrait.list <- function(x, .qualified_name = NULL, ...) {
-  substrait_create(.qualified_name, !!! x)
+as_substrait.list <- function(x, .ptype = NULL, ...) {
+  substrait_create(make_qualified_name(.ptype), !!! x)
 }
 
 #' @export
 from_substrait.list <- function(msg, x, ..., recursive = FALSE) {
-  .qualified_name <- gsub("_", ".", class(msg)[1])
+  .qualified_name <- make_qualified_name(msg)
   descriptor <- RProtoBuf::P(.qualified_name)
   pb_message <- descriptor$read(unclass(msg))
 
@@ -164,6 +165,29 @@ from_substrait.list <- function(msg, x, ..., recursive = FALSE) {
   out
 }
 
+# these helpers help get the .ptype to and from a .qualified_name
+make_ptype <- function(.qualified_name) {
+  if (inherits(.qualified_name, "substrait_proto_message")) {
+    .qualified_name
+  } else {
+    structure(
+      raw(),
+      class = c(
+        gsub("\\.", "_", .qualified_name),
+        "substrait_proto_message",
+        "substrait_proto"
+      )
+    )
+  }
+}
+
+make_qualified_name <- function(.ptype) {
+  if (inherits(.ptype, "substrait_proto_message")) {
+    gsub("_", ".", class(.ptype)[1])
+  } else {
+    .ptype
+  }
+}
 
 # The above functions should be the entry point to creating these objects
 # to other code in this package. The below functions are internal and

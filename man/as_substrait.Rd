@@ -5,7 +5,7 @@
 \alias{from_substrait}
 \title{Convert to and from 'Substrait' messages}
 \usage{
-as_substrait(x, .qualified_name, ...)
+as_substrait(x, .ptype = NULL, ...)
 
 from_substrait(msg, x, ...)
 }
@@ -14,8 +14,8 @@ from_substrait(msg, x, ...)
 Note that both \code{as_substrait()} and \code{from_substrait()} dispatch
 on \code{x}.}
 
-\item{.qualified_name}{The fully qualified name of the message type
-or enum (e.g., "substrait.Type.Boolean")}
+\item{.ptype}{A string of the \code{.qualified_name} or a prototype message
+of the correct type.}
 
 \item{...}{Passed to S3 methods}
 

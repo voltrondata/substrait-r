@@ -6,7 +6,8 @@ as_rprotobuf <- function(x) {
 }
 
 #' @export
-as_substrait.Message <- function(x, .qualified_name = NULL, ...) {
+as_substrait.Message <- function(x, .ptype = NULL, ...) {
+  .qualified_name <- make_qualified_name(.ptype)
   content <- x$serialize(NULL)
   descriptor <- x$descriptor()
   nesting <- rprotobuf_descriptor_to_class(descriptor)
