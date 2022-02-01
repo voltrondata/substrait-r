@@ -5,3 +5,5 @@
 ^README\.Rmd$
 ^\.github$
 ^\.vscode$
+^codecov\.yml$
+^\.covrignore$

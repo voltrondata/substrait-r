@@ -1,4 +1,5 @@
 
+# nocov start
 .onLoad <- function(...) {
   proto_files <- list.files(
     system.file("substrait/proto", package = "substrait"),
@@ -10,3 +11,4 @@
     protoPath = system.file("substrait/proto", package = "substrait")
   )
 }
+# nocov end
