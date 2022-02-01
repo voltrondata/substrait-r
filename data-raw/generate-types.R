@@ -12,6 +12,22 @@ readProtoFiles2(
   protoPath = "inst/substrait/proto"
 )
 
+qualified_type_from_descriptor <- function(descriptor) {
+  paste(
+    c("substrait", rprotobuf_descriptor_to_class(descriptor)),
+    collapse = "."
+  )
+}
+
+rprotobuf_descriptor_to_class <- function(descriptor, child = c()) {
+  containing <- descriptor$containing_type()
+  if (is.null(containing)) {
+    c(descriptor$name(), child)
+  } else {
+    rprotobuf_descriptor_to_class(containing, child = c(descriptor$name(), child))
+  }
+}
+
 # use nanopb defs for now
 proto_types_with_nesting <- list.files(
   "src", "\\.pb.h",
@@ -65,7 +81,7 @@ message_types <- proto_types %>%
       field_type <- map_chr(fields, ~.x$type(as.string = TRUE))
       field_type_name <- map_chr(fields, function(f) {
         tryCatch(
-          f$message_type()$name(),
+          qualified_type_from_descriptor(f$message_type()),
           error = function(e) tryCatch(
             f$enum_type()$name(),
             error = function(e) tryCatch(

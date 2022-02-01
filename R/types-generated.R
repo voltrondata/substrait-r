@@ -52,7 +52,7 @@ substrait <- list(
         args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
         sorts = clean_value(sorts, "TYPE_MESSAGE", "substrait.SortField", repeated = TRUE),
         phase = clean_value(phase, "TYPE_ENUM", "substrait.AggregationPhase", repeated = FALSE),
-        output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+        output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
         .qualified_name = "substrait.AggregateFunction"
       )
     }
@@ -61,7 +61,7 @@ substrait <- list(
     Cast = list(
       create = function(type = unspecified(), input = unspecified()) {
         create_substrait_message(
-          type = clean_value(type, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          type = clean_value(type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           input = clean_value(input, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
           .qualified_name = "substrait.Expression.Cast"
         )
@@ -89,7 +89,7 @@ substrait <- list(
       create = function(arguments = unspecified(), output_type = unspecified(), python_pickle_function = unspecified(), web_assembly_function = unspecified()) {
         create_substrait_message(
           arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
-          output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           python_pickle_function = clean_value(python_pickle_function, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.PythonPickleFunction", repeated = FALSE),
           web_assembly_function = clean_value(web_assembly_function, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.WebAssemblyFunction", repeated = FALSE),
           .qualified_name = "substrait.Expression.EmbeddedFunction"
@@ -235,10 +235,10 @@ substrait <- list(
           map = clean_value(map, "TYPE_MESSAGE", "substrait.Expression.Literal.Map", repeated = FALSE),
           timestamp_tz = clean_value(timestamp_tz, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
           uuid = clean_value(uuid, "TYPE_BYTES", "TYPE_BYTES", repeated = FALSE),
-          null = clean_value(null, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          null = clean_value(null, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           list = clean_value(list, "TYPE_MESSAGE", "substrait.Expression.Literal.List", repeated = FALSE),
-          empty_list = clean_value(empty_list, "TYPE_MESSAGE", "substrait.Expression.Literal.List", repeated = FALSE),
-          empty_map = clean_value(empty_map, "TYPE_MESSAGE", "substrait.Expression.Literal.Map", repeated = FALSE),
+          empty_list = clean_value(empty_list, "TYPE_MESSAGE", "substrait.Type.List", repeated = FALSE),
+          empty_map = clean_value(empty_map, "TYPE_MESSAGE", "substrait.Type.Map", repeated = FALSE),
           nullable = clean_value(nullable, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
           .qualified_name = "substrait.Expression.Literal"
         )
@@ -388,9 +388,9 @@ substrait <- list(
       ),
       create = function(map_key = unspecified(), struct_field = unspecified(), list_element = unspecified()) {
         create_substrait_message(
-          map_key = clean_value(map_key, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.MapSelect.MapKey", repeated = FALSE),
+          map_key = clean_value(map_key, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment.MapKey", repeated = FALSE),
           struct_field = clean_value(struct_field, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment.StructField", repeated = FALSE),
-          list_element = clean_value(list_element, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.ListSelect.ListSelectItem.ListElement", repeated = FALSE),
+          list_element = clean_value(list_element, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment.ListElement", repeated = FALSE),
           .qualified_name = "substrait.Expression.ReferenceSegment"
         )
       }
@@ -400,7 +400,7 @@ substrait <- list(
         create_substrait_message(
           function_reference = clean_value(function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
-          output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           .qualified_name = "substrait.Expression.ScalarFunction"
         )
       }
@@ -474,7 +474,7 @@ substrait <- list(
           upper_bound = clean_value(upper_bound, "TYPE_MESSAGE", "substrait.Expression.WindowFunction.Bound", repeated = FALSE),
           lower_bound = clean_value(lower_bound, "TYPE_MESSAGE", "substrait.Expression.WindowFunction.Bound", repeated = FALSE),
           phase = clean_value(phase, "TYPE_ENUM", "substrait.AggregationPhase", repeated = FALSE),
-          output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           .qualified_name = "substrait.Expression.WindowFunction"
         )
@@ -534,7 +534,7 @@ substrait <- list(
           normal = clean_value(normal, "TYPE_MESSAGE", "substrait.FunctionSignature.FinalArgNormal", repeated = FALSE),
           ordered = clean_value(ordered, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
           max_set = clean_value(max_set, "TYPE_UINT64", "TYPE_UINT64", repeated = FALSE),
-          intermediate_type = clean_value(intermediate_type, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          intermediate_type = clean_value(intermediate_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           implementations = clean_value(implementations, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation", repeated = TRUE),
           .qualified_name = "substrait.FunctionSignature.Aggregate"
         )
@@ -831,10 +831,10 @@ substrait <- list(
   Plan = list(
     create = function(extension_uris = unspecified(), extensions = unspecified(), relations = unspecified(), advanced_extensions = unspecified(), expected_type_urls = unspecified()) {
       create_substrait_message(
-        extension_uris = clean_value(extension_uris, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionURI", repeated = TRUE),
-        extensions = clean_value(extensions, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration", repeated = TRUE),
+        extension_uris = clean_value(extension_uris, "TYPE_MESSAGE", "substrait.SimpleExtensionURI", repeated = TRUE),
+        extensions = clean_value(extensions, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration", repeated = TRUE),
         relations = clean_value(relations, "TYPE_MESSAGE", "substrait.PlanRel", repeated = TRUE),
-        advanced_extensions = clean_value(advanced_extensions, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extensions = clean_value(advanced_extensions, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         expected_type_urls = clean_value(expected_type_urls, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
         .qualified_name = "substrait.Plan"
       )
@@ -873,7 +873,7 @@ substrait <- list(
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         groupings = clean_value(groupings, "TYPE_MESSAGE", "substrait.AggregateRel.Grouping", repeated = TRUE),
         measures = clean_value(measures, "TYPE_MESSAGE", "substrait.AggregateRel.Measure", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.AggregateRel"
       )
     }
@@ -914,7 +914,7 @@ substrait <- list(
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         offset = clean_value(offset, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
         count = clean_value(count, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.FetchRel"
       )
     }
@@ -925,7 +925,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         condition = clean_value(condition, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.FilterRel"
       )
     }
@@ -954,7 +954,7 @@ substrait <- list(
         expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
         post_join_filter = clean_value(post_join_filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
         type = clean_value(type, "TYPE_ENUM", "substrait.JoinRel.JoinType", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.JoinRel"
       )
     }
@@ -965,7 +965,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         expressions = clean_value(expressions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.ProjectRel"
       )
     }
@@ -1008,7 +1008,7 @@ substrait <- list(
       create = function(items = unspecified(), advanced_extension = unspecified()) {
         create_substrait_message(
           items = clean_value(items, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles", repeated = TRUE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
           .qualified_name = "substrait.ReadRel.LocalFiles"
         )
       }
@@ -1017,7 +1017,7 @@ substrait <- list(
       create = function(names = unspecified(), advanced_extension = unspecified()) {
         create_substrait_message(
           names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
           .qualified_name = "substrait.ReadRel.NamedTable"
         )
       }
@@ -1036,7 +1036,7 @@ substrait <- list(
         base_schema = clean_value(base_schema, "TYPE_MESSAGE", "substrait.NamedStruct", repeated = FALSE),
         filter = clean_value(filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
         projection = clean_value(projection, "TYPE_MESSAGE", "substrait.Expression.MaskExpression", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         virtual_table = clean_value(virtual_table, "TYPE_MESSAGE", "substrait.ReadRel.VirtualTable", repeated = FALSE),
         local_files = clean_value(local_files, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles", repeated = FALSE),
         named_table = clean_value(named_table, "TYPE_MESSAGE", "substrait.ReadRel.NamedTable", repeated = FALSE),
@@ -1079,7 +1079,7 @@ substrait <- list(
       RuntimeConstraint = list(
         create = function(advanced_extension = unspecified()) {
           create_substrait_message(
-            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
             .qualified_name = "substrait.RelCommon.Hint.RuntimeConstraint"
           )
         }
@@ -1089,7 +1089,7 @@ substrait <- list(
           create_substrait_message(
             row_count = clean_value(row_count, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
             record_size = clean_value(record_size, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
-            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
             .qualified_name = "substrait.RelCommon.Hint.Stats"
           )
         }
@@ -1098,7 +1098,7 @@ substrait <- list(
         create_substrait_message(
           stats = clean_value(stats, "TYPE_MESSAGE", "substrait.RelCommon.Hint.Stats", repeated = FALSE),
           constraint = clean_value(constraint, "TYPE_MESSAGE", "substrait.RelCommon.Hint.RuntimeConstraint", repeated = FALSE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
           .qualified_name = "substrait.RelCommon.Hint"
         )
       }
@@ -1108,7 +1108,7 @@ substrait <- list(
         direct = clean_value(direct, "TYPE_MESSAGE", "substrait.RelCommon.Direct", repeated = FALSE),
         emit = clean_value(emit, "TYPE_MESSAGE", "substrait.RelCommon.Emit", repeated = FALSE),
         hint = clean_value(hint, "TYPE_MESSAGE", "substrait.RelCommon.Hint", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.RelCommon"
       )
     }
@@ -1143,7 +1143,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
         op = clean_value(op, "TYPE_ENUM", "substrait.SetRel.SetOp", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.SetRel"
       )
     }
@@ -1154,7 +1154,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         sorts = clean_value(sorts, "TYPE_MESSAGE", "substrait.SortField", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.SortRel"
       )
     }
@@ -1360,7 +1360,7 @@ substrait <- list(
     create = function(names = unspecified(), struct_ = unspecified()) {
       create_substrait_message(
         names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-        struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.Expression.Literal.Struct", repeated = FALSE),
+        struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.Type.Struct", repeated = FALSE),
         .qualified_name = "substrait.NamedStruct"
       )
     }
@@ -1510,7 +1510,7 @@ substrait <- list(
     List = list(
       create = function(type = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
         create_substrait_message(
-          type = clean_value(type, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          type = clean_value(type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
           .qualified_name = "substrait.Type.List"
@@ -1520,8 +1520,8 @@ substrait <- list(
     Map = list(
       create = function(key = unspecified(), value = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
         create_substrait_message(
-          key = clean_value(key, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
-          value = clean_value(value, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
+          key = clean_value(key, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
+          value = clean_value(value, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
           .qualified_name = "substrait.Type.Map"
@@ -1540,7 +1540,7 @@ substrait <- list(
     Struct = list(
       create = function(types = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
         create_substrait_message(
-          types = clean_value(types, "TYPE_MESSAGE", "substrait.FunctionSignature.Implementation.Type", repeated = TRUE),
+          types = clean_value(types, "TYPE_MESSAGE", "substrait.Type", repeated = TRUE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
           .qualified_name = "substrait.Type.Struct"
@@ -1612,12 +1612,12 @@ substrait <- list(
         timestamp_tz = clean_value(timestamp_tz, "TYPE_MESSAGE", "substrait.Type.TimestampTZ", repeated = FALSE),
         uuid = clean_value(uuid, "TYPE_MESSAGE", "substrait.Type.UUID", repeated = FALSE),
         fixed_char = clean_value(fixed_char, "TYPE_MESSAGE", "substrait.Type.FixedChar", repeated = FALSE),
-        varchar = clean_value(varchar, "TYPE_MESSAGE", "substrait.Expression.Literal.VarChar", repeated = FALSE),
+        varchar = clean_value(varchar, "TYPE_MESSAGE", "substrait.Type.VarChar", repeated = FALSE),
         fixed_binary = clean_value(fixed_binary, "TYPE_MESSAGE", "substrait.Type.FixedBinary", repeated = FALSE),
-        decimal = clean_value(decimal, "TYPE_MESSAGE", "substrait.Expression.Literal.Decimal", repeated = FALSE),
-        struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.Expression.Literal.Struct", repeated = FALSE),
-        list = clean_value(list, "TYPE_MESSAGE", "substrait.Expression.Literal.List", repeated = FALSE),
-        map = clean_value(map, "TYPE_MESSAGE", "substrait.Expression.Literal.Map", repeated = FALSE),
+        decimal = clean_value(decimal, "TYPE_MESSAGE", "substrait.Type.Decimal", repeated = FALSE),
+        struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.Type.Struct", repeated = FALSE),
+        list = clean_value(list, "TYPE_MESSAGE", "substrait.Type.List", repeated = FALSE),
+        map = clean_value(map, "TYPE_MESSAGE", "substrait.Type.Map", repeated = FALSE),
         user_defined_type_reference = clean_value(user_defined_type_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
         .qualified_name = "substrait.Type"
       )
