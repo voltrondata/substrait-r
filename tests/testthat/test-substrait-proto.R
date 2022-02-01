@@ -1,4 +1,36 @@
 
+test_that("as_substrait() works for list()", {
+  msg <- as_substrait(list(nullability = 1), "substrait.Type.Boolean")
+  expect_identical(
+    as_substrait(list(nullability = 1), "substrait.Type.Boolean"),
+    structure(
+      as.raw(c(0x10, 0x01)),
+      class = c(
+        "substrait_Type_Boolean",
+        "substrait_proto_message",
+        "substrait_proto"
+      )
+    )
+  )
+})
+
+test_that("from_substrait() works for list()", {
+  msg <- substrait$Type$create(i8 = substrait$Type$Boolean$create())
+  expect_identical(
+    from_substrait(msg, list()),
+    list(
+      i8 = substrait$Type$I8$create()
+    )
+  )
+
+  expect_identical(
+    from_substrait(msg, list(), recursive = TRUE),
+    list(
+      i8 = rlang::set_names(list(), character())
+    )
+  )
+})
+
 test_that("substrait_proto_message class works", {
   expect_identical(
     substrait$Type$Boolean$create(nullability = 1),
@@ -65,7 +97,7 @@ test_that("substrat_proto_message class can be created with a message field", {
 
   expect_error(
     substrait$Type$create(i8 = environment()),
-    "Can't create 'substrait.Type.I8'"
+    "Can't create substrait.Type.I8"
   )
 })
 

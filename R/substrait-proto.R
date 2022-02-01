@@ -1,4 +1,119 @@
 
+#' Create 'Substrait' objects
+#'
+#' @param .qualified_name The fully qualified name of the message type
+#'   or enum (e.g., "substrait.Type.Boolean")
+#' @param ... Arguments passed to the constructor.
+#'
+#' @return An object of class "substrait_proto".
+#' @export
+#'
+#' @examples
+#' substrait_create("substrait.Type.Boolean", 1, 2)
+#' substrait$Type$Boolean$create(1, 2)
+#'
+substrait_create <- function(.qualified_name, ...) {
+  stopifnot(is.character(.qualified_name), length(.qualified_name) == 1)
+  parts <- strsplit(.qualified_name, ".", fixed = TRUE)[[1]]
+
+  # This bit of indirection is to get a nice stack trace when an error
+  # is thrown and to support tidy dots in ... (might not be necessary).
+  expr <- substrait_create_constructor_expr(c(parts, "create"))
+  call <- rlang::call2(expr, ...)
+  rlang::eval_tidy(call, env = parent.frame())
+}
+
+
+#' Convert to and from 'Substrait' messages
+#'
+#' @param x An object to convert to or from a 'Substrait' message.
+#'   Note that both `as_substrait()` and `from_substrait()` dispatch
+#'   on `x`.
+#' @param msg A substrait message (e.g., created using [substrait_create()]).
+#' @param ... Passed to S3 methods
+#' @inheritParams substrait_create
+#'
+#' @return An RProtoBuf::Message or substrait_proto_message (e.g.,
+#'   created by [substrait_create()])
+#' @export
+#'
+#' @examples
+#' as_substrait(
+#'   list(type_variation_reference = 1, nullability = 2),
+#'   "substrait.Type.Boolean"
+#' )
+#'
+as_substrait <- function(x, .qualified_name, ...) {
+  UseMethod("as_substrait")
+}
+
+#' @rdname as_substrait
+#' @export
+from_substrait <- function(msg, x, ...) {
+  stopifnot(inherits(msg, "substrait_proto"))
+  UseMethod("from_substrait", x)
+}
+
+#' @export
+as_substrait.default <- function(x, .qualified_name = NULL, ...) {
+  stop(
+    sprintf(
+      "Can't create %s from object of type '%s'",
+      .qualified_name,
+      paste(class(x), collapse = " / ")
+    )
+  )
+}
+
+#' @export
+as_substrait.list <- function(x, .qualified_name = NULL, ...) {
+  create_substrait_message(!!! x, .qualified_name = .qualified_name)
+}
+
+#' @export
+from_substrait.list <- function(msg, x, ..., recursive = FALSE) {
+  .qualified_name <- gsub("_", ".", class(msg)[1])
+  descriptor <- RProtoBuf::P(.qualified_name)
+  pb_message <- descriptor$read(unclass(msg))
+
+  msg_names <- names(pb_message)
+  msg_names <- msg_names[vapply(msg_names, pb_message$has, logical(1))]
+  out <- lapply(msg_names, function(e) pb_message[[e]])
+  names(out) <- msg_names
+
+  is_message <- vapply(out, inherits, logical(1), "Message")
+  out[is_message] <- lapply(out[is_message], as_substrait)
+
+  if (recursive) {
+    out[is_message] <- lapply(
+      out[is_message],
+      from_substrait.list,
+      list(),
+      recursive = TRUE
+    )
+  }
+
+  out
+}
+
+substrait_create_constructor_expr <- function(item) {
+  if (length(item) == 1) {
+    call("::", as.symbol("substrait"), as.symbol(item))
+  } else {
+    call(
+      "$",
+      substrait_create_constructor_expr(item[-length(item)]),
+      as.symbol(item[length(item)])
+    )
+  }
+}
+
+# The above functions should be the entry point to creating these objects
+# to other code in this package. The below functions are internal and
+# designed to make the generated code in types-generated.R work. The idea
+# is that creating objects using `substrait$Something$create()` and
+# `substrait_create("substrait.Something", ...)` will both be stable regardless
+# of the backend used to serialize and deserialize protobufs.
 create_substrait_message <- function(..., .qualified_name) {
   lst <- rlang::list2(...)
   lst <- lst[!vapply(lst, inherits, logical(1), "substrait_proto_unspecified")]
@@ -66,7 +181,8 @@ unspecified <- function() {
   structure(list(), class = "substrait_proto_unspecified")
 }
 
-clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
+clean_value <- function(value, type, .qualified_name, repeated = FALSE,
+                        call_as_substrait = TRUE) {
   if (inherits(value, "substrait_proto_unspecified")) {
     return(value)
   }
@@ -82,14 +198,18 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
       } else if (inherits(value, "substrait_proto_message")) {
         descriptor <- RProtoBuf::P(.qualified_name)
         return(descriptor$read(unclass(value)))
-      } else if (is.list(value)) {
+      } else if (call_as_substrait) {
         clean_value(
-          create_substrait_message(!!! value, .qualified_name = .qualified_name),
+          as_substrait(value, .qualified_name),
           type,
-          .qualified_name
+          .qualified_name,
+          call_as_substrait = FALSE
         )
       } else {
-        stop(sprintf("Can't create '%s' message from passed value", .qualified_name))
+        stop(
+          "as_substrait() did not return an RProtoBuf::Message or substrait_proto_message",
+          call. = FALSE
+        )
       }
     },
     # eventually this should validate the value in some way...as it is now
