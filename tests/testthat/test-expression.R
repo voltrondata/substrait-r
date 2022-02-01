@@ -8,6 +8,13 @@ test_that("as_substrait() works for double()", {
   )
 
   expect_identical(
+    as_substrait(NA_real_),
+    substrait$Expression$Literal$create(
+      null = substrait$Type$create(fp64 = list())
+    )
+  )
+
+  expect_identical(
     as_substrait(3.14),
     substrait$Expression$Literal$create(fp64 = 3.14)
   )
