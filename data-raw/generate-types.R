@@ -185,8 +185,7 @@ everything <- generate_tree("substrait")
 
 write_file(glue::glue("
 
-#' Create raw Substrait types
-#'
+#' @rdname substrait_create
 #' @export
 { everything }
 

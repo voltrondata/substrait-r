@@ -1,6 +1,5 @@
 
-#' Create raw Substrait types
-#'
+#' @rdname substrait_create
 #' @export
 substrait <- list(
   AggregationPhase = list(

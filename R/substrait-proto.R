@@ -1,9 +1,24 @@
 
-#' Create 'Substrait' objects
+#' Create 'Substrait' message objects
+#'
+#' The 'Substrait' system of objects is made up of a series of
+#' nested types serializable to the Protocol Buffer binary format.
+#' You can create these objects using [substrait_create()],
+#' or the namespace-style constructor object [substrait]. Convert
+#' an existing object to a Substrait message using [as_substrait()],
+#' and convert an existing object back to an R object using
+#' [from_substrait()].
+#'
+#' Under the hood, substrait objects are [raw()] vectors containing the
+#' underlying binary protocol buffer serialization. This may not be
+#' the case in the future, but is done here to separate the protocol
+#' buffer reader/writer (currently RProtoBuf) from object conversion
+#' to facilitate getting started on the conversion code.
 #'
 #' @param .qualified_name The fully qualified name of the message type
 #'   or enum (e.g., "substrait.Type.Boolean")
-#' @param ... Arguments passed to the constructor.
+#' @param ... Arguments passed to the constructor. rlang-style
+#'   tidy dots are supported.
 #'
 #' @return An object of class "substrait_proto".
 #' @export
@@ -23,6 +38,17 @@ substrait_create <- function(.qualified_name, ...) {
   rlang::eval_tidy(call, env = parent.frame())
 }
 
+substrait_create_constructor_expr <- function(item) {
+  if (length(item) == 1) {
+    call("::", as.symbol("substrait"), as.symbol(item))
+  } else {
+    call(
+      "$",
+      substrait_create_constructor_expr(item[-length(item)]),
+      as.symbol(item[length(item)])
+    )
+  }
+}
 
 #' Convert to and from 'Substrait' messages
 #'
@@ -118,17 +144,6 @@ from_substrait.list <- function(msg, x, ..., recursive = FALSE) {
   out
 }
 
-substrait_create_constructor_expr <- function(item) {
-  if (length(item) == 1) {
-    call("::", as.symbol("substrait"), as.symbol(item))
-  } else {
-    call(
-      "$",
-      substrait_create_constructor_expr(item[-length(item)]),
-      as.symbol(item[length(item)])
-    )
-  }
-}
 
 # The above functions should be the entry point to creating these objects
 # to other code in this package. The below functions are internal and
