@@ -57,6 +57,35 @@ test_that("from_substrait() works for list()", {
   )
 })
 
+test_that("as_substrait() works for substrait", {
+  expect_identical(
+    as_substrait(substrait$Type$Boolean$create()),
+    substrait$Type$Boolean$create()
+  )
+
+  expect_identical(
+    as_substrait(substrait$Type$Boolean$create(), "substrait.Type.Boolean"),
+    substrait$Type$Boolean$create()
+  )
+
+  expect_error(
+    as_substrait(substrait$Type$Boolean$create(), "substrait.Type.Awesome"),
+    "is not TRUE"
+  )
+})
+
+test_that("from_substrait() works for substrait", {
+  expect_identical(
+    from_substrait(substrait$Type$Boolean$create(), substrait$Type$Boolean$create()),
+    substrait$Type$Boolean$create()
+  )
+
+  expect_error(
+    from_substrait(substrait$Type$Boolean$create(), substrait$Type$I8$create()),
+    "is not TRUE"
+  )
+})
+
 test_that("substrait_proto_message class works", {
   expect_identical(
     substrait$Type$Boolean$create(nullability = 1),

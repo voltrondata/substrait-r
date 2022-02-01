@@ -114,6 +114,26 @@ from_substrait.default <- function(msg, x, ...) {
 }
 
 #' @export
+from_substrait.substrait_proto_message <- function(msg, x, ...) {
+  .qualified_name <- gsub("_", ".", class(msg)[1])
+  qualified_name_x <- gsub("_", ".", class(x)[1])
+  stopifnot(identical(.qualified_name, qualified_name_x))
+  msg
+}
+
+#' @export
+as_substrait.substrait_proto_message <- function(x, .qualified_name = NULL, ...) {
+  if (is.null(.qualified_name)) {
+    return(x)
+  }
+
+  x_qualified_name <- gsub("_", ".", class(x)[1])
+  stopifnot(identical(x_qualified_name, .qualified_name))
+
+  x
+}
+
+#' @export
 as_substrait.list <- function(x, .qualified_name = NULL, ...) {
   substrait_create(.qualified_name, !!! x)
 }
