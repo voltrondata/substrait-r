@@ -49,6 +49,11 @@ You can convert an R object *to* a Substrait object using
 #> }
 ```
 
+The `type` can be either a string of the qualified name or an object
+(which is needed to communicate certain types like
+`"substrait.Expression.Literal.Decimal"` which has a `precision` and
+`scale` in addition to the `value`).
+
 Restore an R object *from* a Substrait object using
 `from_substrait(message, prototype)`:
 
