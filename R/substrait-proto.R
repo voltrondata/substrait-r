@@ -253,6 +253,37 @@ print.substrait_proto_message <- function(x, ...) {
 }
 
 #' @export
+names.substrait_proto_message <- function(x) {
+  lst <- from_substrait(x, list())
+  nm <- names(lst)
+  nm %||% rep("", length(x))
+}
+
+#' @export
+`[[.substrait_proto_message` <- function(x, i) {
+  from_substrait(x, list())[[i]]
+}
+
+#' @export
+`[[<-.substrait_proto_message` <- function(x, i, value) {
+  lst <- from_substrait(x, list())
+  lst[[i]] <- value
+  as_substrait(lst, gsub("_", ".", class(x)[1]))
+}
+
+#' @export
+`$.substrait_proto_message` <- function(x, name) {
+  from_substrait(x, list())[[name]]
+}
+
+#' @export
+`$<-.substrait_proto_message` <- function(x, name, value) {
+  lst <- from_substrait(x, list())
+  lst[[name]] <- value
+  as_substrait(lst, gsub("_", ".", class(x)[1]))
+}
+
+#' @export
 print.substrait_proto_enum <- function(x, ...) {
   .qualified_name <- gsub("_", ".", class(x)[1])
   descriptor <- RProtoBuf::P(.qualified_name)
