@@ -137,7 +137,7 @@ test_that("as_substrait() works for integer()", {
 test_that("from_substrait() works for integer()", {
   expect_identical(
     from_substrait(
-      substrait$Expression$Literal$create(fp64 = 3L),
+      substrait$Expression$Literal$create(i32 = 3L),
       integer()
     ),
     3L
