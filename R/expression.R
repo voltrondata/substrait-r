@@ -126,7 +126,7 @@ from_substrait.integer <- function(msg, x, ...) {
   switch(
     .qualified_name,
     "substrait.Expression" = {
-      literal <- x$literal
+      literal <- msg$literal
       if (is.null(literal)) {
         stop("Can't convert non-literal Expression to integer()")
       }
