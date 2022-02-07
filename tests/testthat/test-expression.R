@@ -1,5 +1,7 @@
 
 test_that("as_substrait() works for double()", {
+  # The Substrait representation of a non-NA double(1)
+  # as an Expression is a Literal with the fp64 member set
   expect_identical(
     as_substrait(3.14, "substrait.Expression"),
     substrait$Expression$create(
@@ -7,6 +9,9 @@ test_that("as_substrait() works for double()", {
     )
   )
 
+  # The Substrait representation of an NA double(1)
+  # as an Expression is a Literal with the null member set
+  # to the appropriate type.
   expect_identical(
     as_substrait(NA_real_),
     substrait$Expression$Literal$create(
@@ -14,11 +19,15 @@ test_that("as_substrait() works for double()", {
     )
   )
 
+  # The default representation of a double(1) is a Literal with the
+  # fp64 payload set.
   expect_identical(
     as_substrait(3.14),
     substrait$Expression$Literal$create(fp64 = 3.14)
   )
 
+  # The representation of a double(n) is a Literal$List() of Literals
+  # (which we can create by lapplying along the double())
   expect_identical(
     as_substrait(c(3.14, 3.15), substrait$Expression$Literal$create(list = list())),
     substrait$Expression$Literal$create(
@@ -31,11 +40,26 @@ test_that("as_substrait() works for double()", {
     )
   )
 
+  # Check that we fail when an unexpected type is requested
   expect_error(as_substrait(3.14, "substrait.NotAType"), "Can't create substrait")
   expect_error(as_substrait(c(3.14, 3.15), "substrait.NotAType"), "Can't create substrait")
 })
 
 test_that("from_substrait() works for double()", {
+  # Check that we can extract a double() from an Expression with the literal
+  # member set.
+  expect_identical(
+    from_substrait(
+      substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(fp64 = 3.14)
+      ),
+      double()
+    ),
+    3.14
+  )
+
+  # Check that we can extract a double() from a Literal with the fp64
+  # member set.
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(fp64 = 3.14),
@@ -44,6 +68,8 @@ test_that("from_substrait() works for double()", {
     3.14
   )
 
+  # Check that we can extract a double() from an Expression with
+  # the null member set.
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(
@@ -54,6 +80,8 @@ test_that("from_substrait() works for double()", {
     NA_real_
   )
 
+  # Check that we can extract a double(n) from a Literal with
+  # the list member set.
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(
