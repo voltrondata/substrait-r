@@ -99,6 +99,7 @@ test_that("from_substrait() works for double()", {
 })
 
 test_that("as_substrait() works for integer()", {
+
   expect_identical(
     as_substrait(3L, "substrait.Expression"),
     substrait$Expression$create(
@@ -135,6 +136,17 @@ test_that("as_substrait() works for integer()", {
 })
 
 test_that("from_substrait() works for integer()", {
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(i32 = 3L)
+      ),
+      integer()
+    ),
+    3L
+  )
+
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(i32 = 3L),
