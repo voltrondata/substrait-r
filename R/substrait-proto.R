@@ -139,32 +139,6 @@ as_substrait.list <- function(x, .ptype = NULL, ...) {
   substrait_create(make_qualified_name(.ptype), !!! x)
 }
 
-#' @export
-from_substrait.list <- function(msg, x, ..., recursive = FALSE) {
-  .qualified_name <- make_qualified_name(msg)
-  descriptor <- RProtoBuf::P(.qualified_name)
-  pb_message <- descriptor$read(unclass(msg))
-
-  msg_names <- names(pb_message)
-  msg_names <- msg_names[vapply(msg_names, pb_message$has, logical(1))]
-  out <- lapply(msg_names, function(e) pb_message[[e]])
-  names(out) <- msg_names
-
-  is_message <- vapply(out, inherits, logical(1), "Message")
-  out[is_message] <- lapply(out[is_message], as_substrait)
-
-  if (recursive) {
-    out[is_message] <- lapply(
-      out[is_message],
-      from_substrait.list,
-      list(),
-      recursive = TRUE
-    )
-  }
-
-  out
-}
-
 # these helpers help get the .ptype to and from a .qualified_name
 make_ptype <- function(.qualified_name) {
   if (inherits(.qualified_name, "substrait_proto_message")) {
@@ -272,6 +246,16 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE,
     type,
     TYPE_ENUM = create_substrait_enum(value, .qualified_name),
     TYPE_MESSAGE = {
+      if (repeated && !rlang::is_bare_list(value)) {
+        stop(
+          sprintf(
+            "Repeated %s field must be wrapped in `list()`",
+            .qualified_name
+          ),
+          call. = FALSE
+        )
+      }
+
       if (repeated) {
         lapply(value, clean_value, type, .qualified_name)
       } else if (inherits(value, "Message")) {
@@ -312,32 +296,85 @@ print.substrait_proto_message <- function(x, ...) {
 }
 
 #' @export
+as.list.substrait_proto_message <- function(x, ..., recursive = FALSE) {
+  .qualified_name <- make_qualified_name(x)
+  descriptor <- RProtoBuf::P(.qualified_name)
+  pb_message <- descriptor$read(unclass(x))
+
+  msg_names <- names(pb_message)
+  msg_names <- msg_names[vapply(msg_names, pb_message$has, logical(1))]
+  out <- lapply(msg_names, function(e) pb_message[[e]])
+  names(out) <- msg_names
+
+  fields <- lapply(seq_len(descriptor$field_count()), function(i) descriptor$field(i))
+  names(fields) <- vapply(fields, function(f) f$name(), character(1))
+  is_message <- vapply(
+    names(out),
+    function(name) fields[[name]]$type() == RProtoBuf::TYPE_MESSAGE,
+    logical(1)
+  )
+  is_repeated <- vapply(
+    names(out),
+    function(name) fields[[name]]$is_repeated(),
+    logical(1)
+  )
+
+  out[is_message & is_repeated] <- lapply(
+    out[is_message & is_repeated],
+    lapply,
+    as_substrait
+  )
+
+  out[is_message & !is_repeated] <- lapply(
+    out[is_message & !is_repeated],
+    as_substrait
+  )
+
+  if (recursive) {
+    out[is_message] <- lapply(
+      out[is_message],
+      as.list,
+      list(),
+      recursive = TRUE
+    )
+  }
+
+  out
+}
+
+#' @export
 names.substrait_proto_message <- function(x) {
-  lst <- from_substrait(x, list())
+  lst <- as.list(x)
   nm <- names(lst)
   nm %||% rep("", length(x))
 }
 
 #' @export
+length.substrait_proto_message <- function(x) {
+  lst <- as.list(x)
+  length(lst)
+}
+
+#' @export
 `[[.substrait_proto_message` <- function(x, i) {
-  from_substrait(x, list())[[i]]
+  as.list(x)[[i]]
 }
 
 #' @export
 `[[<-.substrait_proto_message` <- function(x, i, value) {
-  lst <- from_substrait(x, list())
+  lst <- as.list(x)
   lst[[i]] <- value
   as_substrait(lst, gsub("_", ".", class(x)[1]))
 }
 
 #' @export
 `$.substrait_proto_message` <- function(x, name) {
-  from_substrait(x, list())[[name]]
+  as.list(x)[[name]]
 }
 
 #' @export
 `$<-.substrait_proto_message` <- function(x, name, value) {
-  lst <- from_substrait(x, list())
+  lst <- as.list(x)
   lst[[name]] <- value
   as_substrait(lst, gsub("_", ".", class(x)[1]))
 }

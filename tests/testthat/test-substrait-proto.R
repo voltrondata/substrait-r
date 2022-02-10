@@ -44,20 +44,34 @@ test_that("as_substrait() works for list()", {
   )
 })
 
-test_that("from_substrait() works for list()", {
+test_that("as.list() works for substrait objects", {
   msg <- substrait$Type$create(i8 = substrait$Type$Boolean$create())
   expect_identical(
-    from_substrait(msg, list()),
+    as.list(msg),
     list(
       i8 = substrait$Type$I8$create()
     )
   )
 
   expect_identical(
-    from_substrait(msg, list(), recursive = TRUE),
+    as.list(msg, recursive = TRUE),
     list(
       i8 = rlang::set_names(list(), character())
     )
+  )
+
+  # check repeated message values
+  lst <- as.list(
+    substrait$Expression$Literal$List$create(
+      value = list(
+        substrait$Expression$Literal$create(i32 = 5L)
+      )
+    )
+  )
+
+  expect_identical(
+    lst$values[[1]],
+    substrait$Expression$Literal$create(i32 = 5L)
   )
 })
 
@@ -112,10 +126,12 @@ test_that("substrait_proto_message class works", {
 test_that("substrait_proto_message list-like interface works", {
   msg <- substrait$Type$Boolean$create()
   expect_identical(names(msg), character())
+  expect_identical(length(msg), 0L)
 
   msg$nullability <- 1L
   expect_identical(names(msg), "nullability")
   expect_identical(msg$nullability, 1L)
+  expect_identical(length(msg), 1L)
 
   msg[["type_variation_reference"]] <- 393
   expect_identical(names(msg), c("type_variation_reference", "nullability"))
@@ -182,6 +198,16 @@ test_that("repeated message values work", {
       repeated = TRUE
     ),
     list()
+  )
+
+  expect_error(
+    clean_value(
+      raw(),
+      "TYPE_MESSAGE",
+      "substrait.Type.Boolean",
+      repeated = TRUE
+    ),
+    "must be wrapped in `list"
   )
 })
 

@@ -104,14 +104,12 @@ from_substrait.double <- function(msg, x, ...) {
       from_substrait(literal, x)
     },
     "substrait.Expression.Literal" = {
-      lst <- from_substrait(msg, list())
+      lst <- as.list(msg)
       switch(
         names(lst)[1],
         "null" = NA_real_,
         "list" = {
-          # this should probably be fixed in from_substrait()
-          lst2 <- lapply(lst$list$values, as_substrait)
-          vapply(lst2, from_substrait, double(1), double())
+          vapply(lst$list$values, from_substrait, double(1), double())
         },
         as.double(lst[[1]])
       )
@@ -134,14 +132,12 @@ from_substrait.integer <- function(msg, x, ...) {
       from_substrait(literal, x)
     },
     "substrait.Expression.Literal" = {
-      lst <- from_substrait(msg, list())
+      lst <- as.list(msg)
       switch(
         names(lst)[1],
         "null" = NA_integer_,
         "list" = {
-          # this should probably be fixed in from_substrait()
-          lst2 <- lapply(lst$list$values, as_substrait)
-          vapply(lst2, from_substrait, integer(1), integer())
+          vapply(lst$list$values, from_substrait, integer(1), integer())
         },
         as.integer(lst[[1]])
       )
