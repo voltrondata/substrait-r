@@ -13,8 +13,17 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
   switch(
     .qualified_name,
     "substrait.Expression" = {
-      expr <- as_substrait(rlang::quo_get_expr(), "substrait.Expression")
-      rlang::eval_tidy(rlang::quo_set_expr(x, expr))
+      expr <- as_substrait(
+        rlang::quo_get_expr(x),
+        "substrait.Expression",
+        env = rlang::quo_get_env(x),
+        mask = mask,
+        function_type = function_type,
+        fields = fields,
+        functions = functions
+      )
+
+      rlang::eval_tidy(rlang::quo_set_expr(x, expr), data = mask)
     },
     NextMethod()
   )
@@ -35,22 +44,23 @@ as_substrait.call <- function(x, .ptype = NULL, ...,
   switch(
     .qualified_name,
     "substrait.Expression" = {
-      # the name of the function
-      fun_expr <- x[[1]]
-      if (!is.name(fun_expr)) {
-        stop(
-          sprintf(
-            "Error in `%s`: Can't resolve function that is not a symbol",
-            format(x)
-          )
-        )
-      }
-
-      # evaluate the arguments into substrait objects
       tryCatch({
+        # the name of the function
+        fun_expr <- x[[1]]
+        if (!is.name(fun_expr)) {
+          stop(
+            sprintf(
+              "Error in `%s`: Can't resolve function that is not a symbol",
+              format(x)
+            )
+          )
+        }
+
+        # evaluate the arguments into substrait objects
         args_substrait <- lapply(
-          args[-1],
+          x[-1],
           as_substrait,
+          "substrait.Expression",
           functions = functions,
           fields = fields,
           function_type = function_type,
@@ -58,28 +68,16 @@ as_substrait.call <- function(x, .ptype = NULL, ...,
           mask = mask
         )
 
-        fun <- resolve_function_by_name(
+        resolve_function_by_name(
           name = as.character(fun_expr),
           args = args_substrait,
           registry = functions,
           type = function_type
         )
-
-        switch(
-          function_type,
-          "scalar" = substrait$Expression$create(
-            scalar_function = substrait$Expression$ScalarFunction$create(
-              function_reference = fun$function_reference,
-              args = args_substrait,
-              output_type = fun$output_type
-            )
-          ),
-          stop(sprintf("Function type '%s' is not yet supported", function_type))
-        )
       }, error = function(e) {
         rlang::abort(
-          "Error converting call to Substrait",
-          call = x, parent = e
+          sprintf("Error in `%s`", format(x)),
+          parent = e
         )
       })
     },
