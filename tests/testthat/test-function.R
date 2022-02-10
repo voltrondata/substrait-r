@@ -1,4 +1,14 @@
 
+test_that("resolve_function_by_name() works", {
+  registry <- new_function_registry()
+  extension_dir <- system.file("substrait/extensions", package = "substrait")
+  register_functions_yaml(file.path(extension_dir, "functions_arithmetic.yaml"), registry)
+
+  resolved <- resolve_function_by_name("add", list(2, 3), registry)
+  expect_s3_class(resolved, "substrait_Expression")
+  expect_s3_class(resolved$scalar_function, "substrait_Expression_ScalarFunction")
+})
+
 test_that("new_function_registry() works", {
   registry <- new_function_registry()
   expect_setequal(

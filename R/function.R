@@ -19,7 +19,31 @@ resolve_function_by_name <- function(name, args,
     stop(sprintf("No such function: '%s'", name))
   }
 
-  stop("Not implemented")
+  # at this point in the evaluation, all the args should be a typed
+  # field reference or typed literals.
+  args <- lapply(args, as_substrait, .ptype = "substrait.Expression")
+
+  # for now just return the first implementation (no type or name matching)
+  impl <- func$impls[[1]]
+  if (is.null(impl)) {
+    stop(sprintf("Function '%s' has zero implementations", name))
+  }
+
+  # bit of a hack to get a Type object from the yaml-defined thinger
+  return_type_str <- impl$return
+  output_type <- substrait_create("substrait.Type", !! return_type_str := list())
+
+  switch(
+    type,
+    "scalar" = substrait$Expression$create(
+      scalar_function = substrait$Expression$ScalarFunction$create(
+        function_reference = func$.function_reference,
+        args = args,
+        output_type = output_type
+      )
+    ),
+    stop(sprintf("Function type '%s' is not yet supported", function_type))
+  )
 }
 
 #' Register functions
