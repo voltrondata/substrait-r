@@ -1,8 +1,25 @@
 
-resolve_function <- function(name, args = NULL,
-                             registry = default_function_registry(),
-                             type = "scalar") {
+#' Resolve function references
+#'
+#' @param name The function name
+#' @param type One of "scalar", "aggregate" or "windows"
+#' @param args A vector of (possibly named) arguments used to resolve
+#'   an implementation.
+#' @inheritParams register_functions
+#'
+#' @return A Substrait message object of type Expression.ScalarFunction,
+#'   Expression.WindowFunction, or AggregateFunction.
+#' @export
+#'
+resolve_function_by_name <- function(name, args,
+                                     registry = default_function_registry(),
+                                     type = "scalar") {
+  func <- registry[[type]][[name]]
+  if (is.null(func)) {
+    stop(sprintf("No such function: '%s'", name))
+  }
 
+  stop("Not implemented")
 }
 
 #' Register functions
@@ -47,20 +64,36 @@ register_functions <- function(scalar = list(), aggregate = list(),
   for (i in seq_along(scalar)) {
     def <- scalar[[i]]
     name <- if (names(scalar)[i] == "") def$name else names(scalar)[i]
-    existing_def <- registry[["scalar"]][[name]]
-    if (is.null(existing_def)) {
-      def$.function_reference <- registry$.next_function_reference
-      registry$.next_function_reference <- registry$.next_function_reference + 1L
-      registry[["scalar"]][[name]] <- def
-    } else {
-      registry[["scalar"]][[name]]$impls <- c(
-        existing_def$impls,
-        registry[["scalar"]][[name]]$impls
-      )
-    }
+    register_or_add_impls(name, def, registry, "scalar")
+  }
+
+  for (i in seq_along(aggregate)) {
+    def <- aggregate[[i]]
+    name <- if (names(scalar)[i] == "") def$name else names(scalar)[i]
+    register_or_add_impls(name, def, registry, "aggregate")
+  }
+
+  for (i in seq_along(window)) {
+    def <- window[[i]]
+    name <- if (names(scalar)[i] == "") def$name else names(scalar)[i]
+    register_or_add_impls(name, def, registry, "window")
   }
 
   invisible(registry)
+}
+
+register_or_add_impls <- function(name, def, registry, type) {
+  existing_def <- registry[["scalar"]][[name]]
+  if (is.null(existing_def)) {
+    def$.function_reference <- registry$.next_function_reference
+    registry$.next_function_reference <- registry$.next_function_reference + 1L
+    registry[[type]][[name]] <- def
+  } else {
+    registry[[type]][[name]]$impls <- c(
+      existing_def$impls,
+      registry[[type]][[name]]$impls
+    )
+  }
 }
 
 #' @rdname register_functions
@@ -84,7 +117,8 @@ register_functions_yaml <- function(path, registry = default_function_registry()
     register_functions(
       scalar = lst$scalar_functions,
       aggregate = lst$aggregate_functions,
-      window = lst$window_functions
+      window = lst$window_functions,
+      registry = registry
     )
   }
 
