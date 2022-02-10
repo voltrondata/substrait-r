@@ -272,6 +272,16 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE,
     type,
     TYPE_ENUM = create_substrait_enum(value, .qualified_name),
     TYPE_MESSAGE = {
+      if (repeated && !rlang::is_bare_list(value)) {
+        stop(
+          sprintf(
+            "Repeated %s field must be wrapped in `list()`",
+            .qualified_name
+          ),
+          call. = FALSE
+        )
+      }
+
       if (repeated) {
         lapply(value, clean_value, type, .qualified_name)
       } else if (inherits(value, "Message")) {

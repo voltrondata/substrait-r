@@ -183,6 +183,16 @@ test_that("repeated message values work", {
     ),
     list()
   )
+
+  expect_error(
+    clean_value(
+      raw(),
+      "TYPE_MESSAGE",
+      "substrait.Type.Boolean",
+      repeated = TRUE
+    ),
+    "must be wrapped in `list"
+  )
 })
 
 test_that("substrait_proto_enum class works", {
