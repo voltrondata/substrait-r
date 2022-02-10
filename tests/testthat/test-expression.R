@@ -1,185 +1,60 @@
 
-test_that("as_substrait() works for double()", {
-  # The Substrait representation of a non-NA double(1)
-  # as an Expression is a Literal with the fp64 member set
+test_that("quosures can be translated to Expression objects", {
   expect_identical(
-    as_substrait(3.14, "substrait.Expression"),
-    substrait$Expression$create(
-      literal = substrait$Expression$Literal$create(fp64 = 3.14)
-    )
+    as_substrait(rlang::quo(5)),
+    as_substrait(5, "substrait.Expression")
   )
 
-  # The Substrait representation of an NA double(1)
-  # as an Expression is a Literal with the null member set
-  # to the appropriate type.
+  some_value <- 5
   expect_identical(
-    as_substrait(NA_real_),
-    substrait$Expression$Literal$create(
-      null = substrait$Type$create(fp64 = list())
-    )
+    as_substrait(rlang::quo(some_value)),
+    as_substrait(5, "substrait.Expression")
   )
 
-  # The default representation of a double(1) is a Literal with the
-  # fp64 payload set.
-  expect_identical(
-    as_substrait(3.14),
-    substrait$Expression$Literal$create(fp64 = 3.14)
-  )
-
-  # The representation of a double(n) is a Literal$List() of Literals
-  # (which we can create by lapplying along the double())
-  expect_identical(
-    as_substrait(c(3.14, 3.15), substrait$Expression$Literal$create(list = list())),
-    substrait$Expression$Literal$create(
-      list = substrait$Expression$Literal$List$create(
-        list(
-          as_substrait(3.14),
-          as_substrait(3.15)
-        )
-      )
-    )
-  )
-
-  # Check that we fail when an unexpected type is requested
-  expect_error(as_substrait(3.14, "substrait.NotAType"), "Can't create substrait")
-  expect_error(as_substrait(c(3.14, 3.15), "substrait.NotAType"), "Can't create substrait")
-})
-
-test_that("from_substrait() works for double()", {
-  # Check that we can extract a double() from an Expression with the literal
-  # member set.
-  expect_identical(
-    from_substrait(
-      substrait$Expression$create(
-        literal = substrait$Expression$Literal$create(fp64 = 3.14)
-      ),
-      double()
-    ),
-    3.14
-  )
-
-  # Check that we can extract a double() from a Literal with the fp64
-  # member set.
-  expect_identical(
-    from_substrait(
-      substrait$Expression$Literal$create(fp64 = 3.14),
-      double()
-    ),
-    3.14
-  )
-
-  # Check that we can extract a double() from an Expression with
-  # the null member set.
-  expect_identical(
-    from_substrait(
-      substrait$Expression$Literal$create(
-        null = substrait$Type$create(fp64 = list())
-      ),
-      double()
-    ),
-    NA_real_
-  )
-
-  # Check that we can extract a double(n) from a Literal with
-  # the list member set.
-  expect_identical(
-    from_substrait(
-      substrait$Expression$Literal$create(
-        list = substrait$Expression$Literal$List$create(
-          list(
-            as_substrait(3.14),
-            as_substrait(3.15)
-          )
-        )
-      ),
-      double()
-    ),
-    c(3.14, 3.15)
+  expect_error(
+    as_substrait(rlang::quo(stuff), "not.A.Type"),
+    "Can't create not.A.Type"
   )
 })
 
-test_that("as_substrait() works for integer()", {
+test_that("calls can be translated to Expression objects", {
+  registry <- new_function_registry()
+  extension_dir <- system.file("substrait/extensions", package = "substrait")
+  register_functions_yaml(file.path(extension_dir, "functions_arithmetic.yaml"), registry)
 
-  expect_identical(
-    as_substrait(3L, "substrait.Expression"),
-    substrait$Expression$create(
-      literal = substrait$Expression$Literal$create(i32 = 3)
-    )
+  resolved <- as_substrait(quote(add(5, 5)), functions = registry)
+  expect_s3_class(resolved, "substrait_Expression")
+  expect_s3_class(resolved$scalar_function, "substrait_Expression_ScalarFunction")
+
+  expect_error(
+    as_substrait(quote(pkg::not_a_function())),
+    "Can't resolve function"
   )
 
-  expect_identical(
-    as_substrait(NA_integer_),
-    substrait$Expression$Literal$create(
-      null = substrait$Type$create(i32 = list())
-    )
+  expect_error(
+    as_substrait(quote(not_a_function())),
+    "No such function"
   )
 
-  expect_identical(
-    as_substrait(3L),
-    substrait$Expression$Literal$create(i32 = 3)
-  )
-
-  expect_identical(
-    as_substrait(c(3L, 4L), substrait$Expression$Literal$create(list = list())),
-    substrait$Expression$Literal$create(
-      list = substrait$Expression$Literal$List$create(
-        list(
-          as_substrait(3L),
-          as_substrait(4L)
-        )
-      )
-    )
-  )
-
-  expect_error(as_substrait(3L, "substrait.NotAType"), "Can't create substrait")
-  expect_error(as_substrait(c(3L, 4L), "substrait.NotAType"), "Can't create substrait")
-})
-
-test_that("from_substrait() works for integer()", {
-
-  expect_identical(
-    from_substrait(
-      substrait$Expression$create(
-        literal = substrait$Expression$Literal$create(i32 = 3L)
-      ),
-      integer()
-    ),
-    3L
-  )
-
-  expect_identical(
-    from_substrait(
-      substrait$Expression$Literal$create(i32 = 3L),
-      integer()
-    ),
-    3L
-  )
-
-  expect_identical(
-    from_substrait(
-      substrait$Expression$Literal$create(
-        null = substrait$Type$create(i32 = list())
-      ),
-      integer()
-    ),
-    NA_integer_
-  )
-
-  expect_identical(
-    from_substrait(
-      substrait$Expression$Literal$create(
-        list = substrait$Expression$Literal$List$create(
-          list(
-            as_substrait(3L),
-            as_substrait(4L)
-          )
-        )
-      ),
-      integer()
-    ),
-    c(3L, 4L)
+  expect_error(
+    as_substrait(call("something"), "not.A.Type"),
+    "Can't create not.A.Type"
   )
 })
 
+test_that("symbols can be translated to expression objects", {
+  expect_identical(
+    as_substrait(as.symbol("sym"), fields = list(sym = "some_field")),
+    "some_field"
+  )
 
+  expect_identical(
+    as_substrait(as.symbol("sym"), env = as.environment(list(sym = 5))),
+    as_substrait(5, "substrait.Expression")
+  )
 
+  expect_error(
+    as_substrait(as.symbol("sym"), "not.A.Type"),
+    "Can't create not.A.Type"
+  )
+})

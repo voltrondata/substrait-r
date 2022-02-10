@@ -23,10 +23,9 @@ test_that("from_substrait() default errors work", {
   )
 })
 
-test_that("as_substrait() works for list()", {
-  msg <- as_substrait(list(nullability = 1), "substrait.Type.Boolean")
+test_that("substrait_create() works for list()", {
   expect_identical(
-    as_substrait(list(nullability = 1), "substrait.Type.Boolean"),
+    substrait_create("substrait.Type.Boolean", nullability = 1),
     structure(
       as.raw(c(0x10, 0x01)),
       class = c(
@@ -39,7 +38,7 @@ test_that("as_substrait() works for list()", {
 
   # check a recursive list
   expect_identical(
-    as_substrait(list(i8 = list()), "substrait.Type"),
+    substrait_create("substrait.Type", i8 = list()),
     substrait$Type$create(i8 = substrait$Type$I8$create())
   )
 })

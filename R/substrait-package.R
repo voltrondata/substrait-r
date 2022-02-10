@@ -3,7 +3,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom rlang %||%
+#' @importFrom rlang %||% :=
 #' @useDynLib substrait, .registration = TRUE
 ## usethis namespace: end
 NULL
