@@ -42,7 +42,7 @@ resolve_function_by_name <- function(name, args,
         output_type = output_type
       )
     ),
-    stop(sprintf("Function type '%s' is not yet supported", function_type))
+    stop(sprintf("Function type '%s' is not yet supported", type))
   )
 }
 

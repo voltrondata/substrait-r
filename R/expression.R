@@ -32,7 +32,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
 #' @export
 as_substrait.call <- function(x, .ptype = NULL, ...,
                               functions = default_function_registry(),
-                              fields = default_field_registry(),
+                              fields = list(),
                               function_type = "scalar",
                               env = parent.frame(),
                               mask = NULL) {
