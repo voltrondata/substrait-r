@@ -65,10 +65,7 @@ substrait_create_constructor_expr <- function(item) {
 #' @export
 #'
 #' @examples
-#' as_substrait(
-#'   list(type_variation_reference = 1, nullability = 2),
-#'   "substrait.Type.Boolean"
-#' )
+#' as_substrait(substrait$Type$Boolean$create(1, 2))
 #'
 as_substrait <- function(x, .ptype = NULL, ...) {
   UseMethod("as_substrait")
