@@ -112,10 +112,12 @@ test_that("substrait_proto_message class works", {
 test_that("substrait_proto_message list-like interface works", {
   msg <- substrait$Type$Boolean$create()
   expect_identical(names(msg), character())
+  expect_identical(length(msg), 0L)
 
   msg$nullability <- 1L
   expect_identical(names(msg), "nullability")
   expect_identical(msg$nullability, 1L)
+  expect_identical(length(msg), 1L)
 
   msg[["type_variation_reference"]] <- 393
   expect_identical(names(msg), c("type_variation_reference", "nullability"))

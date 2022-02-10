@@ -141,28 +141,7 @@ as_substrait.list <- function(x, .ptype = NULL, ...) {
 
 #' @export
 from_substrait.list <- function(msg, x, ..., recursive = FALSE) {
-  .qualified_name <- make_qualified_name(msg)
-  descriptor <- RProtoBuf::P(.qualified_name)
-  pb_message <- descriptor$read(unclass(msg))
-
-  msg_names <- names(pb_message)
-  msg_names <- msg_names[vapply(msg_names, pb_message$has, logical(1))]
-  out <- lapply(msg_names, function(e) pb_message[[e]])
-  names(out) <- msg_names
-
-  is_message <- vapply(out, inherits, logical(1), "Message")
-  out[is_message] <- lapply(out[is_message], as_substrait)
-
-  if (recursive) {
-    out[is_message] <- lapply(
-      out[is_message],
-      from_substrait.list,
-      list(),
-      recursive = TRUE
-    )
-  }
-
-  out
+  as.list(msg, recursive = recursive)
 }
 
 # these helpers help get the .ptype to and from a .qualified_name
@@ -322,10 +301,42 @@ print.substrait_proto_message <- function(x, ...) {
 }
 
 #' @export
+as.list.substrait_proto_message <- function(x, ..., recursive = FALSE) {
+  .qualified_name <- make_qualified_name(x)
+  descriptor <- RProtoBuf::P(.qualified_name)
+  pb_message <- descriptor$read(unclass(x))
+
+  msg_names <- names(pb_message)
+  msg_names <- msg_names[vapply(msg_names, pb_message$has, logical(1))]
+  out <- lapply(msg_names, function(e) pb_message[[e]])
+  names(out) <- msg_names
+
+  is_message <- vapply(out, inherits, logical(1), "Message")
+  out[is_message] <- lapply(out[is_message], as_substrait)
+
+  if (recursive) {
+    out[is_message] <- lapply(
+      out[is_message],
+      from_substrait.list,
+      list(),
+      recursive = TRUE
+    )
+  }
+
+  out
+}
+
+#' @export
 names.substrait_proto_message <- function(x) {
   lst <- from_substrait(x, list())
   nm <- names(lst)
   nm %||% rep("", length(x))
+}
+
+#' @export
+length.substrait_proto_message <- function(x) {
+  lst <- from_substrait(x, list())
+  length(lst)
 }
 
 #' @export
