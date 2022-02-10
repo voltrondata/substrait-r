@@ -134,11 +134,6 @@ as_substrait.substrait_proto_message <- function(x, .ptype = NULL, ...) {
   x
 }
 
-#' @export
-as_substrait.list <- function(x, .ptype = NULL, ...) {
-  substrait_create(make_qualified_name(.ptype), !!! x)
-}
-
 # these helpers help get the .ptype to and from a .qualified_name
 make_ptype <- function(.qualified_name) {
   if (inherits(.qualified_name, "substrait_proto_message")) {
@@ -236,8 +231,7 @@ unspecified <- function() {
   structure(list(), class = "substrait_proto_unspecified")
 }
 
-clean_value <- function(value, type, .qualified_name, repeated = FALSE,
-                        call_as_substrait = TRUE) {
+clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
   if (inherits(value, "substrait_proto_unspecified")) {
     return(value)
   }
@@ -263,16 +257,19 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE,
       } else if (inherits(value, "substrait_proto_message")) {
         descriptor <- RProtoBuf::P(.qualified_name)
         return(descriptor$read(unclass(value)))
-      } else if (call_as_substrait) {
+      } else if (is.list(value)) {
         clean_value(
-          as_substrait(value, .qualified_name),
+          substrait_create(.qualified_name, !!! value),
           type,
-          .qualified_name,
-          call_as_substrait = FALSE
+          .qualified_name
         )
       } else {
         stop(
-          "as_substrait() did not return an RProtoBuf::Message or substrait_proto_message",
+          sprintf(
+            "Can't create %s from object of type %s",
+            .qualified_name,
+            paste0("'", class(value), "'", collapse = " / ")
+          ),
           call. = FALSE
         )
       }
@@ -364,7 +361,7 @@ length.substrait_proto_message <- function(x) {
 `[[<-.substrait_proto_message` <- function(x, i, value) {
   lst <- as.list(x)
   lst[[i]] <- value
-  as_substrait(lst, gsub("_", ".", class(x)[1]))
+  substrait_create(gsub("_", ".", class(x)[1]), !!! lst)
 }
 
 #' @export
@@ -376,7 +373,7 @@ length.substrait_proto_message <- function(x) {
 `$<-.substrait_proto_message` <- function(x, name, value) {
   lst <- as.list(x)
   lst[[name]] <- value
-  as_substrait(lst, gsub("_", ".", class(x)[1]))
+  substrait_create(gsub("_", ".", class(x)[1]), !!! lst)
 }
 
 #' @export
