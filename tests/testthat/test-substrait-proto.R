@@ -44,20 +44,35 @@ test_that("as_substrait() works for list()", {
   )
 })
 
-test_that("from_substrait() works for list()", {
+test_that("as.list() works for substrait objects", {
   msg <- substrait$Type$create(i8 = substrait$Type$Boolean$create())
   expect_identical(
-    from_substrait(msg, list()),
+    as.list(msg),
     list(
       i8 = substrait$Type$I8$create()
     )
   )
 
   expect_identical(
-    from_substrait(msg, list(), recursive = TRUE),
+    as.list(msg, recursive = TRUE),
     list(
       i8 = rlang::set_names(list(), character())
     )
+  )
+
+  # check repeated message values
+  lst <- from_substrait(
+    substrait$Expression$Literal$List$create(
+      value = list(
+        substrait$Expression$Literal$create(i32 = 5L)
+      )
+    ),
+    list()
+  )
+
+  expect_identical(
+    lst$values[[1]],
+    substrait$Expression$Literal$create(i32 = 5L)
   )
 })
 

@@ -311,8 +311,29 @@ as.list.substrait_proto_message <- function(x, ..., recursive = FALSE) {
   out <- lapply(msg_names, function(e) pb_message[[e]])
   names(out) <- msg_names
 
-  is_message <- vapply(out, inherits, logical(1), "Message")
-  out[is_message] <- lapply(out[is_message], as_substrait)
+  fields <- lapply(seq_len(descriptor$field_count()), function(i) descriptor$field(i))
+  names(fields) <- vapply(fields, function(f) f$name(), character(1))
+  is_message <- vapply(
+    names(out),
+    function(name) fields[[name]]$type() == RProtoBuf::TYPE_MESSAGE,
+    logical(1)
+  )
+  is_repeated <- vapply(
+    names(out),
+    function(name) fields[[name]]$is_repeated(),
+    logical(1)
+  )
+
+  out[is_message & is_repeated] <- lapply(
+    out[is_message & is_repeated],
+    lapply,
+    as_substrait
+  )
+
+  out[is_message & !is_repeated] <- lapply(
+    out[is_message & !is_repeated],
+    as_substrait
+  )
 
   if (recursive) {
     out[is_message] <- lapply(
