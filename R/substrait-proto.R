@@ -139,11 +139,6 @@ as_substrait.list <- function(x, .ptype = NULL, ...) {
   substrait_create(make_qualified_name(.ptype), !!! x)
 }
 
-#' @export
-from_substrait.list <- function(msg, x, ..., recursive = FALSE) {
-  as.list(msg, recursive = recursive)
-}
-
 # these helpers help get the .ptype to and from a .qualified_name
 make_ptype <- function(.qualified_name) {
   if (inherits(.qualified_name, "substrait_proto_message")) {
@@ -338,7 +333,7 @@ as.list.substrait_proto_message <- function(x, ..., recursive = FALSE) {
   if (recursive) {
     out[is_message] <- lapply(
       out[is_message],
-      from_substrait.list,
+      as.list,
       list(),
       recursive = TRUE
     )
@@ -349,37 +344,37 @@ as.list.substrait_proto_message <- function(x, ..., recursive = FALSE) {
 
 #' @export
 names.substrait_proto_message <- function(x) {
-  lst <- from_substrait(x, list())
+  lst <- as.list(x)
   nm <- names(lst)
   nm %||% rep("", length(x))
 }
 
 #' @export
 length.substrait_proto_message <- function(x) {
-  lst <- from_substrait(x, list())
+  lst <- as.list(x)
   length(lst)
 }
 
 #' @export
 `[[.substrait_proto_message` <- function(x, i) {
-  from_substrait(x, list())[[i]]
+  as.list(x)[[i]]
 }
 
 #' @export
 `[[<-.substrait_proto_message` <- function(x, i, value) {
-  lst <- from_substrait(x, list())
+  lst <- as.list(x)
   lst[[i]] <- value
   as_substrait(lst, gsub("_", ".", class(x)[1]))
 }
 
 #' @export
 `$.substrait_proto_message` <- function(x, name) {
-  from_substrait(x, list())[[name]]
+  as.list(x)[[name]]
 }
 
 #' @export
 `$<-.substrait_proto_message` <- function(x, name, value) {
-  lst <- from_substrait(x, list())
+  lst <- as.list(x)
   lst[[name]] <- value
   as_substrait(lst, gsub("_", ".", class(x)[1]))
 }

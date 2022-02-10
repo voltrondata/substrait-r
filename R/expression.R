@@ -104,7 +104,7 @@ from_substrait.double <- function(msg, x, ...) {
       from_substrait(literal, x)
     },
     "substrait.Expression.Literal" = {
-      lst <- from_substrait(msg, list())
+      lst <- as.list(msg)
       switch(
         names(lst)[1],
         "null" = NA_real_,
@@ -132,7 +132,7 @@ from_substrait.integer <- function(msg, x, ...) {
       from_substrait(literal, x)
     },
     "substrait.Expression.Literal" = {
-      lst <- from_substrait(msg, list())
+      lst <- as.list(msg)
       switch(
         names(lst)[1],
         "null" = NA_integer_,
