@@ -1,18 +1,8 @@
 
+resolve_function <- function(name, args = NULL,
+                             registry = default_function_registry(),
+                             type = "scalar") {
 
-resolve_function_scalar <- function(name, args = list(),
-                                    registry = default_function_registry()) {
-
-}
-
-resolve_function_window <- function(name, args = list(),
-                                    registry = default_function_registry()) {
-  stop("Not implemented")
-}
-
-resolve_function_aggregate <- function(name, args = list(),
-                                       registry = default_function_registry()) {
-  stop("Not implemented")
 }
 
 #' Register functions
@@ -38,13 +28,67 @@ resolve_function_aggregate <- function(name, args = list(),
 register_functions <- function(scalar = list(), aggregate = list(),
                                window = list(),
                                registry = default_function_registry()) {
-  stop("Not implemented")
+  scalar <- as.list(scalar)
+  aggregate <- as.list(aggregate)
+  window <- as.list(window)
+
+  if (is.null(names(scalar))) {
+    names(scalar) <- rep("", length(scalar))
+  }
+
+  if (is.null(names(aggregate))) {
+    names(aggregate) <- rep("", length(aggregate))
+  }
+
+  if (is.null(names(window))) {
+    names(window) <- rep("", length(window))
+  }
+
+  for (i in seq_along(scalar)) {
+    def <- scalar[[i]]
+    name <- if (names(scalar)[i] == "") def$name else names(scalar)[i]
+    existing_def <- registry[["scalar"]][[name]]
+    if (is.null(existing_def)) {
+      def$.function_reference <- registry$.next_function_reference
+      registry$.next_function_reference <- registry$.next_function_reference + 1L
+      registry[["scalar"]][[name]] <- def
+    } else {
+      registry[["scalar"]][[name]]$impls <- c(
+        existing_def$impls,
+        registry[["scalar"]][[name]]$impls
+      )
+    }
+  }
+
+  invisible(registry)
 }
 
 #' @rdname register_functions
 #' @export
 register_functions_yaml <- function(path, registry = default_function_registry()) {
-  stop("Not implemented")
+  for (file in path) {
+    # because YAML 1.2 is not supported by the yaml package and the
+    # % YAML 1.2 header line causes a syntax error
+    con <- file(file, encoding = "UTF-8")
+    lines <- try(readLines(con), silent = TRUE)
+    close(con)
+    if (inherits(lines, "try-error")) {
+      stop(as.character(lines), call. = FALSE)
+    }
+
+    lst <- yaml::read_yaml(
+      text = paste0(lines[-(1:2)], collapse = "\n"),
+      eval.expr = FALSE
+    )
+
+    register_functions(
+      scalar = lst$scalar_functions,
+      aggregate = lst$aggregate_functions,
+      window = lst$window_functions
+    )
+  }
+
+  invisible(registry)
 }
 
 #' @rdname register_functions
@@ -57,10 +101,16 @@ default_function_registry <- function() {
 #' @export
 new_function_registry <- function() {
   # following the structure of dbplyr::dbplyr_sql_translation()
-  list(
+  lst <- list(
     scalar = new.env(parent = emptyenv()),
     aggregate = new.env(parent = emptyenv()),
-    window = new.env(parent = emptyenv())
+    window = new.env(parent = emptyenv()),
+    .next_function_reference = 1L
+  )
+
+  structure(
+    as.environment(lst),
+    class = "substrait_function_registry"
   )
 }
 
