@@ -831,10 +831,10 @@ substrait <- list(
   Plan = list(
     create = function(extension_uris = unspecified(), extensions = unspecified(), relations = unspecified(), advanced_extensions = unspecified(), expected_type_urls = unspecified()) {
       create_substrait_message(
-        extension_uris = clean_value(extension_uris, "TYPE_MESSAGE", "substrait.SimpleExtensionURI", repeated = TRUE),
-        extensions = clean_value(extensions, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration", repeated = TRUE),
+        extension_uris = clean_value(extension_uris, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionURI", repeated = TRUE),
+        extensions = clean_value(extensions, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration", repeated = TRUE),
         relations = clean_value(relations, "TYPE_MESSAGE", "substrait.PlanRel", repeated = TRUE),
-        advanced_extensions = clean_value(advanced_extensions, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extensions = clean_value(advanced_extensions, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         expected_type_urls = clean_value(expected_type_urls, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
         .qualified_name = "substrait.Plan"
       )
@@ -873,7 +873,7 @@ substrait <- list(
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         groupings = clean_value(groupings, "TYPE_MESSAGE", "substrait.AggregateRel.Grouping", repeated = TRUE),
         measures = clean_value(measures, "TYPE_MESSAGE", "substrait.AggregateRel.Measure", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.AggregateRel"
       )
     }
@@ -914,7 +914,7 @@ substrait <- list(
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         offset = clean_value(offset, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
         count = clean_value(count, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.FetchRel"
       )
     }
@@ -925,7 +925,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         condition = clean_value(condition, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.FilterRel"
       )
     }
@@ -954,7 +954,7 @@ substrait <- list(
         expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
         post_join_filter = clean_value(post_join_filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
         type = clean_value(type, "TYPE_ENUM", "substrait.JoinRel.JoinType", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.JoinRel"
       )
     }
@@ -965,7 +965,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         expressions = clean_value(expressions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.ProjectRel"
       )
     }
@@ -1008,7 +1008,7 @@ substrait <- list(
       create = function(items = unspecified(), advanced_extension = unspecified()) {
         create_substrait_message(
           items = clean_value(items, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles", repeated = TRUE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
           .qualified_name = "substrait.ReadRel.LocalFiles"
         )
       }
@@ -1017,7 +1017,7 @@ substrait <- list(
       create = function(names = unspecified(), advanced_extension = unspecified()) {
         create_substrait_message(
           names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
           .qualified_name = "substrait.ReadRel.NamedTable"
         )
       }
@@ -1036,7 +1036,7 @@ substrait <- list(
         base_schema = clean_value(base_schema, "TYPE_MESSAGE", "substrait.NamedStruct", repeated = FALSE),
         filter = clean_value(filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
         projection = clean_value(projection, "TYPE_MESSAGE", "substrait.Expression.MaskExpression", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         virtual_table = clean_value(virtual_table, "TYPE_MESSAGE", "substrait.ReadRel.VirtualTable", repeated = FALSE),
         local_files = clean_value(local_files, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles", repeated = FALSE),
         named_table = clean_value(named_table, "TYPE_MESSAGE", "substrait.ReadRel.NamedTable", repeated = FALSE),
@@ -1079,7 +1079,7 @@ substrait <- list(
       RuntimeConstraint = list(
         create = function(advanced_extension = unspecified()) {
           create_substrait_message(
-            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
             .qualified_name = "substrait.RelCommon.Hint.RuntimeConstraint"
           )
         }
@@ -1089,7 +1089,7 @@ substrait <- list(
           create_substrait_message(
             row_count = clean_value(row_count, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
             record_size = clean_value(record_size, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
-            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
             .qualified_name = "substrait.RelCommon.Hint.Stats"
           )
         }
@@ -1098,7 +1098,7 @@ substrait <- list(
         create_substrait_message(
           stats = clean_value(stats, "TYPE_MESSAGE", "substrait.RelCommon.Hint.Stats", repeated = FALSE),
           constraint = clean_value(constraint, "TYPE_MESSAGE", "substrait.RelCommon.Hint.RuntimeConstraint", repeated = FALSE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
           .qualified_name = "substrait.RelCommon.Hint"
         )
       }
@@ -1108,7 +1108,7 @@ substrait <- list(
         direct = clean_value(direct, "TYPE_MESSAGE", "substrait.RelCommon.Direct", repeated = FALSE),
         emit = clean_value(emit, "TYPE_MESSAGE", "substrait.RelCommon.Emit", repeated = FALSE),
         hint = clean_value(hint, "TYPE_MESSAGE", "substrait.RelCommon.Hint", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.RelCommon"
       )
     }
@@ -1143,7 +1143,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
         op = clean_value(op, "TYPE_ENUM", "substrait.SetRel.SetOp", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.SetRel"
       )
     }
@@ -1154,7 +1154,7 @@ substrait <- list(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         sorts = clean_value(sorts, "TYPE_MESSAGE", "substrait.SortField", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.AdvancedExtension", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
         .qualified_name = "substrait.SortRel"
       )
     }
@@ -1666,9 +1666,9 @@ substrait <- list(
       ),
       create = function(extension_type = unspecified(), extension_type_variation = unspecified(), extension_function = unspecified()) {
         create_substrait_message(
-          extension_type = clean_value(extension_type, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration.ExtensionType", repeated = FALSE),
-          extension_type_variation = clean_value(extension_type_variation, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration.ExtensionTypeVariation", repeated = FALSE),
-          extension_function = clean_value(extension_function, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration.ExtensionFunction", repeated = FALSE),
+          extension_type = clean_value(extension_type, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionType", repeated = FALSE),
+          extension_type_variation = clean_value(extension_type_variation, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionTypeVariation", repeated = FALSE),
+          extension_function = clean_value(extension_function, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction", repeated = FALSE),
           .qualified_name = "substrait.extensions.SimpleExtensionDeclaration"
         )
       }
