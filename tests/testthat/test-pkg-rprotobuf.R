@@ -50,3 +50,11 @@ test_that("as_substrait() works for RProtoBuf Message", {
     "is not TRUE"
   )
 })
+
+test_that("rprotobuf_descriptor_to_class() works for extension proto types", {
+  d <- RProtoBuf::P("substrait.extensions.SimpleExtensionDeclaration")
+  expect_identical(
+    rprotobuf_descriptor_to_class(d),
+    c("extensions", "SimpleExtensionDeclaration")
+  )
+})
