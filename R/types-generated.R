@@ -1622,5 +1622,65 @@ substrait <- list(
         .qualified_name = "substrait.Type"
       )
     }
+  ),
+  extensions = list(
+    AdvancedExtension = list(
+      create = function(optimization = unspecified(), enhancement = unspecified()) {
+        create_substrait_message(
+          optimization = clean_value(optimization, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+          enhancement = clean_value(enhancement, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+          .qualified_name = "substrait.extensions.AdvancedExtension"
+        )
+      }
+    ),
+    SimpleExtensionDeclaration = list(
+      ExtensionFunction = list(
+        create = function(extension_uri_reference = unspecified(), function_anchor = unspecified(), name = unspecified()) {
+          create_substrait_message(
+            extension_uri_reference = clean_value(extension_uri_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            function_anchor = clean_value(function_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+            .qualified_name = "substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction"
+          )
+        }
+      ),
+      ExtensionType = list(
+        create = function(extension_uri_reference = unspecified(), type_anchor = unspecified(), name = unspecified()) {
+          create_substrait_message(
+            extension_uri_reference = clean_value(extension_uri_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            type_anchor = clean_value(type_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+            .qualified_name = "substrait.extensions.SimpleExtensionDeclaration.ExtensionType"
+          )
+        }
+      ),
+      ExtensionTypeVariation = list(
+        create = function(extension_uri_reference = unspecified(), type_variation_anchor = unspecified(), name = unspecified()) {
+          create_substrait_message(
+            extension_uri_reference = clean_value(extension_uri_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            type_variation_anchor = clean_value(type_variation_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+            .qualified_name = "substrait.extensions.SimpleExtensionDeclaration.ExtensionTypeVariation"
+          )
+        }
+      ),
+      create = function(extension_type = unspecified(), extension_type_variation = unspecified(), extension_function = unspecified()) {
+        create_substrait_message(
+          extension_type = clean_value(extension_type, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration.ExtensionType", repeated = FALSE),
+          extension_type_variation = clean_value(extension_type_variation, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration.ExtensionTypeVariation", repeated = FALSE),
+          extension_function = clean_value(extension_function, "TYPE_MESSAGE", "substrait.SimpleExtensionDeclaration.ExtensionFunction", repeated = FALSE),
+          .qualified_name = "substrait.extensions.SimpleExtensionDeclaration"
+        )
+      }
+    ),
+    SimpleExtensionURI = list(
+      create = function(extension_uri_anchor = unspecified(), uri = unspecified()) {
+        create_substrait_message(
+          extension_uri_anchor = clean_value(extension_uri_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+          uri = clean_value(uri, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+          .qualified_name = "substrait.extensions.SimpleExtensionURI"
+        )
+      }
+    )
   )
 )
