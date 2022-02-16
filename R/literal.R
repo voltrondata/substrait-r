@@ -54,6 +54,10 @@ from_substrait.vctrs_unspecified <- function(msg, x, ...) {
     .qualified_name,
     "substrait.Type" = {
       type <- names(msg)
+      if (length(type) == 0) {
+        return(vctrs::unspecified())
+      }
+
       switch(
         type,
         "bool_" = logical(),
@@ -262,6 +266,10 @@ from_substrait.double <- function(msg, x, ...) {
     .qualified_name,
     "substrait.Type" = {
       type <- names(msg)
+      if (length(type) == 0) {
+        return(double())
+      }
+
       if (!identical(type, "fp64")) {
         stop(sprintf("Can't convert substrait.Type<%s> to double() ptype", type))
       }
@@ -297,6 +305,10 @@ from_substrait.integer <- function(msg, x, ...) {
     .qualified_name,
     "substrait.Type" = {
       type <- names(msg)
+      if (length(type) == 0) {
+        return(integer())
+      }
+
       if (!identical(type, "i32")) {
         stop(sprintf("Can't convert substrait.Type<%s> to integer() ptype", type))
       }
@@ -332,6 +344,10 @@ from_substrait.logical <- function(msg, x, ...) {
     .qualified_name,
     "substrait.Type" = {
       type <- names(msg)
+      if (length(type) == 0) {
+        return(logical())
+      }
+
       if (!identical(type, "bool_")) {
         stop(sprintf("Can't convert substrait.Type<%s> to logical() ptype", type))
       }
@@ -367,6 +383,10 @@ from_substrait.character <- function(msg, x, ...) {
     .qualified_name,
     "substrait.Type" = {
       type <- names(msg)
+      if (length(type) == 0) {
+        return(character())
+      }
+
       if (!identical(type, "string")) {
         stop(sprintf("Can't convert substrait.Type<%s> to character() ptype", type))
       }
