@@ -1,5 +1,27 @@
 
 #' @export
+as_substrait.data.frame <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    stop("Can't guess default .ptype for as_substrait(<data.frame>)")
+  }
+
+  .qualified_name <- make_qualified_name(.ptype)
+  switch(
+    .qualified_name,
+    "substrait.NamedStruct" = {
+      types <- lapply(x, as_substrait, "substrait.Type")
+      substrait$NamedStruct$create(
+        names = names(x),
+        struct_ = substrait$Type$Struct$create(
+          types = types
+        )
+      )
+    },
+    NextMethod()
+  )
+}
+
+#' @export
 as_substrait.double <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
     .ptype <- substrait$Expression$Literal$create(fp64 = NaN)

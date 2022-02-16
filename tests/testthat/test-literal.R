@@ -1,4 +1,24 @@
 
+test_that("as_substrait() works for data.frame()", {
+  expect_identical(
+    as_substrait(data.frame(a_field = integer()), "substrait.NamedStruct"),
+    substrait$NamedStruct$create(
+      names = "a_field",
+      struct_ = substrait$Type$Struct$create(
+        types = list(
+          substrait$Type$create(i32 = list())
+        )
+      )
+    )
+  )
+
+  expect_error(as_substrait(data.frame()), "Can't guess default")
+  expect_error(
+    as_substrait(data.frame(), "not.A.Type"),
+    "Can't create not.A.Type"
+  )
+})
+
 test_that("as_substrait() works for double()", {
   # The substrait.Type representation of a double() is a Type with the
   # fp64 member set and unknown nullability
