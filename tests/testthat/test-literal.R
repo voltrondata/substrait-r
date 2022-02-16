@@ -1,5 +1,12 @@
 
 test_that("as_substrait() works for double()", {
+  # The substrait.Type representation of a double() is a Type with the
+  # fp64 member set and unknown nullability
+  expect_identical(
+    as_substrait(3.14, "substrait.Type"),
+    substrait$Type$create(fp64 = list())
+  )
+
   # The Substrait representation of a non-NA double(1)
   # as an Expression is a Literal with the fp64 member set
   expect_identical(
@@ -99,6 +106,10 @@ test_that("from_substrait() works for double()", {
 })
 
 test_that("as_substrait() works for integer()", {
+  expect_identical(
+    as_substrait(3L, "substrait.Type"),
+    substrait$Type$create(i32 = list())
+  )
 
   expect_identical(
     as_substrait(3L, "substrait.Expression"),

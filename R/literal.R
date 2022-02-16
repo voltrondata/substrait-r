@@ -13,6 +13,8 @@ as_substrait.double <- function(x, .ptype = NULL, ...) {
         literal = as_substrait.double(x, "substrait.Expression.Literal")
       )
     )
+  } else if (identical(.qualified_name, "substrait.Type")) {
+    return(substrait$Type$create(fp64 = list()))
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
@@ -58,6 +60,8 @@ as_substrait.integer <- function(x, .ptype = NULL, ...) {
         literal = as_substrait.integer(x, "substrait.Expression.Literal")
       )
     )
+  } else if (identical(.qualified_name, "substrait.Type")) {
+    return(substrait$Type$create(i32 = list()))
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
