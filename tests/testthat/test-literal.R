@@ -146,6 +146,47 @@ test_that("as_substrait() works for integer()", {
   expect_error(as_substrait(c(3L, 4L), "substrait.NotAType"), "Can't create substrait")
 })
 
+test_that("as_substrait() works for logical()", {
+  expect_identical(
+    as_substrait(TRUE, "substrait.Type"),
+    substrait$Type$create(bool_ = list())
+  )
+
+  expect_identical(
+    as_substrait(TRUE, "substrait.Expression"),
+    substrait$Expression$create(
+      literal = substrait$Expression$Literal$create(boolean = TRUE)
+    )
+  )
+
+  expect_identical(
+    as_substrait(NA),
+    substrait$Expression$Literal$create(
+      null = substrait$Type$create(bool_ = list())
+    )
+  )
+
+  expect_identical(
+    as_substrait(TRUE),
+    substrait$Expression$Literal$create(boolean = TRUE)
+  )
+
+  expect_identical(
+    as_substrait(c(TRUE, FALSE), substrait$Expression$Literal$create(list = list())),
+    substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        list(
+          as_substrait(TRUE),
+          as_substrait(FALSE)
+        )
+      )
+    )
+  )
+
+  expect_error(as_substrait(TRUE, "substrait.NotAType"), "Can't create substrait")
+  expect_error(as_substrait(c(TRUE, FALSE), "substrait.NotAType"), "Can't create substrait")
+})
+
 test_that("from_substrait() works for integer()", {
 
   expect_identical(
@@ -192,5 +233,49 @@ test_that("from_substrait() works for integer()", {
   )
 })
 
+test_that("from_substrait() works for logical()", {
 
+  expect_identical(
+    from_substrait(
+      substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(boolean = TRUE)
+      ),
+      logical()
+    ),
+    TRUE
+  )
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(boolean = TRUE),
+      logical()
+    ),
+    TRUE
+  )
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(
+        null = substrait$Type$create(bool_ = list())
+      ),
+      logical()
+    ),
+    NA
+  )
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(
+        list = substrait$Expression$Literal$List$create(
+          list(
+            as_substrait(TRUE),
+            as_substrait(FALSE)
+          )
+        )
+      ),
+      logical()
+    ),
+    c(TRUE, FALSE)
+  )
+})
 
