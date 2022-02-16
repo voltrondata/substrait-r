@@ -78,8 +78,8 @@ test_that("from_substrait() works for vctrs::unspecified()", {
     "Can't convert substrait.Type"
   )
   expect_error(
-    as_substrait(data.frame(), "not.A.Type"),
-    "Can't create not.A.Type"
+    from_substrait(substrait$AggregateFunction$create(), data.frame()),
+    "Can't restore"
   )
 })
 
