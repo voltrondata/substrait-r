@@ -2,7 +2,7 @@
 #' @export
 as_substrait.quosure <- function(x, .ptype = NULL, ...,
                                  functions = default_function_registry(),
-                                 fields = list(),
+                                 schema = list(),
                                  function_type = "scalar",
                                  mask = NULL) {
   if (is.null(.ptype)) {
@@ -19,7 +19,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
         env = rlang::quo_get_env(x),
         mask = mask,
         function_type = function_type,
-        fields = fields,
+        schema = schema,
         functions = functions
       )
 
@@ -32,7 +32,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
 #' @export
 as_substrait.call <- function(x, .ptype = NULL, ...,
                               functions = default_function_registry(),
-                              fields = list(),
+                              schema = list(),
                               function_type = "scalar",
                               env = parent.frame(),
                               mask = NULL) {
@@ -62,7 +62,7 @@ as_substrait.call <- function(x, .ptype = NULL, ...,
           as_substrait,
           "substrait.Expression",
           functions = functions,
-          fields = fields,
+          schema = schema,
           function_type = function_type,
           env = env,
           mask = mask
@@ -87,7 +87,7 @@ as_substrait.call <- function(x, .ptype = NULL, ...,
 
 #' @export
 as_substrait.name <- function(x, .ptype = NULL, ...,
-                              fields = list(),
+                              schema = list(),
                               env = parent.frame(),
                               mask = NULL) {
   if (is.null(.ptype)) {
@@ -98,8 +98,8 @@ as_substrait.name <- function(x, .ptype = NULL, ...,
   switch(
     .qualified_name,
     "substrait.Expression" = {
-      if (as.character(x) %in% names(fields)) {
-        fields[[as.character(x)]]
+      if (as.character(x) %in% names(schema)) {
+        schema[[as.character(x)]]
       } else {
         as_substrait(rlang::eval_tidy(x, mask, env), "substrait.Expression")
       }

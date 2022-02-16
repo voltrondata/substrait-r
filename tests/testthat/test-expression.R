@@ -44,7 +44,7 @@ test_that("calls can be translated to Expression objects", {
 
 test_that("symbols can be translated to expression objects", {
   expect_identical(
-    as_substrait(as.symbol("sym"), fields = list(sym = "some_field")),
+    as_substrait(as.symbol("sym"), schema = list(sym = "some_field")),
     "some_field"
   )
 
