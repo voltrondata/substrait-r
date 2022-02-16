@@ -187,6 +187,50 @@ test_that("as_substrait() works for logical()", {
   expect_error(as_substrait(c(TRUE, FALSE), "substrait.NotAType"), "Can't create substrait")
 })
 
+test_that("as_substrait() works for character()", {
+  expect_identical(
+    as_substrait("a string", "substrait.Type"),
+    substrait$Type$create(string = list())
+  )
+
+  expect_identical(
+    as_substrait("a string", "substrait.Expression"),
+    substrait$Expression$create(
+      literal = substrait$Expression$Literal$create(string = "a string")
+    )
+  )
+
+  expect_identical(
+    as_substrait(NA_character_),
+    substrait$Expression$Literal$create(
+      null = substrait$Type$create(string = list())
+    )
+  )
+
+  expect_identical(
+    as_substrait("a string"),
+    substrait$Expression$Literal$create(string = "a string")
+  )
+
+  expect_identical(
+    as_substrait(
+      c("a string", "another string"),
+      substrait$Expression$Literal$create(list = list())
+    ),
+    substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        list(
+          as_substrait("a string"),
+          as_substrait("another string")
+        )
+      )
+    )
+  )
+
+  expect_error(as_substrait("", "substrait.NotAType"), "Can't create substrait")
+  expect_error(as_substrait(c("", ""), "substrait.NotAType"), "Can't create substrait")
+})
+
 test_that("from_substrait() works for integer()", {
 
   expect_identical(
@@ -276,6 +320,52 @@ test_that("from_substrait() works for logical()", {
       logical()
     ),
     c(TRUE, FALSE)
+  )
+})
+
+test_that("from_substrait() works for character()", {
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(string = "a string")
+      ),
+      character()
+    ),
+    "a string"
+  )
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(string = "a string"),
+      character()
+    ),
+    "a string"
+  )
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(
+        null = substrait$Type$create(string = list())
+      ),
+      character()
+    ),
+    NA_character_
+  )
+
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(
+        list = substrait$Expression$Literal$List$create(
+          list(
+            as_substrait("a string"),
+            as_substrait("another string")
+          )
+        )
+      ),
+      character()
+    ),
+    c("a string", "another string")
   )
 })
 
