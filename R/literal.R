@@ -22,6 +22,52 @@ as_substrait.data.frame <- function(x, .ptype = NULL, ...) {
 }
 
 #' @export
+from_substrait.data.frame <- function(msg, x, ...) {
+  .qualified_name <- make_qualified_name(msg)
+
+  switch(
+    .qualified_name,
+    "substrait.NamedStruct" = {
+      if (length(x) == 0) {
+        ptype <- rep_len(list(vctrs::unspecified()), length(msg$names))
+        names(ptype) <- msg$names
+        class(ptype) <- class(x)
+      } else {
+        ptype <- x
+      }
+
+      stopifnot(identical(names(ptype), msg$names))
+      ptype <- Map(from_substrait, msg$struct_$types, ptype)
+      names(ptype) <- msg$names
+      x[names(ptype)] <- ptype
+      x
+    },
+    NextMethod()
+  )
+}
+
+#' @export
+from_substrait.vctrs_unspecified <- function(msg, x, ...) {
+  .qualified_name <- make_qualified_name(msg)
+
+  switch(
+    .qualified_name,
+    "substrait.Type" = {
+      type <- names(msg)
+      switch(
+        type,
+        "bool_" = logical(),
+        "i32" = integer(),
+        "fp64" = double(),
+        "string" = character(),
+        stop(sprintf("Can't convert substrait.Type<%s> to ptype<any>", type))
+      )
+    },
+    NextMethod()
+  )
+}
+
+#' @export
 as_substrait.double <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
     .ptype <- substrait$Expression$Literal$create(fp64 = NaN)
@@ -214,6 +260,13 @@ from_substrait.double <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
   switch(
     .qualified_name,
+    "substrait.Type" = {
+      type <- names(msg)
+      if (!identical(type, "fp64")) {
+        stop(sprintf("Can't convert substrait.Type<%s> to double() ptype", type))
+      }
+      double()
+    },
     "substrait.Expression" = {
       literal <- msg$literal
       if (is.null(literal)) {
@@ -242,6 +295,13 @@ from_substrait.integer <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
   switch(
     .qualified_name,
+    "substrait.Type" = {
+      type <- names(msg)
+      if (!identical(type, "i32")) {
+        stop(sprintf("Can't convert substrait.Type<%s> to integer() ptype", type))
+      }
+      integer()
+    },
     "substrait.Expression" = {
       literal <- msg$literal
       if (is.null(literal)) {
@@ -270,6 +330,13 @@ from_substrait.logical <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
   switch(
     .qualified_name,
+    "substrait.Type" = {
+      type <- names(msg)
+      if (!identical(type, "bool_")) {
+        stop(sprintf("Can't convert substrait.Type<%s> to logical() ptype", type))
+      }
+      logical()
+    },
     "substrait.Expression" = {
       literal <- msg$literal
       if (is.null(literal)) {
@@ -298,6 +365,13 @@ from_substrait.character <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
   switch(
     .qualified_name,
+    "substrait.Type" = {
+      type <- names(msg)
+      if (!identical(type, "string")) {
+        stop(sprintf("Can't convert substrait.Type<%s> to character() ptype", type))
+      }
+      character()
+    },
     "substrait.Expression" = {
       literal <- msg$literal
       if (is.null(literal)) {

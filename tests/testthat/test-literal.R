@@ -19,6 +19,66 @@ test_that("as_substrait() works for data.frame()", {
   )
 })
 
+test_that("from_substrait() works for data.frame()", {
+  expect_identical(
+    from_substrait(
+      substrait$NamedStruct$create(
+        names = "a_field",
+        struct_ = substrait$Type$Struct$create(
+          types = list(
+            substrait$Type$create(i32 = list())
+          )
+        )
+      ),
+      data.frame(a_field = integer())
+    ),
+    data.frame(a_field = integer())
+  )
+
+  expect_identical(
+    from_substrait(
+      substrait$NamedStruct$create(
+        names = "a_field",
+        struct_ = substrait$Type$Struct$create(
+          types = list(
+            substrait$Type$create(i32 = list())
+          )
+        )
+      ),
+      data.frame()
+    ),
+    data.frame(a_field = integer())
+  )
+})
+
+test_that("from_substrait() works for vctrs::unspecified()", {
+  expect_identical(
+    from_substrait(substrait$Type$create(bool_ = list()), vctrs::unspecified()),
+    logical()
+  )
+  expect_identical(
+    from_substrait(substrait$Type$create(i32 = list()), vctrs::unspecified()),
+    integer()
+  )
+  expect_identical(
+    from_substrait(substrait$Type$create(fp64 = list()), vctrs::unspecified()),
+    double()
+  )
+  expect_identical(
+    from_substrait(substrait$Type$create(string = list()), vctrs::unspecified()),
+    character()
+  )
+
+  expect_error(
+    from_substrait(substrait$Type$create(uuid = list()), vctrs::unspecified()),
+    "Can't convert substrait.Type"
+  )
+  expect_error(
+    as_substrait(data.frame(), "not.A.Type"),
+    "Can't create not.A.Type"
+  )
+})
+
 test_that("as_substrait() works for double()", {
   # The substrait.Type representation of a double() is a Type with the
   # fp64 member set and unknown nullability
@@ -73,6 +133,16 @@ test_that("as_substrait() works for double()", {
 })
 
 test_that("from_substrait() works for double()", {
+  expect_identical(
+    from_substrait(substrait$Type$create(fp64 = list()), double()),
+    double()
+  )
+
+  expect_error(
+    from_substrait(substrait$Type$create(i32 = list()), double()),
+    "Can't convert substrait.Type"
+  )
+
   # Check that we can extract a double() from an Expression with the literal
   # member set.
   expect_identical(
@@ -252,6 +322,15 @@ test_that("as_substrait() works for character()", {
 })
 
 test_that("from_substrait() works for integer()", {
+  expect_identical(
+    from_substrait(substrait$Type$create(i32 = list()), integer()),
+    integer()
+  )
+
+  expect_error(
+    from_substrait(substrait$Type$create(string = list()), integer()),
+    "Can't convert substrait.Type"
+  )
 
   expect_identical(
     from_substrait(
@@ -298,6 +377,15 @@ test_that("from_substrait() works for integer()", {
 })
 
 test_that("from_substrait() works for logical()", {
+  expect_identical(
+    from_substrait(substrait$Type$create(bool_ = list()), logical()),
+    logical()
+  )
+
+  expect_error(
+    from_substrait(substrait$Type$create(i32 = list()), character()),
+    "Can't convert substrait.Type"
+  )
 
   expect_identical(
     from_substrait(
@@ -344,6 +432,15 @@ test_that("from_substrait() works for logical()", {
 })
 
 test_that("from_substrait() works for character()", {
+  expect_identical(
+    from_substrait(substrait$Type$create(string = list()), character()),
+    character()
+  )
+
+  expect_error(
+    from_substrait(substrait$Type$create(i32 = list()), character()),
+    "Can't convert substrait.Type"
+  )
 
   expect_identical(
     from_substrait(

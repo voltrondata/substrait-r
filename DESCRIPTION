@@ -28,4 +28,5 @@ SystemRequirements: C++11
 Imports: 
     yaml,
     rlang,
-    RProtoBuf
+    RProtoBuf,
+    vctrs
