@@ -49,12 +49,15 @@ test_that("substrait_compiler_function() works", {
       compiler, "some_fun", list(1L),
       context = list(function_type = "scalar")
     ),
-    substrait$Expression$ScalarFunction$create(
-      function_reference = 1,
-      args = list(
-        substrait$Expression$create(
-          literal = substrait$Expression$Literal$create(i32 = 1L)
-        )
+    substrait$Expression$create(
+      scalar_function = substrait$Expression$ScalarFunction$create(
+        function_reference = 1,
+        args = list(
+          substrait$Expression$create(
+            literal = substrait$Expression$Literal$create(i32 = 1L)
+          )
+        ),
+        output_type = substrait$Type$create()
       )
     )
   )
@@ -64,12 +67,15 @@ test_that("substrait_compiler_function() works", {
       compiler, "some_fun", list(1L),
       context = list(function_type = "window")
     ),
-    substrait$Expression$WindowFunction$create(
-      function_reference = 1,
-      args = list(
-        substrait$Expression$create(
-          literal = substrait$Expression$Literal$create(i32 = 1L)
-        )
+    substrait$Expression$create(
+      window_function = substrait$Expression$WindowFunction$create(
+        function_reference = 1,
+        args = list(
+          substrait$Expression$create(
+            literal = substrait$Expression$Literal$create(i32 = 1L)
+          )
+        ),
+        output_type = substrait$Type$create()
       )
     )
   )
@@ -85,7 +91,8 @@ test_that("substrait_compiler_function() works", {
         substrait$Expression$create(
           literal = substrait$Expression$Literal$create(i32 = 1L)
         )
-      )
+      ),
+      output_type = substrait$Type$create()
     )
   )
 })

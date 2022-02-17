@@ -83,7 +83,7 @@ substrait_compiler_function <- function(compiler, name, args, pkg = NULL,
 #' @export
 substrait_compiler_function.substrait_compiler <- function(compiler, name, args, pkg = NULL,
                                                            context = NULL, ...) {
-  args <- lapply(args, as_substrait, "substrait.Expression")
+  args <- lapply(args, as_substrait, "substrait.Expression", context = context)
   prefix <- if (is.null(pkg)) "" else paste0(pkg, "__")
   name <- paste0(prefix, name)
   id <- substrait_compiler_function_id(compiler, name, args)
@@ -92,22 +92,29 @@ substrait_compiler_function.substrait_compiler <- function(compiler, name, args,
   type <- context$function_type %||% "scalar"
   switch(
     type,
-    "scalar" = substrait$Expression$ScalarFunction$create(
-      function_reference = id,
-      args = args
+    "scalar" = substrait$Expression$create(
+      scalar_function = list(
+        function_reference = id,
+        args = args,
+        output_type = output_type
+      )
     ),
-    "window" = substrait$Expression$WindowFunction$create(
-      function_reference = id,
-      args = args,
-      partitions = context$partitions %||% unspecified(),
-      sorts = context$sorts %||% unspecified(),
-      upper_bound = context$upper_bound %||% unspecified(),
-      lower_bound = context$lower_bound %||% unspecified(),
-      phase = context$phase %||% unspecified()
+    "window" = substrait$Expression$create(
+      window_function = list(
+        function_reference = id,
+        args = args,
+        output_type = output_type,
+        partitions = context$partitions %||% unspecified(),
+        sorts = context$sorts %||% unspecified(),
+        upper_bound = context$upper_bound %||% unspecified(),
+        lower_bound = context$lower_bound %||% unspecified(),
+        phase = context$phase %||% unspecified()
+      )
     ),
     "aggregate" = substrait$AggregateFunction$create(
       function_reference = id,
       args = args,
+      output_type = output_type,
       sorts = context$sorts %||% unspecified(),
       phase = context$phase %||% unspecified()
     ),
