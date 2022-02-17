@@ -1,4 +1,50 @@
 
+test_that("as_substrait() can convert a Literal to a Literal", {
+  expect_identical(
+    as_substrait(
+      substrait$Expression$Literal$create(i32 = 4L)
+    ),
+    substrait$Expression$Literal$create(i32 = 4L)
+  )
+})
+
+test_that("as_substrait() can convert a Literal to an Expression", {
+  expect_identical(
+    as_substrait(
+      substrait$Expression$Literal$create(i32 = 4L),
+      "substrait.Expression"
+    ),
+    substrait$Expression$create(literal = list(i32 = 4L))
+  )
+})
+
+test_that("as_substrait() can convert a Literal to a Type", {
+  expect_identical(
+    as_substrait(
+      substrait$Expression$Literal$create(i32 = 4L),
+      "substrait.Type"
+    ),
+    substrait$Type$create(i32 = list())
+  )
+
+  expect_identical(
+    as_substrait(
+      substrait$Expression$Literal$create(i32 = 4L),
+      substrait$Type$create(i32 = list())
+    ),
+    substrait$Type$create(i32 = list())
+  )
+
+  expect_error(
+    as_substrait(
+      substrait$Expression$Literal$create(i32 = 4L),
+      substrait$Type$create(fp64 = list())
+    ),
+    "identical\\(requested_type, guessed_type\\) is not TRUE"
+  )
+})
+
+
 test_that("as_substrait() works for data.frame()", {
   expect_identical(
     as_substrait(data.frame(a_field = integer()), "substrait.NamedStruct"),

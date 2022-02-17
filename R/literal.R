@@ -1,5 +1,39 @@
 
 #' @export
+as_substrait.substrait_Expression_Literal <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    .ptype <- x
+  }
+
+  switch(
+    make_qualified_name(.ptype),
+    "substrait.Expression" = substrait$Expression$create(literal = x),
+    "substrait.Type" = {
+      which_literal <- names(x)
+      if (length(which_literal) == 0) {
+        return(substrait$Type$create())
+      }
+
+      # a few of these have to be renamed because the field names are
+      # inconsistent between substrait.Type and substrait.Expression.Literal
+      guessed_type <- switch(
+        which_literal,
+        boolean = "bool_",
+        which_literal
+      )
+
+      requested_type <- names(.ptype)
+      if (length(requested_type) > 0) {
+        stopifnot(identical(requested_type, guessed_type))
+      }
+
+      rlang::exec(substrait$Type$create, !! guessed_type := list())
+    },
+    NextMethod()
+  )
+}
+
+#' @export
 as_substrait.data.frame <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
     stop("Can't guess default .ptype for as_substrait(<data.frame>)")
