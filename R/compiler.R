@@ -83,10 +83,27 @@ substrait_compiler_function <- function(compiler, name, args, pkg = NULL,
 #' @export
 substrait_compiler_function.substrait_compiler <- function(compiler, name, args, pkg = NULL,
                                                            context = NULL, ...) {
-  args <- lapply(args, as_substrait, "substrait.Expression", context = context)
+  # resolve arguments as Expressions if they haven't been already
+  # (generally they should be already but this will assert that)
+  args <- lapply(
+    args,
+    as_substrait,
+    "substrait.Expression",
+  )
+
+  # apply some namespacing on the name so that we get some_pkg__some_fun
   prefix <- if (is.null(pkg)) "" else paste0(pkg, "__")
   name <- paste0(prefix, name)
-  id <- substrait_compiler_function_id(compiler, name, args)
+
+  # resolve argument types (the `context` is needed to resolve the type of
+  # field references)
+  arg_types <- lapply(args, as_substrait, "substrait.Type", context = context)
+
+  # resolve the function identifier
+  id <- substrait_compiler_function_id(compiler, name, arg_types)
+
+  # maybe there's a way to know this later on but for now,
+  # leave an unspecified type
   output_type <- substrait$Type$create()
 
   type <- context$function_type %||% "scalar"
