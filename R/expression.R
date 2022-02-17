@@ -7,7 +7,7 @@
 # something work.
 # NOTE!? field indexes have to start at 1 because a value of 0 is the
 # default protobuf value?
-dummy_context <- function(x = data.frame()) {
+new_context <- function(x = data.frame()) {
   schema <- as_substrait(x, "substrait.NamedStruct")
   mask <- lapply(
     seq_along(schema$names),

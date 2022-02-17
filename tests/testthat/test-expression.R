@@ -23,7 +23,7 @@ test_that("quosures of atomics can be translated to Expression objects", {
 })
 
 test_that("quosures with field references can be translated to Expressions", {
-  context <- dummy_context(data.frame(a = double(), b = character()))
+  context <- new_context(data.frame(a = double(), b = character()))
 
   ref_a <- substrait$Expression$create(
     selection = list(
@@ -56,7 +56,7 @@ test_that("quosures with field references can be translated to Expressions", {
 
 test_that("quosures with calls can be translated to Expressions", {
   compiler <- substrait_compiler()
-  context <- dummy_context(data.frame(a = double(), b = character()))
+  context <- new_context(data.frame(a = double(), b = character()))
 
   expect_identical(
     as_substrait(rlang::quo(some_fun(5L)), compiler = compiler, context = context),
@@ -136,7 +136,7 @@ test_that("as_substrait() can convert Expression objects to Types", {
     as_substrait(
       ref,
       "substrait.Type",
-      context = dummy_context(data.frame(a = 5L))
+      context = new_context(data.frame(a = 5L))
     ),
     substrait$Type$create(i32 = list())
   )
@@ -145,7 +145,7 @@ test_that("as_substrait() can convert Expression objects to Types", {
     as_substrait(
       ref,
       "substrait.Type",
-      context = dummy_context(data.frame())
+      context = new_context(data.frame())
     ),
     "Index out of bounds"
   )
