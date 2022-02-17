@@ -58,3 +58,64 @@ test_that("symbols can be translated to expression objects", {
     "Can't create not.A.Type"
   )
 })
+
+test_that("as_substrait() can convert Expression objects to Expressions", {
+  expect_identical(
+    as_substrait(
+      substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(i32 = 5)
+      )
+    ),
+    substrait$Expression$create(
+      literal = substrait$Expression$Literal$create(i32 = 5)
+    )
+  )
+})
+
+test_that("as_substrait() can convert Expression objects to Types", {
+  expect_identical(
+    as_substrait(
+      substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(i32 = 4L)
+      ),
+      "substrait.Type"
+    ),
+    substrait$Type$create(i32 = list())
+  )
+
+  expect_identical(
+    as_substrait(
+      substrait$Expression$create(
+        cast = substrait$Expression$Cast$create(
+          type = substrait$Type$create(i32 = list())
+        )
+      ),
+      "substrait.Type"
+    ),
+    substrait$Type$create(i32 = list())
+  )
+
+  expect_identical(
+    as_substrait(
+      substrait$Expression$create(
+        scalar_function = substrait$Expression$ScalarFunction$create(
+          output_type = substrait$Type$create(i32 = list())
+        )
+      ),
+      "substrait.Type"
+    ),
+    substrait$Type$create(i32 = list())
+  )
+
+  expect_identical(
+    as_substrait(
+      substrait$Expression$create(
+        window_function = substrait$Expression$WindowFunction$create(
+          output_type = substrait$Type$create(i32 = list())
+        )
+      ),
+      "substrait.Type"
+    ),
+    substrait$Type$create(i32 = list())
+  )
+})

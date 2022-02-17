@@ -107,3 +107,39 @@ as_substrait.name <- function(x, .ptype = NULL, ...,
     NextMethod()
   )
 }
+
+#' @export
+as_substrait.substrait_Expression <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    .ptype <- x
+  }
+
+  switch(
+    make_qualified_name(.ptype),
+    "substrait.Type" = {
+      which_expr_type <- names(x)
+      if (length(which_expr_type) == 0) {
+        return(substrait$Type$create())
+      }
+
+      guessed_type <- switch(
+        which_expr_type,
+        "literal" = as_substrait(x[[which_expr_type]], .ptype),
+        "scalar_function" = x$scalar_function$output_type,
+        "window_function" = x$window_function$output_type,
+        "cast" = x$cast$type,
+        # return an unknown type by default
+        substrait$Type$create()
+      )
+
+      requested_type <- names(.ptype)
+      if (length(requested_type) > 0) {
+        stopifnot(identical(requested_type, names(guessed_type)))
+      }
+
+      guessed_type
+    },
+    NextMethod()
+  )
+}
+
