@@ -15,6 +15,10 @@ test_that("substrait_compiler_function_id() works", {
     substrait_compiler_function_id(compiler, "some_fun", list()),
     1L
   )
+  expect_identical(
+    as.list(compiler$function_extensions_key)[[1]],
+    list(name = "some_fun", arg_types = list())
+  )
 
   # different arg types should trigger a new id
   expect_equal(

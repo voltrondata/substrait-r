@@ -34,7 +34,12 @@ substrait_compiler <- function() {
   compiler$extension_uri <- substrait$extensions$SimpleExtensionURI$create(
     extension_uri_anchor = 1L
   )
+
+  # these are key/value stores but for at least function_extensions
+  # we need to keep the keys as well as the values
   compiler$function_extensions <- new.env(parent = emptyenv())
+  compiler$function_extensions_key <- new.env(parent = emptyenv())
+
   compiler$type_extensions <- new.env(parent = emptyenv())
   compiler$type_variations <- new.env(parent = emptyenv())
 
@@ -50,11 +55,13 @@ substrait_compiler <- function() {
 #' @export
 substrait_compiler_function_id <- function(compiler, name, arg_types) {
   arg_types <- unname(lapply(arg_types, as_substrait, "substrait.Type"))
-  key <- rlang::hash(list(name, arg_types))
+  key <- list(name = name, arg_types = arg_types)
+  key_hash <- rlang::hash(key)
 
-  extension_function <- compiler$function_extensions[[key]]
+  extension_function <- compiler$function_extensions[[key_hash]]
   if (is.null(extension_function)) {
-    extension_function <- compiler$function_extensions[[key]] <- substrait$
+    compiler$function_extensions_key[[key_hash]] <- key
+    extension_function <- compiler$function_extensions[[key_hash]] <- substrait$
       extensions$
       SimpleExtensionDeclaration$
       ExtensionFunction$create(
