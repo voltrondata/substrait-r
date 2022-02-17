@@ -60,7 +60,6 @@ substrait_compiler_function_id <- function(compiler, name, arg_types) {
 
   extension_function <- compiler$function_extensions[[key_hash]]
   if (is.null(extension_function)) {
-    compiler$function_extensions_key[[key_hash]] <- key
     extension_function <- compiler$function_extensions[[key_hash]] <- substrait$
       extensions$
       SimpleExtensionDeclaration$
@@ -69,6 +68,9 @@ substrait_compiler_function_id <- function(compiler, name, arg_types) {
         function_anchor = substrait_compiler_next_id(compiler),
         name = name
       )
+
+    id_chr <- as.character(extension_function$function_anchor)
+    compiler$function_extensions_key[[id_chr]] <- key
   }
 
   extension_function$function_anchor

@@ -16,7 +16,7 @@ test_that("substrait_compiler_function_id() works", {
     1L
   )
   expect_identical(
-    as.list(compiler$function_extensions_key)[[1]],
+    as.list(compiler$function_extensions_key)[["1"]],
     list(name = "some_fun", arg_types = list())
   )
 

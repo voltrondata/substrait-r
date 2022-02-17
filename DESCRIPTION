@@ -25,8 +25,7 @@ Config/testthat/edition: 3
 LinkingTo: 
     cpp11
 SystemRequirements: C++11
-Imports: 
-    yaml,
+Imports:
     rlang,
     RProtoBuf,
     vctrs
