@@ -1,68 +1,79 @@
-boolean <- function(){
-  substrait$Type$create(bool_ = substrait$Type$Boolean$create())
+#' @export
+substrait_boolean <- function(){
+  substrait$Type$create(bool_ = list())
 }
 
-i8 <- function(){
-   substrait$Type$create(i8 = substrait$Type$I8$create())
+#' @export
+substrait_i8 <- function(){
+   substrait$Type$create(i8 = list())
 }
 
-i16 <- function(){
-   substrait$Type$create(i16 = substrait$Type$I16$create())
+#' @export
+substrait_i16 <- function(){
+   substrait$Type$create(i16 = list())
 }
 
-i32 <- function(){
-   substrait$Type$create(i32 = substrait$Type$I32$create())
+#' @export
+substrait_i32 <- function(){
+   substrait$Type$create(i32 = list())
 }
 
-i64 <- function(){
-   substrait$Type$create(i64 = substrait$Type$I64$create())
+#' @export
+substrait_i64 <- function(){
+   substrait$Type$create(i64 = list())
 }
 
-fp32 <- function(){
-   substrait$Type$create(fp32 = substrait$Type$FP32$create())
+#' @export
+substrait_fp32 <- function(){
+   substrait$Type$create(fp32 = list())
 }
 
-fp64 <- function(){
-   substrait$Type$create(fp64 = substrait$Type$FP64$create())
+#' @export
+substrait_fp64 <- function(){
+   substrait$Type$create(fp64 = list())
 }
 
-# but rlang::string
-string <- function(){
-  substrait$Type$create(string = substrait$Type$String$create())
+#' @export
+substrait_string <- function(){
+  substrait$Type$create(string = list())
 }
 
-# arrow also has binary type
-binary <- function(){
-  substrait$Type$create(binary = substrait$Type$Binary$create())
+#' @export
+substrait_binary <- function(){
+  substrait$Type$create(binary = list())
 }
 
-# but utils::timestamp
-timestamp <- function(){
-  substrait$Type$create(timestamp = substrait$Type$Timestamp$create())
+#' @export
+substrait_timestamp <- function(){
+  substrait$Type$create(timestamp = list())
 }
 
-timestamp_tz <- function(){
-  substrait$Type$create(timestamp_tz = substrait$Type$TimestampTZ$create())
+#' @export
+substrait_timestamp_tz <- function(){
+  substrait$Type$create(timestamp_tz = list())
 }
 
-# but base::date
-date <- function(){
-  substrait$Type$create(date = substrait$Type$Date$create())
+#' @export
+substrait_date <- function(){
+  substrait$Type$create(date = list())
 }
 
-# but stats::time
-time <- function(){
-  substrait$Type$create(time = substrait$Type$Time$create())
+#' @export
+substrait_time <- function(){
+  substrait$Type$create(time = list())
 }
 
-interval_year <- function(){
-  substrait$Type$create(interval_year = substrait$Type$IntervalYear$create())
+#' @export
+substrait_interval_year <- function(){
+  substrait$Type$create(interval_year = list())
 }
 
-interval_day <- function(){
-  substrait$Type$create(interval_day = substrait$Type$IntervalDay$create())
+#' @export
+substrait_interval_day <- function(){
+  substrait$Type$create(interval_day = list())
 }
 
-uuid <- function(){
-  substrait$Type$create(uuid = substrait$Type$UUID$create())
+#' @export
+substrait_uuid <- function(){
+  substrait$Type$create(uuid = list())
 }
