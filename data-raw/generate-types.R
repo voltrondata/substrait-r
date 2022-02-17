@@ -20,6 +20,13 @@ qualified_type_from_descriptor <- function(descriptor) {
 }
 
 rprotobuf_descriptor_to_class <- function(descriptor, child = c()) {
+  # special case the extensions namespace because RProtoBuf doesn't have
+  # a good way to extract this from the descriptor
+  extensions_types <- c("AdvancedExtension", "SimpleExtensionDeclaration","SimpleExtensionURI")
+  if (descriptor$name() %in% extensions_types) {
+    return(c("extensions", descriptor$name(), child))
+  }
+
   containing <- descriptor$containing_type()
   if (is.null(containing)) {
     c(descriptor$name(), child)
@@ -153,7 +160,15 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
   }
 
   sub_types <- message_types %>% filter(parent_name_qualified == !! qualified_name)
-  sub_types_chr <- map(sub_types$name_qualified, generate_tree, indent = paste0(indent, "  "))
+
+  # special case "substrait.extensions" because it's a namespace that isn't a type
+  if (identical(qualified_name, "substrait")) {
+    sub_types_name <- c(sub_types$name_qualified, "substrait.extensions")
+  } else {
+    sub_types_name <- sub_types$name_qualified
+  }
+
+  sub_types_chr <- map(sub_types_name, generate_tree, indent = paste0(indent, "  "))
   sub_types_flat <-  paste(sub_types_chr, collapse = ",\n")
 
   components <- c(enum_text_flat, sub_types_flat, constructor)

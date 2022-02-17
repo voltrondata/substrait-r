@@ -28,6 +28,13 @@ as_substrait.Message <- function(x, .ptype = NULL, ...) {
 }
 
 rprotobuf_descriptor_to_class <- function(descriptor, child = c()) {
+  # special case the extensions namespace because RProtoBuf doesn't have
+  # a good way to extract this from the descriptor
+  extensions_types <- c("AdvancedExtension", "SimpleExtensionDeclaration","SimpleExtensionURI")
+  if (descriptor$name() %in% extensions_types) {
+    return(c("extensions", descriptor$name(), child))
+  }
+
   containing <- descriptor$containing_type()
   if (is.null(containing)) {
     c(descriptor$name(), child)

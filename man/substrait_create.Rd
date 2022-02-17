@@ -6,7 +6,7 @@
 \alias{substrait}
 \title{Create 'Substrait' message objects}
 \format{
-An object of class \code{list} of length 27.
+An object of class \code{list} of length 28.
 }
 \usage{
 substrait_create(.qualified_name, ...)
