@@ -24,21 +24,21 @@ test_that("as_substrait() can convert a Literal to a Type", {
       substrait$Expression$Literal$create(i32 = 4L),
       "substrait.Type"
     ),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   expect_identical(
     as_substrait(
       substrait$Expression$Literal$create(i32 = 4L),
-      substrait$Type$create(i32 = list())
+      substrait_i32()
     ),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   expect_error(
     as_substrait(
       substrait$Expression$Literal$create(i32 = 4L),
-      substrait$Type$create(fp64 = list())
+      substrait_fp64()
     ),
     "identical\\(requested_type, guessed_type\\) is not TRUE"
   )
@@ -52,7 +52,7 @@ test_that("as_substrait() works for data.frame()", {
       names = "a_field",
       struct_ = substrait$Type$Struct$create(
         types = list(
-          substrait$Type$create(i32 = list())
+          substrait_i32()
         )
       )
     )
@@ -72,7 +72,7 @@ test_that("from_substrait() works for data.frame()", {
         names = "a_field",
         struct_ = substrait$Type$Struct$create(
           types = list(
-            substrait$Type$create(i32 = list())
+            substrait_i32()
           )
         )
       ),
@@ -87,7 +87,7 @@ test_that("from_substrait() works for data.frame()", {
         names = "a_field",
         struct_ = substrait$Type$Struct$create(
           types = list(
-            substrait$Type$create(i32 = list())
+            substrait_i32()
           )
         )
       ),
@@ -103,24 +103,24 @@ test_that("from_substrait() works for vctrs::unspecified()", {
     vctrs::unspecified()
   )
   expect_identical(
-    from_substrait(substrait$Type$create(bool_ = list()), vctrs::unspecified()),
+    from_substrait(substrait_boolean(), vctrs::unspecified()),
     logical()
   )
   expect_identical(
-    from_substrait(substrait$Type$create(i32 = list()), vctrs::unspecified()),
+    from_substrait(substrait_i32(), vctrs::unspecified()),
     integer()
   )
   expect_identical(
-    from_substrait(substrait$Type$create(fp64 = list()), vctrs::unspecified()),
+    from_substrait(substrait_fp64(), vctrs::unspecified()),
     double()
   )
   expect_identical(
-    from_substrait(substrait$Type$create(string = list()), vctrs::unspecified()),
+    from_substrait(substrait_string(), vctrs::unspecified()),
     character()
   )
 
   expect_error(
-    from_substrait(substrait$Type$create(uuid = list()), vctrs::unspecified()),
+    from_substrait(substrait_uuid(), vctrs::unspecified()),
     "Can't convert substrait.Type"
   )
   expect_error(
@@ -134,7 +134,7 @@ test_that("as_substrait() works for double()", {
   # fp64 member set and unknown nullability
   expect_identical(
     as_substrait(3.14, "substrait.Type"),
-    substrait$Type$create(fp64 = list())
+    substrait_fp64()
   )
 
   # The Substrait representation of a non-NA double(1)
@@ -152,7 +152,7 @@ test_that("as_substrait() works for double()", {
   expect_identical(
     as_substrait(NA_real_),
     substrait$Expression$Literal$create(
-      null = substrait$Type$create(fp64 = list())
+      null = substrait_fp64()
     )
   )
 
@@ -184,7 +184,7 @@ test_that("as_substrait() works for double()", {
 
 test_that("from_substrait() works for double()", {
   expect_identical(
-    from_substrait(substrait$Type$create(fp64 = list()), double()),
+    from_substrait(substrait_fp64(), double()),
     double()
   )
 
@@ -194,7 +194,7 @@ test_that("from_substrait() works for double()", {
   )
 
   expect_error(
-    from_substrait(substrait$Type$create(i32 = list()), double()),
+    from_substrait(substrait_i32(), double()),
     "Can't convert substrait.Type"
   )
 
@@ -225,7 +225,7 @@ test_that("from_substrait() works for double()", {
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(
-        null = substrait$Type$create(fp64 = list())
+        null = substrait_fp64()
       ),
       double()
     ),
@@ -253,7 +253,7 @@ test_that("from_substrait() works for double()", {
 test_that("as_substrait() works for integer()", {
   expect_identical(
     as_substrait(3L, "substrait.Type"),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   expect_identical(
@@ -266,7 +266,7 @@ test_that("as_substrait() works for integer()", {
   expect_identical(
     as_substrait(NA_integer_),
     substrait$Expression$Literal$create(
-      null = substrait$Type$create(i32 = list())
+      null = substrait_i32()
     )
   )
 
@@ -294,7 +294,7 @@ test_that("as_substrait() works for integer()", {
 test_that("as_substrait() works for logical()", {
   expect_identical(
     as_substrait(TRUE, "substrait.Type"),
-    substrait$Type$create(bool_ = list())
+    substrait_boolean()
   )
 
   expect_identical(
@@ -307,7 +307,7 @@ test_that("as_substrait() works for logical()", {
   expect_identical(
     as_substrait(NA),
     substrait$Expression$Literal$create(
-      null = substrait$Type$create(bool_ = list())
+      null = substrait_boolean()
     )
   )
 
@@ -335,7 +335,7 @@ test_that("as_substrait() works for logical()", {
 test_that("as_substrait() works for character()", {
   expect_identical(
     as_substrait("a string", "substrait.Type"),
-    substrait$Type$create(string = list())
+    substrait_string()
   )
 
   expect_identical(
@@ -348,7 +348,7 @@ test_that("as_substrait() works for character()", {
   expect_identical(
     as_substrait(NA_character_),
     substrait$Expression$Literal$create(
-      null = substrait$Type$create(string = list())
+      null = substrait_string()
     )
   )
 
@@ -378,7 +378,7 @@ test_that("as_substrait() works for character()", {
 
 test_that("from_substrait() works for integer()", {
   expect_identical(
-    from_substrait(substrait$Type$create(i32 = list()), integer()),
+    from_substrait(substrait_i32(), integer()),
     integer()
   )
 
@@ -388,7 +388,7 @@ test_that("from_substrait() works for integer()", {
   )
 
   expect_error(
-    from_substrait(substrait$Type$create(string = list()), integer()),
+    from_substrait(substrait_string(), integer()),
     "Can't convert substrait.Type"
   )
 
@@ -413,7 +413,7 @@ test_that("from_substrait() works for integer()", {
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(
-        null = substrait$Type$create(i32 = list())
+        null = substrait_i32()
       ),
       integer()
     ),
@@ -438,7 +438,7 @@ test_that("from_substrait() works for integer()", {
 
 test_that("from_substrait() works for logical()", {
   expect_identical(
-    from_substrait(substrait$Type$create(bool_ = list()), logical()),
+    from_substrait(substrait_boolean(), logical()),
     logical()
   )
 
@@ -448,7 +448,7 @@ test_that("from_substrait() works for logical()", {
   )
 
   expect_error(
-    from_substrait(substrait$Type$create(i32 = list()), character()),
+    from_substrait(substrait_i32(), character()),
     "Can't convert substrait.Type"
   )
 
@@ -473,7 +473,7 @@ test_that("from_substrait() works for logical()", {
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(
-        null = substrait$Type$create(bool_ = list())
+        null = substrait_boolean()
       ),
       logical()
     ),
@@ -498,7 +498,7 @@ test_that("from_substrait() works for logical()", {
 
 test_that("from_substrait() works for character()", {
   expect_identical(
-    from_substrait(substrait$Type$create(string = list()), character()),
+    from_substrait(substrait_string(), character()),
     character()
   )
 
@@ -508,7 +508,7 @@ test_that("from_substrait() works for character()", {
   )
 
   expect_error(
-    from_substrait(substrait$Type$create(i32 = list()), character()),
+    from_substrait(substrait_i32(), character()),
     "Can't convert substrait.Type"
   )
 
@@ -533,7 +533,7 @@ test_that("from_substrait() works for character()", {
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(
-        null = substrait$Type$create(string = list())
+        null = substrait_string()
       ),
       character()
     ),

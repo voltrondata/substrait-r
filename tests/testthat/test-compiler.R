@@ -26,7 +26,7 @@ test_that("substrait_compiler_function_id() works", {
       compiler,
       "some_fun",
       list(
-        substrait$Type$create(i32 = list())
+        substrait_i32()
       )
     ),
     2L
@@ -38,7 +38,7 @@ test_that("substrait_compiler_function_id() works", {
       compiler,
       "some_fun",
       list(
-        substrait$Type$create(i32 = list())
+        substrait_i32()
       )
     ),
     2L

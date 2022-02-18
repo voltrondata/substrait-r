@@ -39,12 +39,12 @@ test_that("substrait_create() works for list()", {
   # check a recursive list
   expect_identical(
     substrait_create("substrait.Type", i8 = list()),
-    substrait$Type$create(i8 = substrait$Type$I8$create())
+    substrait_i8()
   )
 })
 
 test_that("as.list() works for substrait objects", {
-  msg <- substrait$Type$create(i8 = substrait$Type$Boolean$create())
+  msg <- substrait_i8()
   expect_identical(
     as.list(msg),
     list(
@@ -140,7 +140,7 @@ test_that("substrait_proto_message list-like interface works", {
 test_that("substrait_proto_message class can be created with a message field", {
   # using internal constructor
   expect_identical(
-    substrait$Type$create(bool_ = substrait$Type$Boolean$create()),
+    substrait_boolean(),
     structure(
       as.raw(c(0x0a, 0x00)),
       class = c(
@@ -166,7 +166,7 @@ test_that("substrait_proto_message class can be created with a message field", {
 
   # using list()
   expect_identical(
-    substrait$Type$create(bool_ = list()),
+    substrait_boolean(),
     structure(
       as.raw(c(0x0a, 0x00)),
       class = c(

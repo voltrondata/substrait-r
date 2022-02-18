@@ -119,7 +119,7 @@ test_that("as_substrait() can convert Expression objects to Types", {
       ),
       "substrait.Type"
     ),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   ref <- substrait$Expression$create(
@@ -138,7 +138,7 @@ test_that("as_substrait() can convert Expression objects to Types", {
       "substrait.Type",
       context = new_context(data.frame(a = 5L))
     ),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   expect_error(
@@ -163,35 +163,35 @@ test_that("as_substrait() can convert Expression objects to Types", {
     as_substrait(
       substrait$Expression$create(
         cast = substrait$Expression$Cast$create(
-          type = substrait$Type$create(i32 = list())
+          type = substrait_i32()
         )
       ),
       "substrait.Type"
     ),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   expect_identical(
     as_substrait(
       substrait$Expression$create(
         scalar_function = substrait$Expression$ScalarFunction$create(
-          output_type = substrait$Type$create(i32 = list())
+          output_type = substrait_i32()
         )
       ),
       "substrait.Type"
     ),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   expect_identical(
     as_substrait(
       substrait$Expression$create(
         window_function = substrait$Expression$WindowFunction$create(
-          output_type = substrait$Type$create(i32 = list())
+          output_type = substrait_i32()
         )
       ),
       "substrait.Type"
     ),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 })
