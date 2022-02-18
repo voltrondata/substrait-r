@@ -26,6 +26,7 @@ LinkingTo:
     cpp11
 SystemRequirements: C++11
 Imports:
+    tidyselect,
     rlang,
     RProtoBuf,
     vctrs
