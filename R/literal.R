@@ -120,7 +120,7 @@ as_substrait.double <- function(x, .ptype = NULL, ...) {
       )
     )
   } else if (identical(.qualified_name, "substrait.Type")) {
-    return(substrait$Type$create(fp64 = list()))
+    return(substrait_fp64())
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
@@ -129,7 +129,7 @@ as_substrait.double <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
-            null = substrait$Type$create(fp64 = list())
+            null = substrait_fp64()
           )
         } else {
           substrait$Expression$Literal$create(fp64 = x)
@@ -167,7 +167,7 @@ as_substrait.integer <- function(x, .ptype = NULL, ...) {
       )
     )
   } else if (identical(.qualified_name, "substrait.Type")) {
-    return(substrait$Type$create(i32 = list()))
+    return(substrait_i32())
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
@@ -176,7 +176,7 @@ as_substrait.integer <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
-            null = substrait$Type$create(i32 = list())
+            null = substrait_i32()
           )
         } else {
           substrait$Expression$Literal$create(i32 = x)
@@ -214,7 +214,7 @@ as_substrait.logical <- function(x, .ptype = NULL, ...) {
       )
     )
   } else if (identical(.qualified_name, "substrait.Type")) {
-    return(substrait$Type$create(bool_ = list()))
+    return(substrait_boolean())
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
@@ -223,7 +223,7 @@ as_substrait.logical <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
-            null = substrait$Type$create(bool_ = list())
+            null = substrait_boolean()
           )
         } else {
           substrait$Expression$Literal$create(boolean = x)
@@ -261,7 +261,7 @@ as_substrait.character <- function(x, .ptype = NULL, ...) {
       )
     )
   } else if (identical(.qualified_name, "substrait.Type")) {
-    return(substrait$Type$create(string = list()))
+    return(substrait_string())
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
@@ -270,7 +270,7 @@ as_substrait.character <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
-            null = substrait$Type$create(string = list())
+            null = substrait_string()
           )
         } else {
           substrait$Expression$Literal$create(string = x)

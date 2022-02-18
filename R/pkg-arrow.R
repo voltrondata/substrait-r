@@ -12,10 +12,10 @@ as_substrait.DataType <- function(x, .ptype = NULL, ...) {
       type_name <- names(arrow::Type)[x$id + 1L]
       switch(
         type_name,
-        "BOOL" = substrait$Type$create(bool_ = list()),
-        "INT32" = substrait$Type$create(i32 = list()),
-        "DOUBLE" = substrait$Type$create(fp64 = list()),
-        "STRING" = substrait$Type$create(string = list()),
+        "BOOL" = substrait_boolean(),
+        "INT32" = substrait_i32(),
+        "DOUBLE" = substrait_fp64(),
+        "STRING" = substrait_string(),
         stop(sprintf("Can't map Arrow DataType '%s' to substrait.Type", x$ToString()))
       )
     },

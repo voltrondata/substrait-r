@@ -4,22 +4,22 @@ test_that("as_subtrait() works for arrow DataType", {
 
   expect_identical(
     as_substrait(arrow::bool()),
-    substrait$Type$create(bool_ = list())
+    substrait_boolean()
   )
 
   expect_identical(
     as_substrait(arrow::int32()),
-    substrait$Type$create(i32 = list())
+    substrait_i32()
   )
 
   expect_identical(
     as_substrait(arrow::float64()),
-    substrait$Type$create(fp64 = list())
+    substrait_fp64()
   )
 
   expect_identical(
     as_substrait(arrow::string()),
-    substrait$Type$create(string = list())
+    substrait_string()
   )
 
   expect_error(
@@ -51,7 +51,7 @@ test_that("as_substrait() works for arrow Schema", {
       names = "a field",
       struct_ = substrait$Type$Struct$create(
         types = list(
-          substrait$Type$create(i32 = list())
+          substrait_i32()
         )
       )
     )
@@ -66,24 +66,24 @@ test_that("from_substrait() works for arrow DataType", {
       arrow::null()
   )
   expect_true(
-    from_substrait(substrait$Type$create(bool_ = list()), arrow::null()) ==
+    from_substrait(substrait_boolean(), arrow::null()) ==
     arrow::bool()
   )
   expect_true(
-    from_substrait(substrait$Type$create(i32 = list()), arrow::null()) ==
+    from_substrait(substrait_i32(), arrow::null()) ==
     arrow::int32()
   )
   expect_true(
-    from_substrait(substrait$Type$create(fp64 = list()), arrow::null()) ==
+    from_substrait(substrait_fp64(), arrow::null()) ==
     arrow::float64()
   )
   expect_true(
-    from_substrait(substrait$Type$create(string = list()), arrow::null()) ==
+    from_substrait(substrait_string(), arrow::null()) ==
     arrow::string()
   )
 
   expect_error(
-    from_substrait(substrait$Type$create(uuid = list()), arrow::null()),
+    from_substrait(substrait_uuid(), arrow::null()),
     "Can't convert substrait.Type"
   )
   expect_error(
@@ -101,7 +101,7 @@ test_that("from_substrait() works for arrow::schema()", {
         names = "a_field",
         struct_ = substrait$Type$Struct$create(
           types = list(
-            substrait$Type$create(i32 = list())
+            substrait_i32()
           )
         )
       ),
@@ -116,7 +116,7 @@ test_that("from_substrait() works for arrow::schema()", {
         names = "a_field",
         struct_ = substrait$Type$Struct$create(
           types = list(
-            substrait$Type$create(i32 = list())
+            substrait_i32()
           )
         )
       ),
