@@ -1,5 +1,13 @@
-#' @param .data
+#' @param .data substrait_Rel object
+#' @export
 select.substrait_Rel <- function(.data, ...){
+
+  # here we need to be able to work out if .data is a base table or not.
+  # if it is, then we run the code below. if it is not (e.g. if it's a project)
+  # then we want to be able to combine the project things together
+  #
+  # do we want to add a class to the substraitRel object? or create a new
+  # custom object which itself encapsulates the substraitRel object?
 
   columns <- .data$read$base_schema$names
 
@@ -29,13 +37,13 @@ select.substrait_Rel <- function(.data, ...){
 #' @return List of Substrait Expressions
 get_expressions <- function(cols){
 
-  # TODO: check if this should be pos-1 as it's 0 indexed??
   lapply(cols, function(pos){
     substrait$Expression$create(
       selection = list(
         direct_reference = list(
           struct_field = list(
-            field = pos,
+            # -1 as it's 0-indexed but tidyselect is 1-indexed
+            field = pos - 1,
             child = list(
               struct_field = list(
                 field = list()
