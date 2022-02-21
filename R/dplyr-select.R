@@ -13,8 +13,6 @@ select.substrait_Rel <- function(.data, ...){
 
   locations <- tidyselect::eval_select(expr(c(...)), empty_df)
 
-  name = "unbound_table2"
-
   substrait$Rel$create(
     project = substrait$ProjectRel$create(
       input = .data,
@@ -50,13 +48,13 @@ get_expressions <- function(cols){
   })
 }
 
-# rename this function later - currently just copying Python
-unbound_table <- function(df, name){
+base_table <- function(df){
+  tbl_expr <- rlang::enexpr(df)
   schema <- as_substrait(df, .ptype = "substrait.NamedStruct")
   substrait$Rel$create(
     read = substrait$ReadRel$create(
       base_schema = schema,
-      named_table = substrait$ReadRel$NamedTable$create(names = name)
+      named_table = substrait$ReadRel$NamedTable$create(names = as.character(tbl_expr))
     )
   )
 }

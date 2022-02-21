@@ -1,5 +1,7 @@
+library(dplyr)
+
 test_that("basic selection", {
-  x <- unbound_table(mtcars, "tableymctableface")
+  x <- base_table(mtcars)
   out <- select(x, hp, mpg)
 
   expect_named(out, "project")
