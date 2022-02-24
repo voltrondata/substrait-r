@@ -1,6 +1,9 @@
+#' Select column
+#'
 #' @param .data substrait_Rel object
+#' @importFrom dplyr select
 #' @export
-select.substrait_Rel <- function(.data, ...){
+select.substrait_op <- function(.data, ...){
 
   # here we need to be able to work out if .data is a base table or not.
   # if it is, then we run the code below. if it is not (e.g. if it's a project)
@@ -9,7 +12,7 @@ select.substrait_Rel <- function(.data, ...){
   # do we want to add a class to the substraitRel object? or create a new
   # custom object which itself encapsulates the substraitRel object?
 
-  columns <- .data$read$base_schema$names
+  columns <- names(.data)
 
   empty_df <- data.frame(
     matrix(
@@ -19,16 +22,28 @@ select.substrait_Rel <- function(.data, ...){
     )
   )
 
-  locations <- tidyselect::eval_select(expr(c(...)), empty_df)
+  # Named vector of column names/indices
+  cols <- tidyselect::eval_select(enexpr(c(...)), empty_df)
 
-  substrait$Rel$create(
-    project = substrait$ProjectRel$create(
-      input = .data,
-      expressions = get_expressions(locations)
-    )
+  structure(
+    .data,
+    cols = cols,
+    class = c("substrait_op", "substrait_select")
   )
 
+  # nope! this should come later when we construct actual substrait objects from our plan
+  # substrait$Rel$create(
+  #   project = substrait$ProjectRel$create(
+  #     input = .data,
+  #     expressions = get_expressions(locations)
+  #   )
+  # )
+
 }
+
+
+
+
 
 
 #' Construct Expression objects based on column numbers
@@ -57,12 +72,20 @@ get_expressions <- function(cols){
 }
 
 base_table <- function(df){
-  tbl_expr <- rlang::enexpr(df)
-  schema <- as_substrait(df, .ptype = "substrait.NamedStruct")
-  substrait$Rel$create(
-    read = substrait$ReadRel$create(
-      base_schema = schema,
-      named_table = substrait$ReadRel$NamedTable$create(names = as.character(tbl_expr))
-    )
+  structure(
+    df,
+    class = c("substrait_op", "substrait_base_table")
   )
 }
+
+
+# base_table <- function(df){
+#   tbl_expr <- rlang::enexpr(df)
+#   schema <- as_substrait(df, .ptype = "substrait.NamedStruct")
+#   # substrait$Rel$create(
+#   #   read = substrait$ReadRel$create(
+#   #     base_schema = schema,
+#   #     named_table = substrait$ReadRel$NamedTable$create(names = as.character(tbl_expr))
+#   #   )
+#   # )
+# }
