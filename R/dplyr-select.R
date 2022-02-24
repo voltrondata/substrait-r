@@ -23,11 +23,11 @@ select.substrait_op <- function(.data, ...){
   )
 
   # Named vector of column names/indices
-  cols <- tidyselect::eval_select(enexpr(c(...)), empty_df)
+  cols <- tidyselect::eval_select(expr(c(...)), empty_df)
 
   structure(
     .data,
-    cols = cols,
+    cols = syms(set_names(columns[cols], names(cols))),
     class = c("substrait_op", "substrait_select")
   )
 

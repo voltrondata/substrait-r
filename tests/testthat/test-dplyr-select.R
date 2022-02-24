@@ -1,24 +1,53 @@
 library(dplyr)
 
-test_that("basic selection", {
-  x <- base_table(mtcars)
-  out <- select(x, cyl, carb)
+# make own example data later
+#schema <- substrait_schema(mtcars)
+schema <- mtcars
 
-  expect_named(out, "project")
-  expect_length(out$project$expressions, 2)
-  expect_equal(out$project$expressions[[1]]$selection$direct_reference$struct_field$field, 1)
-  expect_equal(out$project$expressions[[2]]$selection$direct_reference$struct_field$field, 10)
+test_that("basic selection", {
+
+  out <- base_table(schema) %>%
+    select(hp)
+
+  expect_s3_class(out, c("substrait_op", "substrait_select"))
+  expect_identical(attributes(out)$cols, list(hp = sym("hp")))
 
 })
 
-# test_that("two selects equivalent to one", {
-#   x <- base_table(mtcars)
-#   out <- select(x, cyl, carb) %>%
-#     select(cyl)
-#
-#   expect_named(out, "project")
-#   expect_length(out$project$expressions, 2)
-#   expect_equal(out$project$expressions[[1]]$selection$direct_reference$struct_field$field, 1)
-#   expect_equal(out$project$expressions[[2]]$selection$direct_reference$struct_field$field, 10)
-#
-# })
+test_that("basic selection with multiple variables", {
+
+  out <- base_table(schema) %>%
+    select(hp, mpg, am)
+
+  expect_s3_class(out, c("substrait_op", "substrait_select"))
+  expect_identical(
+    attributes(out)$cols,
+    list(
+      hp = sym("hp"),
+      mpg = sym("mpg"),
+      am = sym("am")
+    )
+  )
+
+})
+
+test_that("select with rename", {
+
+  out <- base_table(schema) %>%
+    select(hp2 = hp)
+
+  expect_s3_class(out, c("substrait_op", "substrait_select"))
+  expect_identical(attributes(out)$cols, list(hp2 = sym("hp")))
+
+})
+
+test_that("select on select", {
+
+  out <- base_table(schema) %>%
+    select(hp, mpg) %>%
+    select(hp2 = hp)
+
+  expect_s3_class(out, c("substrait_op", "substrait_select"))
+  expect_identical(attributes(out)$cols, list(hp2 = sym("hp")))
+
+})
