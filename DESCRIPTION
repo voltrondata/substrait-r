@@ -29,4 +29,5 @@ Imports:
     tidyselect,
     rlang,
     RProtoBuf,
-    vctrs
+    vctrs,
+    dplyr
