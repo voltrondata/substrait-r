@@ -51,3 +51,15 @@ test_that("select on select", {
   expect_identical(attributes(out)$cols, list(hp2 = sym("hp")))
 
 })
+
+test_that("can't select columns that don't exist any more", {
+
+  expect_error(
+    base_table(schema) %>%
+      select(hp, mpg) %>%
+      select(carb),
+    # Do we want the regex here when it comes from tidyselect??
+    regexp = "Column `carb` doesn't exist."
+  )
+
+})

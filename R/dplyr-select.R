@@ -5,14 +5,7 @@
 #' @export
 select.substrait_op <- function(.data, ...){
 
-  # here we need to be able to work out if .data is a base table or not.
-  # if it is, then we run the code below. if it is not (e.g. if it's a project)
-  # then we want to be able to combine the project things together
-  #
-  # do we want to add a class to the substraitRel object? or create a new
-  # custom object which itself encapsulates the substraitRel object?
-
-  columns <- names(.data)
+  columns <- attr(.data, "cols")
 
   empty_df <- data.frame(
     matrix(
@@ -31,28 +24,25 @@ select.substrait_op <- function(.data, ...){
     class = c("substrait_op", "substrait_select")
   )
 
-  # nope! this should come later when we construct actual substrait objects from our plan
-  # substrait$Rel$create(
-  #   project = substrait$ProjectRel$create(
-  #     input = .data,
-  #     expressions = get_expressions(locations)
-  #   )
-  # )
-
 }
 
+#' @export
+build_substrait <- function(x){
+  UseMethod("build_substrait", x)
+}
 
+#' @export
+#' @return List of selection expressions
+build_substrait.substrait_select <- function(x){
 
+  col_list <- unname(attr(x, "cols"))
 
+  locs <- match(
+    unname(vapply(col_list, FUN = as.character, character(1))),
+    names(x)
+  )
 
-
-#' Construct Expression objects based on column numbers
-#'
-#' @param col Vector of column numbers
-#' @return List of Substrait Expressions
-get_expressions <- function(cols){
-
-  lapply(cols, function(pos){
+  lapply(locs, function(pos){
     substrait$Expression$create(
       selection = list(
         direct_reference = list(
@@ -71,9 +61,40 @@ get_expressions <- function(cols){
   })
 }
 
+#' @param x A substrait_op object
+#' @export
+#' @return A substrait plan
+as_substrait.substrait_op <- function(x){
+
+  schema <- get_schema(x)
+
+  # create the root relations
+  rel <- substrait$PlanRel$create(
+    root = substrait$RelRoot$create(
+      input = base_table(x),
+      names = names(schema)
+    )
+  )
+  substrait$Plan$create(relations = list(rel))
+
+
+}
+ # # I think that this code block should be pulled out into another function and here we just generate the select expressions
+ #  # and call this function from within it; this is too early
+ #  substrait$Rel$create(
+ #    project = substrait$ProjectRel$create(
+ #      # Need function here to create the substrait object instead of NULL
+ #      input = .data,
+ #      expressions = get_expressions(locs)
+ #    )
+ #  )
+
+
+
 base_table <- function(df){
   structure(
     df,
+    cols = syms(names(df)),
     class = c("substrait_op", "substrait_base_table")
   )
 }
