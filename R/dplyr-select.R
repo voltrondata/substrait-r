@@ -90,7 +90,6 @@ as_substrait.substrait_op <- function(x){
  #  )
 
 
-
 base_table <- function(df){
   structure(
     df,
@@ -98,7 +97,6 @@ base_table <- function(df){
     class = c("substrait_op", "substrait_base_table")
   )
 }
-
 
 # base_table <- function(df){
 #   tbl_expr <- rlang::enexpr(df)
