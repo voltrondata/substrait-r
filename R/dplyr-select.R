@@ -3,7 +3,7 @@
 #' @param .data substrait_Rel object
 #' @importFrom dplyr select
 #' @export
-select.substrait_op <- function(.data, ...){
+select.substrait_op <- function(.data, ...) {
 
   columns <- attr(.data, "cols")
 
