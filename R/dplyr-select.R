@@ -15,11 +15,11 @@ select.substrait_op <- function(.data, ...) {
   )
 
   # Named vector of column names/indices
-  cols <- tidyselect::eval_select(expr(c(...)), empty_df)
+  cols <- tidyselect::eval_select(rlang::expr(c(...)), empty_df)
 
   structure(
     .data,
-    cols = syms(set_names(columns[cols], names(cols))),
+    cols = rlang::syms(rlang::set_names(columns[cols], names(cols))),
     class = c("substrait_op", "substrait_select")
   )
 }
@@ -29,6 +29,9 @@ build_substrait <- function(x) {
   UseMethod("build_substrait", x)
 }
 
+#' Build a substrait expression from a dplyr select object
+#'
+#' @param x Object of class `substrait_select`
 #' @export
 #' @return List of selection expressions
 build_substrait.substrait_select <- function(x) {
@@ -58,6 +61,7 @@ build_substrait.substrait_select <- function(x) {
   })
 }
 
+#' Create a substrait plan from
 #' @param x A substrait_op object
 #' @export
 #' @return A substrait plan
@@ -77,7 +81,7 @@ as_substrait.substrait_op <- function(x) {
 base_table <- function(df) {
   structure(
     df,
-    cols = syms(names(df)),
+    cols = rlang::syms(names(df)),
     class = c("substrait_op", "substrait_base_table")
   )
 }
