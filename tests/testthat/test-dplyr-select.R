@@ -1,8 +1,4 @@
-# make own example data later
-#schema <- substrait_schema(mtcars)
-
 test_that("select() can subset variables by name", {
-
   schema <- mtcars
 
   out <- base_table(schema) %>%
@@ -10,11 +6,9 @@ test_that("select() can subset variables by name", {
 
   expect_s3_class(out, c("substrait_op", "substrait_select"))
   expect_identical(attributes(out)$cols, list(hp = sym("hp")))
-
 })
 
 test_that("select() can subset with multiple variables", {
-
   schema <- mtcars
 
   out <- base_table(schema) %>%
@@ -29,11 +23,9 @@ test_that("select() can subset with multiple variables", {
       am = sym("am")
     )
   )
-
 })
 
 test_that("select() can rename variables", {
-
   schema <- mtcars
 
   out <- base_table(schema) %>%
@@ -41,11 +33,9 @@ test_that("select() can rename variables", {
 
   expect_s3_class(out, c("substrait_op", "substrait_select"))
   expect_identical(attributes(out)$cols, list(hp2 = sym("hp")))
-
 })
 
 test_that("select() can be called multiple times in a chain", {
-
   schema <- mtcars
 
   out <- base_table(schema) %>%
@@ -54,11 +44,9 @@ test_that("select() can be called multiple times in a chain", {
 
   expect_s3_class(out, c("substrait_op", "substrait_select"))
   expect_identical(attributes(out)$cols, list(hp2 = sym("hp")))
-
 })
 
 test_that("select() doesn't work on variables that have been excluded in a previous select()", {
-
   schema <- mtcars
 
   expect_snapshot(
@@ -67,5 +55,4 @@ test_that("select() doesn't work on variables that have been excluded in a previ
       dplyr::select(carb),
     error = TRUE
   )
-
 })

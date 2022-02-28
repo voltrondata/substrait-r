@@ -4,7 +4,6 @@
 #' @importFrom dplyr select
 #' @export
 select.substrait_op <- function(.data, ...) {
-
   columns <- attr(.data, "cols")
 
   empty_df <- data.frame(
@@ -23,7 +22,6 @@ select.substrait_op <- function(.data, ...) {
     cols = syms(set_names(columns[cols], names(cols))),
     class = c("substrait_op", "substrait_select")
   )
-
 }
 
 #' @export
@@ -34,7 +32,6 @@ build_substrait <- function(x) {
 #' @export
 #' @return List of selection expressions
 build_substrait.substrait_select <- function(x) {
-
   col_list <- unname(attr(x, "cols"))
 
   locs <- match(
@@ -42,7 +39,7 @@ build_substrait.substrait_select <- function(x) {
     names(x)
   )
 
-  lapply(locs, function(pos){
+  lapply(locs, function(pos) {
     substrait$Expression$create(
       selection = list(
         direct_reference = list(
@@ -65,7 +62,6 @@ build_substrait.substrait_select <- function(x) {
 #' @export
 #' @return A substrait plan
 as_substrait.substrait_op <- function(x) {
-
   schema <- get_schema(x)
 
   # create the root relations
@@ -76,19 +72,7 @@ as_substrait.substrait_op <- function(x) {
     )
   )
   substrait$Plan$create(relations = list(rel))
-
-
 }
- # # I think that this code block should be pulled out into another function and here we just generate the select expressions
- #  # and call this function from within it; this is too early
- #  substrait$Rel$create(
- #    project = substrait$ProjectRel$create(
- #      # Need function here to create the substrait object instead of NULL
- #      input = .data,
- #      expressions = get_expressions(locs)
- #    )
- #  )
-
 
 base_table <- function(df) {
   structure(
@@ -97,14 +81,3 @@ base_table <- function(df) {
     class = c("substrait_op", "substrait_base_table")
   )
 }
-
-# base_table <- function(df){
-#   tbl_expr <- rlang::enexpr(df)
-#   schema <- as_substrait(df, .ptype = "substrait.NamedStruct")
-#   # substrait$Rel$create(
-#   #   read = substrait$ReadRel$create(
-#   #     base_schema = schema,
-#   #     named_table = substrait$ReadRel$NamedTable$create(names = as.character(tbl_expr))
-#   #   )
-#   # )
-# }
