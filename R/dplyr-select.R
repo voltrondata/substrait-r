@@ -64,7 +64,7 @@ build_substrait.substrait_select <- function(x){
 #' @param x A substrait_op object
 #' @export
 #' @return A substrait plan
-as_substrait.substrait_op <- function(x){
+as_substrait.substrait_op <- function(x) {
 
   schema <- get_schema(x)
 
