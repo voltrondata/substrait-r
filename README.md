@@ -5,9 +5,9 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/paleolimbot/substrait/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/substrait/actions)
+[![R-CMD-check](https://github.com/voltrondata/substrait-r/workflows/R-CMD-check/badge.svg)](https://github.com/voltrondata/substrait-r/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/paleolimbot/substrait/branch/master/graph/badge.svg)](https://app.codecov.io/gh/paleolimbot/substrait?branch=master)
+coverage](https://codecov.io/gh/voltrondata/substrait-r/branch/master/graph/badge.svg)](https://app.codecov.io/gh/voltrondata/substrait-r?branch=master)
 <!-- badges: end -->
 
 The goal of substrait is to provide an R interface to the
@@ -22,7 +22,7 @@ You can install the development version of substrait from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("paleolimbot/substrait")
+devtools::install_github("voltrondata/substrait-r")
 ```
 
 ## Usage

@@ -16,8 +16,8 @@ knitr::opts_chunk$set(
 # substrait
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/paleolimbot/substrait/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/substrait/actions)
-[![Codecov test coverage](https://codecov.io/gh/paleolimbot/substrait/branch/master/graph/badge.svg)](https://app.codecov.io/gh/paleolimbot/substrait?branch=master)
+[![R-CMD-check](https://github.com/voltrondata/substrait-r/workflows/R-CMD-check/badge.svg)](https://github.com/voltrondata/substrait-r/actions)
+[![Codecov test coverage](https://codecov.io/gh/voltrondata/substrait-r/branch/master/graph/badge.svg)](https://app.codecov.io/gh/voltrondata/substrait-r?branch=master)
 <!-- badges: end -->
 
 The goal of substrait is to provide an R interface to the [Substrait](https://substrait.io) cross-language serialization for relational algebra. This is an experimental package that is under heavy development!
@@ -28,7 +28,7 @@ You can install the development version of substrait from [GitHub](https://githu
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("paleolimbot/substrait")
+devtools::install_github("voltrondata/substrait-r")
 ```
 
 ## Usage
