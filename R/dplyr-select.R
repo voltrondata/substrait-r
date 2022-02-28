@@ -90,7 +90,7 @@ as_substrait.substrait_op <- function(x) {
  #  )
 
 
-base_table <- function(df){
+base_table <- function(df) {
   structure(
     df,
     cols = syms(names(df)),
