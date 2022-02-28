@@ -33,7 +33,7 @@ build_substrait <- function(x) {
 
 #' @export
 #' @return List of selection expressions
-build_substrait.substrait_select <- function(x){
+build_substrait.substrait_select <- function(x) {
 
   col_list <- unname(attr(x, "cols"))
 
