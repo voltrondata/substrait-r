@@ -8,6 +8,11 @@
 }
 \arguments{
 \item{.data}{substrait_Rel object}
+
+\item{...}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> One or more unquoted
+expressions separated by commas. Variable names can be used as if they
+were positions in the data frame, so expressions like \code{x:y} can
+be used to select a range of variables.}
 }
 \description{
 Select column

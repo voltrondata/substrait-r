@@ -1,6 +1,7 @@
 #' Select column
 #'
 #' @param .data substrait_Rel object
+#' @inheritParams dplyr::select
 #' @importFrom dplyr select
 #' @export
 select.substrait_op <- function(.data, ...) {
@@ -24,16 +25,19 @@ select.substrait_op <- function(.data, ...) {
   )
 }
 
+
+#' Build a substrait expression from a dplyr select object
+#'
+#' @param x Object of class `substrait_select`
+#' @return List of selection expressions
+#'
 #' @export
 build_substrait <- function(x) {
   UseMethod("build_substrait", x)
 }
 
-#' Build a substrait expression from a dplyr select object
-#'
-#' @param x Object of class `substrait_select`
+#' @rdname build_substrait
 #' @export
-#' @return List of selection expressions
 build_substrait.substrait_select <- function(x) {
   col_list <- unname(attr(x, "cols"))
 
@@ -62,17 +66,18 @@ build_substrait.substrait_select <- function(x) {
 }
 
 #' Create a substrait plan from
+#'
 #' @param x A substrait_op object
-#' @export
+#' @inheritParams as_substrait
 #' @return A substrait plan
-as_substrait.substrait_op <- function(x) {
-  schema <- get_schema(x)
-
+#'
+#' @export
+as_substrait.substrait_op <- function(x, .ptype = NULL, ...) {
   # create the root relations
   rel <- substrait$PlanRel$create(
     root = substrait$RelRoot$create(
       input = base_table(x),
-      names = names(schema)
+      names = names(x)
     )
   )
   substrait$Plan$create(relations = list(rel))
