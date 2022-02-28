@@ -21,18 +21,43 @@ You can install the development version of substrait from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("voltrondata/substrait-r")
+# install.packages("remotes")
+remotes::install_github("voltrondata/substrait-r")
 ```
 
-## Usage
+## Example
 
-You can create Substrait objects using the `substrait` base object or
-using `substrait_create()`:
+Basic `dplyr::select()`!
 
 ``` r
 library(substrait)
+library(dplyr)
 
+tbl <- data.frame(letter = letters, number = 1:26)
+tbl %>% 
+  substrait:::base_table() %>% 
+  select(letter) %>% 
+  build_substrait()
+#> [[1]]
+#> message of type 'substrait.Expression' with 1 field set
+#> selection {
+#>   direct_reference {
+#>     struct_field {
+#>       child {
+#>         struct_field {
+#>         }
+#>       }
+#>     }
+#>   }
+#> }
+```
+
+## Create ‘Substrait’ proto objects
+
+You can create Substrait proto objects using the `substrait` base object
+or using `substrait_create()`:
+
+``` r
 substrait$Type$Boolean$create()
 #> message of type 'substrait.Type.Boolean' with 0 fields set
 substrait_create("substrait.Type.Boolean")
@@ -43,9 +68,10 @@ You can convert an R object *to* a Substrait object using
 `as_substrait(object, type)`:
 
 ``` r
-(msg <- as_substrait(list(i8 = list()), "substrait.Type"))
-#> message of type 'substrait.Type' with 1 field set
-#> i8 {
+(msg <- as_substrait(4L, "substrait.Expression"))
+#> message of type 'substrait.Expression' with 1 field set
+#> literal {
+#>   i32: 4
 #> }
 ```
 
@@ -58,9 +84,8 @@ Restore an R object *from* a Substrait object using
 `from_substrait(message, prototype)`:
 
 ``` r
-from_substrait(msg, list())
-#> $i8
-#> message of type 'substrait.Type.I8' with 0 fields set
+from_substrait(msg, integer())
+#> [1] 4
 ```
 
 Substrait objects are list-like (i.e., methods defined for `[[` and
@@ -68,11 +93,11 @@ Substrait objects are list-like (i.e., methods defined for `[[` and
 `NULL` (just like an R list).
 
 ``` r
-msg$i8$nullability <- substrait$Type$Nullability$NULLABILITY_NULLABLE
+msg$literal <- substrait$Expression$Literal$create(i32 = 5L)
 msg
-#> message of type 'substrait.Type' with 1 field set
-#> i8 {
-#>   nullability: NULLABILITY_NULLABLE
+#> message of type 'substrait.Expression' with 1 field set
+#> literal {
+#>   i32: 5
 #> }
 ```
 
@@ -91,7 +116,7 @@ objects and is particularly useful with `expect_identical()`.
 
 ``` r
 unclass(msg)
-#> [1] 12 02 10 01
+#> [1] 0a 02 28 05
 ```
 
 Currently, the [RProtoBuf](https://cran.r-project.org/package=RProtoBuf)
@@ -108,8 +133,8 @@ constructors in the package.
 #> message of type 'substrait.Type' with 1 field set
 as_substrait(msg_rpb)
 #> message of type 'substrait.Type' with 1 field set
-#> i8 {
-#>   nullability: NULLABILITY_NULLABLE
+#> bool_ {
+#>   5: 5
 #> }
 ```
 
