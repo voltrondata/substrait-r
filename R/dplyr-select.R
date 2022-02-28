@@ -35,7 +35,7 @@ build_substrait.substrait_select <- function(x) {
   col_list <- unname(attr(x, "cols"))
 
   locs <- match(
-    unname(vapply(col_list, FUN = as.character, character(1))),
+    unname(vapply(col_list, as.character, character(1))),
     names(x)
   )
 
