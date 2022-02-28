@@ -27,7 +27,7 @@ select.substrait_op <- function(.data, ...) {
 }
 
 #' @export
-build_substrait <- function(x){
+build_substrait <- function(x) {
   UseMethod("build_substrait", x)
 }
 
