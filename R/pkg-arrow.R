@@ -1,4 +1,77 @@
 
+#' Evaluate a Plan using Arrow
+#'
+#' @param plan A substrait.Plan
+#' @param ... A named list of data frames, Datasets, or Tables
+#'   corresponding to NamedTable objects.
+#'
+#' @return An [arrow::Table]
+#' @export
+#'
+substrait_eval_arrow <- function(plan, ...) {
+  plan <- as_substrait(plan, "substrait.Plan")
+  tables <- rlang::dots_list(..., .named = TRUE)
+
+  temp_parquet <- vapply(tables, function(i) tempfile(), character(1))
+  on.exit(unlink(temp_parquet))
+
+  local_file_tables <- lapply(seq_along(tables), function(i) {
+    substrait$ReadRel$LocalFiles$create(
+      items = list(
+        substrait$ReadRel$LocalFiles$FileOrFiles$create(
+          uri_file = sprintf("file://%s", temp_parquet[i]),
+          format = substrait$ReadRel$LocalFiles$FileOrFiles$FileFormat$FILE_FORMAT_PARQUET
+        )
+      )
+    )
+  })
+  names(local_file_tables) <- names(tables)
+
+  # walk the relation tree looking for named tables, replacing
+  # with those from local_file_tables
+  maybe_replace_relation <- function(x) {
+    if (inherits(x, "substrait_ReadRel")) {
+      if (isTRUE("named_table" %in% names(x))) {
+        name <- x$named_table$names
+
+        if (!isTRUE(name %in% names(local_file_tables))) {
+          stop(sprintf("Named table '%s' not found in tables", name))
+        }
+
+        x$named_table <- NULL
+        x$local_files <- local_file_tables[[name]]
+        x
+      } else {
+        x
+      }
+    } else if (inherits(x, "substrait_proto_message")) {
+      x_items <- lapply(x, maybe_replace_relation)
+      substrait_create(make_qualified_name(x), !!! x_items)
+    } else if (rlang::is_bare_list(x)) {
+      lapply(x, maybe_replace_relation)
+    } else {
+      x
+    }
+  }
+
+  plan <- maybe_replace_relation(plan)
+  col_names <- substrait_colnames(plan)
+
+  # write parquet files
+  Map(arrow::write_parquet, tables, temp_parquet)
+
+  # run the exec plan
+  getNamespace("arrow")[["do_exec_plan_substrait"]](as.raw(plan), col_names)
+}
+
+has_arrow_with_substrait <- function() {
+  requireNamespace("arrow", quietly = TRUE) &&
+    "do_exec_plan_substrait" %in% names(getNamespace("arrow"))
+}
+
+
+
+
 #' @export
 as_substrait.DataType <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
@@ -107,4 +180,39 @@ from_substrait.Schema <- function(msg, x, ...) {
     },
     NextMethod()
   )
+}
+
+#' Get column names for a relation
+#'
+#' @param x A relation
+#'
+#' @return A vector of column names
+#' @export
+#'
+substrait_colnames <- function(x) {
+  UseMethod("substrait_colnames")
+}
+
+#' @export
+substrait_colnames.substrait_ReadRel <- function(x) {
+  x$base_schema$names
+}
+
+#' @export
+substrait_colnames.substrait_Rel <- function(x) {
+  for (item in as.list(x)) {
+    return(substrait_colnames(item))
+  }
+
+  return(NULL)
+}
+
+#' @export
+substrait_colnames.substrait_PlanRel <- function(x) {
+  substrait_colnames(x$rel)
+}
+
+#' @export
+substrait_colnames.substrait_Plan <- function(x) {
+  do.call(c, lapply(x$relations, substrait_colnames))
 }

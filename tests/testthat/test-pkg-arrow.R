@@ -1,4 +1,32 @@
 
+test_that("substrait_eval_arrow() works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  df <- data.frame(
+    letter = letters[1:5],
+    number = 1:5
+  )
+
+  plan <- substrait$Plan$create(
+    relations = list(
+      substrait$PlanRel$create(
+        rel = substrait$Rel$create(
+          read = substrait$ReadRel$create(
+            base_schema = as_substrait(df, "substrait.NamedStruct"),
+            named_table = substrait$ReadRel$NamedTable$create(
+              names = "the_name_of_the_table"
+            )
+          )
+        )
+      )
+    )
+  )
+
+
+  result <- substrait_eval_arrow(plan, the_name_of_the_table = df)
+  expect_identical(as.data.frame(as.data.frame(result)), df)
+})
+
 test_that("as_subtrait() works for arrow DataType", {
   skip_if_not_installed("arrow")
 
