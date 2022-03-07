@@ -1,24 +1,26 @@
 #' Filter column
 #'
-#' @param .data substrait_Rel object
+#' @param .data substrait_dplyr_query object or data.frame
 #' @inheritParams dplyr::filter
-#' @importFrom dplyr select
+#' @importFrom dplyr filter
 #' @export
-filter.substrait_op <- function(.data, ..., .preserve = FALSE) {
-  columns <- attr(.data, "cols")
-
+filter.substrait_dplyr_query <- function(.data, ..., .preserve = FALSE) {
+  browser()
   conditions <- quos(...)
 
   if (is.empty(conditions)) {
     return(.data)
   }
 
-  structure(
-    .data,
-    cols = cols,
-    filters = conditions,
-    class = c("substrait_op", "substrait_filter")
+  existing_conditions <- attr(.data, "filtered_rows")
+
+  updated_conditions <- append(
+    # as.list in case it's NULL
+    as.list(existing_conditions),
+    conditions
   )
+
+  substrait_dplyr_query(.data, filtered_rows = updated_conditions)
 }
 
 #' @rdname build_substrait

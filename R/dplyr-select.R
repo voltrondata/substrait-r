@@ -4,25 +4,25 @@
 #' @inheritParams dplyr::select
 #' @importFrom dplyr select
 #' @export
-select.substrait_op <- function(.data, ...) {
-  columns <- attr(.data, "cols")
+select.substrait_dplyr_query <- function(.data, ...) {
+  selected_columns <- attr(.data, "selected_columns")
 
   empty_df <- data.frame(
     matrix(
-      ncol = length(columns),
+      ncol = length(selected_columns),
       nrow = 0,
-      dimnames = list(NULL, columns)
+      dimnames = list(NULL, selected_columns)
     )
   )
 
   # Named vector of column names/indices
   cols <- tidyselect::eval_select(rlang::expr(c(...)), empty_df)
 
-  structure(
+  substrait_dplyr_query(
     .data,
-    cols = rlang::syms(rlang::set_names(columns[cols], names(cols))),
-    class = c("substrait_op", "substrait_select")
+    selected_columns = rlang::syms(rlang::set_names(selected_columns[cols], names(cols)))
   )
+
 }
 
 
@@ -67,12 +67,12 @@ build_substrait.substrait_select <- function(x) {
 
 #' Create a substrait plan from
 #'
-#' @param x A substrait_op object
+#' @param x A substrait_dplyr_query object
 #' @inheritParams as_substrait
 #' @return A substrait plan
 #'
 #' @export
-as_substrait.substrait_op <- function(x, .ptype = NULL, ...) {
+as_substrait.substrait_dplyr_query <- function(x, .ptype = NULL, ...) {
   # create the root relations
   rel <- substrait$PlanRel$create(
     root = substrait$RelRoot$create(
@@ -84,9 +84,5 @@ as_substrait.substrait_op <- function(x, .ptype = NULL, ...) {
 }
 
 base_table <- function(df) {
-  structure(
-    df,
-    cols = rlang::syms(names(df)),
-    class = c("substrait_op", "substrait_base_table")
-  )
+  substrait_dplyr_query(df, selected_columns = names(df))
 }

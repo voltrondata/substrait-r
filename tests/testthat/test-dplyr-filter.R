@@ -4,5 +4,15 @@ test_that("filter() can subset rows based on a precondition", {
   out <- base_table(schema) %>%
     dplyr::filter(hp < 100)
 
-  expect_s3_class(out, c("substrait_op", "substrait_filter"))
+  expect_s3_class(out, c("substrait_dplyr_query"))
+})
+
+test_that("filter() can be used multiple times with multiple preconditions", {
+  schema <- mtcars
+
+  out <- base_table(schema) %>%
+    dplyr::filter(hp < 100) %>%
+    dplyr::filter(am == 0)
+
+  expect_s3_class(out, c("substrait_dplyr_query"))
 })
