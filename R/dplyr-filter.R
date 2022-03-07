@@ -5,10 +5,10 @@
 #' @importFrom dplyr filter
 #' @export
 filter.substrait_dplyr_query <- function(.data, ..., .preserve = FALSE) {
-  browser()
-  conditions <- quos(...)
 
-  if (is.empty(conditions)) {
+  conditions <- rlang::quos(...)
+
+  if (rlang::is_empty(conditions)) {
     return(.data)
   }
 
