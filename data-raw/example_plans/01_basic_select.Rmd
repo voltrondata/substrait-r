@@ -1,0 +1,108 @@
+# Select
+
+## Input
+
+In the example below, t is an ibis table
+
+```
+def t():
+  return ibis.table(
+        [
+            ("full_name", "string"),
+            ("age", "int64"),
+            ("ts", "timestamp('UTC')"),
+            ("delta", "interval"),
+        ]
+)
+```
+
+## Code
+
+The code below is doing the equivalent of `dplyr::select(t, full_name, age, delta)` via ibis syntax.
+
+```
+t.projection(['full_name', 'age', 'delta'])
+```
+
+## Output
+
+After compiling and converting to substrait:
+
+```
+project {
+  input {
+    read {
+      base_schema {
+        names: "full_name"
+        names: "age"
+        names: "ts"
+        names: "delta"
+        struct {
+          types {
+            string {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+          types {
+            i64 {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+          types {
+            timestamp_tz {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+          types {
+            interval_day {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+        }
+      }
+      named_table {
+        names: "unbound_table_1"
+      }
+    }
+  }
+  expressions {
+    selection {
+      direct_reference {
+        struct_field {
+          # note that "field: 0" is not shown here as it's the default value
+          child {
+            struct_field {
+            }
+          }
+        }
+      }
+    }
+  }
+  expressions {
+    selection {
+      direct_reference {
+        struct_field {
+          field: 1
+          child {
+            struct_field {
+            }
+          }
+        }
+      }
+    }
+  }
+  expressions {
+    selection {
+      direct_reference {
+        struct_field {
+          field: 3
+          child {
+            struct_field {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
