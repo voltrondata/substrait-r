@@ -4,7 +4,7 @@
 \alias{select.substrait_dplyr_query}
 \title{Select column}
 \usage{
-\method{select}{substrait_dplyr_query}(.data, ...)
+select.substrait_dplyr_query(.data, ...)
 }
 \arguments{
 \item{.data}{substrait_Rel object}

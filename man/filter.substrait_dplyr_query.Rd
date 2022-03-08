@@ -4,7 +4,7 @@
 \alias{filter.substrait_dplyr_query}
 \title{Filter column}
 \usage{
-\method{filter}{substrait_dplyr_query}(.data, ..., .preserve = FALSE)
+filter.substrait_dplyr_query(.data, ..., .preserve = FALSE)
 }
 \arguments{
 \item{.data}{substrait_dplyr_query object or data.frame}

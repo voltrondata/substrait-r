@@ -1,3 +1,5 @@
+library(dplyr, warn.conflicts = FALSE)
+
 test_that("select() can subset variables by name", {
   schema <- mtcars
 
