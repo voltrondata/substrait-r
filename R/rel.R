@@ -11,8 +11,23 @@ substrait_colnames <- function(x) {
 }
 
 #' @export
+substrait_colnames.default <- function(x) {
+  NULL
+}
+
+#' @export
 substrait_colnames.substrait_ReadRel <- function(x) {
   x$base_schema$names
+}
+
+#' @export
+substrait_colnames.substrait_SortRel <- function(x) {
+  substrait_colnames(x$input)
+}
+
+#' @export
+substrait_colnames.substrait_FilterRel <- function(x) {
+  substrait_colnames(x$input)
 }
 
 #' @export
