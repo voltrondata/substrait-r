@@ -12,6 +12,9 @@ substrait_eval_arrow <- function(plan, tables) {
   plan <- as_substrait(plan, "substrait.Plan")
   stopifnot(rlang::is_named2(tables))
 
+  # only support plans with exactly one relation in the relations list for now
+  stopifnot(length(plan$relations) == 1)
+
   temp_parquet <- vapply(tables, function(i) tempfile(), character(1))
   on.exit(unlink(temp_parquet))
 
@@ -63,7 +66,7 @@ substrait_eval_arrow <- function(plan, tables) {
     }
   })
 
-  col_names <- substrait_colnames(plan)
+  col_names <- substrait_colnames(plan$relations[[1]])
 
   # write parquet files
   Map(arrow::write_parquet, tables, temp_parquet)

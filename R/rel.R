@@ -29,11 +29,6 @@ substrait_colnames.substrait_PlanRel <- function(x) {
   substrait_colnames(x$rel)
 }
 
-#' @export
-substrait_colnames.substrait_Plan <- function(x) {
-  do.call(c, lapply(x$relations, substrait_colnames))
-}
-
 rel_tree_modify <- function(x, classes = character(), fun = identity) {
   if (inherits(x, classes)) {
     fun(x)
