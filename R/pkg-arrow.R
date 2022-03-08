@@ -34,45 +34,35 @@ substrait_eval_arrow <- function(plan, tables) {
 
   # walk the relation tree looking for named tables, replacing
   # with those from local_file_tables
-  maybe_replace_relation <- function(x) {
-    if (inherits(x, "substrait_ReadRel")) {
-      if (isTRUE("named_table" %in% names(x))) {
-        name <- x$named_table$names
+  plan <- rel_tree_modify(plan, "substrait_ReadRel", function(x) {
+    if (isTRUE("named_table" %in% names(x))) {
+      name <- x$named_table$names
 
-        if (!isTRUE(name %in% names(local_file_tables))) {
-          rlang::abort(
-            sprintf("Named table '%s' not found in `tables`", name),
-            call = call_for_errors
-          )
-        }
-
-        if (!identical(x$base_schema, table_base_schema[[name]])) {
-          rlang::abort(
-            sprintf(
-              "Base schema for table '%s' does not match declared base schema",
-              name
-            ),
-            call = call_for_errors
-          )
-        }
-
-        x$named_table <- NULL
-        x$local_files <- local_file_tables[[name]]
-        x
-      } else {
-        x
+      if (!isTRUE(name %in% names(local_file_tables))) {
+        rlang::abort(
+          sprintf("Named table '%s' not found in `tables`", name),
+          call = call_for_errors
+        )
       }
-    } else if (inherits(x, "substrait_proto_message")) {
-      x_items <- lapply(x, maybe_replace_relation)
-      substrait_create(make_qualified_name(x), !!! x_items)
-    } else if (rlang::is_bare_list(x)) {
-      lapply(x, maybe_replace_relation)
+
+      if (!identical(x$base_schema, table_base_schema[[name]])) {
+        rlang::abort(
+          sprintf(
+            "Base schema for table '%s' does not match declared base schema",
+            name
+          ),
+          call = call_for_errors
+        )
+      }
+
+      x$named_table <- NULL
+      x$local_files <- local_file_tables[[name]]
+      x
     } else {
       x
     }
-  }
+  })
 
-  plan <- maybe_replace_relation(plan)
   col_names <- substrait_colnames(plan)
 
   # write parquet files
@@ -86,9 +76,6 @@ has_arrow_with_substrait <- function() {
   requireNamespace("arrow", quietly = TRUE) &&
     "do_exec_plan_substrait" %in% names(getNamespace("arrow"))
 }
-
-
-
 
 #' @export
 as_substrait.DataType <- function(x, .ptype = NULL, ...) {
