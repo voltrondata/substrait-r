@@ -1,5 +1,5 @@
 
-test_that("substrait_eval_arrow() works", {
+test_that("substrait_eval_arrow() can evaluate a plan with one read relation", {
   skip_if_not(has_arrow_with_substrait())
 
   df <- data.frame(
@@ -36,7 +36,7 @@ test_that("substrait_eval_arrow() works", {
   )
 })
 
-test_that("as_subtrait() works for arrow DataType", {
+test_that("as_subtrait() can create substrait.Type from DataType", {
   skip_if_not_installed("arrow")
 
   expect_identical(
@@ -70,7 +70,7 @@ test_that("as_subtrait() works for arrow DataType", {
   )
 })
 
-test_that("as_subtrait() works for arrow Field", {
+test_that("as_subtrait() can create substrait.Type from Field", {
   skip_if_not_installed("arrow")
 
   expect_identical(
@@ -79,7 +79,7 @@ test_that("as_subtrait() works for arrow Field", {
   )
 })
 
-test_that("as_substrait() works for arrow Schema", {
+test_that("as_substrait() can create substrait.Type from arrow Schema", {
   skip_if_not_installed("arrow")
 
   expect_identical(
@@ -95,7 +95,7 @@ test_that("as_substrait() works for arrow Schema", {
   )
 })
 
-test_that("from_substrait() works for arrow DataType", {
+test_that("from_substrait() can restore arrow DataType from substrait.Type", {
   skip_if_not_installed("arrow")
 
   expect_true(
@@ -129,7 +129,7 @@ test_that("from_substrait() works for arrow DataType", {
   )
 })
 
-test_that("from_substrait() works for arrow::schema()", {
+test_that("from_substrait() can restore arrow::schema() from substrait.Type", {
   skip_if_not_installed("arrow")
 
   expect_true(
