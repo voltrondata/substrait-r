@@ -25,6 +25,16 @@ test_that("substrait_eval_arrow() works", {
 
   result <- substrait_eval_arrow(plan, list(the_name_of_the_table = df))
   expect_identical(as.data.frame(as.data.frame(result)), df)
+
+  expect_snapshot(
+    substrait_eval_arrow(plan, list()),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    substrait_eval_arrow(plan, list(the_name_of_the_table = data.frame())),
+    error = TRUE
+  )
 })
 
 test_that("as_subtrait() works for arrow DataType", {

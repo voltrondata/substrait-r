@@ -20,12 +20,17 @@ substrait_eval_arrow <- function(plan, tables) {
       items = list(
         substrait$ReadRel$LocalFiles$FileOrFiles$create(
           uri_file = sprintf("file://%s", temp_parquet[i]),
-          format = substrait$ReadRel$LocalFiles$FileOrFiles$FileFormat$FILE_FORMAT_PARQUET
+          format = substrait$ReadRel$LocalFiles$FileOrFiles$FileFormat$
+            FILE_FORMAT_PARQUET
         )
       )
     )
   })
   names(local_file_tables) <- names(tables)
+
+  table_base_schema <- lapply(tables, as_substrait, "substrait.NamedStruct")
+
+  call_for_errors <- sys.call()
 
   # walk the relation tree looking for named tables, replacing
   # with those from local_file_tables
@@ -35,7 +40,20 @@ substrait_eval_arrow <- function(plan, tables) {
         name <- x$named_table$names
 
         if (!isTRUE(name %in% names(local_file_tables))) {
-          stop(sprintf("Named table '%s' not found in tables", name))
+          rlang::abort(
+            sprintf("Named table '%s' not found in `tables`", name),
+            call = call_for_errors
+          )
+        }
+
+        if (!identical(x$base_schema, table_base_schema[[name]])) {
+          rlang::abort(
+            sprintf(
+              "Base schema for table '%s' does not match declared base schema",
+              name
+            ),
+            call = call_for_errors
+          )
         }
 
         x$named_table <- NULL
@@ -180,39 +198,4 @@ from_substrait.Schema <- function(msg, x, ...) {
     },
     NextMethod()
   )
-}
-
-#' Get column names for a relation
-#'
-#' @param x A relation
-#'
-#' @return A vector of column names
-#' @export
-#'
-substrait_colnames <- function(x) {
-  UseMethod("substrait_colnames")
-}
-
-#' @export
-substrait_colnames.substrait_ReadRel <- function(x) {
-  x$base_schema$names
-}
-
-#' @export
-substrait_colnames.substrait_Rel <- function(x) {
-  for (item in as.list(x)) {
-    return(substrait_colnames(item))
-  }
-
-  return(NULL)
-}
-
-#' @export
-substrait_colnames.substrait_PlanRel <- function(x) {
-  substrait_colnames(x$rel)
-}
-
-#' @export
-substrait_colnames.substrait_Plan <- function(x) {
-  do.call(c, lapply(x$relations, substrait_colnames))
 }
