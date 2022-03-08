@@ -2,15 +2,15 @@
 #' Evaluate a Plan using Arrow
 #'
 #' @param plan A substrait.Plan
-#' @param ... A named list of data frames, Datasets, or Tables
+#' @param tables A named list of data frames, Datasets, or Tables
 #'   corresponding to NamedTable objects.
 #'
-#' @return An [arrow::Table]
+#' @return An [arrow::Table].
 #' @export
 #'
-substrait_eval_arrow <- function(plan, ...) {
+substrait_eval_arrow <- function(plan, tables) {
   plan <- as_substrait(plan, "substrait.Plan")
-  tables <- rlang::dots_list(..., .named = TRUE)
+  stopifnot(rlang::is_named2(tables))
 
   temp_parquet <- vapply(tables, function(i) tempfile(), character(1))
   on.exit(unlink(temp_parquet))

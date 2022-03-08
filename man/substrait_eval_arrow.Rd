@@ -4,16 +4,16 @@
 \alias{substrait_eval_arrow}
 \title{Evaluate a Plan using Arrow}
 \usage{
-substrait_eval_arrow(plan, ...)
+substrait_eval_arrow(plan, tables)
 }
 \arguments{
 \item{plan}{A substrait.Plan}
 
-\item{...}{A named list of data frames, Datasets, or Tables
+\item{tables}{A named list of data frames, Datasets, or Tables
 corresponding to NamedTable objects.}
 }
 \value{
-An \link[arrow:Table]{arrow::Table}
+An \link[arrow:Table]{arrow::Table}.
 }
 \description{
 Evaluate a Plan using Arrow
