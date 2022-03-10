@@ -1,3 +1,4 @@
+#' Create a substrait schema
 #' @export
 substrait_schema <- function(x){
   UseMethod("substrait_schema", x)
