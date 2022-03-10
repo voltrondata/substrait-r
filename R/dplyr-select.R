@@ -25,46 +25,6 @@ select.substrait_dplyr_query <- function(.data, ...) {
 
 }
 
-
-#' Build a substrait expression from a dplyr select object
-#'
-#' @param x Object of class `substrait_select`
-#' @return List of selection expressions
-#'
-#' @export
-build_substrait <- function(x) {
-  UseMethod("build_substrait", x)
-}
-
-#' @rdname build_substrait
-#' @export
-build_substrait.substrait_select <- function(x) {
-  col_list <- unname(attr(x, "cols"))
-
-  locs <- match(
-    unname(vapply(col_list, as.character, character(1))),
-    names(x)
-  )
-
-  lapply(locs, function(pos) {
-    substrait$Expression$create(
-      selection = list(
-        direct_reference = list(
-          struct_field = list(
-            # -1 as it's 0-indexed but tidyselect is 1-indexed
-            field = pos - 1,
-            child = list(
-              struct_field = list(
-                field = list()
-              )
-            )
-          )
-        )
-      )
-    )
-  })
-}
-
 #' Create a substrait plan from
 #'
 #' @param x A substrait_dplyr_query object
