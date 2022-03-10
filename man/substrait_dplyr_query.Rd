@@ -15,10 +15,7 @@ substrait_dplyr_query(
 
 \item{selected_columns}{Columns to select}
 
-\item{filtered_rows}{Rows to filter
-
-This will need refining later but it's a useful convenience function for now
-as it can operate on whatever}
+\item{filtered_rows}{Rows to filter}
 }
 \description{
 Create a substrait_dplyr_query object

@@ -3,11 +3,9 @@
 #' @param filters list of quosures
 #'
 #' @export
-build_filters <- function(filters, top_row){
+build_filters <- function(filters, df, compiler){
 
-  compiler <- substrait_compiler()
-  context <- new_context(top_row)
-
+  context <- new_context(df)
   lapply(filters, as_substrait, .ptype = "substrait.Expression", compiler = compiler, context = context)
 
 }

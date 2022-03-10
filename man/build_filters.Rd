@@ -4,7 +4,7 @@
 \alias{build_filters}
 \title{Take filtered rows and create the appropriate substrait message}
 \usage{
-build_filters(filters, top_row)
+build_filters(filters, df, compiler)
 }
 \arguments{
 \item{filters}{list of quosures}
