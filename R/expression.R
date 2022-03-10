@@ -15,7 +15,7 @@ new_context <- function(x = data.frame()) {
       selection = list(
         direct_reference = list(
           struct_field = list(
-            field = i
+            field = i-1
           )
         )
       )
