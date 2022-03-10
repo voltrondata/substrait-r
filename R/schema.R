@@ -5,7 +5,7 @@ substrait_schema <- function(x){
 
 #' @export
 substrait_schema.data.frame <- function(x){
-  as_substrait(x[0,], "substrait.NamedStruct")
+  as_substrait(x, "substrait.NamedStruct")
 }
 
 

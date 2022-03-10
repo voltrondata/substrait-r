@@ -23,11 +23,6 @@ test_that("build_filters can create filter expressions", {
     )
   )
 
-  expect_equal(
-    filter_2_fields[["function_reference"]],
-    3
-  )
-
   outer_function_2 <- filters[[2]][["scalar_function"]]
 
   # am field
