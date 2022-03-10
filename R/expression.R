@@ -8,7 +8,8 @@
 # NOTE!? field indexes have to start at 1 because a value of 0 is the
 # default protobuf value?
 new_context <- function(x = data.frame()) {
-  schema <- as_substrait(x, "substrait.NamedStruct")
+  schema <- substrait_schema(x)
+
   mask <- lapply(
     seq_along(schema$names),
     function(i) substrait$Expression$create(
