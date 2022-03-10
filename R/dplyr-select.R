@@ -18,25 +18,3 @@ select.substrait_dplyr_query <- function(.data, ...) {
   )
 
 }
-
-#' Create a substrait plan from
-#'
-#' @param x A substrait_dplyr_query object
-#' @inheritParams as_substrait
-#' @return A substrait plan
-#'
-#' @export
-as_substrait.substrait_dplyr_query <- function(x, .ptype = NULL, ...) {
-  # create the root relations
-  rel <- substrait$PlanRel$create(
-    root = substrait$RelRoot$create(
-      input = base_table(x),
-      names = names(x)
-    )
-  )
-  substrait$Plan$create(relations = list(rel))
-}
-
-base_table <- function(df) {
-  substrait_dplyr_query(df, selected_columns = names(df))
-}
