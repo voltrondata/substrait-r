@@ -23,51 +23,6 @@ as.data.frame.substrait_dplyr_query <- function(.data){
   .data
 }
 
-build_base_table <- function(.data){
-
-  .data <- as.data.frame(.data)
-
-  input_table <- substrait$ReadRel$create(
-    base_schema = as_substrait(.data, "substrait.NamedStruct"),
-    named_table = substrait$ReadRel$NamedTable$create(names = "the_name_of_the_table")
-  )
-
-  input_table
-}
-
-build_plan <- function(.data){
-
-  plan_contents <- substrait$Rel$create(read = build_base_table(.data))
-
-  if (!is.null(attr(.data, "filtered_rows"))) {
-
-    plan <- substrait$FilterRel$create(
-      input = input,
-      condition = build_filters(attr(.data, "filtered_rows"))
-    )
-
-  }
-
-  if (!is.null(attr(.data, "selected_columns"))) {
-
-    plan <- substrait$ProjectRel$create(
-      input = plan,
-      expressions = build_projections(attr(.data, "selected_columns"), names(.data))
-    )
-
-  }
-
-  plan <- substrait$Plan$create(
-    relations = list(
-      substrait$PlanRel$create(
-        rel =
-      )
-    )
-  )
-
-  plan
-}
-
 get_empty_df <- function(cols){
     data.frame(
       matrix(
