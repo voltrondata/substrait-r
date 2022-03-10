@@ -17,6 +17,7 @@ substrait_dplyr_query <- function(.data,
   )
 }
 
+#' @export
 as.data.frame.substrait_dplyr_query <- function(.data){
   class(.data) <- "data.frame"
   .data
@@ -67,3 +68,12 @@ build_plan <- function(.data){
   plan
 }
 
+get_empty_df <- function(cols){
+    data.frame(
+      matrix(
+        ncol = length(cols),
+        nrow = 0,
+        dimnames = list(NULL, cols)
+      )
+    )
+  }

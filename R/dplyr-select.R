@@ -7,13 +7,7 @@
 select.substrait_dplyr_query <- function(.data, ...) {
   selected_columns <- attr(.data, "selected_columns")
 
-  empty_df <- data.frame(
-    matrix(
-      ncol = length(selected_columns),
-      nrow = 0,
-      dimnames = list(NULL, selected_columns)
-    )
-  )
+  empty_df <- get_empty_df(selected_columns)
 
   # Named vector of column names/indices
   cols <- tidyselect::eval_select(rlang::expr(c(...)), empty_df)
