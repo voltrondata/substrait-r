@@ -4,9 +4,11 @@
 \alias{build_projections}
 \title{Take selected columns and create the appropriate substrait message}
 \usage{
-build_projections(projections, col_list)
+build_projections(df, projections)
 }
 \arguments{
+\item{df}{data}
+
 \item{projections}{vector of selected columns}
 }
 \description{

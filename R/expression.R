@@ -5,8 +5,6 @@
 # types so that we can convert the type of substrait.Expression that is a
 # field reference. I've wrapped both of these into `context` just to make
 # something work.
-# NOTE!? field indexes have to start at 1 because a value of 0 is the
-# default protobuf value?
 new_context <- function(x = data.frame()) {
   schema <- substrait_schema(x)
 

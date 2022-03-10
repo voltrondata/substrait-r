@@ -1,9 +1,10 @@
 #' Take selected columns and create the appropriate substrait message
 #'
 #' @param projections vector of selected columns
+#' @param df data
 #'
 #' @export
-build_projections <- function(projections, df){
+build_projections <- function(df, projections){
 
   # get numeric matches of column positions
   locs <- match(

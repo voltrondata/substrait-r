@@ -3,7 +3,7 @@ test_that("build_filters can create filter expressions", {
   compiler <- substrait_compiler()
 
   query <- substrait_dplyr_query(mtcars, filtered_rows = c(rlang::quo(carb > 5), rlang::quo(am == 1)))
-  filters <- build_filters(attr(query, "filtered_rows"), as.data.frame(query), compiler)
+  filters <- build_filters(as.data.frame(query), attr(query, "filtered_rows"), compiler)
 
   expect_length(filters, 2)
 

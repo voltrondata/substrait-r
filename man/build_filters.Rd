@@ -4,10 +4,14 @@
 \alias{build_filters}
 \title{Take filtered rows and create the appropriate substrait message}
 \usage{
-build_filters(filters, df, compiler)
+build_filters(df, filters, compiler)
 }
 \arguments{
+\item{df}{data}
+
 \item{filters}{list of quosures}
+
+\item{compiler}{substrait compiler}
 }
 \description{
 Take filtered rows and create the appropriate substrait message
