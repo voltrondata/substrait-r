@@ -15,6 +15,11 @@ test_that("build_filters can create filter expressions", {
     10
   )
 
+  expect_identical(
+    compiler$function_extensions_key[["1"]]$name,
+    ">"
+  )
+
   # the 5 from carb > 5
   expect_equal(
     outer_function_1[["args"]][[2]],
@@ -29,6 +34,11 @@ test_that("build_filters can create filter expressions", {
   expect_selected_field(
     outer_function_2[["args"]][[1]],
     8
+  )
+
+  expect_identical(
+    compiler$function_extensions_key[["2"]]$name,
+    "=="
   )
 
   expect_equal(
