@@ -68,7 +68,7 @@ substrait_create_constructor_expr <- function(item) {
 #' as_substrait(substrait$Type$Boolean$create(1, 2))
 #'
 as_substrait <- function(x, .ptype = NULL, ...) {
-  UseMethod("as_substrait")
+  UseMethod("as_substrait", x)
 }
 
 #' @rdname as_substrait
