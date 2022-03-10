@@ -3,12 +3,12 @@
 #' @param projections vector of selected columns
 #'
 #' @export
-build_projections <- function(projections, col_list){
+build_projections <- function(projections, df){
 
   # get numeric matches of column positions
   locs <- match(
     unname(vapply(projections, as.character, character(1))),
-    col_list
+    names(df)
   )
 
   expressions <- lapply(locs, function(pos) {
