@@ -2,13 +2,23 @@
 % Please edit documentation in R/schema.R
 \name{substrait_schema}
 \alias{substrait_schema}
+\alias{substrait_schema.substrait_dplyr_query}
+\alias{substrait_schema.data.frame}
 \title{Create a substrait schema}
 \usage{
 substrait_schema(x)
+
+\method{substrait_schema}{substrait_dplyr_query}(x)
+
+\method{substrait_schema}{data.frame}(x)
 }
 \arguments{
 \item{x}{object to be turned into a schema}
 }
 \description{
 Create a substrait schema
+}
+\examples{
+substrait_schema(data.frame(a = double(), b = integer()))
+
 }

@@ -2,18 +2,28 @@
 % Please edit documentation in R/dplyr-select.R
 \name{select.substrait_dplyr_query}
 \alias{select.substrait_dplyr_query}
-\title{Select column}
+\title{Select columns from a Substrait query}
 \usage{
 \method{select}{substrait_dplyr_query}(.data, ...)
 }
 \arguments{
-\item{.data}{substrait_Rel object}
+\item{.data}{A \code{\link[=substrait_dplyr_query]{substrait_dplyr_query()}}}
 
 \item{...}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> One or more unquoted
 expressions separated by commas. Variable names can be used as if they
 were positions in the data frame, so expressions like \code{x:y} can
 be used to select a range of variables.}
 }
+\value{
+A \code{\link[=substrait_dplyr_query]{substrait_dplyr_query()}}
+}
 \description{
-Select column
+Select columns from a Substrait query
+}
+\examples{
+dplyr::select(
+  substrait_dplyr_query(mtcars),
+  hp, carb
+)
+
 }

@@ -31,13 +31,24 @@ Basic `dplyr::select()`!
 
 ``` r
 library(substrait)
+#> 
+#> Attaching package: 'substrait'
+#> The following object is masked from 'package:stats':
+#> 
+#>     filter
 library(dplyr)
 
-tbl <- data.frame(letter = letters, number = 1:26)
-tbl %>% 
-  substrait:::base_table() %>% 
-  select(letter) %>% 
-  build_substrait()
+compiler <- substrait_compiler()
+
+query <- data.frame(letter = letters, number = 1:26) %>% 
+  substrait_dplyr_query() %>% 
+  filter(number < 5) %>% 
+  select(letter)
+
+substrait:::build_projections(
+  query, 
+  attr(query, "selected_columns")
+)
 #> [[1]]
 #> message of type 'substrait.Expression' with 1 field set
 #> selection {
@@ -49,6 +60,52 @@ tbl %>%
 #>       }
 #>     }
 #>   }
+#> }
+
+substrait:::build_filters(
+  query, 
+  attr(query, "filtered_rows"), 
+  compiler = compiler
+)
+#> [[1]]
+#> message of type 'substrait.Expression' with 1 field set
+#> scalar_function {
+#>   function_reference: 1
+#>   args {
+#>     selection {
+#>       direct_reference {
+#>         struct_field {
+#>           field: 1
+#>           child {
+#>             struct_field {
+#>             }
+#>           }
+#>         }
+#>       }
+#>     }
+#>   }
+#>   args {
+#>     literal {
+#>       fp64: 5
+#>     }
+#>   }
+#>   output_type {
+#>   }
+#> }
+
+compiler$function_extensions_key[["1"]]
+#> $name
+#> [1] "<"
+#> 
+#> $arg_types
+#> $arg_types[[1]]
+#> message of type 'substrait.Type' with 1 field set
+#> i32 {
+#> }
+#> 
+#> $arg_types[[2]]
+#> message of type 'substrait.Type' with 1 field set
+#> fp64 {
 #> }
 ```
 

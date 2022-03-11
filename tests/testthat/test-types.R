@@ -1,0 +1,18 @@
+
+test_that("type constructors work", {
+  expect_s3_class(substrait_boolean(), "substrait_Type")
+  expect_s3_class(substrait_i8(), "substrait_Type")
+  expect_s3_class(substrait_i16(), "substrait_Type")
+  expect_s3_class(substrait_i32(), "substrait_Type")
+  expect_s3_class(substrait_i64(), "substrait_Type")
+  expect_s3_class(substrait_fp32(), "substrait_Type")
+  expect_s3_class(substrait_fp64(), "substrait_Type")
+  expect_s3_class(substrait_string(), "substrait_Type")
+  expect_s3_class(substrait_binary(), "substrait_Type")
+  expect_s3_class(substrait_timestamp(), "substrait_Type")
+  expect_s3_class(substrait_timestamp_tz(), "substrait_Type")
+  expect_s3_class(substrait_time(), "substrait_Type")
+  expect_s3_class(substrait_interval_year(), "substrait_Type")
+  expect_s3_class(substrait_interval_day(), "substrait_Type")
+  expect_s3_class(substrait_uuid(), "substrait_Type")
+})
