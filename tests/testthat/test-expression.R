@@ -29,7 +29,7 @@ test_that("quosures with field references can be translated to Expressions", {
     selection = list(
       direct_reference = list(
         struct_field = list(
-          field = 1
+          field = NULL
         )
       )
     )
@@ -39,7 +39,7 @@ test_that("quosures with field references can be translated to Expressions", {
     selection = list(
       direct_reference = list(
         struct_field = list(
-          field = 2
+          field = 1
         )
       )
     )

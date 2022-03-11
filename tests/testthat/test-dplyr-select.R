@@ -4,8 +4,8 @@ test_that("select() can subset variables by name", {
   out <- base_table(schema) %>%
     dplyr::select(hp)
 
-  expect_s3_class(out, c("substrait_op", "substrait_select"))
-  expect_identical(attributes(out)$cols, list(hp = rlang::sym("hp")))
+  expect_s3_class(out, "substrait_dplyr_query")
+  expect_identical(attributes(out)$selected_columns, list(hp = rlang::sym("hp")))
 })
 
 test_that("select() can subset with multiple variables", {
@@ -14,9 +14,9 @@ test_that("select() can subset with multiple variables", {
   out <- base_table(schema) %>%
     dplyr::select(hp, mpg, am)
 
-  expect_s3_class(out, c("substrait_op", "substrait_select"))
+  expect_s3_class(out, "substrait_dplyr_query")
   expect_identical(
-    attributes(out)$cols,
+    attributes(out)$selected_columns,
     list(
       hp = rlang::sym("hp"),
       mpg = rlang::sym("mpg"),
@@ -31,8 +31,8 @@ test_that("select() can rename variables", {
   out <- base_table(schema) %>%
     dplyr::select(hp2 = hp)
 
-  expect_s3_class(out, c("substrait_op", "substrait_select"))
-  expect_identical(attributes(out)$cols, list(hp2 = rlang::sym("hp")))
+  expect_s3_class(out, "substrait_dplyr_query")
+  expect_identical(attributes(out)$selected_columns, list(hp2 = rlang::sym("hp")))
 })
 
 test_that("select() can be called multiple times in a chain", {
@@ -42,8 +42,8 @@ test_that("select() can be called multiple times in a chain", {
     dplyr::select(hp, mpg) %>%
     dplyr::select(hp2 = hp)
 
-  expect_s3_class(out, c("substrait_op", "substrait_select"))
-  expect_identical(attributes(out)$cols, list(hp2 = rlang::sym("hp")))
+  expect_s3_class(out, "substrait_dplyr_query")
+  expect_identical(attributes(out)$selected_columns, list(hp2 = rlang::sym("hp")))
 })
 
 test_that("select() doesn't work on variables that have been excluded in a previous select()", {

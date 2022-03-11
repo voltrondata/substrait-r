@@ -5,17 +5,16 @@
 # types so that we can convert the type of substrait.Expression that is a
 # field reference. I've wrapped both of these into `context` just to make
 # something work.
-# NOTE!? field indexes have to start at 1 because a value of 0 is the
-# default protobuf value?
 new_context <- function(x = data.frame()) {
-  schema <- as_substrait(x, "substrait.NamedStruct")
+  schema <- substrait_schema(x)
+
   mask <- lapply(
     seq_along(schema$names),
     function(i) substrait$Expression$create(
       selection = list(
         direct_reference = list(
           struct_field = list(
-            field = i
+            field = i - 1
           )
         )
       )
