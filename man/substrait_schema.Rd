@@ -6,6 +6,9 @@
 \usage{
 substrait_schema(x)
 }
+\arguments{
+\item{x}{object to be turned into a schema}
+}
 \description{
 Create a substrait schema
 }

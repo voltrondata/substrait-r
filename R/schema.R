@@ -1,4 +1,5 @@
 #' Create a substrait schema
+#' @param x object to be turned into a schema
 #' @export
 substrait_schema <- function(x){
   UseMethod("substrait_schema", x)

@@ -21,9 +21,9 @@ base_table <- function(df) {
 }
 
 #' @export
-as.data.frame.substrait_dplyr_query <- function(.data){
-  class(.data) <- "data.frame"
-  .data
+as.data.frame.substrait_dplyr_query <- function(x, ...){
+  class(x) <- "data.frame"
+  x
 }
 
 get_empty_df <- function(cols){
