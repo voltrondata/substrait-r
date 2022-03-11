@@ -16,10 +16,10 @@ test_that("build_filters can create filter expressions", {
 
   outer_function_1 <- filters[[1]][["scalar_function"]]
 
-  expect_selected_field(
+  expect_identical(
     # carb
     outer_function_1[["args"]][[1]],
-    10
+    simple_integer_field_reference(10L)
   )
 
   expect_identical(
@@ -38,9 +38,9 @@ test_that("build_filters can create filter expressions", {
   outer_function_2 <- filters[[2]][["scalar_function"]]
 
   # am field
-  expect_selected_field(
+  expect_identical(
     outer_function_2[["args"]][[1]],
-    8
+    simple_integer_field_reference(8)
   )
 
   expect_identical(

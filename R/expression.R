@@ -9,16 +9,9 @@ new_context <- function(x = data.frame()) {
   schema <- substrait_schema(x)
 
   mask <- lapply(
-    seq_along(schema$names),
-    function(i) substrait$Expression$create(
-      selection = list(
-        direct_reference = list(
-          struct_field = list(
-            field = i - 1
-          )
-        )
-      )
-    )
+    # -1 because Substrait field references are 0-indexed
+    seq_along(schema$names) - 1,
+    simple_integer_field_reference
   )
   names(mask) <- schema$names
 
@@ -128,21 +121,20 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., context = N
         "literal" = as_substrait(x[[which_expr_type]], .ptype),
         "selection" = {
           struct_field <- x$selection$direct_reference$struct_field
-          if (is.null(struct_field$field) || !is.null(struct_field$child)) {
-            stop("field reference is not a simple integer reference")
-          }
-
           schema <- context$schema
           if (is.null(schema)) {
             stop("Can't guess field reference type without `context$schema`")
           }
 
-          result <- context$schema$struct_$types[[struct_field$field]]
-          if (is.null(result)) {
-            stop(sprintf("Index out of bounds [%d]", struct_field$field))
+          # because 0 is the default value
+          field <- struct_field$field %||% 0L
+
+          if (field < 0 || field >= length(context$schema$struct_$types)) {
+            stop(sprintf("Field reference out of bounds [%d]", field))
           }
 
-          result
+          # because field is zero-indexed
+          context$schema$struct_$types[[field + 1]]
         },
         "scalar_function" = x$scalar_function$output_type %||% substrait$Type$create(),
         "window_function" = x$window_function$output_type %||% substrait$Type$create(),

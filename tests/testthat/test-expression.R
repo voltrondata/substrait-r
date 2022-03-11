@@ -25,25 +25,8 @@ test_that("quosures of atomics can be translated to Expression objects", {
 test_that("quosures with field references can be translated to Expressions", {
   context <- new_context(data.frame(a = double(), b = character()))
 
-  ref_a <- substrait$Expression$create(
-    selection = list(
-      direct_reference = list(
-        struct_field = list(
-          field = NULL
-        )
-      )
-    )
-  )
-
-  ref_b <- substrait$Expression$create(
-    selection = list(
-      direct_reference = list(
-        struct_field = list(
-          field = 1
-        )
-      )
-    )
-  )
+  ref_a <- simple_integer_field_reference(0)
+  ref_b <- simple_integer_field_reference(1)
 
   expect_identical(as_substrait(rlang::quo(a), context = context), ref_a)
   expect_identical(as_substrait(rlang::quo(.data$a), context = context), ref_a)
@@ -122,19 +105,9 @@ test_that("as_substrait() can convert Expression objects to Types", {
     substrait_i32()
   )
 
-  ref <- substrait$Expression$create(
-    selection = substrait$Expression$FieldReference$create(
-      direct_reference = substrait$Expression$ReferenceSegment$create(
-        struct_field = substrait$Expression$ReferenceSegment$StructField$create(
-          field = 1
-        )
-      )
-    )
-  )
-
   expect_identical(
     as_substrait(
-      ref,
+      simple_integer_field_reference(0L),
       "substrait.Type",
       context = new_context(data.frame(a = 5L))
     ),
@@ -143,16 +116,16 @@ test_that("as_substrait() can convert Expression objects to Types", {
 
   expect_error(
     as_substrait(
-      ref,
+      simple_integer_field_reference(0L),
       "substrait.Type",
       context = new_context(data.frame())
     ),
-    "Index out of bounds"
+    "Field reference out of bounds"
   )
 
   expect_error(
     as_substrait(
-      ref,
+      simple_integer_field_reference(0L),
       "substrait.Type",
       context = list()
     ),
