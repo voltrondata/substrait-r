@@ -14,6 +14,13 @@ test_that("select(everything()) returns the same object as its input", {
   )
 })
 
+test_that("select() can select nothing", {
+  expect_identical(
+    attr(dplyr::select(base_table(mtcars)), "selected_columns"),
+    rlang::set_names(list(), character())
+  )
+})
+
 test_that("select() can subset with multiple variables", {
   out <- base_table(mtcars) %>%
     dplyr::select(hp, mpg, am)
