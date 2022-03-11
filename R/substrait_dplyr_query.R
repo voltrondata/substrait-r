@@ -15,18 +15,18 @@ substrait_dplyr_query <- function(.data,
                                   selected_columns = attr(.data, "selected_columns"),
                                   filtered_rows = attr(.data, "filtered_rows")) {
   selected_columns <- selected_columns %||%
-    rlang::syms(rlang::set_names(names(.data)))
+    as.list(rlang::syms(rlang::set_names(names(.data))))
 
   structure(
     .data,
-    selected_columns = selected_columns %||% names(.data),
+    selected_columns = selected_columns,
     filtered_rows = filtered_rows,
     class = "substrait_dplyr_query"
   )
 }
 
-base_table <- function(df) {
-  substrait_dplyr_query(df, selected_columns = names(df))
+base_table <- function(.data) {
+  substrait_dplyr_query(.data)
 }
 
 #' @export
