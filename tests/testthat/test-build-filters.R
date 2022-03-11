@@ -1,9 +1,16 @@
-test_that("build_filters can create filter expressions", {
 
+test_that("build_filters can create filter expressions", {
   compiler <- substrait_compiler()
 
-  query <- substrait_dplyr_query(mtcars, filtered_rows = c(rlang::quo(carb > 5), rlang::quo(am == 1)))
-  filters <- build_filters(as.data.frame(query), attr(query, "filtered_rows"), compiler)
+  query <- substrait_dplyr_query(
+    mtcars,
+    filtered_rows = list(rlang::quo(carb > 5), rlang::quo(am == 1))
+  )
+  filters <- build_filters(
+    as.data.frame(query),
+    attr(query, "filtered_rows"),
+    compiler
+  )
 
   expect_length(filters, 2)
 
@@ -47,5 +54,4 @@ test_that("build_filters can create filter expressions", {
       substrait$Expression$Literal$create(fp64 = 1)
     )
   )
-
 })
