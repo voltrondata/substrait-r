@@ -41,11 +41,25 @@ Basic `dplyr::select()`!
 library(substrait)
 library(dplyr)
 
-tbl <- data.frame(letter = letters, number = 1:26)
-tbl %>% 
-  substrait:::base_table() %>% 
-  select(letter) %>% 
-  build_substrait()
+compiler <- substrait_compiler()
+
+query <- data.frame(letter = letters, number = 1:26) %>% 
+  substrait_dplyr_query() %>% 
+  filter(number < 5) %>% 
+  select(letter)
+
+substrait:::build_projections(
+  query, 
+  attr(query, "selected_columns")
+)
+
+substrait:::build_filters(
+  query, 
+  attr(query, "filtered_rows"), 
+  compiler = compiler
+)
+
+compiler$function_extensions_key[["1"]]
 ```
 
 ## Create 'Substrait' proto objects
