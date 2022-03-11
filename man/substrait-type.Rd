@@ -53,8 +53,15 @@ substrait_interval_day()
 substrait_uuid()
 }
 \value{
-An Substrait type object
+A substrait.Type proto object
 }
 \description{
 Substrait types
+}
+\examples{
+substrait_boolean()
+substrait_i32()
+substrait_fp64()
+substrait_string()
+
 }
