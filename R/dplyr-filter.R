@@ -16,7 +16,6 @@
 #' )
 #'
 filter.substrait_dplyr_query <- function(.data, ..., .preserve = FALSE) {
-
   conditions <- rlang::quos(...)
 
   if (rlang::is_empty(conditions)) {
