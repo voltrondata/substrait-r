@@ -2,7 +2,7 @@
 % Please edit documentation in R/substrait_dplyr_query.R
 \name{substrait_dplyr_query}
 \alias{substrait_dplyr_query}
-\title{Create a substrait_dplyr_query object}
+\title{Create a Substrait query}
 \usage{
 substrait_dplyr_query(
   .data,
@@ -17,6 +17,13 @@ substrait_dplyr_query(
 
 \item{filtered_rows}{Rows to filter}
 }
+\value{
+An object of class 'substrait_dplyr_query'
+}
 \description{
-Create a substrait_dplyr_query object
+Create a Substrait query
+}
+\examples{
+substrait_dplyr_query(mtcars)
+
 }

@@ -1,16 +1,25 @@
-#' Create a substrait_dplyr_query object
+
+#' Create a Substrait query
 #'
 #' @param .data Either a data.frame, Arrow Table, substrait_dplyr_query object; whatever
 #' @param selected_columns Columns to select
 #' @param filtered_rows Rows to filter
 #'
+#' @return An object of class 'substrait_dplyr_query'
 #' @export
+#'
+#' @examples
+#' substrait_dplyr_query(mtcars)
+#'
 substrait_dplyr_query <- function(.data,
                                   selected_columns = attr(.data, "selected_columns"),
-                                  filtered_rows = attr(.data, "filtered_rows")){
+                                  filtered_rows = attr(.data, "filtered_rows")) {
+  selected_columns <- selected_columns %||%
+    rlang::syms(rlang::set_names(names(.data)))
+
   structure(
     .data,
-    selected_columns = selected_columns,
+    selected_columns = selected_columns %||% names(.data),
     filtered_rows = filtered_rows,
     class = "substrait_dplyr_query"
   )
@@ -21,17 +30,7 @@ base_table <- function(df) {
 }
 
 #' @export
-as.data.frame.substrait_dplyr_query <- function(x, ...){
+as.data.frame.substrait_dplyr_query <- function(x, ...) {
   class(x) <- "data.frame"
   x
 }
-
-get_empty_df <- function(cols){
-    data.frame(
-      matrix(
-        ncol = length(cols),
-        nrow = 0,
-        dimnames = list(NULL, cols)
-      )
-    )
-  }

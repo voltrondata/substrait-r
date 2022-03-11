@@ -2,22 +2,32 @@
 % Please edit documentation in R/dplyr-filter.R
 \name{filter.substrait_dplyr_query}
 \alias{filter.substrait_dplyr_query}
-\title{Filter column}
+\title{Filter a Substrait query}
 \usage{
 \method{filter}{substrait_dplyr_query}(.data, ..., .preserve = FALSE)
 }
 \arguments{
-\item{.data}{substrait_dplyr_query object or data.frame}
+\item{.data}{A \code{\link[=substrait_dplyr_query]{substrait_dplyr_query()}}}
 
-\item{...}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Expressions that return a
-logical value, and are defined in terms of the variables in \code{.data}.
-If multiple expressions are included, they are combined with the \code{&} operator.
-Only rows for which all conditions evaluate to \code{TRUE} are kept.}
+\item{...}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> One or more unquoted
+expressions separated by commas. Variable names can be used as if they
+were positions in the data frame, so expressions like \code{x:y} can
+be used to select a range of variables.}
 
 \item{.preserve}{Relevant when the \code{.data} input is grouped.
 If \code{.preserve = FALSE} (the default), the grouping structure
 is recalculated based on the resulting data, otherwise the grouping is kept as is.}
 }
+\value{
+A \code{\link[=substrait_dplyr_query]{substrait_dplyr_query()}}.
+}
 \description{
-Filter column
+Filter a Substrait query
+}
+\examples{
+dplyr::filter(
+  substrait_dplyr_query(mtcars),
+  hp > 100
+)
+
 }

@@ -1,9 +1,20 @@
-#' Filter column
+
+#' Filter a Substrait query
 #'
-#' @param .data substrait_dplyr_query object or data.frame
+#' @inheritParams select.substrait_dplyr_query
 #' @inheritParams dplyr::filter
+#'
+#' @return A [substrait_dplyr_query()].
+#'
 #' @importFrom dplyr filter
 #' @export
+#'
+#' @examples
+#' dplyr::filter(
+#'   substrait_dplyr_query(mtcars),
+#'   hp > 100
+#' )
+#'
 filter.substrait_dplyr_query <- function(.data, ..., .preserve = FALSE) {
 
   conditions <- rlang::quos(...)
@@ -22,4 +33,3 @@ filter.substrait_dplyr_query <- function(.data, ..., .preserve = FALSE) {
 
   substrait_dplyr_query(.data, filtered_rows = updated_conditions)
 }
-
