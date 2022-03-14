@@ -14,10 +14,10 @@ build_plan.substrait_dplyr_query <- function(x) {
   # do filtering before selection
   if (!is_empty(filtered_rows)) {
     plan <- substrait$FilterRel$create(
-      input = build_base_table(data),
+      # should this call to substrait$Rel$create go inside build_base_table??
+      input = substrait$Rel$create(read = build_base_table(data)),
       condition = build_filters(data, filtered_rows, compiler)
     )
-
   }
 }
 
