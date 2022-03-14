@@ -1,4 +1,3 @@
-
 #' Create a Substrait query
 #'
 #' @param .data Either a data.frame, Arrow Table, substrait_dplyr_query object; whatever
