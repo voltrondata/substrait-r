@@ -6,7 +6,6 @@ build_plan <- function(x) {
   UseMethod("build_plan", x)
 }
 
-
 #' @export
 build_plan.substrait_dplyr_query <- function(x) {
   data <- as.data.frame(x)
@@ -64,4 +63,5 @@ build_base_table <- function(.data) {
   )
 
   substrait$Rel$create(read = input_table)
+
 }
