@@ -19,6 +19,7 @@ build_plan.substrait_dplyr_query <- function(x) {
       condition = build_filters(data, filtered_rows, compiler)
     )
   }
+  plan
 }
 
 build_base_table <- function(.data){
