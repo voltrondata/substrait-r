@@ -25,7 +25,6 @@ build_plan.substrait_dplyr_query <- function(x) {
     )
   }
 
-
   # Projection/Selection
   selected_columns <- attr(x, "selected_columns")
   if (!rlang::is_empty(selected_columns) && !identical(names(selected_columns), names(x))) {
