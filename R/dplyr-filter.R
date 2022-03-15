@@ -1,4 +1,3 @@
-
 #' Filter a Substrait query
 #'
 #' @inheritParams select.substrait_dplyr_query
