@@ -1,4 +1,3 @@
-
 # Take selected columns and create the appropriate substrait message
 build_projections <- function(df, projections) {
   # get numeric matches of column positions

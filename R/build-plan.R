@@ -1,7 +1,11 @@
+#' Build Substrait Plan
+#'
+#' @param x Object used to build plan
 #' @export
 build_plan <- function(x) {
   UseMethod("build_plan", x)
 }
+
 
 #' @export
 build_plan.substrait_dplyr_query <- function(x) {
