@@ -54,7 +54,6 @@ test_that("build_plan can build a plan from expressions with filters", {
 
 })
 
-
 test_that("build_plan can build a plan from expression with filters and projections", {
 
   x <- base_table(mtcars) %>%
@@ -113,5 +112,3 @@ test_that("build_plan can build a plan from expression with filters and projecti
     )
   )
 })
-
-
