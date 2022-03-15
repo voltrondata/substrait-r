@@ -28,7 +28,7 @@ build_plan.substrait_dplyr_query <- function(x) {
 
   # Projection/Selection
   selected_columns <- attr(x, "selected_columns")
-  if (!rlang::is_empty(selected_columns) && selected_columns != names(x)) {
+  if (!rlang::is_empty(selected_columns) && !identical(names(selected_columns), names(x))) {
     plan <- substrait$ProjectRel$create(
       input = plan,
       expressions = build_projections(data, selected_columns)
@@ -49,5 +49,4 @@ build_base_table <- function(.data) {
   )
 
   substrait$Rel$create(read = input_table)
-
 }
