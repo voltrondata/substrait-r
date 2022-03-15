@@ -13,7 +13,6 @@
 #'   substrait_dplyr_query(mtcars),
 #'   hp, carb
 #' )
-#'
 select.substrait_dplyr_query <- function(.data, ...) {
   selected_columns <- attr(.data, "selected_columns")
 

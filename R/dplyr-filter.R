@@ -13,7 +13,6 @@
 #'   substrait_dplyr_query(mtcars),
 #'   hp > 100
 #' )
-#'
 filter.substrait_dplyr_query <- function(.data, ..., .preserve = FALSE) {
   conditions <- rlang::quos(...)
 

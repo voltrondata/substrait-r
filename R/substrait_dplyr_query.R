@@ -9,7 +9,6 @@
 #'
 #' @examples
 #' substrait_dplyr_query(mtcars)
-#'
 substrait_dplyr_query <- function(.data,
                                   selected_columns = attr(.data, "selected_columns"),
                                   filtered_rows = attr(.data, "filtered_rows")) {

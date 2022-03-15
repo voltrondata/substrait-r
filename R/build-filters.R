@@ -13,7 +13,6 @@ build_filters <- function(df, filters, compiler) {
 
   combined_expressions <- Reduce("combine_expressions_and", expressions)
   as_substrait(combined_expressions, "substrait.Expression")
-
 }
 
 combine_expressions_and <- function(expr1, expr2) {
