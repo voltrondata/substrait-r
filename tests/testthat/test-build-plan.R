@@ -56,6 +56,7 @@ test_that("build_plan can build a plan from relation with filters", {
 })
 
 test_that("build_plan can build a plan from relation with filters and projections", {
+
   x <- base_table(mtcars) %>%
     dplyr::filter(hp > 1) %>%
     dplyr::filter(am == 0) %>%
