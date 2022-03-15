@@ -1,4 +1,5 @@
 test_that("build_plan can build a plan from relation with projections", {
+
   x <- base_table(mtcars) %>%
     dplyr::select(am, hp)
 
