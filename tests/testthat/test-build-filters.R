@@ -12,9 +12,9 @@ test_that("build_filters can create filter expressions", {
     compiler
   )
 
-  expect_length(filters, 2)
+  expect_length(filters[[1]][["args"]], 2)
 
-  outer_function_1 <- filters[[1]][["scalar_function"]]
+  outer_function_1 <- filters[[1]][["args"]][[1]][["scalar_function"]]
 
   expect_identical(
     # carb
@@ -35,7 +35,7 @@ test_that("build_filters can create filter expressions", {
     )
   )
 
-  outer_function_2 <- filters[[2]][["scalar_function"]]
+  outer_function_2 <- filters[[1]][["args"]][[2]][["scalar_function"]]
 
   # am field
   expect_identical(
