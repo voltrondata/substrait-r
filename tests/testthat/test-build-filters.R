@@ -1,4 +1,3 @@
-
 test_that("build_filters can create filter expressions", {
   compiler <- substrait_compiler()
 

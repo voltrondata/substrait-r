@@ -11,14 +11,27 @@ build_plan.substrait_dplyr_query <- function(x) {
 
   filtered_rows <- attr(x, "filtered_rows")
 
+  plan <- build_base_table(data)
+
   # do filtering before selection
-  if (!is_empty(filtered_rows)) {
-    plan <- substrait$FilterRel$create(
-      # should this call to substrait$Rel$create go inside build_base_table??
-      input = substrait$Rel$create(read = build_base_table(data)),
-      condition = build_filters(data, filtered_rows, compiler)
+  if (!rlang::is_empty(filtered_rows)) {
+    plan <- substrait$Rel$create(
+      filter = substrait$FilterRel$create(
+        input = plan,
+        condition = build_filters(data, filtered_rows, compiler)
+      )
     )
   }
+
+  # Projection/Selection
+  selected_columns <- attr(x, "selected_columns")
+  if (!rlang::is_empty(selected_columns)) {
+    plan <- substrait$ProjectRel$create(
+      input = plan,
+      expressions = build_projections(data, selected_columns)
+    )
+  }
+
   plan
 }
 
@@ -44,5 +57,6 @@ build_base_table <- function(.data){
     )
   )
 
-  input_table
+  substrait$Rel$create(read = input_table)
+
 }
