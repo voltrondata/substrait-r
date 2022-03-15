@@ -1,11 +1,10 @@
 #' @export
-build_plan <- function(x){
+build_plan <- function(x) {
   UseMethod("build_plan", x)
 }
 
 #' @export
 build_plan.substrait_dplyr_query <- function(x) {
-
   data <- as.data.frame(x)
   compiler <- substrait_compiler()
 
@@ -25,7 +24,7 @@ build_plan.substrait_dplyr_query <- function(x) {
 
   # Projection/Selection
   selected_columns <- attr(x, "selected_columns")
-  if (!rlang::is_empty(selected_columns) && selected_columns != names(x)) {
+  if (!rlang::is_empty(selected_columns) && !identical(names(selected_columns), names(x))) {
     plan <- substrait$ProjectRel$create(
       input = plan,
       expressions = build_projections(data, selected_columns)
@@ -35,15 +34,14 @@ build_plan.substrait_dplyr_query <- function(x) {
   plan
 }
 
-build_base_table <- function(.data){
-
+build_base_table <- function(.data) {
   .data <- as.data.frame(.data)
 
   # Currently using the known working example of reading in using a
   # parquet file
   temp_parquet_file <- tempfile()
 
-  #arrow::write_parquet(.data, temp_parquet_file)
+  # arrow::write_parquet(.data, temp_parquet_file)
 
   input_table <- substrait$ReadRel$create(
     base_schema = as_substrait(.data, "substrait.NamedStruct"),
@@ -58,5 +56,4 @@ build_base_table <- function(.data){
   )
 
   substrait$Rel$create(read = input_table)
-
 }

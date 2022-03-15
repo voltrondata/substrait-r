@@ -39,17 +39,10 @@ test_that("build_plan can build a plan from expressions with filters", {
 
   plan_out <- build_plan(x)
 
-  expect_s3_class(plan_out, "substrait_ProjectRel")
-
-  expect_named(plan_out, c("input", "expressions"))
-
-  # Projections
-  projections <- plan_out[["expressions"]]
-
-  expect_length(projections, 11)
+  expect_named(plan_out, "filter")
 
   # Filters
-  filter <- plan_out[["input"]][["filter"]][[2]][["scalar_function"]][["args"]]
+  filter <- plan_out[["filter"]][[2]][["scalar_function"]][["args"]]
 
   expect_identical(
     # am
