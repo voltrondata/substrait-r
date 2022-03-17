@@ -1,4 +1,4 @@
-test_that("build_plan can build a plan from expressions with projections", {
+test_that("build_plan can build a plan from relation with projections", {
   x <- base_table(mtcars) %>%
     dplyr::select(am, hp)
 
@@ -28,7 +28,7 @@ test_that("build_plan does nothing for projection if all cols selected", {
   expect_named(plan_out, "read")
 })
 
-test_that("build_plan can build a plan from expressions with filters", {
+test_that("build_plan can build a plan from relation with filters", {
   x <- base_table(mtcars) %>%
     dplyr::filter(am != 0)
 
@@ -54,7 +54,7 @@ test_that("build_plan can build a plan from expressions with filters", {
   )
 })
 
-test_that("build_plan can build a plan from expression with filters and projections", {
+test_that("build_plan can build a plan from relation with filters and projections", {
   x <- base_table(mtcars) %>%
     dplyr::filter(hp > 1) %>%
     dplyr::filter(am == 0) %>%
