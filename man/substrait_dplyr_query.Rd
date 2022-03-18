@@ -25,5 +25,4 @@ Create a Substrait query
 }
 \examples{
 substrait_dplyr_query(mtcars)
-
 }

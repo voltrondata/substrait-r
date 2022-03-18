@@ -25,5 +25,4 @@ dplyr::select(
   substrait_dplyr_query(mtcars),
   hp, carb
 )
-
 }

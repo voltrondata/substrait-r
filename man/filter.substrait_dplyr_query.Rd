@@ -29,5 +29,4 @@ dplyr::filter(
   substrait_dplyr_query(mtcars),
   hp > 100
 )
-
 }
