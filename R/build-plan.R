@@ -63,11 +63,12 @@ build_plan.substrait_dplyr_query <- function(x) {
 
   # Sort
   arrange_vars <- attr(x, "arrange_vars")
+  arrange_desc <- attr(x, "arrange_desc")
   if (!rlang::is_empty(arrange_vars)) {
     plan <- substrait$Rel$create(
       sort = substrait$SortRel$create(
         input = plan,
-        sorts = build_sort(data, arrange_vars)
+        sorts = build_sort(data, arrange_vars, arrange_desc)
       )
     )
   }
