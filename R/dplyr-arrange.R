@@ -14,17 +14,26 @@
 #'   hp, carb
 #' )
 arrange.substrait_dplyr_query <- function(.data, ..., .by_group = FALSE) {
+<<<<<<< HEAD
   arrange_vars <- attr(.data, "arrange_vars")
   arrange_desc <- attr(.data, "arrange_desc")
 
   new_arrange_vars <- rlang::exprs(...)
   new_arrange_desc <- detect_desc(...)
+=======
+
+
+  arrange_vars <- attr(.data, "arrange_vars")
+
+  new_arrange_vars <- rlang::exprs(...)
+>>>>>>> Add dplyr::arrange and sort field
 
   attr(.data, "arrange_vars") <- c(
     arrange_vars,
     new_arrange_vars
   )
 
+<<<<<<< HEAD
   attr(.data, "arrange_desc") <- c(
     arrange_desc,
     new_arrange_desc
@@ -38,3 +47,7 @@ detect_desc <- function(...) {
   # For now, returns FALSE for each value in ...
   logical(length(rlang::exprs(...)))
 }
+=======
+  .data
+}
+>>>>>>> Add dplyr::arrange and sort field

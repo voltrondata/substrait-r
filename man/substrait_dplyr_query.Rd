@@ -8,8 +8,12 @@ substrait_dplyr_query(
   .data,
   selected_columns = attr(.data, "selected_columns"),
   filtered_rows = attr(.data, "filtered_rows"),
+<<<<<<< HEAD
   arrange_vars = attr(.data, "arrange_vars"),
   arrange_desc = attr(.data, "arrange_desc")
+=======
+  arrange_vars = attr(.data, "arrange_vars")
+>>>>>>> Add dplyr::arrange and sort field
 )
 }
 \arguments{
