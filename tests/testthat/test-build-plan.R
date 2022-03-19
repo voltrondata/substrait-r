@@ -5,12 +5,12 @@ test_that("build_plan can build a plan from relation with projections", {
 
   plan_out <- build_plan(x)
 
-  expect_s3_class(plan_out, "substrait_ProjectRel")
+  expect_named(plan_out, "project")
 
-  expect_named(plan_out, c("input", "expressions"))
+  expect_s3_class(plan_out[["project"]], "substrait_ProjectRel")
 
   # Projections
-  projections <- plan_out[["expressions"]]
+  projections <- plan_out[["project"]][["expressions"]]
 
   expect_length(projections, 2)
 
@@ -23,10 +23,10 @@ test_that("build_plan does nothing for projection if all cols selected", {
     dplyr::select(mpg, cyl, disp, hp, drat, wt, qsec, vs, am, gear, carb)
 
   plan_out <- build_plan(x)
-
-  expect_s3_class(plan_out, "substrait_Rel")
-
   expect_named(plan_out, "read")
+
+  expect_s3_class(plan_out[["read"]], "substrait_ReadRel")
+
 })
 
 test_that("build_plan can build a plan from relation with filters", {
@@ -92,12 +92,12 @@ test_that("build_plan can build a plan from relation with filters and projection
 
   plan_out <- build_plan(x)
 
-  expect_s3_class(plan_out, "substrait_ProjectRel")
+  expect_named(plan_out, "project")
 
-  expect_named(plan_out, c("input", "expressions"))
+  expect_s3_class(plan_out[["project"]], "substrait_ProjectRel")
 
   # Projections
-  projections <- plan_out[["expressions"]]
+  projections <- plan_out[["project"]][["expressions"]]
 
   expect_length(projections, 3)
 
@@ -106,7 +106,7 @@ test_that("build_plan can build a plan from relation with filters and projection
   expect_identical(projections[[3]], simple_integer_field_reference(0L))
 
   # Filters
-  filters <- plan_out[["input"]][["filter"]][[2]][["scalar_function"]][["args"]]
+  filters <- plan_out[["project"]][["input"]][["filter"]][[2]][["scalar_function"]][["args"]]
 
   expect_length(filters, 2)
 
