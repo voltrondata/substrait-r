@@ -14,6 +14,7 @@
 #'   hp, carb
 #' )
 arrange.substrait_dplyr_query <- function(.data, ..., .by_group = FALSE) {
+
   arrange_vars <- attr(.data, "arrange_vars")
   arrange_desc <- attr(.data, "arrange_desc")
 
@@ -25,6 +26,11 @@ arrange.substrait_dplyr_query <- function(.data, ..., .by_group = FALSE) {
     new_arrange_vars
   )
 
+  attr(.data, "arrange_desc") <- c(
+    arrange_desc,
+    new_arrange_desc
+  )
+
   .data
 }
 
@@ -33,4 +39,3 @@ detect_desc <- function(...) {
   # For now, returns FALSE for each value in ...
   logical(length(rlang::exprs(...)))
 }
-

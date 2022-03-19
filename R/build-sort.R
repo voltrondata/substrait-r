@@ -8,6 +8,8 @@ build_sort <- function(df, sort_cols, sort_desc) {
     names(df)
   )
 
+
+  # -1 as it's 0-indexed
   to_sort <- Map(list, field = locs - 1, desc = sort_desc)
 
   sort_expressions <- lapply(
@@ -19,6 +21,7 @@ build_sort <- function(df, sort_cols, sort_desc) {
 }
 
 sort_field <- function(ref){
+
   substrait$SortField$create(
     expr = simple_integer_field_reference(ref$field),
     direction = dplyr_desc_to_substrait(ref$desc)

@@ -14,7 +14,6 @@ test_that("build_sort can create sort expressions", {
 
   expect_length(sort_exprs, 3)
   expect_identical(sort_exprs[[1]][["expr"]], simple_integer_field_reference(10L))
-
   expect_identical(sort_exprs[[1]][["direction"]], 2L)
 
   expect_identical(sort_exprs[[2]][["expr"]], simple_integer_field_reference(0L))
@@ -22,6 +21,5 @@ test_that("build_sort can create sort expressions", {
 
   expect_identical(sort_exprs[[3]][["expr"]], simple_integer_field_reference(2L))
   expect_identical(sort_exprs[[3]][["direction"]], 4L)
-
 })
 
