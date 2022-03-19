@@ -66,7 +66,7 @@ test_that("build_plan can build a plan from relation with filters", {
   )
 })
 
-test_that("build_plan can build a plan from sorted relation", {
+test_that("build_plan can build a plan from sorted relations", {
   x <- base_table(mtcars) %>%
     dplyr::filter(hp > 1) %>%
     dplyr::arrange(hp) %>%
