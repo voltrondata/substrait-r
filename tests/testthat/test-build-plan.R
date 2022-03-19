@@ -23,10 +23,10 @@ test_that("build_plan does nothing for projection if all cols selected", {
     dplyr::select(mpg, cyl, disp, hp, drat, wt, qsec, vs, am, gear, carb)
 
   plan_out <- build_plan(x)
-
-  expect_s3_class(plan_out, "substrait_Rel")
-
   expect_named(plan_out, "read")
+
+  expect_s3_class(plan_out[["read"]], "substrait_ReadRel")
+
 })
 
 test_that("build_plan can build a plan from relation with filters", {
