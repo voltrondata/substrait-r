@@ -66,6 +66,24 @@ test_that("build_plan can build a plan from relation with filters", {
   )
 })
 
+test_that("build_plan can build a plan from sorted relation", {
+  x <- base_table(mtcars) %>%
+    dplyr::filter(hp > 1) %>%
+    dplyr::arrange(hp) %>%
+    dplyr::select(am, hp)
+
+  plan_out <- build_plan(x)
+
+  expect_named(plan_out, "sort")
+  expect_s3_class(plan_out[["sort"]], "substrait_SortRel")
+
+  expect_identical(
+    plan_out[["sort"]][["sorts"]][[1]][["expr"]],
+    simple_integer_field_reference(3)
+  )
+
+})
+
 test_that("build_plan can build a plan from relation with filters and projections", {
   x <- base_table(mtcars) %>%
     dplyr::filter(hp > 1) %>%

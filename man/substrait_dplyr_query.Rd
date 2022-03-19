@@ -7,7 +7,8 @@
 substrait_dplyr_query(
   .data,
   selected_columns = attr(.data, "selected_columns"),
-  filtered_rows = attr(.data, "filtered_rows")
+  filtered_rows = attr(.data, "filtered_rows"),
+  arrange_vars = attr(.data, "arrange_vars")
 )
 }
 \arguments{

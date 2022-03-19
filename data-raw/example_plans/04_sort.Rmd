@@ -1,0 +1,195 @@
+# Sort
+
+## Input
+
+In the example below, t is an ibis table
+
+```
+def t():
+  return ibis.table(
+        [
+            ("full_name", "string"),
+            ("age", "int64"),
+            ("ts", "timestamp('UTC')"),
+            ("delta", "interval"),
+        ]
+)
+```
+
+## Code
+
+The code below is doing the equivalent of 
+
+```
+dplyr::select(t, age, full_name) %>% 
+  dplyr::filter(age < 100, full_name = "Nic Crane") %>%
+  dplyr::arrange(ts)
+```
+
+via ibis syntax.
+
+```
+t.filter([t.age < 100 , t.full_name == 'Nic Crane'])
+        .projection(['age', 'full_name'])
+        .sort_by("ts")
+```
+
+## Output
+
+After compiling and converting to substrait:
+
+```
+sort {
+  input {
+    project {
+      input {
+        filter {
+          input {
+            read {
+              base_schema {
+                names: "full_name"
+                names: "age"
+                names: "ts"
+                names: "delta"
+                struct {
+                  types {
+                    string {
+                      nullability: NULLABILITY_NULLABLE
+                    }
+                  }
+                  types {
+                    i64 {
+                      nullability: NULLABILITY_NULLABLE
+                    }
+                  }
+                  types {
+                    timestamp_tz {
+                      nullability: NULLABILITY_NULLABLE
+                    }
+                  }
+                  types {
+                    interval_day {
+                      nullability: NULLABILITY_NULLABLE
+                    }
+                  }
+                }
+              }
+              named_table {
+                names: "unbound_table_0"
+              }
+            }
+          }
+          condition {
+            scalar_function {
+              function_reference: 1
+              args {
+                scalar_function {
+                  function_reference: 2
+                  args {
+                    selection {
+                      direct_reference {
+                        struct_field {
+                          field: 1
+                          child {
+                            struct_field {
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  args {
+                    literal {
+                      i64: 100
+                    }
+                  }
+                  output_type {
+                    bool {
+                      nullability: NULLABILITY_NULLABLE
+                    }
+                  }
+                }
+              }
+              args {
+                scalar_function {
+                  function_reference: 3
+                  args {
+                    selection {
+                      direct_reference {
+                        struct_field {
+                          child {
+                            struct_field {
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  args {
+                    literal {
+                      string: "Nic Crane"
+                    }
+                  }
+                  output_type {
+                    bool {
+                      nullability: NULLABILITY_NULLABLE
+                    }
+                  }
+                }
+              }
+              output_type {
+                bool {
+                  nullability: NULLABILITY_NULLABLE
+                }
+              }
+            }
+          }
+        }
+      }
+      expressions {
+        selection {
+          direct_reference {
+            struct_field {
+              field: 1
+              child {
+                struct_field {
+                }
+              }
+            }
+          }
+        }
+      }
+      expressions {
+        selection {
+          direct_reference {
+            struct_field {
+              child {
+                struct_field {
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  sorts {
+    expr {
+      selection {
+        direct_reference {
+          struct_field {
+            field: 2
+            child {
+              struct_field {
+              }
+            }
+          }
+        }
+      }
+    }
+    direction: SORT_DIRECTION_ASC_NULLS_FIRST
+  }
+}
+```
+
+Note that if we swap the order of operations (i.e. sort then select then filter), then we get the same result.

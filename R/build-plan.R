@@ -30,9 +30,22 @@ build_plan.substrait_dplyr_query <- function(x) {
   # Projection/Selection
   selected_columns <- attr(x, "selected_columns")
   if (!rlang::is_empty(selected_columns) && !identical(names(selected_columns), names(x))) {
-    plan <- substrait$ProjectRel$create(
-      input = plan,
-      expressions = build_projections(data, selected_columns)
+    plan <- substrait$Rel$create(
+      project = substrait$ProjectRel$create(
+        input = plan,
+        expressions = build_projections(data, selected_columns)
+      )
+    )
+  }
+
+  # Sort
+  arrange_vars <- attr(x, "arrange_vars")
+  if (!rlang::is_empty(arrange_vars)) {
+    plan <- substrait$Rel$create(
+      sort = substrait$SortRel$create(
+        input = plan,
+        sorts = build_sort(data, arrange_vars)
+      )
     )
   }
 
