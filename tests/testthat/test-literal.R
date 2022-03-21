@@ -14,7 +14,7 @@ test_that("as_substrait() can convert a Literal to an Expression", {
       substrait$Expression$Literal$create(i32 = 4L),
       "substrait.Expression"
     ),
-    substrait$Expression$create(literal = list(i32 = 4L))
+    substrait$Expression$create(literal = substrait$Expression$Literal$create(i32 = 4L))
   )
 })
 
@@ -166,10 +166,13 @@ test_that("as_substrait() works for double()", {
   # The representation of a double(n) is a Literal$List() of Literals
   # (which we can create by lapplying along the double())
   expect_identical(
-    as_substrait(c(3.14, 3.15), substrait$Expression$Literal$create(list = list())),
+    as_substrait(
+      c(3.14, 3.15),
+      substrait$Expression$Literal$create(list = substrait_proto_auto())
+    ),
     substrait$Expression$Literal$create(
       list = substrait$Expression$Literal$List$create(
-        list(
+        values = list(
           as_substrait(3.14),
           as_substrait(3.15)
         )
@@ -238,7 +241,7 @@ test_that("from_substrait() works for double()", {
     from_substrait(
       substrait$Expression$Literal$create(
         list = substrait$Expression$Literal$List$create(
-          list(
+          values = list(
             as_substrait(3.14),
             as_substrait(3.15)
           )
@@ -276,10 +279,12 @@ test_that("as_substrait() works for integer()", {
   )
 
   expect_identical(
-    as_substrait(c(3L, 4L), substrait$Expression$Literal$create(list = list())),
+    as_substrait(c(3L, 4L), substrait$Expression$Literal$create(
+      list = substrait_proto_auto())
+    ),
     substrait$Expression$Literal$create(
       list = substrait$Expression$Literal$List$create(
-        list(
+        values = list(
           as_substrait(3L),
           as_substrait(4L)
         )
@@ -317,10 +322,12 @@ test_that("as_substrait() works for logical()", {
   )
 
   expect_identical(
-    as_substrait(c(TRUE, FALSE), substrait$Expression$Literal$create(list = list())),
+    as_substrait(c(TRUE, FALSE), substrait$Expression$Literal$create(
+      list = substrait_proto_auto())
+    ),
     substrait$Expression$Literal$create(
       list = substrait$Expression$Literal$List$create(
-        list(
+        values = list(
           as_substrait(TRUE),
           as_substrait(FALSE)
         )
@@ -360,11 +367,11 @@ test_that("as_substrait() works for character()", {
   expect_identical(
     as_substrait(
       c("a string", "another string"),
-      substrait$Expression$Literal$create(list = list())
+      substrait$Expression$Literal$create(list = substrait_proto_auto())
     ),
     substrait$Expression$Literal$create(
       list = substrait$Expression$Literal$List$create(
-        list(
+        values = list(
           as_substrait("a string"),
           as_substrait("another string")
         )
@@ -424,7 +431,7 @@ test_that("from_substrait() works for integer()", {
     from_substrait(
       substrait$Expression$Literal$create(
         list = substrait$Expression$Literal$List$create(
-          list(
+          values = list(
             as_substrait(3L),
             as_substrait(4L)
           )
@@ -484,7 +491,7 @@ test_that("from_substrait() works for logical()", {
     from_substrait(
       substrait$Expression$Literal$create(
         list = substrait$Expression$Literal$List$create(
-          list(
+          values = list(
             as_substrait(TRUE),
             as_substrait(FALSE)
           )
@@ -544,7 +551,7 @@ test_that("from_substrait() works for character()", {
     from_substrait(
       substrait$Expression$Literal$create(
         list = substrait$Expression$Literal$List$create(
-          list(
+          values = list(
             as_substrait("a string"),
             as_substrait("another string")
           )

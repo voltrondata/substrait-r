@@ -30,7 +30,7 @@ test_that("build_filters can create filter expressions", {
   expect_equal(
     outer_function_1[["args"]][[2]],
     substrait$Expression$create(
-      substrait$Expression$Literal$create(fp64 = 5)
+      literal = substrait$Expression$Literal$create(fp64 = 5)
     )
   )
 
@@ -50,7 +50,7 @@ test_that("build_filters can create filter expressions", {
   expect_equal(
     outer_function_2[["args"]][[2]],
     substrait$Expression$create(
-      substrait$Expression$Literal$create(fp64 = 1)
+      literal = substrait$Expression$Literal$create(fp64 = 1)
     )
   )
 })

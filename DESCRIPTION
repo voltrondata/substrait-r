@@ -30,4 +30,5 @@ Imports:
     rlang,
     RProtoBuf,
     vctrs,
-    dplyr
+    dplyr,
+    ellipsis

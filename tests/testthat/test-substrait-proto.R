@@ -23,7 +23,7 @@ test_that("from_substrait() default errors work", {
   )
 })
 
-test_that("substrait_create() works for list()", {
+test_that("substrait_create() works for substrait_proto_auto()", {
   expect_identical(
     substrait_create("substrait.Type.Boolean", nullability = 1),
     structure(
@@ -38,7 +38,7 @@ test_that("substrait_create() works for list()", {
 
   # check a recursive list
   expect_identical(
-    substrait_create("substrait.Type", i8 = list()),
+    substrait_create("substrait.Type", i8 = substrait_proto_auto()),
     substrait_i8()
   )
 })
@@ -62,7 +62,7 @@ test_that("as.list() works for substrait objects", {
   # check repeated message values
   lst <- as.list(
     substrait$Expression$Literal$List$create(
-      value = list(
+      values = list(
         substrait$Expression$Literal$create(i32 = 5L)
       )
     )

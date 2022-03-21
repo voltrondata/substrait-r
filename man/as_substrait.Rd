@@ -29,6 +29,6 @@ created by \code{\link[=substrait_create]{substrait_create()}})
 Convert to and from 'Substrait' messages
 }
 \examples{
-as_substrait(substrait$Type$Boolean$create(1, 2))
+as_substrait(substrait$Type$Boolean$create(type_variation_reference = 1))
 
 }

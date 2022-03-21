@@ -49,7 +49,7 @@ test_that("build_plan can build a plan from relation with filters", {
   expect_equal(
     filter[[2]],
     substrait$Expression$create(
-      substrait$Expression$Literal$create(fp64 = 0)
+      literal = substrait$Expression$Literal$create(fp64 = 0)
     )
   )
 })
@@ -92,7 +92,7 @@ test_that("build_plan can build a plan from relation with filters and projection
   expect_equal(
     outer_function_1[["args"]][[2]],
     substrait$Expression$create(
-      substrait$Expression$Literal$create(fp64 = 1)
+      literal = substrait$Expression$Literal$create(fp64 = 1)
     )
   )
 
@@ -107,7 +107,7 @@ test_that("build_plan can build a plan from relation with filters and projection
   expect_equal(
     outer_function_2[["args"]][[2]],
     substrait$Expression$create(
-      substrait$Expression$Literal$create(fp64 = 0)
+      literal = substrait$Expression$Literal$create(fp64 = 0)
     )
   )
 })
