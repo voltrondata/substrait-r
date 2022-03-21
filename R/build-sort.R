@@ -26,12 +26,12 @@ sort_field <- function(ref){
 }
 
 # Convert from dplyr sort order to substrait sort order
-dplyr_desc_to_substrait <- function(dplyr_desc){
-  switch(
-    as.character(dplyr_desc),
-    # SORT_DIRECTION_ASC_NULLS_LAST = 2
-    "FALSE"  = 2,
+dplyr_desc_to_substrait <- function(dplyr_desc) {
+  if (dplyr_desc) {
     # SORT_DIRECTION_DESC_NULLS_LAST = 4
-    "TRUE" = 4
-  )
+    4
+  } else {
+    # SORT_DIRECTION_ASC_NULLS_LAST = 2
+    2
+  }
 }
