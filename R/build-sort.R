@@ -20,8 +20,7 @@ build_sort <- function(df, sort_cols, sort_desc) {
   sort_expressions
 }
 
-sort_field <- function(ref){
-
+sort_field <- function(ref) {
   substrait$SortField$create(
     expr = simple_integer_field_reference(ref$field),
     direction = dplyr_desc_to_substrait(ref$desc)
