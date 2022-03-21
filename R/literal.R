@@ -27,7 +27,7 @@ as_substrait.substrait_Expression_Literal <- function(x, .ptype = NULL, ...) {
         stopifnot(identical(requested_type, guessed_type))
       }
 
-      rlang::exec(substrait$Type$create, !! guessed_type := list())
+      rlang::exec(substrait$Type$create, !! guessed_type := substrait_proto_auto())
     },
     NextMethod()
   )

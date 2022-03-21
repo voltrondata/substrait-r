@@ -38,7 +38,7 @@ test_that("substrait_create() works for list()", {
 
   # check a recursive list
   expect_identical(
-    substrait_create("substrait.Type", i8 = list()),
+    substrait_create("substrait.Type", i8 = substrait_proto_auto()),
     substrait_i8()
   )
 })

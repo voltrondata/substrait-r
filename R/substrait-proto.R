@@ -50,6 +50,12 @@ substrait_create_constructor_expr <- function(item) {
   }
 }
 
+substrait_proto_auto <- function(...) {
+  values <- rlang::list2(...)
+  stopifnot(rlang::is_named2(values))
+  structure(values, class = "substrait_proto_auto")
+}
+
 #' Convert to and from 'Substrait' messages
 #'
 #' @param x An object to convert to or from a 'Substrait' message.
@@ -254,9 +260,9 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
       } else if (inherits(value, "substrait_proto_message")) {
         descriptor <- RProtoBuf::P(.qualified_name)
         return(descriptor$read(unclass(value)))
-      } else if (is.list(value)) {
+      } else if (inherits(value, "substrait_proto_auto")) {
         clean_value(
-          substrait_create(.qualified_name, !!! value),
+          substrait_create(.qualified_name, !!! unclass(value)),
           type,
           .qualified_name
         )

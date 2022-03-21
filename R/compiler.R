@@ -119,14 +119,14 @@ substrait_compiler_function.substrait_compiler <- function(compiler, name, args,
   switch(
     type,
     "scalar" = substrait$Expression$create(
-      scalar_function = list(
+      scalar_function = substrait_proto_auto(
         function_reference = id,
         args = args,
         output_type = output_type
       )
     ),
     "window" = substrait$Expression$create(
-      window_function = list(
+      window_function = substrait_proto_auto(
         function_reference = id,
         args = args,
         output_type = output_type,
