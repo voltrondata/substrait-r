@@ -1,5 +1,4 @@
 test_that("build_plan can build a plan from relation with projections", {
-
   x <- base_table(mtcars) %>%
     dplyr::select(am, hp)
 
@@ -26,7 +25,6 @@ test_that("build_plan does nothing for projection if all cols selected", {
   expect_named(plan_out, "read")
 
   expect_s3_class(plan_out[["read"]], "substrait_ReadRel")
-
 })
 
 test_that("build_plan can build a plan from relation with filters", {
@@ -81,7 +79,6 @@ test_that("build_plan can build a plan from sorted relations", {
     plan_out[["sort"]][["sorts"]][[1]][["expr"]],
     simple_integer_field_reference(3)
   )
-
 })
 
 test_that("build_plan can build a plan from relation with filters and projections", {
