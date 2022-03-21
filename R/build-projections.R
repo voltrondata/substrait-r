@@ -18,15 +18,15 @@ build_projections <- function(df, projections) {
 # Simplify the verbose definition of a field reference
 simple_integer_field_reference <- function(pos0) {
   substrait$Expression$create(
-    selection = substrait_proto_auto(
-      direct_reference = substrait_proto_auto(
-        struct_field = substrait_proto_auto(
+    selection = substrait$Expression$FieldReference$create(
+      direct_reference = substrait$Expression$ReferenceSegment$create(
+        struct_field = substrait$Expression$ReferenceSegment$StructField$create(
           # 0-indexed!
           field = pos0,
-          child = substrait_proto_auto(
-            struct_field = substrait_proto_auto(
-              field = substrait_proto_auto()
-            )
+          # dd: Do we need this? It seems like this would be indexing in to a
+          # nested struct (like df$col_that_is_a_df[[0]])?
+          child = substrait$Expression$ReferenceSegment$create(
+            struct_field = substrait$Expression$ReferenceSegment$StructField$create()
           )
         )
       )

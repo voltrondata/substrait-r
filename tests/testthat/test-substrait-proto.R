@@ -23,7 +23,7 @@ test_that("from_substrait() default errors work", {
   )
 })
 
-test_that("substrait_create() works for list()", {
+test_that("substrait_create() works for substrait_proto_auto()", {
   expect_identical(
     substrait_create("substrait.Type.Boolean", nullability = 1),
     structure(
