@@ -143,7 +143,7 @@ as_substrait.double <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
-            lapply(x, as_substrait.double, .ptype = "substrait.Expression.Literal")
+            values = lapply(x, as_substrait.double, .ptype = "substrait.Expression.Literal")
           )
         )
       },
@@ -190,7 +190,7 @@ as_substrait.integer <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
-            lapply(x, as_substrait.integer, .ptype = "substrait.Expression.Literal")
+            values = lapply(x, as_substrait.integer, .ptype = "substrait.Expression.Literal")
           )
         )
       },
@@ -237,7 +237,7 @@ as_substrait.logical <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
-            lapply(x, as_substrait.logical, .ptype = "substrait.Expression.Literal")
+            values = lapply(x, as_substrait.logical, .ptype = "substrait.Expression.Literal")
           )
         )
       },
@@ -284,7 +284,7 @@ as_substrait.character <- function(x, .ptype = NULL, ...) {
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
-            lapply(x, as_substrait.character, .ptype = "substrait.Expression.Literal")
+            values = lapply(x, as_substrait.character, .ptype = "substrait.Expression.Literal")
           )
         )
       },

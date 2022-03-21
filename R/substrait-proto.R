@@ -24,8 +24,8 @@
 #' @export
 #'
 #' @examples
-#' substrait_create("substrait.Type.Boolean", 1, 2)
-#' substrait$Type$Boolean$create(1, 2)
+#' substrait_create("substrait.Type.Boolean", type_variation_reference = 1)
+#' substrait$Type$Boolean$create(type_variation_reference = 1)
 #'
 substrait_create <- function(.qualified_name, ...) {
   stopifnot(is.character(.qualified_name), length(.qualified_name) == 1)
@@ -71,7 +71,7 @@ substrait_proto_auto <- function(...) {
 #' @export
 #'
 #' @examples
-#' as_substrait(substrait$Type$Boolean$create(1, 2))
+#' as_substrait(substrait$Type$Boolean$create(type_variation_reference = 1))
 #'
 as_substrait <- function(x, .ptype = NULL, ...) {
   UseMethod("as_substrait", x)

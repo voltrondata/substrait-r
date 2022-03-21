@@ -142,14 +142,19 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
     sanitizers_flat <- paste(sanitizers, collapse = ",\n")
 
     if (identical(formals_flat, "")) {
-      constructor <- glue::glue('\n{ indent }  create = function() create_substrait_message(.qualified_name = "{ type$name_qualified }")')
+      constructor <- glue::glue('\n{ indent }  create = function(...) {{
+        ellipsis::check_dots_empty()
+        create_substrait_message(.qualified_name = "{ type$name_qualified }")
+      }}')
     } else {
-
       constructor <- glue::glue(
-'\n{ indent }  create = function({ formals_flat }) create_substrait_message(
+'\n{ indent }  create = function(..., { formals_flat }) {{
+  ellipsis::check_dots_empty()
+  create_substrait_message(
 { sanitizers_flat },
   .qualified_name = "{ type$name_qualified }"
 )
+}}
 '
 )
     }

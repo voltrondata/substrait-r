@@ -40,8 +40,8 @@ buffer reader/writer (currently RProtoBuf) from object conversion
 to facilitate getting started on the conversion code.
 }
 \examples{
-substrait_create("substrait.Type.Boolean", 1, 2)
-substrait$Type$Boolean$create(1, 2)
+substrait_create("substrait.Type.Boolean", type_variation_reference = 1)
+substrait$Type$Boolean$create(type_variation_reference = 1)
 
 }
 \keyword{datasets}

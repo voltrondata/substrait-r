@@ -62,7 +62,7 @@ test_that("as.list() works for substrait objects", {
   # check repeated message values
   lst <- as.list(
     substrait$Expression$Literal$List$create(
-      value = list(
+      values = list(
         substrait$Expression$Literal$create(i32 = 5L)
       )
     )
