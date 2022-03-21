@@ -3,6 +3,8 @@
 #' @param .data Either a data.frame, Arrow Table, substrait_dplyr_query object; whatever
 #' @param selected_columns Columns to select
 #' @param filtered_rows Rows to filter
+#' @param arrange_vars Columns to sort on
+#' @param arrange_desc Are sort columns in descending order?
 #'
 #' @return An object of class 'substrait_dplyr_query'
 #' @export
