@@ -1,0 +1,151 @@
+# Group By + Summarise
+
+## Input
+
+In the example below, t is an ibis table
+
+```
+def t():
+  return ibis.table(
+        [
+            ("full_name", "string"),
+            ("age", "int64"),
+            ("ts", "timestamp('UTC')"),
+            ("delta", "interval"),
+        ]
+)
+```
+
+## Code
+
+The code below is doing the equivalent of 
+
+```
+dplyr::group_by(t, name_len = nchar(full_name)) %>%
+  dplyr::summarise(max_age = max(age), min_age = min(age))
+```
+
+via ibis syntax.
+
+```
+t.group_by(name_len=lambda t: t.full_name.length())
+.aggregate(max_age=t.age.max(), min_age=t.age.min())
+```
+
+## Output
+
+After compiling and converting to substrait:
+
+```
+aggregate {
+  input {
+    read {
+      base_schema {
+        names: "full_name"
+        names: "age"
+        names: "ts"
+        names: "delta"
+        struct {
+          types {
+            string {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+          types {
+            i64 {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+          types {
+            timestamp_tz {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+          types {
+            interval_day {
+              nullability: NULLABILITY_NULLABLE
+            }
+          }
+        }
+      }
+      named_table {
+        names: "unbound_table_2"
+      }
+    }
+  }
+  groupings {
+    grouping_expressions {
+      scalar_function {
+        function_reference: 1
+        args {
+          selection {
+            direct_reference {
+              struct_field {
+                child {
+                  struct_field {
+                  }
+                }
+              }
+            }
+          }
+        }
+        output_type {
+          i32 {
+            nullability: NULLABILITY_NULLABLE
+          }
+        }
+      }
+    }
+  }
+  measures {
+    measure {
+      function_reference: 2
+      args {
+        selection {
+          direct_reference {
+            struct_field {
+              field: 1
+              child {
+                struct_field {
+                }
+              }
+            }
+          }
+        }
+      }
+      phase: AGGREGATION_PHASE_INITIAL_TO_RESULT
+      output_type {
+        i64 {
+          nullability: NULLABILITY_NULLABLE
+        }
+      }
+    }
+  }
+  measures {
+    measure {
+      function_reference: 3
+      args {
+        selection {
+          direct_reference {
+            struct_field {
+              field: 1
+              child {
+                struct_field {
+                }
+              }
+            }
+          }
+        }
+      }
+      phase: AGGREGATION_PHASE_INITIAL_TO_RESULT
+      output_type {
+        i64 {
+          nullability: NULLABILITY_NULLABLE
+        }
+      }
+    }
+  }
+}
+```
+
+
