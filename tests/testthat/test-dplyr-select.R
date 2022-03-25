@@ -4,7 +4,11 @@ test_that("select() can subset variables by name", {
     dplyr::select(hp)
 
   expect_s3_class(out, "substrait_dplyr_query")
-  expect_identical(attributes(out)$selected_columns, list(hp = rlang::sym("hp")))
+  expect_identical(
+    attributes(out)$selected_columns,
+    # this is horrific but I can't work out how else to do it
+    rlang::set_names(unlist(lapply(rlang::sym("hp"), rlang::quos)), "hp")
+  )
 })
 
 test_that("select(everything()) returns the same object as its input", {
@@ -28,11 +32,15 @@ test_that("select() can subset with multiple variables", {
   expect_s3_class(out, "substrait_dplyr_query")
   expect_identical(
     attributes(out)$selected_columns,
-    list(
-      hp = rlang::sym("hp"),
-      mpg = rlang::sym("mpg"),
-      am = rlang::sym("am")
+
+    # horrific - refactor
+    rlang::set_names(
+      unlist(
+        lapply(rlang::syms(c("hp", "mpg", "am")), rlang::quos)
+      ),
+      c("hp", "mpg", "am")
     )
+
   )
 })
 
