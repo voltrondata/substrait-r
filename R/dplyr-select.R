@@ -14,16 +14,20 @@
 #'   hp, carb
 #' )
 select.substrait_dplyr_query <- function(.data, ...) {
+  #browser()
   selected_columns <- attr(.data, "selected_columns")
 
-  empty_df <- get_empty_df(selected_columns)
+  empty_df <- get_empty_df(names(selected_columns))
 
-  # Named vector of column names/indices
-  cols <- tidyselect::eval_select(rlang::expr(c(...)), empty_df)
+  # Vector of selected column names
+  new_selected_columns <- names(tidyselect::eval_select(rlang::expr(c(...)), empty_df))
+
+  # Hacky - only works as it'll choose the
+  possible_columns <- append(rlang::quos(...), selected_columns[new_selected_columns])
 
   substrait_dplyr_query(
     .data,
-    selected_columns = rlang::syms(rlang::set_names(selected_columns[cols], names(cols)))
+    selected_columns = possible_columns[new_selected_columns]
   )
 }
 

@@ -17,7 +17,8 @@ substrait_dplyr_query <- function(.data,
                                   arrange_vars = attr(.data, "arrange_vars"),
                                   arrange_desc = attr(.data, "arrange_desc")) {
   selected_columns <- selected_columns %||%
-    as.list(rlang::syms(rlang::set_names(names(.data))))
+    rlang::set_names(unlist(lapply(rlang::syms(names(.data)), rlang::quos)), names(.data))
+
 
   structure(
     .data,
