@@ -7,7 +7,9 @@
 substrait_dplyr_query(
   .data,
   selected_columns = attr(.data, "selected_columns"),
-  filtered_rows = attr(.data, "filtered_rows")
+  filtered_rows = attr(.data, "filtered_rows"),
+  arrange_vars = attr(.data, "arrange_vars"),
+  arrange_desc = attr(.data, "arrange_desc")
 )
 }
 \arguments{
@@ -16,6 +18,10 @@ substrait_dplyr_query(
 \item{selected_columns}{Columns to select}
 
 \item{filtered_rows}{Rows to filter}
+
+\item{arrange_vars}{Columns to sort on}
+
+\item{arrange_desc}{Are sort columns in descending order?}
 }
 \value{
 An object of class 'substrait_dplyr_query'
