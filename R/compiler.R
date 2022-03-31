@@ -57,27 +57,29 @@ substrait_compiler <- function() {
 
 #' @rdname substrait_compiler
 #' @export
-substrait_compiler_read_rel <- function(compiler, tbl, ...) {
-  UseMethod("substrait_compiler_read_rel")
+substrait_compiler_rel <- function(compiler, tbl, ...) {
+  UseMethod("substrait_compiler_rel")
 }
 
 #' @rdname substrait_compiler
 #' @export
-substrait_compiler_read_rel.default <- function(compiler, tbl, ...) {
-  if (inherits(tbl, "substrait_ReadRel")) {
+substrait_compiler_rel.default <- function(compiler, tbl, ...) {
+  if (inherits(tbl, "substrait_Rel")) {
     tbl
   } else {
     tbl_id <- sprintf("named_table_%d", substrait_compiler_next_id(compiler))
 
-    read_rel <- substrait$ReadRel$create(
-      base_schema = as_substrait(tbl, "substrait.NamedStruct"),
-      named_table = substrait$ReadRel$NamedTable$create(
-        names = tbl_id
+    rel <- substrait$Rel$create(
+      read = substrait$ReadRel$create(
+        base_schema = as_substrait(tbl, "substrait.NamedStruct"),
+        named_table = substrait$ReadRel$NamedTable$create(
+          names = tbl_id
+        )
       )
     )
 
     compiler$named_tables[[tbl_id]] <- tbl
-    read_rel
+    rel
   }
 }
 

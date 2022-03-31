@@ -2,17 +2,17 @@
 % Please edit documentation in R/compiler.R
 \name{substrait_compiler}
 \alias{substrait_compiler}
-\alias{substrait_compiler_read_rel}
-\alias{substrait_compiler_read_rel.default}
+\alias{substrait_compiler_rel}
+\alias{substrait_compiler_rel.default}
 \alias{substrait_compiler_function_id}
 \alias{substrait_compiler_function}
 \title{Substrait compiler}
 \usage{
 substrait_compiler()
 
-substrait_compiler_read_rel(compiler, tbl, ...)
+substrait_compiler_rel(compiler, tbl, ...)
 
-\method{substrait_compiler_read_rel}{default}(compiler, tbl, ...)
+\method{substrait_compiler_rel}{default}(compiler, tbl, ...)
 
 substrait_compiler_function_id(compiler, name, arg_types)
 
