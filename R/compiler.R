@@ -66,6 +66,10 @@ substrait_compiler_rel <- function(compiler, tbl, ...) {
 substrait_compiler_rel.default <- function(compiler, tbl, ...) {
   if (inherits(tbl, "substrait_Rel")) {
     tbl
+  } else if (inherits(tbl, "substrait_bulder")) {
+    # I think we need this one at some point...maybe check that the compiler
+    # is of the same class and combine the data somehow?
+    stop("Not implemented: substrait_builder as Rel")
   } else {
     tbl_id <- sprintf("named_table_%d", substrait_compiler_next_id(compiler))
 
