@@ -1,47 +1,14 @@
 
-#' Get column names for a relation
-#'
-#' @param x A Rel, PlanRel, or Plan
-#'
-#' @return A vector of column names
-#' @export
-#'
 substrait_colnames <- function(x) {
-  UseMethod("substrait_colnames")
-}
-
-#' @export
-substrait_colnames.default <- function(x) {
-  NULL
-}
-
-#' @export
-substrait_colnames.substrait_ReadRel <- function(x) {
-  x$base_schema$names
-}
-
-#' @export
-substrait_colnames.substrait_SortRel <- function(x) {
-  substrait_colnames(x$input)
-}
-
-#' @export
-substrait_colnames.substrait_FilterRel <- function(x) {
-  substrait_colnames(x$input)
-}
-
-#' @export
-substrait_colnames.substrait_Rel <- function(x) {
-  for (item in as.list(x)) {
-    return(substrait_colnames(item))
-  }
-
-  return(NULL)
-}
-
-#' @export
-substrait_colnames.substrait_PlanRel <- function(x) {
-  substrait_colnames(x$rel)
+  switch(
+    class(x)[1],
+    "substrait_ReadRel" = x$base_schema$names,
+    "substrait_FilterRel" = ,
+    "substrait_SortRel" = substrait_colnames(x$input),
+    "substrait_Rel" = substrait_colnames(x[[names(x)[1]]]),
+    "substrait_PlanRel" = substrait_colnames(x$rel),
+    NULL
+  )
 }
 
 rel_tree_modify <- function(x, classes = character(), fun = identity) {
