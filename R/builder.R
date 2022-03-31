@@ -36,11 +36,12 @@ substrait_builder.default <- function(rel, ..., compiler = substrait_compiler())
     list(
       plan = plan,
       compiler = compiler,
-      names = substrait_colnames(rel),
+      context = substrait_coltypes(rel),
       groups = NULL
     )
   )
 }
+
 
 new_substrait_builder <- function(x) {
   structure(x, class = "substrait_builder")

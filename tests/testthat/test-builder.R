@@ -8,7 +8,14 @@ test_that("substrait_builder() creates a builder with a ReadRel from a data fram
     "substrait_builder"
   )
 
-  expect_identical(builder$names, names(tbl))
+  expect_identical(
+    builder$context,
+    list(
+      col1 = substrait_fp64(),
+      col2 = substrait_string()
+    )
+  )
+
   expect_identical(builder$compiler, compiler)
   expect_identical(builder$groups, NULL)
   expect_s3_class(builder$plan, "substrait_Plan")
