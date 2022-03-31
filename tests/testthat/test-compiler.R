@@ -5,6 +5,30 @@ test_that("substrait_compiler can be created", {
   expect_s3_class(compiler$extension_uri, "substrait_extensions_SimpleExtensionURI")
 })
 
+test_that("default substrait_compiler_read_rel() implementation works", {
+  compiler <- substrait_compiler()
+
+  # Previously-created ReadRel gets passed through as-is
+  read_rel <- substrait$ReadRel$create()
+  expect_identical(
+    substrait_compiler_read_rel(compiler, read_rel),
+    read_rel
+  )
+
+  # All other objects are have their schemas extracted and are kept track of
+  tbl <- data.frame(a = 1L, b = "one")
+  read_rel <- expect_s3_class(
+    substrait_compiler_read_rel(compiler, tbl),
+    "substrait_ReadRel"
+  )
+
+  expect_match(read_rel$named_table$names, "^named_table_")
+  expect_identical(
+    compiler$named_tables[[read_rel$named_table$names]],
+    tbl
+  )
+})
+
 test_that("substrait_compiler_function_id() works", {
   compiler <- substrait_compiler()
   expect_equal(

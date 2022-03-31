@@ -2,11 +2,17 @@
 % Please edit documentation in R/compiler.R
 \name{substrait_compiler}
 \alias{substrait_compiler}
+\alias{substrait_compiler_read_rel}
+\alias{substrait_compiler_read_rel.default}
 \alias{substrait_compiler_function_id}
 \alias{substrait_compiler_function}
 \title{Substrait compiler}
 \usage{
 substrait_compiler()
+
+substrait_compiler_read_rel(compiler, tbl, ...)
+
+\method{substrait_compiler_read_rel}{default}(compiler, tbl, ...)
 
 substrait_compiler_function_id(compiler, name, arg_types)
 
@@ -22,6 +28,10 @@ substrait_compiler_function(
 \arguments{
 \item{compiler}{a \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
+\item{tbl}{A table-like object that can be converted to a ReadRel.}
+
+\item{...}{Passed to S3 methods.}
+
 \item{name}{A function name}
 
 \item{arg_types}{A \code{list()} of substrait.Type objects}
@@ -35,8 +45,6 @@ in the function call.}
 
 \item{context}{An optional context that can be used to pick the correct
 function (e.g., scalar, window, aggregate).}
-
-\item{...}{Passed to S3 methods.}
 }
 \value{
 \itemize{

@@ -3,6 +3,7 @@
 #'
 #' @param compiler a [substrait_compiler()]
 #' @param name A function name
+#' @param tbl A table-like object that can be converted to a ReadRel.
 #' @param arg_types A `list()` of substrait.Type objects
 #' @param args A `list()` of arguments, which may be R objects or field
 #'   references and may be named (i.e., these have not yet been converted
@@ -43,12 +44,41 @@ substrait_compiler <- function() {
   compiler$type_extensions <- new.env(parent = emptyenv())
   compiler$type_variations <- new.env(parent = emptyenv())
 
+  # we also use this object to keep track of named tables
+  compiler$named_tables <- new.env(parent = emptyenv())
+
   compiler$next_id <- 1L
 
   structure(
     compiler,
     class = "substrait_compiler"
   )
+}
+
+#' @rdname substrait_compiler
+#' @export
+substrait_compiler_read_rel <- function(compiler, tbl, ...) {
+  UseMethod("substrait_compiler_read_rel")
+}
+
+#' @rdname substrait_compiler
+#' @export
+substrait_compiler_read_rel.default <- function(compiler, tbl, ...) {
+  if (inherits(tbl, "substrait_ReadRel")) {
+    tbl
+  } else {
+    tbl_id <- sprintf("named_table_%d", substrait_compiler_next_id(compiler))
+
+    read_rel <- substrait$ReadRel$create(
+      base_schema = as_substrait(tbl, "substrait.NamedStruct"),
+      named_table = substrait$ReadRel$NamedTable$create(
+        names = tbl_id
+      )
+    )
+
+    compiler$named_tables[[tbl_id]] <- tbl
+    read_rel
+  }
 }
 
 #' @rdname substrait_compiler
