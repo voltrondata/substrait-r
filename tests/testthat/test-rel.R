@@ -26,6 +26,51 @@ test_that("substrait_colnames() works for simple relations", {
   expect_identical(substrait_colnames(NULL), NULL)
 })
 
+test_that("substrait_coltypes() works for simple relations", {
+  df <- data.frame(column1 = double(), column2 = character())
+
+  read_rel <- substrait$ReadRel$create(
+    base_schema = as_substrait(df, "substrait.NamedStruct"),
+    named_table = substrait$ReadRel$NamedTable$create(
+      names = "the_name_of_the_table"
+    )
+  )
+
+  expect_identical(
+    substrait_coltypes(read_rel),
+    list(
+      column1 = substrait_fp64(),
+      column2 = substrait_string()
+    )
+  )
+
+  rel <- substrait$Rel$create(read = read_rel)
+  expect_identical(
+    substrait_coltypes(rel),
+    substrait_coltypes(read_rel)
+  )
+
+  filter_rel <- substrait$FilterRel$create(input = rel)
+  expect_identical(
+    substrait_coltypes(filter_rel),
+    substrait_coltypes(read_rel)
+  )
+
+  sort_rel <- substrait$SortRel$create(input = rel)
+  expect_identical(
+    substrait_coltypes(filter_rel),
+    substrait_coltypes(read_rel)
+  )
+
+  plan_rel <- substrait$PlanRel$create(rel = rel)
+  expect_identical(
+    substrait_coltypes(plan_rel),
+    substrait_coltypes(read_rel)
+  )
+
+  expect_identical(substrait_coltypes(NULL), NULL)
+})
+
 test_that("rel_tree_modify can modify relation trees", {
   df <- data.frame(column1 = double(), column2 = double())
   plan <- substrait$Plan$create(

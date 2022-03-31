@@ -1,12 +1,20 @@
 
 substrait_colnames <- function(x) {
+  names(substrait_coltypes(x))
+}
+
+substrait_coltypes <- function(x) {
   switch(
     class(x)[1],
-    "substrait_ReadRel" = x$base_schema$names,
+    "substrait_ReadRel" = {
+      types <- x$base_schema$struct_$types
+      names(types) <- x$base_schema$names
+      types
+    },
     "substrait_FilterRel" = ,
-    "substrait_SortRel" = substrait_colnames(x$input),
-    "substrait_Rel" = substrait_colnames(x[[names(x)[1]]]),
-    "substrait_PlanRel" = substrait_colnames(x$rel),
+    "substrait_SortRel" = substrait_coltypes(x$input),
+    "substrait_Rel" = substrait_coltypes(x[[names(x)[1]]]),
+    "substrait_PlanRel" = substrait_coltypes(x$rel),
     NULL
   )
 }
