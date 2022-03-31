@@ -6,14 +6,14 @@
 \alias{substrait_builder.default}
 \title{Build a Substrait plan}
 \usage{
-substrait_builder(tbl, ..., compiler = substrait_compiler())
+substrait_builder(rel, ..., compiler = substrait_compiler())
 
-\method{substrait_builder}{substrait_builder}(tbl, ..., compiler = substrait_compiler())
+\method{substrait_builder}{substrait_builder}(rel, ..., compiler = substrait_compiler())
 
-\method{substrait_builder}{default}(tbl, ..., compiler = substrait_compiler())
+\method{substrait_builder}{default}(rel, ..., compiler = substrait_compiler())
 }
 \arguments{
-\item{tbl}{A table-like object that can be converted to a ReadRel.}
+\item{rel}{A table-like object that can be converted to a substrait.Rel}
 
 \item{...}{Passed to S3 methods.}
 

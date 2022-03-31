@@ -3,7 +3,8 @@
 #'
 #' @param compiler a [substrait_compiler()]
 #' @param name A function name
-#' @param tbl A table-like object that can be converted to a ReadRel.
+#' @param builder A [substrait_builder()] to finalize and evaluate
+#' @param rel A table-like object that can be converted to a substrait.Rel
 #' @param arg_types A `list()` of substrait.Type objects
 #' @param args A `list()` of arguments, which may be R objects or field
 #'   references and may be named (i.e., these have not yet been converted
@@ -57,33 +58,47 @@ substrait_compiler <- function() {
 
 #' @rdname substrait_compiler
 #' @export
-substrait_compiler_rel <- function(compiler, tbl, ...) {
+substrait_compiler_evaluate_plan <- function(compiler, builder, ...) {
   UseMethod("substrait_compiler_rel")
 }
 
 #' @rdname substrait_compiler
 #' @export
-substrait_compiler_rel.default <- function(compiler, tbl, ...) {
-  if (inherits(tbl, "substrait_Rel")) {
-    tbl
-  } else if (inherits(tbl, "substrait_bulder")) {
+substrait_compiler_evaluate_plan.default <- function(compiler, builder, ...) {
+  # - do some finalizing on the plan in the default method...maybe add some
+  # of the URI bits to the plan from the compiler
+  builder
+}
+
+#' @rdname substrait_compiler
+#' @export
+substrait_compiler_rel <- function(compiler, rel, ...) {
+  UseMethod("substrait_compiler_rel")
+}
+
+#' @rdname substrait_compiler
+#' @export
+substrait_compiler_rel.default <- function(compiler, rel, ...) {
+  if (inherits(rel, "substrait_Rel")) {
+    rel
+  } else if (inherits(rel, "substrait_bulder")) {
     # I think we need this one at some point...maybe check that the compiler
     # is of the same class and combine the data somehow?
     stop("Not implemented: substrait_builder as Rel")
   } else {
     tbl_id <- sprintf("named_table_%d", substrait_compiler_next_id(compiler))
 
-    rel <- substrait$Rel$create(
+    substrait_rel <- substrait$Rel$create(
       read = substrait$ReadRel$create(
-        base_schema = as_substrait(tbl, "substrait.NamedStruct"),
+        base_schema = as_substrait(rel, "substrait.NamedStruct"),
         named_table = substrait$ReadRel$NamedTable$create(
           names = tbl_id
         )
       )
     )
 
-    compiler$named_tables[[tbl_id]] <- tbl
-    rel
+    compiler$named_tables[[tbl_id]] <- rel
+    substrait_rel
   }
 }
 

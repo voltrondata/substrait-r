@@ -2,6 +2,8 @@
 % Please edit documentation in R/compiler.R
 \name{substrait_compiler}
 \alias{substrait_compiler}
+\alias{substrait_compiler_evaluate_plan}
+\alias{substrait_compiler_evaluate_plan.default}
 \alias{substrait_compiler_rel}
 \alias{substrait_compiler_rel.default}
 \alias{substrait_compiler_function_id}
@@ -10,9 +12,13 @@
 \usage{
 substrait_compiler()
 
-substrait_compiler_rel(compiler, tbl, ...)
+substrait_compiler_evaluate_plan(compiler, builder, ...)
 
-\method{substrait_compiler_rel}{default}(compiler, tbl, ...)
+\method{substrait_compiler_evaluate_plan}{default}(compiler, builder, ...)
+
+substrait_compiler_rel(compiler, rel, ...)
+
+\method{substrait_compiler_rel}{default}(compiler, rel, ...)
 
 substrait_compiler_function_id(compiler, name, arg_types)
 
@@ -28,9 +34,11 @@ substrait_compiler_function(
 \arguments{
 \item{compiler}{a \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
-\item{tbl}{A table-like object that can be converted to a ReadRel.}
+\item{builder}{A \code{\link[=substrait_builder]{substrait_builder()}} to finalize and evaluate}
 
 \item{...}{Passed to S3 methods.}
+
+\item{rel}{A table-like object that can be converted to a substrait.Rel}
 
 \item{name}{A function name}
 
