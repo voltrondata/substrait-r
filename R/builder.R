@@ -10,6 +10,18 @@
 #' substrait_builder(data.frame(col1 = 1 , col2 = "one"))
 #'
 substrait_builder <- function(tbl, ..., compiler = substrait_compiler()) {
+  UseMethod("substrait_builder")
+}
+
+#' @rdname substrait_builder
+#' @export
+substrait_builder.substrait_builder <- function(tbl, ..., compiler = substrait_compiler()) {
+  tbl
+}
+
+#' @rdname substrait_builder
+#' @export
+substrait_builder.default <- function(tbl, ..., compiler = substrait_compiler()) {
   rel <- substrait_compiler_rel(compiler, tbl, ...)
 
   plan <- substrait$Plan$create(

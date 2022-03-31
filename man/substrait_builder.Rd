@@ -2,9 +2,15 @@
 % Please edit documentation in R/builder.R
 \name{substrait_builder}
 \alias{substrait_builder}
+\alias{substrait_builder.substrait_builder}
+\alias{substrait_builder.default}
 \title{Build a Substrait plan}
 \usage{
 substrait_builder(tbl, ..., compiler = substrait_compiler())
+
+\method{substrait_builder}{substrait_builder}(tbl, ..., compiler = substrait_compiler())
+
+\method{substrait_builder}{default}(tbl, ..., compiler = substrait_compiler())
 }
 \arguments{
 \item{tbl}{A table-like object that can be converted to a ReadRel.}

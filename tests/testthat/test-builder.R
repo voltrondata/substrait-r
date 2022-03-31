@@ -1,5 +1,5 @@
 
-test_that("substrait_builder() creates a builder with one relation", {
+test_that("substrait_builder() creates a builder with a ReadRel from a data frame", {
   compiler <- substrait_compiler()
   tbl <- data.frame(col1 = 1, col2 = "one")
 
@@ -16,4 +16,9 @@ test_that("substrait_builder() creates a builder with one relation", {
     builder$plan$relations[[1]]$rel$read$named_table$names,
     "^named_table_"
   )
+})
+
+test_that("substrait_builder() returns its input if it's already a builder", {
+  builder <- substrait_builder(data.frame(col1 = 1, col2 = "one"))
+  expect_identical(substrait_builder(builder), builder)
 })
