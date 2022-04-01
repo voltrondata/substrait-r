@@ -2,12 +2,15 @@
 % Please edit documentation in R/pkg-dplyr.R
 \name{select.substrait_builder}
 \alias{select.substrait_builder}
+\alias{rename.substrait_builder}
 \alias{filter.substrait_builder}
 \alias{mutate.substrait_builder}
 \alias{arrange.substrait_builder}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{substrait_builder}(.data, ...)
+
+\method{rename}{substrait_builder}(.data, ...)
 
 \method{filter}{substrait_builder}(.data, ...)
 
@@ -21,6 +24,7 @@
 \item{...}{\itemize{
 \item \code{select()}: see \code{\link[dplyr:select]{dplyr::select()}}
 \itemize{
+\item \code{rename()}: see \code{\link[dplyr:rename]{dplyr::rename()}}
 \item \code{filter()}: see \code{\link[dplyr:filter]{dplyr::filter()}}
 \item \code{mutate()}: see \code{\link[dplyr:mutate]{dplyr::mutate()}}
 \item \code{arrange()}: see \code{\link[dplyr:arrange]{dplyr::arrange()}}
@@ -32,4 +36,14 @@ A modified \code{\link[=substrait_builder]{substrait_builder()}}
 }
 \description{
 dplyr verb implementations
+}
+\examples{
+\dontshow{if (requireNamespace("dplyr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+builder <- substrait_builder(mtcars)
+dplyr::select(builder, mpg2 = mpg)
+dplyr::rename(builder, mpg2 = mpg)
+dplyr::filter(builder, mpg > 20)
+dplyr::mutate(builder, mpg + 10)
+dplyr::arrange(builder, desc(mpg))
+\dontshow{\}) # examplesIf}
 }

@@ -29,6 +29,19 @@ test_that("dplyr::select() for substrait_builder wraps substrait_project()", {
   )
 })
 
+test_that("rename() for substrait_builder renames columns", {
+  skip_if_not_installed("dplyr")
+
+  compiler <- substrait_compiler()
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  builder <- substrait_builder(tbl, compiler = compiler)
+
+  expect_identical(
+    dplyr::rename(builder, col1_renamed = col1),
+    substrait_project(builder, col1_renamed = col1, col2)
+  )
+})
+
 test_that("filter() for substrait_builder wraps substrait_filter()", {
   skip_if_not_installed("dplyr")
 
