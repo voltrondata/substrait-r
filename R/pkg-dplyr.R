@@ -24,6 +24,11 @@ select.substrait_builder <- function(.data, ...) {
   substrait_project(.data, !!! new_mask)
 }
 
+#' @rdname select.substrait_builder
+#' @export
+filter.substrait_builder <- function(.data, ...) {
+  substrait_filter(.data, ...)
+}
 
 simulate_data_frame <- function(builder) {
   from_substrait(builder$schema, data.frame())

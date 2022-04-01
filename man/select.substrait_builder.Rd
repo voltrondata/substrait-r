@@ -2,9 +2,12 @@
 % Please edit documentation in R/pkg-dplyr.R
 \name{select.substrait_builder}
 \alias{select.substrait_builder}
+\alias{filter.substrait_builder}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{substrait_builder}(.data, ...)
+
+\method{filter}{substrait_builder}(.data, ...)
 }
 \arguments{
 \item{.data}{A \code{\link[=substrait_builder]{substrait_builder()}}}
