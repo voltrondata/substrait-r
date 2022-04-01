@@ -37,8 +37,8 @@ substrait_builder.default <- function(rel, ..., compiler = substrait_compiler())
     list(
       plan = plan,
       compiler = compiler,
-      col_types = substrait_coltypes(rel),
-      mask = substrait_mask(rel),
+      schema = substrait_rel_schema(rel),
+      mask = substrait_rel_mask(rel),
       groups = NULL
     )
   )
@@ -49,7 +49,7 @@ substrait_builder.default <- function(rel, ..., compiler = substrait_compiler())
 
 validate_substrait_builder <- function(builder) {
   stopifnot(
-    identical(names(builder$col_types), names(builder$mask))
+    identical(builder$schema$names, names(builder$mask))
   )
 
   invisible(builder)

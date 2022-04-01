@@ -9,10 +9,15 @@ test_that("substrait_builder() creates a builder with a ReadRel from a data fram
   )
 
   expect_identical(
-    builder$col_types,
-    list(
-      col1 = substrait_fp64(),
-      col2 = substrait_string()
+    builder$schema,
+    substrait$NamedStruct$create(
+      names = c("col1", "col2"),
+      struct_ = substrait$Type$Struct$create(
+        types = list(
+          substrait_fp64(),
+          substrait_string()
+        )
+      )
     )
   )
 
