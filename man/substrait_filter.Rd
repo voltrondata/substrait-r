@@ -20,7 +20,7 @@ Append a Substrait Project Relation
 \examples{
 substrait_filter(
   data.frame(a = 1, b = "one"),
-  c = a + 1
+  a > 0
 )
 
 }
