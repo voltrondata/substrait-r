@@ -19,6 +19,26 @@ substrait_coltypes <- function(x) {
   )
 }
 
+substrait_mask <- function(x) {
+  switch(
+    class(x)[1],
+    "substrait_ReadRel" = {
+      colnames <- substrait_colnames(x)
+      mask <- lapply(
+        seq_along(colnames) - 1L,
+        simple_integer_field_reference
+      )
+      names(mask) <- colnames
+      mask
+    },
+    "substrait_FilterRel" = ,
+    "substrait_SortRel" = substrait_mask(x$input),
+    "substrait_Rel" = substrait_mask(x[[names(x)[1]]]),
+    "substrait_PlanRel" = substrait_mask(x$rel),
+    NULL
+  )
+}
+
 rel_tree_modify <- function(x, classes = character(), fun = identity) {
   if (inherits(x, classes)) {
     fun(x)
