@@ -3,11 +3,17 @@
 \name{select.substrait_builder}
 \alias{select.substrait_builder}
 \alias{filter.substrait_builder}
+\alias{mutate.substrait_builder}
+\alias{arrange.substrait_builder}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{substrait_builder}(.data, ...)
 
 \method{filter}{substrait_builder}(.data, ...)
+
+\method{mutate}{substrait_builder}(.data, ...)
+
+\method{arrange}{substrait_builder}(.data, ...)
 }
 \arguments{
 \item{.data}{A \code{\link[=substrait_builder]{substrait_builder()}}}

@@ -9,6 +9,7 @@
 #'   - `arrange()`: see [dplyr::arrange()]
 #'
 #' @return A modified [substrait_builder()]
+#' @importFrom dplyr select
 #' @export
 #'
 select.substrait_builder <- function(.data, ...) {
@@ -25,9 +26,47 @@ select.substrait_builder <- function(.data, ...) {
 }
 
 #' @rdname select.substrait_builder
+#' @importFrom dplyr filter
 #' @export
 filter.substrait_builder <- function(.data, ...) {
   substrait_filter(.data, ...)
+}
+
+#' @rdname select.substrait_builder
+#' @importFrom dplyr mutate
+#' @export
+mutate.substrait_builder <- function(.data, ...) {
+  substrait_project(.data, ...)
+}
+
+#' @rdname select.substrait_builder
+#' @importFrom dplyr arrange
+#' @export
+arrange.substrait_builder <- function(.data, ...) {
+  quos <- rlang::enquos(...)
+
+  with_translated_desc <- lapply(
+    quos,
+    function(quo) {
+      rlang::quo_set_expr(
+        quo,
+        expr_replace_desc(rlang::quo_get_expr(quo))
+      )
+    }
+  )
+
+  substrait_sort(.data, !!! with_translated_desc)
+}
+
+# translate desc() call to the equivalent
+expr_replace_desc <- function(expr) {
+  if (rlang::is_call(expr, "desc")) {
+    expr[[1]] <- rlang::sym("substrait_sort_field")
+    expr[[3]] <- "SORT_DIRECTION_DESC_NULLS_LAST"
+    expr
+  } else {
+    expr
+  }
 }
 
 simulate_data_frame <- function(builder) {
