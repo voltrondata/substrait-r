@@ -35,6 +35,27 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = substrait_com
   .qualified_name <- make_qualified_name(.ptype)
   switch(
     .qualified_name,
+    "substrait.SortField" = {
+      mask <- context$list_of_expressions
+
+      # evaluate the result using special rules for function calls
+      result <- substrait_eval_expr(
+        rlang::quo_get_expr(x),
+        compiler = compiler,
+        context = context,
+        env = rlang::quo_get_env(x),
+        mask = mask
+      )
+
+      # ...but wrap result in SortField if it isn't already one
+      if (inherits(result, "substrait_SortField")) {
+        result
+      } else {
+        substrait$SortField$create(
+          expr = as_substrait(result, "substrait.Expression")
+        )
+      }
+    },
     "substrait.Expression" = {
       mask <- context$list_of_expressions
 

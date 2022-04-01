@@ -81,6 +81,32 @@ test_that("quosures with calls can be translated to Expressions", {
   )
 })
 
+test_that("quosures can be translated to SortFields", {
+  expect_identical(
+    as_substrait(rlang::quo(5L), "substrait.SortField"),
+    substrait$SortField$create(
+      expr = substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(i32 = 5L)
+      )
+    )
+  )
+
+  expect_identical(
+    as_substrait(
+      substrait$SortField$create(
+        expr = substrait$Expression$create(
+          literal = substrait$Expression$Literal$create(i32 = 5L)
+        )
+      )
+    ),
+    substrait$SortField$create(
+      expr = substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(i32 = 5L)
+      )
+    )
+  )
+})
+
 test_that("as_substrait() can convert Expression objects to Expressions", {
   expect_identical(
     as_substrait(

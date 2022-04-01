@@ -17,7 +17,6 @@ substrait_filter <- function(.builder, ...) {
   .builder <- substrait_builder(.builder)
 
   quos <- rlang::enquos(...)
-  stopifnot(!rlang::is_named(quos))
   if (length(quos) == 0) {
     quos <- rlang::quos(TRUE)
   }
