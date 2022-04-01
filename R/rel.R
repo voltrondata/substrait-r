@@ -1,40 +1,37 @@
 
-substrait_colnames <- function(x) {
-  names(substrait_coltypes(x))
-}
-
-substrait_coltypes <- function(x) {
+substrait_rel_schema <- function(x) {
   switch(
     class(x)[1],
-    "substrait_ReadRel" = {
-      types <- x$base_schema$struct_$types
-      names(types) <- x$base_schema$names
-      types
-    },
+    "substrait_ReadRel" = x$base_schema,
     "substrait_FilterRel" = ,
-    "substrait_SortRel" = substrait_coltypes(x$input),
-    "substrait_Rel" = substrait_coltypes(x[[names(x)[1]]]),
-    "substrait_PlanRel" = substrait_coltypes(x$rel),
-    NULL
+    "substrait_SortRel" = substrait_rel_schema(x$input),
+    "substrait_Rel" = substrait_rel_schema(x[[names(x)[1]]]),
+    "substrait_PlanRel" = substrait_rel_schema(x$rel),
+    stop(
+      sprintf(
+        "Can't extract schema from relation of class %s",
+        paste(class(x), collapse = " / ")
+      )
+    )
   )
 }
 
-substrait_mask <- function(x) {
+substrait_rel_mask <- function(x) {
   switch(
     class(x)[1],
     "substrait_ReadRel" = {
-      colnames <- substrait_colnames(x)
+      schema <- substrait_rel_schema(x)
       mask <- lapply(
-        seq_along(colnames) - 1L,
+        seq_along(schema$names) - 1L,
         simple_integer_field_reference
       )
-      names(mask) <- colnames
+      names(mask) <- schema$names
       mask
     },
     "substrait_FilterRel" = ,
-    "substrait_SortRel" = substrait_mask(x$input),
-    "substrait_Rel" = substrait_mask(x[[names(x)[1]]]),
-    "substrait_PlanRel" = substrait_mask(x$rel),
+    "substrait_SortRel" = substrait_rel_mask(x$input),
+    "substrait_Rel" = substrait_rel_mask(x[[names(x)[1]]]),
+    "substrait_PlanRel" = substrait_rel_mask(x$rel),
     NULL
   )
 }

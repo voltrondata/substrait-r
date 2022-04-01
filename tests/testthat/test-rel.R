@@ -1,32 +1,5 @@
 
-test_that("substrait_colnames() works for simple relations", {
-  df <- data.frame(column1 = double(), column2 = double())
-
-  read_rel <- substrait$ReadRel$create(
-    base_schema = as_substrait(df, "substrait.NamedStruct"),
-    named_table = substrait$ReadRel$NamedTable$create(
-      names = "the_name_of_the_table"
-    )
-  )
-
-  expect_identical(substrait_colnames(read_rel), c("column1", "column2"))
-
-  rel <- substrait$Rel$create(read = read_rel)
-  expect_identical(substrait_colnames(rel), c("column1", "column2"))
-
-  filter_rel <- substrait$FilterRel$create(input = rel)
-  expect_identical(substrait_colnames(filter_rel), c("column1", "column2"))
-
-  sort_rel <- substrait$SortRel$create(input = rel)
-  expect_identical(substrait_colnames(filter_rel), c("column1", "column2"))
-
-  plan_rel <- substrait$PlanRel$create(rel = rel)
-  expect_identical(substrait_colnames(plan_rel), c("column1", "column2"))
-
-  expect_identical(substrait_colnames(NULL), NULL)
-})
-
-test_that("substrait_coltypes() works for simple relations", {
+test_that("substrait_rel_schema() works for simple relations", {
   df <- data.frame(column1 = double(), column2 = character())
 
   read_rel <- substrait$ReadRel$create(
@@ -37,41 +10,48 @@ test_that("substrait_coltypes() works for simple relations", {
   )
 
   expect_identical(
-    substrait_coltypes(read_rel),
-    list(
-      column1 = substrait_fp64(),
-      column2 = substrait_string()
+    substrait_rel_schema(read_rel),
+    substrait$NamedStruct$create(
+      names = c("column1", "column2"),
+      struct_ = substrait$Type$Struct$create(
+        types = list(
+          substrait_fp64(),
+          substrait_string()
+        )
+      )
     )
   )
 
   rel <- substrait$Rel$create(read = read_rel)
   expect_identical(
-    substrait_coltypes(rel),
-    substrait_coltypes(read_rel)
+    substrait_rel_schema(rel),
+    substrait_rel_schema(read_rel)
   )
 
   filter_rel <- substrait$FilterRel$create(input = rel)
   expect_identical(
-    substrait_coltypes(filter_rel),
-    substrait_coltypes(read_rel)
+    substrait_rel_schema(filter_rel),
+    substrait_rel_schema(read_rel)
   )
 
   sort_rel <- substrait$SortRel$create(input = rel)
   expect_identical(
-    substrait_coltypes(filter_rel),
-    substrait_coltypes(read_rel)
+    substrait_rel_schema(filter_rel),
+    substrait_rel_schema(read_rel)
   )
 
   plan_rel <- substrait$PlanRel$create(rel = rel)
   expect_identical(
-    substrait_coltypes(plan_rel),
-    substrait_coltypes(read_rel)
+    substrait_rel_schema(plan_rel),
+    substrait_rel_schema(read_rel)
   )
 
-  expect_identical(substrait_coltypes(NULL), NULL)
+  expect_snapshot_error(
+    substrait_rel_schema(NULL),
+  )
 })
 
-test_that("substrait_mask() works for simple relations", {
+test_that("substrait_rel_mask() works for simple relations", {
   df <- data.frame(column1 = double(), column2 = character())
 
   read_rel <- substrait$ReadRel$create(
@@ -82,7 +62,7 @@ test_that("substrait_mask() works for simple relations", {
   )
 
   expect_identical(
-    substrait_mask(read_rel),
+    substrait_rel_mask(read_rel),
     list(
       column1 = simple_integer_field_reference(0),
       column2 = simple_integer_field_reference(1)
@@ -91,29 +71,29 @@ test_that("substrait_mask() works for simple relations", {
 
   rel <- substrait$Rel$create(read = read_rel)
   expect_identical(
-    substrait_mask(rel),
-    substrait_mask(read_rel)
+    substrait_rel_mask(rel),
+    substrait_rel_mask(read_rel)
   )
 
   filter_rel <- substrait$FilterRel$create(input = rel)
   expect_identical(
-    substrait_mask(filter_rel),
-    substrait_mask(read_rel)
+    substrait_rel_mask(filter_rel),
+    substrait_rel_mask(read_rel)
   )
 
   sort_rel <- substrait$SortRel$create(input = rel)
   expect_identical(
-    substrait_mask(filter_rel),
-    substrait_mask(read_rel)
+    substrait_rel_mask(filter_rel),
+    substrait_rel_mask(read_rel)
   )
 
   plan_rel <- substrait$PlanRel$create(rel = rel)
   expect_identical(
-    substrait_mask(plan_rel),
-    substrait_mask(read_rel)
+    substrait_rel_mask(plan_rel),
+    substrait_rel_mask(read_rel)
   )
 
-  expect_identical(substrait_mask(NULL), NULL)
+  expect_identical(substrait_rel_mask(NULL), NULL)
 })
 
 test_that("rel_tree_modify can modify relation trees", {
