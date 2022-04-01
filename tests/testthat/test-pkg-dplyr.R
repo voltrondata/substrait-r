@@ -64,6 +64,19 @@ test_that("mutate() for substrait_builder wraps substrait_project()", {
 
   expect_identical(
     dplyr::mutate(builder, col1 > 0),
+    substrait_project(builder, col1, col2, col1 > 0)
+  )
+})
+
+test_that("transmute() for substrait_builder wraps substrait_project()", {
+  skip_if_not_installed("dplyr")
+
+  compiler <- substrait_compiler()
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  builder <- substrait_builder(tbl)
+
+  expect_identical(
+    dplyr::transmute(builder, col1 > 0),
     substrait_project(builder, col1 > 0)
   )
 })

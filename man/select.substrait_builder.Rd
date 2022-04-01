@@ -5,6 +5,7 @@
 \alias{rename.substrait_builder}
 \alias{filter.substrait_builder}
 \alias{mutate.substrait_builder}
+\alias{transmute.substrait_builder}
 \alias{arrange.substrait_builder}
 \title{dplyr verb implementations}
 \usage{
@@ -15,6 +16,8 @@
 \method{filter}{substrait_builder}(.data, ...)
 
 \method{mutate}{substrait_builder}(.data, ...)
+
+\method{transmute}{substrait_builder}(.data, ...)
 
 \method{arrange}{substrait_builder}(.data, ...)
 }
@@ -44,6 +47,7 @@ dplyr::select(builder, mpg2 = mpg)
 dplyr::rename(builder, mpg2 = mpg)
 dplyr::filter(builder, mpg > 20)
 dplyr::mutate(builder, mpg + 10)
+dplyr::transmute(builder, mpg + 10)
 dplyr::arrange(builder, desc(mpg))
 \dontshow{\}) # examplesIf}
 }

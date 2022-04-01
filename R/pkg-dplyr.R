@@ -19,6 +19,7 @@
 #' dplyr::rename(builder, mpg2 = mpg)
 #' dplyr::filter(builder, mpg > 20)
 #' dplyr::mutate(builder, mpg + 10)
+#' dplyr::transmute(builder, mpg + 10)
 #' dplyr::arrange(builder, desc(mpg))
 #'
 select.substrait_builder <- function(.data, ...) {
@@ -73,6 +74,14 @@ filter.substrait_builder <- function(.data, ...) {
 #' @importFrom dplyr mutate
 #' @export
 mutate.substrait_builder <- function(.data, ...) {
+  mask <- .data$mask
+  substrait_project(.data, !!! mask, ...)
+}
+
+#' @rdname select.substrait_builder
+#' @importFrom dplyr transmute
+#' @export
+transmute.substrait_builder <- function(.data, ...) {
   substrait_project(.data, ...)
 }
 
