@@ -1,3 +1,58 @@
+
+#' Append a Substrait Project Relation
+#'
+#' @param .builder A [substrait_builder()] or object that can be coerced to one
+#' @param ... Expressions
+#'
+#' @return A modified `.builder`
+#' @export
+#'
+#' @examples
+#' substrait_project(
+#'    data.frame(a = 1, b = "one"),
+#'    c = a + 1
+#' )
+#'
+substrait_project <- function(.builder, ...) {
+  .builder <- substrait_builder(.builder)
+
+  context <- list(
+    schema = .builder$schema,
+    list_of_expressions = .builder$mask
+  )
+
+  expressions <- lapply(
+    rlang::enquos(..., .named = TRUE),
+    as_substrait,
+    .ptype = "substrait.Expression",
+    compiler = .builder$compiler,
+    context = context
+  )
+
+  types <- lapply(
+    expressions,
+    as_substrait,
+    .ptype = "substrait.Type",
+    context = context
+  )
+
+  rel <- substrait$Rel$create(
+    project = substrait$ProjectRel$create(
+      input = .builder$plan$relations[[1]]$rel,
+      expressions = expressions
+    )
+  )
+
+  # update the builder
+  .builder$plan$relations[[1]]$rel <- rel
+  .builder$schema$names <- names(expressions)
+  .builder$schema$struct_$types <- types
+  .builder$mask <- expressions
+
+  validate_substrait_builder(.builder)
+  .builder
+}
+
 # Take selected columns and create the appropriate substrait message
 build_projections <- function(df, projections) {
   # get numeric matches of column positions
