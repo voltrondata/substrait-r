@@ -1,3 +1,33 @@
+
+test_that("substrait_filter() appends a FilterRel to a builder", {
+  compiler <- substrait_compiler()
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  builder <- substrait_builder(tbl)
+
+  result <- substrait_filter(builder)
+
+  expect_s3_class(result, "substrait_builder")
+
+  # check that we did append a FilterRel
+  expect_identical(
+    result$plan$relations[[1]]$rel$filter$input,
+    builder$plan$relations[[1]]$rel
+  )
+
+  # check that the filter expression is a literal TRUE
+  expect_identical(
+    result$plan$relations[[1]]$rel$filter$condition,
+    substrait$Expression$create(
+      literal = substrait$Expression$Literal$create(boolean = TRUE)
+    )
+  )
+
+  # check that nothing else about the builder changed
+  expect_identical(result$schema, builder$schema)
+  expect_identical(result$mask, builder$mask)
+  expect_identical(result$compiler, builder$compiler)
+})
+
 test_that("build_filters can create filter expressions", {
   compiler <- substrait_compiler()
 
