@@ -16,6 +16,7 @@ substrait_builder <- function(rel, ..., compiler = substrait_compiler()) {
 #' @rdname substrait_builder
 #' @export
 substrait_builder.substrait_builder <- function(rel, ..., compiler = substrait_compiler()) {
+  # TODO: clone the compiler!
   rel
 }
 
@@ -36,7 +37,8 @@ substrait_builder.default <- function(rel, ..., compiler = substrait_compiler())
     list(
       plan = plan,
       compiler = compiler,
-      context = substrait_coltypes(rel),
+      col_types = substrait_coltypes(rel),
+      mask = substrait_mask(rel),
       groups = NULL
     )
   )

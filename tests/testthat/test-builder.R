@@ -9,10 +9,18 @@ test_that("substrait_builder() creates a builder with a ReadRel from a data fram
   )
 
   expect_identical(
-    builder$context,
+    builder$col_types,
     list(
       col1 = substrait_fp64(),
       col2 = substrait_string()
+    )
+  )
+
+  expect_identical(
+    builder$mask,
+    list(
+      col1 = simple_integer_field_reference(0L),
+      col2 = simple_integer_field_reference(1L)
     )
   )
 
