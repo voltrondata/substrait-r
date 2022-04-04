@@ -15,7 +15,7 @@
 #'
 substrait_project <- function(.builder, ...) {
   .builder <- substrait_builder(.builder)
-  .builder$consumer <- consumer$clone()
+  .builder$consumer <- .builder$consumer$clone()
 
   context <- list(
     schema = .builder$schema,

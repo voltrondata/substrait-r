@@ -23,8 +23,6 @@
 #' dplyr::arrange(builder, desc(mpg))
 #'
 select.substrait_builder <- function(.data, ...) {
-  .data <- substrait_builder(.data)
-
   # Named vector of column names/indices
   column_indices <- tidyselect::eval_select(
     rlang::expr(c(...)),
@@ -43,8 +41,6 @@ select.substrait_builder <- function(.data, ...) {
 #' @importFrom dplyr rename
 #' @export
 rename.substrait_builder <- function(.data, ...) {
-  .data <- substrait_builder(.data)
-
   # Named vector of column names/indices
   column_indices <- tidyselect::eval_rename(
     rlang::expr(c(...)),
