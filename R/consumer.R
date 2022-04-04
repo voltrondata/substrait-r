@@ -10,7 +10,10 @@
 #' of the [substrait_builder()] as it is created, modified, printed,
 #' and evaluated. While the object itself is mutable, it is cloned whenever
 #' the builder is modified to minimize a user's interaction with reference
-#' semantics
+#' semantics. Whereas the [Consumer] defines the interface that other substrait
+#' package functions use, the [GenericConsumer] provides an implementation
+#' that takes care of a number of useful details that implementors may wish
+#' to use.
 #'
 #' @param builder A [substrait_builder()]
 #' @param object An object, most commonly a data.frame or table-like
@@ -29,6 +32,8 @@
 Consumer <- R6::R6Class(
   "Consumer",
   public = list(
+
+    # nocov start
 
     #' @description
     #' Creates a new [substrait_builder()] instance from a given `object`.
@@ -73,6 +78,8 @@ Consumer <- R6::R6Class(
     resolve_function = function(builder, name, args, template) {
       stop("Not implemented")
     }
+
+    # nocov end
   )
 )
 
@@ -124,7 +131,7 @@ GenericConsumer <- R6::R6Class(
     create_builder = function(object, ...) {
       tbl_id <- sprintf("named_table_%d", self$next_id())
 
-      substrait_rel <- substrait$Rel$create(
+      rel <- substrait$Rel$create(
         read = substrait$ReadRel$create(
           base_schema = as_substrait(object, "substrait.NamedStruct"),
           named_table = substrait$ReadRel$NamedTable$create(
@@ -135,23 +142,25 @@ GenericConsumer <- R6::R6Class(
 
       private$named_tables[[tbl_id]] <- object
 
-      plan <- substrait$Plan$create(
-        relations = list(
-          substrait$PlanRel$create(
-            rel = substrait_rel
-          )
-        )
-      )
-
       new_substrait_builder(
         list(
-          plan = plan,
+          rel = rel,
           consumer = self,
-          schema = substrait_rel$base_schema,
-          mask = substrait_rel_mask(substrait_rel),
+          schema = rel$base_schema,
+          mask = substrait_rel_mask(rel),
           groups = NULL
         )
       )
+    },
+
+    #' @description
+    #' Retrieve a named table
+    #'
+    #' @param name A table name
+    #'
+    #' @return The `object` that was passed
+    named_table = function(name) {
+      private$named_tables[[name]]
     },
 
     #' @description
@@ -168,7 +177,7 @@ GenericConsumer <- R6::R6Class(
 
     #' @description
     #' Implementation of `Consumer$resolve_function()`.
-    resolve_function = function(builder, name, args, template) {
+    resolve_function = function(name, args, template, builder = NULL) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)
       args <- lapply(
@@ -179,6 +188,11 @@ GenericConsumer <- R6::R6Class(
 
       # resolve argument types (the `context` is needed to resolve the type of
       # field references)
+      context <- list(
+        schema = builder$schema,
+        list_of_expressions = builder$mask
+      )
+
       arg_types <- lapply(args, as_substrait, "substrait.Type", context = context)
 
       # resolve the function identifier
@@ -222,6 +236,17 @@ GenericConsumer <- R6::R6Class(
       }
 
       extension_function$function_anchor
+    },
+
+    #' @description
+    #' Retrieve a function extension by anchor/reference
+    #'
+    #' @param id An function_anchor/function_reference identifier
+    #'
+    #' @return A
+    #'   `substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction`.
+    function_extension = function(id) {
+      private$function_extensions_key[[as.character(id)]]
     },
 
     #' @description

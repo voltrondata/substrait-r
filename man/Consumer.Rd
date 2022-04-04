@@ -19,7 +19,10 @@ provides substrait consumers the ability to customize the behaviour
 of the \code{\link[=substrait_builder]{substrait_builder()}} as it is created, modified, printed,
 and evaluated. While the object itself is mutable, it is cloned whenever
 the builder is modified to minimize a user's interaction with reference
-semantics
+semantics. Whereas the \link{Consumer} defines the interface that other substrait
+package functions use, the \link{GenericConsumer} provides an implementation
+that takes care of a number of useful details that implementors may wish
+to use.
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -174,10 +177,12 @@ The objects of this class are cloneable with this method.
 \itemize{
 \item \href{#method-new}{\code{GenericConsumer$new()}}
 \item \href{#method-create_builder}{\code{GenericConsumer$create_builder()}}
+\item \href{#method-named_table}{\code{GenericConsumer$named_table()}}
 \item \href{#method-validate_builder}{\code{GenericConsumer$validate_builder()}}
 \item \href{#method-collect_builder}{\code{GenericConsumer$collect_builder()}}
 \item \href{#method-resolve_function}{\code{GenericConsumer$resolve_function()}}
 \item \href{#method-function_id}{\code{GenericConsumer$function_id()}}
+\item \href{#method-function_extension}{\code{GenericConsumer$function_extension()}}
 \item \href{#method-next_id}{\code{GenericConsumer$next_id()}}
 \item \href{#method-clone}{\code{GenericConsumer$clone()}}
 }
@@ -217,6 +222,26 @@ object.}
 \item{\code{...}}{Unused}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-named_table"></a>}}
+\if{latex}{\out{\hypertarget{method-named_table}{}}}
+\subsection{Method \code{named_table()}}{
+Retrieve a named table
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$named_table(name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{A table name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The \code{object} that was passed
 }
 }
 \if{html}{\out{<hr>}}
@@ -308,6 +333,27 @@ argument combination.
 
 \subsection{Returns}{
 An integer function reference
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-function_extension"></a>}}
+\if{latex}{\out{\hypertarget{method-function_extension}{}}}
+\subsection{Method \code{function_extension()}}{
+Retrieve a function extension by anchor/reference
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$function_extension(id)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{An function_anchor/function_reference identifier}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A
+\code{substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction}.
 }
 }
 \if{html}{\out{<hr>}}
