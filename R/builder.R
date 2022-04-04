@@ -1,6 +1,7 @@
 
 #' Build a Substrait plan
 #'
+#' @param builder A [substrait_builder()]
 #' @param consumer A [Consumer] instance
 #' @param rel A table-like object with which to create a builder.
 #' @param ... Passed to the [Consumer] when creating a new builder
@@ -25,6 +26,12 @@ substrait_builder.substrait_builder <- function(rel, ..., consumer = GenericCons
 #' @export
 substrait_builder.default <- function(rel, ..., consumer = GenericConsumer$new()) {
   consumer$create_builder(rel, ...)
+}
+
+#' @rdname substrait_builder
+#' @export
+substrait_evaluate <- function(builder, ...) {
+  builder$consumer$evaluate_builder(builder, ...)
 }
 
 new_substrait_builder <- function(x) {

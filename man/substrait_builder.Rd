@@ -4,6 +4,7 @@
 \alias{substrait_builder}
 \alias{substrait_builder.substrait_builder}
 \alias{substrait_builder.default}
+\alias{substrait_evaluate}
 \title{Build a Substrait plan}
 \usage{
 substrait_builder(rel, ..., consumer = GenericConsumer$new())
@@ -11,6 +12,8 @@ substrait_builder(rel, ..., consumer = GenericConsumer$new())
 \method{substrait_builder}{substrait_builder}(rel, ..., consumer = GenericConsumer$new())
 
 \method{substrait_builder}{default}(rel, ..., consumer = GenericConsumer$new())
+
+substrait_evaluate(builder, ...)
 }
 \arguments{
 \item{rel}{A table-like object with which to create a builder.}
@@ -18,6 +21,8 @@ substrait_builder(rel, ..., consumer = GenericConsumer$new())
 \item{...}{Passed to the \link{Consumer} when creating a new builder}
 
 \item{consumer}{A \link{Consumer} instance}
+
+\item{builder}{A \code{\link[=substrait_builder]{substrait_builder()}}}
 }
 \value{
 An object of class 'substrait_builder'

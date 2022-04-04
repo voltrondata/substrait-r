@@ -7,6 +7,7 @@
 \alias{mutate.substrait_builder}
 \alias{transmute.substrait_builder}
 \alias{arrange.substrait_builder}
+\alias{collect.substrait_builder}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{substrait_builder}(.data, ...)
@@ -20,9 +21,11 @@
 \method{transmute}{substrait_builder}(.data, ...)
 
 \method{arrange}{substrait_builder}(.data, ...)
+
+\method{collect}{substrait_builder}(x, ...)
 }
 \arguments{
-\item{.data}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+\item{.data, x}{A \code{\link[=substrait_builder]{substrait_builder()}}}
 
 \item{...}{\itemize{
 \item \code{select()}: see \code{\link[dplyr:select]{dplyr::select()}}

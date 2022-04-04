@@ -29,7 +29,7 @@ to use.
 \itemize{
 \item \href{#method-create_builder}{\code{Consumer$create_builder()}}
 \item \href{#method-validate_builder}{\code{Consumer$validate_builder()}}
-\item \href{#method-collect_builder}{\code{Consumer$collect_builder()}}
+\item \href{#method-evaluate_builder}{\code{Consumer$evaluate_builder()}}
 \item \href{#method-print_builder}{\code{Consumer$print_builder()}}
 \item \href{#method-resolve_function}{\code{Consumer$resolve_function()}}
 \item \href{#method-clone}{\code{Consumer$clone()}}
@@ -80,18 +80,20 @@ provide meaningful feedback after the \code{builder} has been modified.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-collect_builder"></a>}}
-\if{latex}{\out{\hypertarget{method-collect_builder}{}}}
-\subsection{Method \code{collect_builder()}}{
+\if{html}{\out{<a id="method-evaluate_builder"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluate_builder}{}}}
+\subsection{Method \code{evaluate_builder()}}{
 Evaluates the plan being built by \code{builder}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Consumer$collect_builder(builder)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Consumer$evaluate_builder(builder, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+
+\item{\code{...}}{Passed from \code{\link[=substrait_evaluate]{substrait_evaluate()}}}
 }
 \if{html}{\out{</div>}}
 }
@@ -180,7 +182,7 @@ The objects of this class are cloneable with this method.
 \item \href{#method-create_builder}{\code{GenericConsumer$create_builder()}}
 \item \href{#method-named_table}{\code{GenericConsumer$named_table()}}
 \item \href{#method-validate_builder}{\code{GenericConsumer$validate_builder()}}
-\item \href{#method-collect_builder}{\code{GenericConsumer$collect_builder()}}
+\item \href{#method-evaluate_builder}{\code{GenericConsumer$evaluate_builder()}}
 \item \href{#method-resolve_function}{\code{GenericConsumer$resolve_function()}}
 \item \href{#method-function_id}{\code{GenericConsumer$function_id()}}
 \item \href{#method-function_extension}{\code{GenericConsumer$function_extension()}}
@@ -263,20 +265,25 @@ Implementation of \code{Consumer$validate_builder()}.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-collect_builder"></a>}}
-\if{latex}{\out{\hypertarget{method-collect_builder}{}}}
-\subsection{Method \code{collect_builder()}}{
-Implementation of \code{Consumer$collect_builder()}.
+\if{html}{\out{<a id="method-evaluate_builder"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluate_builder}{}}}
+\subsection{Method \code{evaluate_builder()}}{
+Implementation of \code{Consumer$evaluate_builder()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$collect_builder(builder)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$evaluate_builder(builder, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+
+\item{\code{...}}{Passed from \code{\link[=substrait_evaluate]{substrait_evaluate()}}}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{builder}, unchanged
 }
 }
 \if{html}{\out{<hr>}}

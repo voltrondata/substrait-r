@@ -1,7 +1,7 @@
 
 #' dplyr verb implementations
 #'
-#' @param .data A [substrait_builder()]
+#' @param .data,x A [substrait_builder()]
 #' @param ...
 #'   - `select()`: see [dplyr::select()]
 #'   - `rename()`: see [dplyr::rename()]
@@ -98,6 +98,13 @@ arrange.substrait_builder <- function(.data, ...) {
   )
 
   substrait_sort(.data, !!! with_translated_desc)
+}
+
+#' @rdname select.substrait_builder
+#' @importFrom dplyr collect
+#' @export
+collect.substrait_builder <- function(x, ...) {
+  dplyr::as_tibble(substrait_evaluate(x, ...))
 }
 
 # translate desc() call to the equivalent

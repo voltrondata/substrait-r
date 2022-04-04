@@ -59,9 +59,11 @@ Consumer <- R6::R6Class(
     #' @description
     #' Evaluates the plan being built by `builder`.
     #'
+    #' @param ... Passed from [substrait_evaluate()]
+    #'
     #' @return A table-like object whose structure is defined by the [Consumer]
     #'   class. The returned object should have a [as.data.frame()] method.
-    collect_builder = function(builder) {
+    evaluate_builder = function(builder, ...) {
       stop("Not implemented")
     },
 
@@ -174,8 +176,13 @@ GenericConsumer <- R6::R6Class(
     },
 
     #' @description
-    #' Implementation of `Consumer$collect_builder()`.
-    collect_builder = function(builder) {
+    #' Implementation of `Consumer$evaluate_builder()`.
+    #'
+    #' @param ... Passed from [substrait_evaluate()]
+    #'
+    #' @return `builder`, unchanged
+    #'
+    evaluate_builder = function(builder, ...) {
       builder
     },
 

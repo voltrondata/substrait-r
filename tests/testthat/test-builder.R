@@ -42,3 +42,9 @@ test_that("substrait_builder() returns its input if it's already a builder", {
   builder <- substrait_builder(data.frame(col1 = 1, col2 = "one"))
   expect_identical(substrait_builder(builder), builder)
 })
+
+test_that("substrait_evaluate() calls Consumer$finish()", {
+  builder <- substrait_builder(data.frame(col1 = 1, col2 = "one"))
+  # (the default GenericConsumer$finish_builder() method does nothing)
+  expect_identical(substrait_evaluate(builder), builder)
+})
