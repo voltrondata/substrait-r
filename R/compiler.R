@@ -81,7 +81,7 @@ substrait_compiler_rel <- function(compiler, rel, ...) {
 substrait_compiler_rel.default <- function(compiler, rel, ...) {
   if (inherits(rel, "substrait_Rel")) {
     rel
-  } else if (inherits(rel, "substrait_bulder")) {
+  } else if (inherits(rel, "substrait_builder")) {
     # I think we need this one at some point...maybe check that the compiler
     # is of the same class and combine the data somehow?
     stop("Not implemented: substrait_builder as Rel")
