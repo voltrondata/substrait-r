@@ -13,6 +13,10 @@ substrait_builder(rel, ..., consumer = GenericConsumer$new())
 \method{substrait_builder}{default}(rel, ..., consumer = GenericConsumer$new())
 }
 \arguments{
+\item{rel}{A table-like object with which to create a builder.}
+
+\item{...}{Passed to the \link{Consumer} when creating a new builder}
+
 \item{consumer}{A \link{Consumer} instance}
 }
 \value{

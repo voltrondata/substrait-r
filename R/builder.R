@@ -2,6 +2,8 @@
 #' Build a Substrait plan
 #'
 #' @param consumer A [Consumer] instance
+#' @param rel A table-like object with which to create a builder.
+#' @param ... Passed to the [Consumer] when creating a new builder
 #'
 #' @return An object of class 'substrait_builder'
 #' @export

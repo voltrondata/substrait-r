@@ -2,9 +2,8 @@
 test_that("dplyr::select() for substrait_builder wraps substrait_project()", {
   skip_if_not_installed("dplyr")
 
-  compiler <- substrait_compiler()
   tbl <- data.frame(col1 = 1, col2 = "one")
-  builder <- substrait_builder(tbl, compiler = compiler)
+  builder <- substrait_builder(tbl)
 
   result <- dplyr::select(builder, col1, col2)
 
@@ -32,9 +31,8 @@ test_that("dplyr::select() for substrait_builder wraps substrait_project()", {
 test_that("rename() for substrait_builder renames columns", {
   skip_if_not_installed("dplyr")
 
-  compiler <- substrait_compiler()
   tbl <- data.frame(col1 = 1, col2 = "one")
-  builder <- substrait_builder(tbl, compiler = compiler)
+  builder <- substrait_builder(tbl)
 
   expect_identical(
     dplyr::rename(builder, col1_renamed = col1),
@@ -45,7 +43,6 @@ test_that("rename() for substrait_builder renames columns", {
 test_that("filter() for substrait_builder wraps substrait_filter()", {
   skip_if_not_installed("dplyr")
 
-  compiler <- substrait_compiler()
   tbl <- data.frame(col1 = 1, col2 = "one")
   builder <- substrait_builder(tbl)
 
@@ -58,7 +55,6 @@ test_that("filter() for substrait_builder wraps substrait_filter()", {
 test_that("mutate() for substrait_builder wraps substrait_project()", {
   skip_if_not_installed("dplyr")
 
-  compiler <- substrait_compiler()
   tbl <- data.frame(col1 = 1, col2 = "one")
   builder <- substrait_builder(tbl)
 
@@ -71,7 +67,6 @@ test_that("mutate() for substrait_builder wraps substrait_project()", {
 test_that("transmute() for substrait_builder wraps substrait_project()", {
   skip_if_not_installed("dplyr")
 
-  compiler <- substrait_compiler()
   tbl <- data.frame(col1 = 1, col2 = "one")
   builder <- substrait_builder(tbl)
 
@@ -84,7 +79,6 @@ test_that("transmute() for substrait_builder wraps substrait_project()", {
 test_that("arrange()for substrait_builder wraps substrait_sort()", {
   skip_if_not_installed("dplyr")
 
-  compiler <- substrait_compiler()
   tbl <- data.frame(col1 = 1, col2 = "one")
   builder <- substrait_builder(tbl)
 
