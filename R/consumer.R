@@ -27,6 +27,8 @@
 #' @param template A `substrait.Expression.ScalarFunction`, a
 #'   `substrait.Expression.WindowFunction`, or a
 #'   `substrait.AggregateFunction`.
+#' @param context Experimental...a portion of the `builder` needed
+#'   to evaluate names and types when evaluating expressions.
 #'
 #' @export
 Consumer <- R6::R6Class(
@@ -75,7 +77,7 @@ Consumer <- R6::R6Class(
     #' Resolves an R function call as a Substrait function call.
     #'
     #' @return A modified `template`.
-    resolve_function = function(builder, name, args, template) {
+    resolve_function = function(name, args, template, context = NULL) {
       stop("Not implemented")
     }
 
@@ -97,6 +99,8 @@ Consumer <- R6::R6Class(
 #' @param template A `substrait.Expression.ScalarFunction`, a
 #'   `substrait.Expression.WindowFunction`, or a
 #'   `substrait.AggregateFunction`.
+#' @param context Experimental...a portion of the `builder` needed
+#'   to evaluate names and types when evaluating expressions.
 #'
 #' @export
 GenericConsumer <- R6::R6Class(
@@ -177,7 +181,7 @@ GenericConsumer <- R6::R6Class(
 
     #' @description
     #' Implementation of `Consumer$resolve_function()`.
-    resolve_function = function(name, args, template, builder = NULL) {
+    resolve_function = function(name, args, template, context = NULL) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)
       args <- lapply(
@@ -188,11 +192,6 @@ GenericConsumer <- R6::R6Class(
 
       # resolve argument types (the `context` is needed to resolve the type of
       # field references)
-      context <- list(
-        schema = builder$schema,
-        list_of_expressions = builder$mask
-      )
-
       arg_types <- lapply(args, as_substrait, "substrait.Type", context = context)
 
       # resolve the function identifier

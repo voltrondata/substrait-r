@@ -125,14 +125,12 @@ Prints a preview the plan being built by \code{builder}
 \subsection{Method \code{resolve_function()}}{
 Resolves an R function call as a Substrait function call.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Consumer$resolve_function(builder, name, args, template)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Consumer$resolve_function(name, args, template, context = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
-
 \item{\code{name}}{The fully-qualified name of the function as it was
 called (e.g., \code{pkg::fun}). If no package name was explicitly
 specified, the package name will not be present in \code{name}.}
@@ -144,6 +142,9 @@ objects created while evaluating the user-provided arguments
 \item{\code{template}}{A \code{substrait.Expression.ScalarFunction}, a
 \code{substrait.Expression.WindowFunction}, or a
 \code{substrait.AggregateFunction}.}
+
+\item{\code{context}}{Experimental...a portion of the \code{builder} needed
+to evaluate names and types when evaluating expressions.}
 }
 \if{html}{\out{</div>}}
 }
@@ -284,7 +285,7 @@ Implementation of \code{Consumer$collect_builder()}.
 \subsection{Method \code{resolve_function()}}{
 Implementation of \code{Consumer$resolve_function()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$resolve_function(name, args, template, builder = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$resolve_function(name, args, template, context = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -302,7 +303,8 @@ objects created while evaluating the user-provided arguments
 \code{substrait.Expression.WindowFunction}, or a
 \code{substrait.AggregateFunction}.}
 
-\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+\item{\code{context}}{Experimental...a portion of the \code{builder} needed
+to evaluate names and types when evaluating expressions.}
 }
 \if{html}{\out{</div>}}
 }

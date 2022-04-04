@@ -26,7 +26,7 @@ new_context <- function(x = data.frame()) {
 # looks like?
 
 #' @export
-as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = substrait_compiler(),
+as_substrait.quosure <- function(x, .ptype = NULL, ..., consumer = GenericConsumer$new(),
                                  context = NULL) {
   if (is.null(.ptype)) {
     .ptype <- "substrait.Expression"
@@ -41,7 +41,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = substrait_com
       # evaluate the result using special rules for function calls
       result <- substrait_eval_expr(
         rlang::quo_get_expr(x),
-        compiler = compiler,
+        consumer = consumer,
         context = context,
         env = rlang::quo_get_env(x),
         mask = mask
@@ -62,7 +62,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = substrait_com
       # evaluate the result using special rules for function calls
       result <- substrait_eval_expr(
         rlang::quo_get_expr(x),
-        compiler = compiler,
+        consumer = consumer,
         context = context,
         env = rlang::quo_get_env(x),
         mask = mask
@@ -76,7 +76,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = substrait_com
   )
 }
 
-substrait_eval_expr <- function(x, compiler, context, env, mask) {
+substrait_eval_expr <- function(x, consumer, context, env, mask) {
   if (rlang::is_call(x, c("$", "[["))) {
     if (rlang::is_symbol(x[[2]], ".data") && rlang::is_symbol(x[[1]], c("$", "[["))) {
       return(rlang::eval_tidy(x, mask, env))
@@ -93,6 +93,7 @@ substrait_eval_expr <- function(x, compiler, context, env, mask) {
     if (rlang::is_call(fun_expr, "::")) {
       pkg <- as.character(fun_expr[[2]])
       name <- as.character(fun_expr[[3]])
+      name <- paste0(pkg, "::", name)
     } else if (is.symbol(fun_expr)) {
       name <- as.character(fun_expr)
     } else {
@@ -104,20 +105,17 @@ substrait_eval_expr <- function(x, compiler, context, env, mask) {
     args <- lapply(
       x[-1],
       substrait_eval_expr,
-      compiler = compiler,
+      consumer = consumer,
       context = context,
       env = env,
       mask = mask
     )
 
-    # resolve the function call as an expression from the compiler
-    substrait_compiler_function(
-      compiler,
-      name,
-      args,
-      pkg = pkg,
-      context = context
-    )
+    # resolve the function call as an expression from the consumer
+    # only scalar functions for now
+    template <- substrait$Expression$ScalarFunction$create()
+    fun <- consumer$resolve_function(name, args, template, context = context)
+    substrait$Expression$create(scalar_function = fun)
   } else {
     rlang::eval_tidy(x, mask, env)
   }
@@ -174,4 +172,3 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., context = N
     NextMethod()
   )
 }
-
