@@ -15,6 +15,7 @@
 #'
 substrait_filter <- function(.builder, ...) {
   .builder <- substrait_builder(.builder)
+  .builder$consumer <- .builder$consumer$clone()
 
   quos <- rlang::enquos(...)
   if (length(quos) == 0) {
@@ -30,7 +31,7 @@ substrait_filter <- function(.builder, ...) {
     quos,
     as_substrait,
     .ptype = "substrait.Expression",
-    compiler = .builder$compiler,
+    consumer = .builder$consumer,
     context = context
   )
 
@@ -42,15 +43,14 @@ substrait_filter <- function(.builder, ...) {
 
   rel <- substrait$Rel$create(
     filter = substrait$FilterRel$create(
-      input = .builder$plan$relations[[1]]$rel,
+      input = .builder$rel,
       condition = combined_expressions
     )
   )
 
   # update the builder
-  .builder$plan$relations[[1]]$rel <- rel
-  validate_substrait_builder(.builder)
-  .builder
+  .builder$rel <- rel
+  .builder$consumer$validate_builder(.builder)
 }
 
 

@@ -15,6 +15,7 @@
 #'
 substrait_project <- function(.builder, ...) {
   .builder <- substrait_builder(.builder)
+  .builder$consumer <- consumer$clone()
 
   context <- list(
     schema = .builder$schema,
@@ -25,7 +26,7 @@ substrait_project <- function(.builder, ...) {
     rlang::enquos(..., .named = TRUE),
     as_substrait,
     .ptype = "substrait.Expression",
-    compiler = .builder$compiler,
+    consumer = .builder$consumer,
     context = context
   )
 
@@ -38,19 +39,18 @@ substrait_project <- function(.builder, ...) {
 
   rel <- substrait$Rel$create(
     project = substrait$ProjectRel$create(
-      input = .builder$plan$relations[[1]]$rel,
+      input = .builder$rel,
       expressions = expressions
     )
   )
 
   # update the builder
-  .builder$plan$relations[[1]]$rel <- rel
+  .builder$rel <- rel
   .builder$schema$names <- names(expressions)
   .builder$schema$struct_$types <- types
   .builder$mask <- expressions
 
-  validate_substrait_builder(.builder)
-  .builder
+  .builder$consumer$validate_builder(.builder)
 }
 
 # Take selected columns and create the appropriate substrait message

@@ -18,6 +18,7 @@
 #'
 substrait_sort <- function(.builder, ...) {
   .builder <- substrait_builder(.builder)
+  .builder$consumer <- .builder$consumer$clone()
 
   quos <- rlang::enquos(...)
 
@@ -40,21 +41,20 @@ substrait_sort <- function(.builder, ...) {
     with_inlined_sort_field,
     as_substrait,
     .ptype = "substrait.SortField",
-    compiler = .builder$compiler,
+    consumer = .builder$consumer,
     context = context
   )
 
   rel <- substrait$Rel$create(
     sort = substrait$SortRel$create(
-      input = .builder$plan$relations[[1]]$rel,
+      input = .builder$rel,
       sorts = sorts
     )
   )
 
   # update the builder
-  .builder$plan$relations[[1]]$rel <- rel
-  validate_substrait_builder(.builder)
-  .builder
+  .builder$rel <- rel
+  .builder$consumer$validate_builder(.builder)
 }
 
 #' @rdname substrait_sort
