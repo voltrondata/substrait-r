@@ -146,7 +146,7 @@ GenericConsumer <- R6::R6Class(
         list(
           rel = rel,
           consumer = self,
-          schema = rel$base_schema,
+          schema = rel$read$base_schema,
           mask = substrait_rel_mask(rel),
           groups = NULL
         )

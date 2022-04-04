@@ -1,10 +1,10 @@
 
 test_that("substrait_builder() creates a builder with a ReadRel from a data frame", {
-  compiler <- substrait_compiler()
+  consumer <- GenericConsumer$new()
   tbl <- data.frame(col1 = 1, col2 = "one")
 
-  builder <- expect_s3_class(
-    substrait_builder(tbl, compiler = compiler),
+  expect_s3_class(
+    builder <- substrait_builder(tbl, consumer = consumer),
     "substrait_builder"
   )
 
@@ -29,12 +29,12 @@ test_that("substrait_builder() creates a builder with a ReadRel from a data fram
     )
   )
 
-  expect_identical(builder$compiler, compiler)
+  expect_identical(builder$consumer, consumer)
   expect_identical(builder$groups, NULL)
-  expect_s3_class(builder$plan, "substrait_Plan")
-  expect_match(
-    builder$plan$relations[[1]]$rel$read$named_table$names,
-    "^named_table_"
+  expect_s3_class(builder$rel, "substrait_Rel")
+  expect_identical(
+    consumer$named_table(builder$rel$read$named_table$names),
+    tbl
   )
 })
 

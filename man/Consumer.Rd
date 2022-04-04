@@ -284,14 +284,12 @@ Implementation of \code{Consumer$collect_builder()}.
 \subsection{Method \code{resolve_function()}}{
 Implementation of \code{Consumer$resolve_function()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$resolve_function(builder, name, args, template)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$resolve_function(name, args, template, builder = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
-
 \item{\code{name}}{The fully-qualified name of the function as it was
 called (e.g., \code{pkg::fun}). If no package name was explicitly
 specified, the package name will not be present in \code{name}.}
@@ -303,6 +301,8 @@ objects created while evaluating the user-provided arguments
 \item{\code{template}}{A \code{substrait.Expression.ScalarFunction}, a
 \code{substrait.Expression.WindowFunction}, or a
 \code{substrait.AggregateFunction}.}
+
+\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
 }
 \if{html}{\out{</div>}}
 }
