@@ -5,7 +5,7 @@ test_that("substrait_project() can select all columns unchanged", {
 
   result <- substrait_project(compiler, col1, col2)
 
-  expect_s3_class(result, "substrait_compiler")
+  expect_s3_class(result, "SubstraitCompiler")
 
   # check that we did append a ProjectRel
   expect_identical(

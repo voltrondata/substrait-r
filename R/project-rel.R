@@ -14,8 +14,7 @@
 #' )
 #'
 substrait_project <- function(.compiler, ...) {
-  .compiler <- substrait_compiler(.compiler)
-  .compiler$consumer <- .compiler$consumer$clone()
+  .compiler <- substrait_compiler(.compiler)$clone()
 
   context <- list(
     schema = .compiler$schema,
@@ -26,7 +25,7 @@ substrait_project <- function(.compiler, ...) {
     rlang::enquos(..., .named = TRUE),
     as_substrait,
     .ptype = "substrait.Expression",
-    consumer = .compiler$consumer,
+    consumer = .compiler,
     context = context
   )
 
@@ -50,7 +49,7 @@ substrait_project <- function(.compiler, ...) {
   .compiler$schema$struct_$types <- types
   .compiler$mask <- expressions
 
-  .compiler$consumer$validate_compiler(.compiler)
+  .compiler$validate_compiler(.compiler)
 }
 
 # Take selected columns and create the appropriate substrait message
