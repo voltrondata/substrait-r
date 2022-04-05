@@ -15,7 +15,7 @@ evaluating the plan has more information and in many cases has the ability
 to provide more meaningful validation and output than substrait
 can provide on its own. The \code{Consumer} R6 class is a mutable object that
 provides substrait consumers the ability to customize the behaviour
-of the \code{\link[=substrait_builder]{substrait_builder()}} as it is created, modified, printed,
+of the \code{\link[=substrait_compiler]{substrait_compiler()}} as it is created, modified, printed,
 and evaluated. While the object itself is mutable, it is cloned whenever
 the builder is modified to minimize a user's interaction with reference
 semantics.
@@ -81,7 +81,7 @@ Prints a preview the plan being built by \code{builder}
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+\item{\code{builder}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
 \item{\code{...}}{The dots passed to \code{\link[=print]{print()}}}
 }
@@ -120,7 +120,7 @@ Implementation of \code{Consumer$validate_builder()}.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+\item{\code{builder}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 }
 \if{html}{\out{</div>}}
 }
@@ -137,7 +137,7 @@ Implementation of \code{Consumer$evaluate_builder()}.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+\item{\code{builder}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
 \item{\code{...}}{Passed from \code{\link[=substrait_evaluate]{substrait_evaluate()}}}
 }

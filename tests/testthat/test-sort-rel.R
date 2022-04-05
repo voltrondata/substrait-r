@@ -1,11 +1,11 @@
 
 test_that("substrait_sort() appends a SortRel to a builder", {
   tbl <- data.frame(col1 = 1, col2 = "one")
-  builder <- substrait_builder(tbl)
+  builder <- substrait_compiler(tbl)
 
   result <- substrait_sort(builder)
 
-  expect_s3_class(result, "substrait_builder")
+  expect_s3_class(result, "substrait_compiler")
 
   # check that we did append a SortRel
   expect_identical(

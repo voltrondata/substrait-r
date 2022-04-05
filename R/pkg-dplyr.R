@@ -1,7 +1,7 @@
 
 #' dplyr verb implementations
 #'
-#' @param .data,x A [substrait_builder()]
+#' @param .data,x A [substrait_compiler()]
 #' @param ...
 #'   - `select()`: see [dplyr::select()]
 #'   - `rename()`: see [dplyr::rename()]
@@ -9,12 +9,12 @@
 #'   - `mutate()`: see [dplyr::mutate()]
 #'   - `arrange()`: see [dplyr::arrange()]
 #'
-#' @return A modified [substrait_builder()]
+#' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
 #' @export
 #'
 #' @examplesIf requireNamespace("dplyr", quietly = TRUE)
-#' builder <- substrait_builder(mtcars)
+#' builder <- substrait_compiler(mtcars)
 #' dplyr::select(builder, mpg2 = mpg)
 #' dplyr::rename(builder, mpg2 = mpg)
 #' dplyr::filter(builder, mpg > 20)
@@ -22,7 +22,7 @@
 #' dplyr::transmute(builder, mpg + 10)
 #' dplyr::arrange(builder, desc(mpg))
 #'
-select.substrait_builder <- function(.data, ...) {
+select.substrait_compiler <- function(.data, ...) {
   # Named vector of column names/indices
   column_indices <- tidyselect::eval_select(
     rlang::expr(c(...)),
@@ -37,10 +37,10 @@ select.substrait_builder <- function(.data, ...) {
   substrait_project(.data, !!! new_mask)
 }
 
-#' @rdname select.substrait_builder
+#' @rdname select.substrait_compiler
 #' @importFrom dplyr rename
 #' @export
-rename.substrait_builder <- function(.data, ...) {
+rename.substrait_compiler <- function(.data, ...) {
   # Named vector of column names/indices
   column_indices <- tidyselect::eval_rename(
     rlang::expr(c(...)),
@@ -59,32 +59,32 @@ rename.substrait_builder <- function(.data, ...) {
   substrait_project(.data, !!! new_mask)
 }
 
-#' @rdname select.substrait_builder
+#' @rdname select.substrait_compiler
 #' @importFrom dplyr filter
 #' @export
-filter.substrait_builder <- function(.data, ...) {
+filter.substrait_compiler <- function(.data, ...) {
   substrait_filter(.data, ...)
 }
 
-#' @rdname select.substrait_builder
+#' @rdname select.substrait_compiler
 #' @importFrom dplyr mutate
 #' @export
-mutate.substrait_builder <- function(.data, ...) {
+mutate.substrait_compiler <- function(.data, ...) {
   mask <- .data$mask
   substrait_project(.data, !!! mask, ...)
 }
 
-#' @rdname select.substrait_builder
+#' @rdname select.substrait_compiler
 #' @importFrom dplyr transmute
 #' @export
-transmute.substrait_builder <- function(.data, ...) {
+transmute.substrait_compiler <- function(.data, ...) {
   substrait_project(.data, ...)
 }
 
-#' @rdname select.substrait_builder
+#' @rdname select.substrait_compiler
 #' @importFrom dplyr arrange
 #' @export
-arrange.substrait_builder <- function(.data, ...) {
+arrange.substrait_compiler <- function(.data, ...) {
   quos <- rlang::enquos(...)
 
   with_translated_desc <- lapply(
@@ -100,10 +100,10 @@ arrange.substrait_builder <- function(.data, ...) {
   substrait_sort(.data, !!! with_translated_desc)
 }
 
-#' @rdname select.substrait_builder
+#' @rdname select.substrait_compiler
 #' @importFrom dplyr collect
 #' @export
-collect.substrait_builder <- function(x, ...) {
+collect.substrait_compiler <- function(x, ...) {
   dplyr::as_tibble(substrait_evaluate(x, ...))
 }
 

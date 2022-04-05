@@ -10,7 +10,7 @@ substrait_sort(.builder, ...)
 substrait_sort_field(expr, direction = "SORT_DIRECTION_UNSPECIFIED")
 }
 \arguments{
-\item{.builder}{A \code{\link[=substrait_builder]{substrait_builder()}} or object that can be coerced to one}
+\item{.builder}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
 
 \item{...}{Expressions that evaluate to an Expression or SortField}
 

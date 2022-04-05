@@ -17,7 +17,7 @@
 #' )
 #'
 substrait_sort <- function(.builder, ...) {
-  .builder <- substrait_builder(.builder)
+  .builder <- substrait_compiler(.builder)
   .builder$consumer <- .builder$consumer$clone()
 
   quos <- rlang::enquos(...)

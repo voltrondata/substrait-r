@@ -1,11 +1,11 @@
 
-test_that("substrait_builder() creates a builder with a ReadRel from a data frame", {
+test_that("substrait_compiler() creates a builder with a ReadRel from a data frame", {
   consumer <- SubstraitCompiler$new()
   tbl <- data.frame(col1 = 1, col2 = "one")
 
   expect_s3_class(
-    builder <- substrait_builder(tbl, consumer = consumer),
-    "substrait_builder"
+    builder <- substrait_compiler(tbl, consumer = consumer),
+    "substrait_compiler"
   )
 
   expect_identical(
@@ -38,18 +38,18 @@ test_that("substrait_builder() creates a builder with a ReadRel from a data fram
   )
 })
 
-test_that("substrait_builder() returns its input if it's already a builder", {
-  builder <- substrait_builder(data.frame(col1 = 1, col2 = "one"))
-  expect_identical(substrait_builder(builder), builder)
+test_that("substrait_compiler() returns its input if it's already a builder", {
+  builder <- substrait_compiler(data.frame(col1 = 1, col2 = "one"))
+  expect_identical(substrait_compiler(builder), builder)
 })
 
 test_that("substrait_evaluate() calls Consumer$finish()", {
-  builder <- substrait_builder(data.frame(col1 = 1, col2 = "one"))
+  builder <- substrait_compiler(data.frame(col1 = 1, col2 = "one"))
   # (the default SubstraitCompiler$finish_builder() method does nothing)
   expect_identical(substrait_evaluate(builder), builder)
 })
 
-test_that("print()ing a substrait_builder calls Consumer$print_builder()", {
-  builder <- substrait_builder(data.frame(col1 = 1, col2 = "one"))
-  expect_output(expect_identical(print(builder), builder), "substrait_builder")
+test_that("print()ing a substrait_compiler calls Consumer$print_builder()", {
+  builder <- substrait_compiler(data.frame(col1 = 1, col2 = "one"))
+  expect_output(expect_identical(print(builder), builder), "substrait_compiler")
 })

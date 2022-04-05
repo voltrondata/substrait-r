@@ -7,7 +7,7 @@
 substrait_project(.builder, ...)
 }
 \arguments{
-\item{.builder}{A \code{\link[=substrait_builder]{substrait_builder()}} or object that can be coerced to one}
+\item{.builder}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
 
 \item{...}{Expressions}
 }

@@ -1,7 +1,7 @@
 
 #' Append a Substrait Project Relation
 #'
-#' @param .builder A [substrait_builder()] or object that can be coerced to one
+#' @param .builder A [substrait_compiler()] or object that can be coerced to one
 #' @param ... Expressions
 #'
 #' @return A modified `.builder`
@@ -14,7 +14,7 @@
 #' )
 #'
 substrait_project <- function(.builder, ...) {
-  .builder <- substrait_builder(.builder)
+  .builder <- substrait_compiler(.builder)
   .builder$consumer <- .builder$consumer$clone()
 
   context <- list(

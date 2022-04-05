@@ -7,12 +7,12 @@
 #' to provide more meaningful validation and output than substrait
 #' can provide on its own. The `Consumer` R6 class is a mutable object that
 #' provides substrait consumers the ability to customize the behaviour
-#' of the [substrait_builder()] as it is created, modified, printed,
+#' of the [substrait_compiler()] as it is created, modified, printed,
 #' and evaluated. While the object itself is mutable, it is cloned whenever
 #' the builder is modified to minimize a user's interaction with reference
 #' semantics.
 #'
-#' @param builder A [substrait_builder()]
+#' @param builder A [substrait_compiler()]
 #' @param object An object, most commonly a data.frame or table-like
 #'   object.
 #' @param name The fully-qualified name of the function as it was
@@ -71,7 +71,7 @@ SubstraitCompiler <- R6::R6Class(
 
       private$named_tables[[tbl_id]] <- object
 
-      new_substrait_builder(
+      new_substrait_compiler(
         list(
           rel = rel,
           consumer = self,
@@ -87,7 +87,7 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @param ... The dots passed to [print()]
     print_builder = function(builder, ...) {
-      cat(sprintf("<substrait_builder[%s]>\n", class(self)[1]))
+      cat(sprintf("<substrait_compiler[%s]>\n", class(self)[1]))
       str(builder[setdiff(names(builder), "consumer")])
       invisible(builder)
     },
