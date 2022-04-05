@@ -1,4 +1,31 @@
 
+test_that("substrait_compiler() works for ArrowTabular", {
+  skip_if_not_installed("arrow")
+
+  rb <- arrow::record_batch(
+    a_field = arrow::Array$create(integer(), arrow::int32())
+  )
+
+  compiler <- substrait_compiler(rb)
+
+  expect_identical(
+    compiler$schema,
+    substrait$NamedStruct$create(
+      names = "a_field",
+      struct_ = substrait$Type$Struct$create(
+        types = list(
+          substrait_i32()
+        )
+      )
+    )
+  )
+
+  expect_identical(
+    compiler$named_table("named_table_1"),
+    rb
+  )
+})
+
 test_that("as_subtrait() works for arrow DataType", {
   skip_if_not_installed("arrow")
 
@@ -124,4 +151,44 @@ test_that("from_substrait() works for arrow::schema()", {
     ) ==
       arrow::schema(a_field = arrow::int32())
   )
+})
+
+test_that("as_substrait() works for ArrowTabular", {
+  skip_if_not_installed("arrow")
+
+  rb <- arrow::record_batch(
+    a_field = arrow::Array$create(integer(), arrow::int32())
+  )
+
+  expect_identical(
+    as_substrait(rb, "substrait.NamedStruct"),
+    as_substrait(rb$schema)
+  )
+
+  expect_error(
+    as_substrait(rb, "substrait.NotAType"),
+    "Can't create substrait.NotAType"
+  )
+})
+
+test_that("from_substrait() works for RecordBatch", {
+  skip_if_not_installed("arrow")
+
+  rb <- arrow::record_batch(
+    a_field = arrow::Array$create(integer(), arrow::int32())
+  )
+
+  recreated_rb <- from_substrait(
+    substrait$NamedStruct$create(
+      names = "a_field",
+      struct_ = substrait$Type$Struct$create(
+        types = list(
+          substrait_i32()
+        )
+      )
+    ),
+    arrow::record_batch(data.frame())
+  )
+
+  expect_true(rb == rb)
 })

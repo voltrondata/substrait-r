@@ -1,4 +1,36 @@
 
+ArrowSubstraitCompiler <- R6::R6Class(
+  "ArrowSubstraitCompiler", inherit = SubstraitCompiler,
+  public = list(
+    resolve_function = function(name, args, template) {
+      super$resolve_function(name, args, template)
+    },
+
+    evaluate = function(...) {
+      stop("Not implemented")
+    }
+  )
+)
+
+#' Create an Arrow Substrait Compiler
+#'
+#' @param object A [data.frame()], [arrow::Table], [arrow::RecordBatch],
+#'   or [arrow::Dataset], or anything else that can be written to a
+#'   parquet file using [arrow::write_parquet()].
+#' @param ... Unused.
+#'
+#' @return A [SubstraitCompiler] subclass that will
+#' @export
+#'
+arrow_substrait_compiler <- function(object, ...) {
+  ArrowSubstraitCompiler$new(object, ...)
+}
+
+#' @export
+substrait_compiler.ArrowTabular <- function(object, ...) {
+  arrow_substrait_compiler(object, ...)
+}
+
 #' @export
 as_substrait.DataType <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
@@ -86,6 +118,20 @@ as_substrait.Schema <- function(x, .ptype = NULL, ...) {
 }
 
 #' @export
+as_substrait.ArrowTabular <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    .ptype <- substrait$NamedStruct$create()
+  }
+
+  .qualified_name <- make_qualified_name(.ptype)
+  switch(
+    .qualified_name,
+    "substrait.NamedStruct" = as_substrait(x$schema, .ptype, ...),
+    NextMethod()
+  )
+}
+
+#' @export
 from_substrait.Schema <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
 
@@ -107,4 +153,27 @@ from_substrait.Schema <- function(msg, x, ...) {
     },
     NextMethod()
   )
+}
+
+#' @export
+from_substrait.RecordBatch <- function(msg, x, ...) {
+  .qualified_name <- make_qualified_name(msg)
+
+  switch(
+    .qualified_name,
+    "substrait.NamedStruct" = {
+      schema <- from_substrait(msg, arrow::schema())
+      empty <- x[character()]$Take(integer())
+      for (col in names(schema)) {
+        empty[[col]] <- arrow::Array$create(
+          logical(),
+          type = arrow::null()
+        )$cast(schema[[col]]$type)
+      }
+
+      empty
+    },
+    NextMethod()
+  )
+
 }
