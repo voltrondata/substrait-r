@@ -4,7 +4,7 @@
 #' In general, the substrait package provides consumer-agnostic tools to
 #' generate `substrait.Plan` objects. However, the consumer that will be
 #' evaluating the plan has more information and in many cases has the ability
-#' to provide more meaningful error messages and/or previews than substrait
+#' to provide more meaningful validation and output than substrait
 #' can provide on its own. The `Consumer` R6 class is a mutable object that
 #' provides substrait consumers the ability to customize the behaviour
 #' of the [substrait_builder()] as it is created, modified, printed,
