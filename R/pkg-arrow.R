@@ -3,6 +3,44 @@ ArrowSubstraitCompiler <- R6::R6Class(
   "ArrowSubstraitCompiler", inherit = SubstraitCompiler,
   public = list(
     resolve_function = function(name, args, template) {
+      # To get started, just replace the name of the function with the
+      # arrow compute name for functions that don't have a custom
+      # translation.
+      unary_map <- asNamespace("arrow")$.unary_function_map
+      binary_map <- asNamespace("arrow")$.binary_function_map
+
+      name <- gsub("^.*?::", "", name)
+      if (name %in% names(unary_map)) {
+        if (length(args) != 1) {
+          stop(
+            sprintf(
+              "Expected one argument in call to %s (%s) but got %d",
+              name, unname(unary_map[name]), length(args)
+            )
+          )
+        }
+
+        name <- unname(unary_map[[name]])
+      } else if (name %in% names(binary_map)) {
+        if (length(args) != 2) {
+          stop(
+            sprintf(
+              "Expected two arguments in call to %s (%s) but got %d",
+              name, unname(unary_map[name]), length(args)
+            )
+          )
+        }
+
+        name <- unname(binary_map[[name]])
+      } else {
+        stop(
+          sprintf(
+            "Don't know how to convert call to `%s` to Arrow",
+            name
+          )
+        )
+      }
+
       super$resolve_function(name, args, template)
     },
 

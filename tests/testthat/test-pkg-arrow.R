@@ -1,5 +1,5 @@
 
-test_that("substrait_compiler() works for ArrowTabular", {
+test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabular", {
   skip_if_not_installed("arrow")
 
   rb <- arrow::record_batch(
@@ -23,6 +23,36 @@ test_that("substrait_compiler() works for ArrowTabular", {
   expect_identical(
     compiler$named_table("named_table_1"),
     rb
+  )
+})
+
+
+test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", {
+  skip_if_not_installed("arrow")
+
+  compiler <- ArrowSubstraitCompiler$new()
+
+  translated <- compiler$resolve_function("abs", list(5), list())
+  translated_fun <- compiler$function_extension(translated$function_reference)
+  expect_identical(translated_fun$name, "abs_checked")
+
+  translated <- compiler$resolve_function(">", list(5, 6), list())
+  translated_fun <- compiler$function_extension(translated$function_reference)
+  expect_identical(translated_fun$name, "greater")
+
+  expect_error(
+    compiler$resolve_function("not_a_fun!", list(), list()),
+    "Don't know how to convert call to"
+  )
+
+  expect_error(
+    compiler$resolve_function("abs", list(), list()),
+    "Expected one argument"
+  )
+
+  expect_error(
+    compiler$resolve_function(">", list(), list()),
+    "Expected two arguments"
   )
 })
 
