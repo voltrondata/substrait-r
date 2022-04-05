@@ -51,8 +51,10 @@ SubstraitCompiler <- R6::R6Class(
 
 
     #' @description
-    #' Create a new [SubstraitCompiler]
-    initialize = function() {
+    #' Create a new [SubstraitCompiler].
+    #'
+    #' @param ... Passed to `add_relation()` if `object` is not `NULL`
+    initialize = function(object = NULL, ...) {
       private$extension_uri <- substrait$extensions$SimpleExtensionURI$create(
         extension_uri_anchor = 1L
       )
@@ -61,21 +63,37 @@ SubstraitCompiler <- R6::R6Class(
       # we need to keep the keys as well as the values
       private$function_extensions <- list()
       private$function_extensions_key <- list()
-
       private$type_extensions <- list()
       private$type_variations <- list()
 
       # we also use this object to keep track of named tables
       private$named_tables <- list()
 
+      # ...and we need unique IDs, so we have a counter
       private$id_counter <- 1L
+
+      # finally, we set the rel, schema, and mask if an object was
+      # provided with which to initialize the compiler
+      if (!is.null(object)) {
+        self$add_relation(object, ...)
+      }
     },
 
     #' @description
-    #' Implementation of `Compiler$create_compiler()`.
+    #' Sets the `rel` of this compiler to a `substrait.Rel` (usually a
+    #' `substrait.Rel.ReadRel`) and sets `schema` and `mask` to represent
+    #' the root of the relation tree.
     #'
-    #' @param ... Unused
-    create_compiler = function(object, ...) {
+    #' @param ... Unused by the default method
+    add_relation = function(object, ...) {
+      # Technically the substrait.Plan can handle a list() of Rel objects,
+      # but we only support one here.
+      if (!is.null(self$rel)) {
+        stop(
+          "More than one relation tree per SubstraitCompiler is not implemented"
+        )
+      }
+
       tbl_id <- sprintf("named_table_%d", self$next_id())
 
       rel <- substrait$Rel$create(
@@ -95,16 +113,6 @@ SubstraitCompiler <- R6::R6Class(
       self$groups <- NULL
 
       self
-    },
-
-    #' @description
-    #' Prints a preview the plan being built by `compiler`
-    #'
-    #' @param ... The dots passed to [print()]
-    print_compiler = function(compiler, ...) {
-      cat(sprintf("<substrait_compiler[%s]>\n", class(self)[1]))
-      str(compiler[setdiff(names(compiler), "compiler")])
-      invisible(compiler)
     },
 
     #' @description
@@ -235,7 +243,6 @@ SubstraitCompiler <- R6::R6Class(
 
 #' Build a Substrait plan
 #'
-#' @param compiler A [SubstraitCompiler]
 #' @param object A table-like object with which to create a compiler.
 #' @param ... Passed to the [SubstraitCompiler] when creating a new compiler
 #'
@@ -245,19 +252,18 @@ SubstraitCompiler <- R6::R6Class(
 #' @examples
 #' substrait_compiler(data.frame(col1 = 1 , col2 = "one"))
 #'
-substrait_compiler <- function(object, ..., compiler = SubstraitCompiler$new()) {
+substrait_compiler <- function(object, ...) {
   UseMethod("substrait_compiler")
 }
 
 #' @rdname substrait_compiler
 #' @export
-substrait_compiler.SubstraitCompiler <- function(object, ..., compiler = SubstraitCompiler$new()) {
+substrait_compiler.SubstraitCompiler <- function(object, ...) {
   object
 }
 
 #' @rdname substrait_compiler
 #' @export
-substrait_compiler.default <- function(object, ..., compiler = SubstraitCompiler$new()) {
-  compiler$create_compiler(object, ...)
+substrait_compiler.default <- function(object, ...) {
+  SubstraitCompiler$new(object, ...)
 }
-

@@ -54,13 +54,13 @@ test_that("SubstraitCompiler$next_id() works", {
   expect_identical(compiler$next_id(), 2L)
 })
 
-test_that("SubstraitCompiler$create_compiler() works", {
+test_that("SubstraitCompiler$add_relation() works", {
   compiler <- SubstraitCompiler$new()
 
   # By default, objects are have their schemas extracted and are turned into
   # named tables
   tbl <- data.frame(a = 1L, b = "one")
-  compiler <- compiler$create_compiler(tbl)
+  compiler <- compiler$add_relation(tbl)
 
   expect_s3_class(compiler$rel, "substrait_Rel")
 
@@ -69,6 +69,12 @@ test_that("SubstraitCompiler$create_compiler() works", {
     compiler$named_table(compiler$rel$read$named_table$names),
     tbl
   )
+})
+
+test_that("SubstraitCompiler$new() takes an `object`", {
+  tbl <- data.frame(a = 1L, b = "one")
+  compiler <- SubstraitCompiler$new(tbl)
+  expect_s3_class(compiler$rel, "substrait_Rel")
 })
 
 test_that("substrait_compiler_function_id() works", {

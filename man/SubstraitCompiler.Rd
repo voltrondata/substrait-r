@@ -45,8 +45,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SubstraitCompiler$new()}}
-\item \href{#method-create_compiler}{\code{SubstraitCompiler$create_compiler()}}
-\item \href{#method-print_compiler}{\code{SubstraitCompiler$print_compiler()}}
+\item \href{#method-add_relation}{\code{SubstraitCompiler$add_relation()}}
 \item \href{#method-named_table}{\code{SubstraitCompiler$named_table()}}
 \item \href{#method-validate}{\code{SubstraitCompiler$validate()}}
 \item \href{#method-evaluate_compiler}{\code{SubstraitCompiler$evaluate_compiler()}}
@@ -61,19 +60,9 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Create a new \link{SubstraitCompiler}
+Create a new \link{SubstraitCompiler}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$new()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-create_compiler"></a>}}
-\if{latex}{\out{\hypertarget{method-create_compiler}{}}}
-\subsection{Method \code{create_compiler()}}{
-Implementation of \code{Compiler$create_compiler()}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$create_compiler(object, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$new(object = NULL, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -82,26 +71,29 @@ Implementation of \code{Compiler$create_compiler()}.
 \item{\code{object}}{An object, most commonly a data.frame or table-like
 object.}
 
-\item{\code{...}}{Unused}
+\item{\code{...}}{Passed to \code{add_relation()} if \code{object} is not \code{NULL}}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print_compiler"></a>}}
-\if{latex}{\out{\hypertarget{method-print_compiler}{}}}
-\subsection{Method \code{print_compiler()}}{
-Prints a preview the plan being built by \code{compiler}
+\if{html}{\out{<a id="method-add_relation"></a>}}
+\if{latex}{\out{\hypertarget{method-add_relation}{}}}
+\subsection{Method \code{add_relation()}}{
+Sets the \code{rel} of this compiler to a \code{substrait.Rel} (usually a
+\code{substrait.Rel.ReadRel}) and sets \code{schema} and \code{mask} to represent
+the root of the relation tree.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$print_compiler(compiler, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$add_relation(object, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{compiler}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
+\item{\code{object}}{An object, most commonly a data.frame or table-like
+object.}
 
-\item{\code{...}}{The dots passed to \code{\link[=print]{print()}}}
+\item{\code{...}}{Unused by the default method}
 }
 \if{html}{\out{</div>}}
 }
