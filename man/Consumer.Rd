@@ -180,6 +180,7 @@ The objects of this class are cloneable with this method.
 \itemize{
 \item \href{#method-new}{\code{GenericConsumer$new()}}
 \item \href{#method-create_builder}{\code{GenericConsumer$create_builder()}}
+\item \href{#method-print_builder}{\code{GenericConsumer$print_builder()}}
 \item \href{#method-named_table}{\code{GenericConsumer$named_table()}}
 \item \href{#method-validate_builder}{\code{GenericConsumer$validate_builder()}}
 \item \href{#method-evaluate_builder}{\code{GenericConsumer$evaluate_builder()}}
@@ -193,7 +194,6 @@ The objects of this class are cloneable with this method.
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
-\item \out{<span class="pkg-link" data-pkg="substrait" data-topic="Consumer" data-id="print_builder">}\href{../../substrait/html/Consumer.html#method-print_builder}{\code{substrait::Consumer$print_builder()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -223,6 +223,25 @@ Implementation of \code{Consumer$create_builder()}.
 object.}
 
 \item{\code{...}}{Unused}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print_builder"></a>}}
+\if{latex}{\out{\hypertarget{method-print_builder}{}}}
+\subsection{Method \code{print_builder()}}{
+Prints a preview the plan being built by \code{builder}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GenericConsumer$print_builder(builder, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{builder}}{A \code{\link[=substrait_builder]{substrait_builder()}}}
+
+\item{\code{...}}{The dots passed to \code{\link[=print]{print()}}}
 }
 \if{html}{\out{</div>}}
 }

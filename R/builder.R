@@ -34,7 +34,6 @@ substrait_evaluate <- function(builder, ...) {
   builder$consumer$evaluate_builder(builder, ...)
 }
 
-#' @rdname substrait_builder
 #' @export
 print.substrait_builder <- function(x, ...) {
   try(x$consumer$print_builder(x, ...))
