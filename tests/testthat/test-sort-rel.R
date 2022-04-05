@@ -1,16 +1,16 @@
 
-test_that("substrait_sort() appends a SortRel to a builder", {
+test_that("substrait_sort() appends a SortRel to a compiler", {
   tbl <- data.frame(col1 = 1, col2 = "one")
-  builder <- substrait_compiler(tbl)
+  compiler <- substrait_compiler(tbl)
 
-  result <- substrait_sort(builder)
+  result <- substrait_sort(compiler)
 
   expect_s3_class(result, "substrait_compiler")
 
   # check that we did append a SortRel
   expect_identical(
     result$rel$sort$input,
-    builder$rel
+    compiler$rel
   )
 
   # check that the sorts list is empty
@@ -19,9 +19,9 @@ test_that("substrait_sort() appends a SortRel to a builder", {
     0
   )
 
-  # check that nothing else about the builder changed
-  expect_identical(result$schema, builder$schema)
-  expect_identical(result$mask, builder$mask)
+  # check that nothing else about the compiler changed
+  expect_identical(result$schema, compiler$schema)
+  expect_identical(result$mask, compiler$mask)
 })
 
 test_that("substrait_sort() expressions can contain substrait_sort_field()", {

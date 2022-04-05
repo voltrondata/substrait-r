@@ -14,13 +14,13 @@
 #' @export
 #'
 #' @examplesIf requireNamespace("dplyr", quietly = TRUE)
-#' builder <- substrait_compiler(mtcars)
-#' dplyr::select(builder, mpg2 = mpg)
-#' dplyr::rename(builder, mpg2 = mpg)
-#' dplyr::filter(builder, mpg > 20)
-#' dplyr::mutate(builder, mpg + 10)
-#' dplyr::transmute(builder, mpg + 10)
-#' dplyr::arrange(builder, desc(mpg))
+#' compiler <- substrait_compiler(mtcars)
+#' dplyr::select(compiler, mpg2 = mpg)
+#' dplyr::rename(compiler, mpg2 = mpg)
+#' dplyr::filter(compiler, mpg > 20)
+#' dplyr::mutate(compiler, mpg + 10)
+#' dplyr::transmute(compiler, mpg + 10)
+#' dplyr::arrange(compiler, desc(mpg))
 #'
 select.substrait_compiler <- function(.data, ...) {
   # Named vector of column names/indices
@@ -118,6 +118,6 @@ expr_replace_desc <- function(expr) {
   }
 }
 
-simulate_data_frame <- function(builder) {
-  from_substrait(builder$schema, data.frame())
+simulate_data_frame <- function(compiler) {
+  from_substrait(compiler$schema, data.frame())
 }

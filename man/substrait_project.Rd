@@ -4,15 +4,15 @@
 \alias{substrait_project}
 \title{Append a Substrait Project Relation}
 \usage{
-substrait_project(.builder, ...)
+substrait_project(.compiler, ...)
 }
 \arguments{
-\item{.builder}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
+\item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
 
 \item{...}{Expressions}
 }
 \value{
-A modified \code{.builder}
+A modified \code{.compiler}
 }
 \description{
 Append a Substrait Project Relation

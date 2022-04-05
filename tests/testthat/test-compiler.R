@@ -1,5 +1,5 @@
 
-test_that("substrait_compiler() creates a builder with a ReadRel from a data frame", {
+test_that("substrait_compiler() creates a compiler with a ReadRel from a data frame", {
   tbl <- data.frame(col1 = 1, col2 = "one")
 
   expect_s3_class(

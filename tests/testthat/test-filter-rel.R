@@ -1,16 +1,16 @@
 
-test_that("substrait_filter() appends a FilterRel to a builder", {
+test_that("substrait_filter() appends a FilterRel to a compiler", {
   tbl <- data.frame(col1 = 1, col2 = "one")
-  builder <- substrait_compiler(tbl)
+  compiler <- substrait_compiler(tbl)
 
-  result <- substrait_filter(builder)
+  result <- substrait_filter(compiler)
 
   expect_s3_class(result, "substrait_compiler")
 
   # check that we did append a FilterRel
   expect_identical(
     result$rel$filter$input,
-    builder$rel
+    compiler$rel
   )
 
   # check that the filter expression is a literal TRUE
@@ -21,9 +21,9 @@ test_that("substrait_filter() appends a FilterRel to a builder", {
     )
   )
 
-  # check that nothing else about the builder changed
-  expect_identical(result$schema, builder$schema)
-  expect_identical(result$mask, builder$mask)
+  # check that nothing else about the compiler changed
+  expect_identical(result$schema, compiler$schema)
+  expect_identical(result$mask, compiler$mask)
 })
 
 test_that("build_filters can create filter expressions", {

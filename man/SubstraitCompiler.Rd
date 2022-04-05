@@ -17,7 +17,7 @@ can provide on its own. The \code{Consumer} R6 class is a mutable object that
 provides substrait consumers the ability to customize the behaviour
 of the \code{\link[=substrait_compiler]{substrait_compiler()}} as it is created, modified, printed,
 and evaluated. While the object itself is mutable, it is cloned whenever
-the builder is modified to minimize a user's interaction with reference
+the compiler is modified to minimize a user's interaction with reference
 semantics.
 
 Get a function reference identifier for a given function/input
@@ -45,11 +45,11 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SubstraitCompiler$new()}}
-\item \href{#method-create_builder}{\code{SubstraitCompiler$create_builder()}}
-\item \href{#method-print_builder}{\code{SubstraitCompiler$print_builder()}}
+\item \href{#method-create_compiler}{\code{SubstraitCompiler$create_compiler()}}
+\item \href{#method-print_compiler}{\code{SubstraitCompiler$print_compiler()}}
 \item \href{#method-named_table}{\code{SubstraitCompiler$named_table()}}
-\item \href{#method-validate_builder}{\code{SubstraitCompiler$validate_builder()}}
-\item \href{#method-evaluate_builder}{\code{SubstraitCompiler$evaluate_builder()}}
+\item \href{#method-validate_compiler}{\code{SubstraitCompiler$validate_compiler()}}
+\item \href{#method-evaluate_compiler}{\code{SubstraitCompiler$evaluate_compiler()}}
 \item \href{#method-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
 \item \href{#method-function_id}{\code{SubstraitCompiler$function_id()}}
 \item \href{#method-function_extension}{\code{SubstraitCompiler$function_extension()}}
@@ -68,12 +68,12 @@ Create a new \link{SubstraitCompiler}
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-create_builder"></a>}}
-\if{latex}{\out{\hypertarget{method-create_builder}{}}}
-\subsection{Method \code{create_builder()}}{
-Implementation of \code{Consumer$create_builder()}.
+\if{html}{\out{<a id="method-create_compiler"></a>}}
+\if{latex}{\out{\hypertarget{method-create_compiler}{}}}
+\subsection{Method \code{create_compiler()}}{
+Implementation of \code{Consumer$create_compiler()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$create_builder(object, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$create_compiler(object, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -88,18 +88,18 @@ object.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print_builder"></a>}}
-\if{latex}{\out{\hypertarget{method-print_builder}{}}}
-\subsection{Method \code{print_builder()}}{
-Prints a preview the plan being built by \code{builder}
+\if{html}{\out{<a id="method-print_compiler"></a>}}
+\if{latex}{\out{\hypertarget{method-print_compiler}{}}}
+\subsection{Method \code{print_compiler()}}{
+Prints a preview the plan being built by \code{compiler}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$print_builder(builder, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$print_compiler(compiler, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
+\item{\code{compiler}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
 \item{\code{...}}{The dots passed to \code{\link[=print]{print()}}}
 }
@@ -127,42 +127,42 @@ The \code{object} that was passed
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-validate_builder"></a>}}
-\if{latex}{\out{\hypertarget{method-validate_builder}{}}}
-\subsection{Method \code{validate_builder()}}{
-Implementation of \code{Consumer$validate_builder()}.
+\if{html}{\out{<a id="method-validate_compiler"></a>}}
+\if{latex}{\out{\hypertarget{method-validate_compiler}{}}}
+\subsection{Method \code{validate_compiler()}}{
+Implementation of \code{Consumer$validate_compiler()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$validate_builder(builder)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$validate_compiler(compiler)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
+\item{\code{compiler}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluate_builder"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluate_builder}{}}}
-\subsection{Method \code{evaluate_builder()}}{
-Implementation of \code{Consumer$evaluate_builder()}.
+\if{html}{\out{<a id="method-evaluate_compiler"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluate_compiler}{}}}
+\subsection{Method \code{evaluate_compiler()}}{
+Implementation of \code{Consumer$evaluate_compiler()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$evaluate_builder(builder, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$evaluate_compiler(compiler, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{builder}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
+\item{\code{compiler}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
 \item{\code{...}}{Passed from \code{\link[=substrait_evaluate]{substrait_evaluate()}}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{builder}, unchanged
+\code{compiler}, unchanged
 }
 }
 \if{html}{\out{<hr>}}
@@ -189,7 +189,7 @@ objects created while evaluating the user-provided arguments
 \code{substrait.Expression.WindowFunction}, or a
 \code{substrait.AggregateFunction}.}
 
-\item{\code{context}}{Experimental...a portion of the \code{builder} needed
+\item{\code{context}}{Experimental...a portion of the \code{compiler} needed
 to evaluate names and types when evaluating expressions.}
 }
 \if{html}{\out{</div>}}

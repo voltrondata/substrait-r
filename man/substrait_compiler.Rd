@@ -13,13 +13,13 @@ substrait_compiler(rel, ..., consumer = SubstraitCompiler$new())
 \method{substrait_compiler}{default}(rel, ..., consumer = SubstraitCompiler$new())
 }
 \arguments{
-\item{rel}{A table-like object with which to create a builder.}
+\item{rel}{A table-like object with which to create a compiler.}
 
-\item{...}{Passed to the \link{SubstraitCompiler} when creating a new builder}
+\item{...}{Passed to the \link{SubstraitCompiler} when creating a new compiler}
 
 \item{consumer}{A \link{SubstraitCompiler} instance}
 
-\item{builder}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
+\item{compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 }
 \value{
 An object of class 'substrait_compiler'

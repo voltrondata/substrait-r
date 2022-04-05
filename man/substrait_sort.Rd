@@ -5,12 +5,12 @@
 \alias{substrait_sort_field}
 \title{Append a Substrait Project Relation}
 \usage{
-substrait_sort(.builder, ...)
+substrait_sort(.compiler, ...)
 
 substrait_sort_field(expr, direction = "SORT_DIRECTION_UNSPECIFIED")
 }
 \arguments{
-\item{.builder}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
+\item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
 
 \item{...}{Expressions that evaluate to an Expression or SortField}
 
@@ -19,7 +19,7 @@ substrait_sort_field(expr, direction = "SORT_DIRECTION_UNSPECIFIED")
 \item{direction}{A SortField.SortDirection}
 }
 \value{
-A modified \code{.builder}
+A modified \code{.compiler}
 }
 \description{
 Append a Substrait Project Relation

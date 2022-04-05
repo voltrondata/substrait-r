@@ -11,19 +11,19 @@ test_that("SubstraitCompiler$next_id() works", {
   expect_identical(consumer$next_id(), 2L)
 })
 
-test_that("SubstraitCompiler$create_builder() works", {
+test_that("SubstraitCompiler$create_compiler() works", {
   consumer <- SubstraitCompiler$new()
 
   # By default, objects are have their schemas extracted and are turned into
   # named tables
   tbl <- data.frame(a = 1L, b = "one")
-  builder <- consumer$create_builder(tbl)
+  compiler <- consumer$create_compiler(tbl)
 
-  expect_s3_class(builder$rel, "substrait_Rel")
+  expect_s3_class(compiler$rel, "substrait_Rel")
 
-  expect_match(builder$rel$read$named_table$names, "^named_table_")
+  expect_match(compiler$rel$read$named_table$names, "^named_table_")
   expect_identical(
-    consumer$named_table(builder$rel$read$named_table$names),
+    consumer$named_table(compiler$rel$read$named_table$names),
     tbl
   )
 })

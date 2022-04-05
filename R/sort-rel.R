@@ -6,7 +6,7 @@
 #' @param expr An expression that evaluates to an Expression
 #' @param direction A SortField.SortDirection
 #'
-#' @return A modified `.builder`
+#' @return A modified `.compiler`
 #' @export
 #'
 #' @examples
@@ -16,15 +16,15 @@
 #'   substrait_sort_field(b, "SORT_DIRECTION_DESC_NULLS_LAST")
 #' )
 #'
-substrait_sort <- function(.builder, ...) {
-  .builder <- substrait_compiler(.builder)
-  .builder$consumer <- .builder$consumer$clone()
+substrait_sort <- function(.compiler, ...) {
+  .compiler <- substrait_compiler(.compiler)
+  .compiler$consumer <- .compiler$consumer$clone()
 
   quos <- rlang::enquos(...)
 
   context <- list(
-    schema = .builder$schema,
-    list_of_expressions = .builder$mask
+    schema = .compiler$schema,
+    list_of_expressions = .compiler$mask
   )
 
   with_inlined_sort_field <- lapply(
@@ -41,20 +41,20 @@ substrait_sort <- function(.builder, ...) {
     with_inlined_sort_field,
     as_substrait,
     .ptype = "substrait.SortField",
-    consumer = .builder$consumer,
+    consumer = .compiler$consumer,
     context = context
   )
 
   rel <- substrait$Rel$create(
     sort = substrait$SortRel$create(
-      input = .builder$rel,
+      input = .compiler$rel,
       sorts = sorts
     )
   )
 
-  # update the builder
-  .builder$rel <- rel
-  .builder$consumer$validate_builder(.builder)
+  # update the compiler
+  .compiler$rel <- rel
+  .compiler$consumer$validate_compiler(.compiler)
 }
 
 #' @rdname substrait_sort

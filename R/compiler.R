@@ -1,10 +1,10 @@
 
 #' Build a Substrait plan
 #'
-#' @param builder A [substrait_compiler()]
+#' @param compiler A [substrait_compiler()]
 #' @param consumer A [SubstraitCompiler] instance
-#' @param rel A table-like object with which to create a builder.
-#' @param ... Passed to the [SubstraitCompiler] when creating a new builder
+#' @param rel A table-like object with which to create a compiler.
+#' @param ... Passed to the [SubstraitCompiler] when creating a new compiler
 #'
 #' @return An object of class 'substrait_compiler'
 #' @export
@@ -25,5 +25,5 @@ substrait_compiler.SubstraitCompiler <- function(rel, ..., consumer = SubstraitC
 #' @rdname substrait_compiler
 #' @export
 substrait_compiler.default <- function(rel, ..., consumer = SubstraitCompiler$new()) {
-  consumer$create_builder(rel, ...)
+  consumer$create_compiler(rel, ...)
 }

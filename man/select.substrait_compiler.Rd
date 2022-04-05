@@ -45,12 +45,12 @@ dplyr verb implementations
 }
 \examples{
 \dontshow{if (requireNamespace("dplyr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-builder <- substrait_compiler(mtcars)
-dplyr::select(builder, mpg2 = mpg)
-dplyr::rename(builder, mpg2 = mpg)
-dplyr::filter(builder, mpg > 20)
-dplyr::mutate(builder, mpg + 10)
-dplyr::transmute(builder, mpg + 10)
-dplyr::arrange(builder, desc(mpg))
+compiler <- substrait_compiler(mtcars)
+dplyr::select(compiler, mpg2 = mpg)
+dplyr::rename(compiler, mpg2 = mpg)
+dplyr::filter(compiler, mpg > 20)
+dplyr::mutate(compiler, mpg + 10)
+dplyr::transmute(compiler, mpg + 10)
+dplyr::arrange(compiler, desc(mpg))
 \dontshow{\}) # examplesIf}
 }

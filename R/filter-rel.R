@@ -4,7 +4,7 @@
 #' @param ... Filter expressions
 #' @inheritParams substrait_project
 #'
-#' @return A modified `.builder`
+#' @return A modified `.compiler`
 #' @export
 #'
 #' @examples
@@ -13,9 +13,9 @@
 #'   a > 0
 #' )
 #'
-substrait_filter <- function(.builder, ...) {
-  .builder <- substrait_compiler(.builder)
-  .builder$consumer <- .builder$consumer$clone()
+substrait_filter <- function(.compiler, ...) {
+  .compiler <- substrait_compiler(.compiler)
+  .compiler$consumer <- .compiler$consumer$clone()
 
   quos <- rlang::enquos(...)
   if (length(quos) == 0) {
@@ -23,15 +23,15 @@ substrait_filter <- function(.builder, ...) {
   }
 
   context <- list(
-    schema = .builder$schema,
-    list_of_expressions = .builder$mask
+    schema = .compiler$schema,
+    list_of_expressions = .compiler$mask
   )
 
   expressions <- lapply(
     quos,
     as_substrait,
     .ptype = "substrait.Expression",
-    consumer = .builder$consumer,
+    consumer = .compiler$consumer,
     context = context
   )
 
@@ -43,14 +43,14 @@ substrait_filter <- function(.builder, ...) {
 
   rel <- substrait$Rel$create(
     filter = substrait$FilterRel$create(
-      input = .builder$rel,
+      input = .compiler$rel,
       condition = combined_expressions
     )
   )
 
-  # update the builder
-  .builder$rel <- rel
-  .builder$consumer$validate_builder(.builder)
+  # update the compiler
+  .compiler$rel <- rel
+  .compiler$consumer$validate_compiler(.compiler)
 }
 
 

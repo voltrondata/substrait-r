@@ -9,10 +9,10 @@
 #' provides substrait consumers the ability to customize the behaviour
 #' of the [substrait_compiler()] as it is created, modified, printed,
 #' and evaluated. While the object itself is mutable, it is cloned whenever
-#' the builder is modified to minimize a user's interaction with reference
+#' the compiler is modified to minimize a user's interaction with reference
 #' semantics.
 #'
-#' @param builder A [substrait_compiler()]
+#' @param compiler A [substrait_compiler()]
 #' @param object An object, most commonly a data.frame or table-like
 #'   object.
 #' @param name The fully-qualified name of the function as it was
@@ -24,7 +24,7 @@
 #' @param template A `substrait.Expression.ScalarFunction`, a
 #'   `substrait.Expression.WindowFunction`, or a
 #'   `substrait.AggregateFunction`.
-#' @param context Experimental...a portion of the `builder` needed
+#' @param context Experimental...a portion of the `compiler` needed
 #'   to evaluate names and types when evaluating expressions.
 #'
 #' @export
@@ -72,10 +72,10 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Implementation of `Consumer$create_builder()`.
+    #' Implementation of `Consumer$create_compiler()`.
     #'
     #' @param ... Unused
-    create_builder = function(object, ...) {
+    create_compiler = function(object, ...) {
       tbl_id <- sprintf("named_table_%d", self$next_id())
 
       rel <- substrait$Rel$create(
@@ -98,13 +98,13 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Prints a preview the plan being built by `builder`
+    #' Prints a preview the plan being built by `compiler`
     #'
     #' @param ... The dots passed to [print()]
-    print_builder = function(builder, ...) {
+    print_compiler = function(compiler, ...) {
       cat(sprintf("<substrait_compiler[%s]>\n", class(self)[1]))
-      str(builder[setdiff(names(builder), "consumer")])
-      invisible(builder)
+      str(compiler[setdiff(names(compiler), "consumer")])
+      invisible(compiler)
     },
 
     #' @description
@@ -118,20 +118,20 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Implementation of `Consumer$validate_builder()`.
-    validate_builder = function(builder) {
-      builder
+    #' Implementation of `Consumer$validate_compiler()`.
+    validate_compiler = function(compiler) {
+      compiler
     },
 
     #' @description
-    #' Implementation of `Consumer$evaluate_builder()`.
+    #' Implementation of `Consumer$evaluate_compiler()`.
     #'
     #' @param ... Passed from [substrait_evaluate()]
     #'
-    #' @return `builder`, unchanged
+    #' @return `compiler`, unchanged
     #'
-    evaluate_builder = function(builder, ...) {
-      builder
+    evaluate_compiler = function(compiler, ...) {
+      compiler
     },
 
     #' @description
