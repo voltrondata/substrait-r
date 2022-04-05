@@ -1,18 +1,18 @@
 
-test_that("GenericConsumer can be created", {
-  consumer <- GenericConsumer$new()
-  expect_s3_class(consumer, "GenericConsumer")
+test_that("SubstraitCompiler can be created", {
+  consumer <- SubstraitCompiler$new()
+  expect_s3_class(consumer, "SubstraitCompiler")
 })
 
 
-test_that("GenericConsumer$next_id() works", {
-  consumer <- GenericConsumer$new()
+test_that("SubstraitCompiler$next_id() works", {
+  consumer <- SubstraitCompiler$new()
   expect_identical(consumer$next_id(), 1L)
   expect_identical(consumer$next_id(), 2L)
 })
 
-test_that("GenericConsumer$create_builder() works", {
-  consumer <- GenericConsumer$new()
+test_that("SubstraitCompiler$create_builder() works", {
+  consumer <- SubstraitCompiler$new()
 
   # By default, objects are have their schemas extracted and are turned into
   # named tables
@@ -29,7 +29,7 @@ test_that("GenericConsumer$create_builder() works", {
 })
 
 test_that("substrait_compiler_function_id() works", {
-  consumer <- GenericConsumer$new()
+  consumer <- SubstraitCompiler$new()
 
   expect_equal(
     consumer$function_id("some_fun", list()),
@@ -69,7 +69,7 @@ test_that("substrait_compiler_function_id() works", {
 
 
 test_that("substrait_compiler_function() works", {
-  consumer <- GenericConsumer$new()
+  consumer <- SubstraitCompiler$new()
 
   expect_identical(
     consumer$resolve_function(

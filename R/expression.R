@@ -26,7 +26,7 @@ new_context <- function(x = data.frame()) {
 # looks like?
 
 #' @export
-as_substrait.quosure <- function(x, .ptype = NULL, ..., consumer = GenericConsumer$new(),
+as_substrait.quosure <- function(x, .ptype = NULL, ..., consumer = SubstraitCompiler$new(),
                                  context = NULL) {
   if (is.null(.ptype)) {
     .ptype <- "substrait.Expression"

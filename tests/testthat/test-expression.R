@@ -38,7 +38,7 @@ test_that("quosures with field references can be translated to Expressions", {
 })
 
 test_that("quosures with calls can be translated to Expressions", {
-  consumer <- GenericConsumer$new()
+  consumer <- SubstraitCompiler$new()
   context <- new_context(data.frame(a = double(), b = character()))
 
   expect_identical(

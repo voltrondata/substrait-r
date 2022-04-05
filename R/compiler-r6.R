@@ -28,12 +28,12 @@
 #'   to evaluate names and types when evaluating expressions.
 #'
 #' @export
-GenericConsumer <- R6::R6Class(
-  "GenericConsumer",
+SubstraitCompiler <- R6::R6Class(
+  "SubstraitCompiler",
   public = list(
 
     #' @description
-    #' Create a new [GenericConsumer]
+    #' Create a new [SubstraitCompiler]
     initialize = function() {
       private$extension_uri <- substrait$extensions$SimpleExtensionURI$create(
         extension_uri_anchor = 1L

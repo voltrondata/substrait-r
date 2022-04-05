@@ -7,20 +7,20 @@
 \alias{substrait_evaluate}
 \title{Build a Substrait plan}
 \usage{
-substrait_builder(rel, ..., consumer = GenericConsumer$new())
+substrait_builder(rel, ..., consumer = SubstraitCompiler$new())
 
-\method{substrait_builder}{substrait_builder}(rel, ..., consumer = GenericConsumer$new())
+\method{substrait_builder}{substrait_builder}(rel, ..., consumer = SubstraitCompiler$new())
 
-\method{substrait_builder}{default}(rel, ..., consumer = GenericConsumer$new())
+\method{substrait_builder}{default}(rel, ..., consumer = SubstraitCompiler$new())
 
 substrait_evaluate(builder, ...)
 }
 \arguments{
 \item{rel}{A table-like object with which to create a builder.}
 
-\item{...}{Passed to the \link{GenericConsumer} when creating a new builder}
+\item{...}{Passed to the \link{SubstraitCompiler} when creating a new builder}
 
-\item{consumer}{A \link{GenericConsumer} instance}
+\item{consumer}{A \link{SubstraitCompiler} instance}
 
 \item{builder}{A \code{\link[=substrait_builder]{substrait_builder()}}}
 }

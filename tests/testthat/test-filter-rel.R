@@ -27,7 +27,7 @@ test_that("substrait_filter() appends a FilterRel to a builder", {
 })
 
 test_that("build_filters can create filter expressions", {
-  consumer <- GenericConsumer$new()
+  consumer <- SubstraitCompiler$new()
 
   query <- substrait_dplyr_query(
     mtcars,

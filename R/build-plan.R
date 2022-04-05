@@ -10,7 +10,7 @@ build_plan <- function(x) {
 #' @export
 build_plan.substrait_dplyr_query <- function(x) {
   data <- as.data.frame(x)
-  consumer <- GenericConsumer$new()
+  consumer <- SubstraitCompiler$new()
 
   filtered_rows <- attr(x, "filtered_rows")
 
