@@ -286,10 +286,20 @@ substrait_eval_arrow <- function(plan, tables, col_names) {
   Map(arrow::write_parquet, tables, temp_parquet)
 
   # run the exec plan
-  getNamespace("arrow")[["do_exec_plan_substrait"]](as.raw(plan), col_names)
+  result <- getNamespace("arrow")[["do_exec_plan_substrait"]](as.raw(plan))
+
+  # don't include augmented fields like __fragment_index
+  names <- names(result)
+  names <- names[!grepl("^__", names)]
+  result <- result[names]
+
+  # reassign the column names
+  names(result) <- col_names
+  result
 }
 
 has_arrow_with_substrait <- function() {
   requireNamespace("arrow", quietly = TRUE) &&
-    "do_exec_plan_substrait" %in% names(getNamespace("arrow"))
+    "do_exec_plan_substrait" %in% names(getNamespace("arrow")) &&
+    length(formals(getNamespace("arrow")$do_exec_plan_substrait)) == 1
 }

@@ -75,7 +75,6 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
   compiler <- arrow_substrait_compiler(df)
   result <- substrait_project(compiler, number)
 
-  skip("This doesn't work (returns zero columns)")
   expect_identical(
     as.data.frame(as.data.frame(result$evaluate())),
     df["number"]
