@@ -10,84 +10,7 @@
 #' of the [substrait_builder()] as it is created, modified, printed,
 #' and evaluated. While the object itself is mutable, it is cloned whenever
 #' the builder is modified to minimize a user's interaction with reference
-#' semantics. Whereas the [Consumer] defines the interface that other substrait
-#' package functions use, the [GenericConsumer] provides an implementation
-#' that takes care of a number of useful details that implementors may wish
-#' to use.
-#'
-#' @param builder A [substrait_builder()]
-#' @param object An object, most commonly a data.frame or table-like
-#'   object.
-#' @param name The fully-qualified name of the function as it was
-#'   called (e.g., `pkg::fun`). If no package name was explicitly
-#'   specified, the package name will not be present in `name`.
-#' @param args A `list()` of arguments. These may be R objects or Substrait
-#'   objects created while evaluating the user-provided arguments
-#'   (e.g., field references or function calls).
-#' @param template A `substrait.Expression.ScalarFunction`, a
-#'   `substrait.Expression.WindowFunction`, or a
-#'   `substrait.AggregateFunction`.
-#' @param context Experimental...a portion of the `builder` needed
-#'   to evaluate names and types when evaluating expressions.
-#'
-#' @export
-Consumer <- R6::R6Class(
-  "Consumer",
-  public = list(
-
-    # nocov start
-
-    #' @description
-    #' Creates a new [substrait_builder()] instance from a given `object`.
-    #'
-    #' @param ... Extra arguments specific to the [Consumer]/`object`.
-    #'
-    #' @return A [substrait_builder()].
-    create_builder = function(object, ...) {
-      stop("Not implemented")
-    },
-
-    #' @description
-    #' Validates a builder after it was modified. This is an opportunity to
-    #' provide meaningful feedback after the `builder` has been modified.
-    #'
-    #' @return `builder`, potentially modified
-    validate_builder = function(builder) {
-      stop("Not implemented")
-    },
-
-    #' @description
-    #' Evaluates the plan being built by `builder`.
-    #'
-    #' @param ... Passed from [substrait_evaluate()]
-    #'
-    #' @return A table-like object whose structure is defined by the [Consumer]
-    #'   class. The returned object should have a [as.data.frame()] method.
-    evaluate_builder = function(builder, ...) {
-      stop("Not implemented")
-    },
-
-    #' @description
-    #' Prints a preview the plan being built by `builder`
-    #'
-    #' @param ... The dots passed to [print()]
-    print_builder = function(builder, ...) {
-      stop("Not implemented")
-    },
-
-    #' @description
-    #' Resolves an R function call as a Substrait function call.
-    #'
-    #' @return A modified `template`.
-    resolve_function = function(name, args, template, context = NULL) {
-      stop("Not implemented")
-    }
-
-    # nocov end
-  )
-)
-
-#' @rdname Consumer
+#' semantics.
 #'
 #' @param builder A [substrait_builder()]
 #' @param object An object, most commonly a data.frame or table-like
@@ -106,7 +29,7 @@ Consumer <- R6::R6Class(
 #'
 #' @export
 GenericConsumer <- R6::R6Class(
-  "GenericConsumer", inherit = Consumer,
+  "GenericConsumer",
   public = list(
 
     #' @description

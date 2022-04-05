@@ -1,7 +1,6 @@
 
 test_that("GenericConsumer can be created", {
   consumer <- GenericConsumer$new()
-  expect_s3_class(consumer, "Consumer")
   expect_s3_class(consumer, "GenericConsumer")
 })
 
