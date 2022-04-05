@@ -26,7 +26,6 @@ test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabul
   )
 })
 
-
 test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", {
   skip_if_not_installed("arrow")
 
@@ -221,4 +220,46 @@ test_that("from_substrait() works for RecordBatch", {
   )
 
   expect_true(rb == rb)
+})
+
+test_that("substrait_eval_arrow() can evaluate a plan with one read relation", {
+  skip_if_not(has_arrow_with_substrait())
+
+  df <- data.frame(
+    letter = letters[1:5],
+    number = 1:5
+  )
+
+  plan <- substrait$Plan$create(
+    relations = list(
+      substrait$PlanRel$create(
+        rel = substrait$Rel$create(
+          read = substrait$ReadRel$create(
+            base_schema = as_substrait(df, "substrait.NamedStruct"),
+            named_table = substrait$ReadRel$NamedTable$create(
+              names = "the_name_of_the_table"
+            )
+          )
+        )
+      )
+    )
+  )
+
+  result <- substrait_eval_arrow(
+    plan,
+    list(the_name_of_the_table = df),
+    c("letter", "number")
+  )
+
+  expect_identical(as.data.frame(as.data.frame(result)), df)
+
+  expect_snapshot(
+    substrait_eval_arrow(plan, list()),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    substrait_eval_arrow(plan, list(the_name_of_the_table = data.frame())),
+    error = TRUE
+  )
 })
