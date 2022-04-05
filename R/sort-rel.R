@@ -17,8 +17,7 @@
 #' )
 #'
 substrait_sort <- function(.compiler, ...) {
-  .compiler <- substrait_compiler(.compiler)
-  .compiler$consumer <- .compiler$consumer$clone()
+  .compiler <- substrait_compiler(.compiler)$clone()
 
   quos <- rlang::enquos(...)
 
@@ -41,7 +40,7 @@ substrait_sort <- function(.compiler, ...) {
     with_inlined_sort_field,
     as_substrait,
     .ptype = "substrait.SortField",
-    consumer = .compiler$consumer,
+    consumer = .compiler,
     context = context
   )
 
@@ -54,7 +53,7 @@ substrait_sort <- function(.compiler, ...) {
 
   # update the compiler
   .compiler$rel <- rel
-  .compiler$consumer$validate_compiler(.compiler)
+  .compiler$validate_compiler(.compiler)
 }
 
 #' @rdname substrait_sort
