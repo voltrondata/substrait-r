@@ -118,24 +118,31 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Implementation of `Compiler$validate_compiler()`.
-    validate_compiler = function(compiler) {
-      compiler
+    #' Validates a compiler after it was modified. This is an opportunity to
+    #' provide meaningful feedback (e.g., errors, warnings)
+    #'
+    #' @return `self`
+    validate = function() {
+      self
     },
 
     #' @description
-    #' Implementation of `Compiler$evaluate_compiler()`.
+    #' Evaluates the plan being built by the compiler.
     #'
     #' @param ... Extra arguments specific to the compiler type.
     #'
-    #' @return `compiler`, unchanged
-    #'
+    #' @return A table-like object whose structure is defined by the
+    #'   [SubstraitCompiler] class. The returned object should have a
+    #'   [as.data.frame()] method.
     evaluate_compiler = function(compiler, ...) {
       compiler
     },
 
     #' @description
-    #' Implementation of `Compiler$resolve_function()`.
+    #' Resolves an R function call as a Substrait function call.
+    #'
+    #' @return A modified `template` with `function_reference`,
+    #'   `args`, and `output_type` set.
     resolve_function = function(name, args, template) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)
@@ -146,8 +153,7 @@ SubstraitCompiler <- R6::R6Class(
         compiler = self
       )
 
-      # resolve argument types (the `context` is needed to resolve the type of
-      # field references)
+      # resolve argument types
       arg_types <- lapply(args, as_substrait, "substrait.Type", compiler = self)
 
       # resolve the function identifier

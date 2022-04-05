@@ -53,7 +53,7 @@ substrait_sort <- function(.compiler, ...) {
 
   # update the compiler
   .compiler$rel <- rel
-  .compiler$validate_compiler(.compiler)
+  .compiler$validate()
 }
 
 #' @rdname substrait_sort

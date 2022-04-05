@@ -48,7 +48,7 @@ substrait_project <- function(.compiler, ...) {
   .compiler$schema$struct_$types <- types
   .compiler$mask <- expressions
 
-  .compiler$validate_compiler(.compiler)
+  .compiler$validate()
 }
 
 # Take selected columns and create the appropriate substrait message

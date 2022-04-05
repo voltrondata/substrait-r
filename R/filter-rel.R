@@ -49,7 +49,7 @@ substrait_filter <- function(.compiler, ...) {
 
   # update the compiler
   .compiler$rel <- rel
-  .compiler$validate_compiler(.compiler)
+  .compiler$validate()
 }
 
 

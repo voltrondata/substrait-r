@@ -48,7 +48,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \item \href{#method-create_compiler}{\code{SubstraitCompiler$create_compiler()}}
 \item \href{#method-print_compiler}{\code{SubstraitCompiler$print_compiler()}}
 \item \href{#method-named_table}{\code{SubstraitCompiler$named_table()}}
-\item \href{#method-validate_compiler}{\code{SubstraitCompiler$validate_compiler()}}
+\item \href{#method-validate}{\code{SubstraitCompiler$validate()}}
 \item \href{#method-evaluate_compiler}{\code{SubstraitCompiler$evaluate_compiler()}}
 \item \href{#method-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
 \item \href{#method-function_id}{\code{SubstraitCompiler$function_id()}}
@@ -127,27 +127,24 @@ The \code{object} that was passed
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-validate_compiler"></a>}}
-\if{latex}{\out{\hypertarget{method-validate_compiler}{}}}
-\subsection{Method \code{validate_compiler()}}{
-Implementation of \code{Compiler$validate_compiler()}.
+\if{html}{\out{<a id="method-validate"></a>}}
+\if{latex}{\out{\hypertarget{method-validate}{}}}
+\subsection{Method \code{validate()}}{
+Validates a compiler after it was modified. This is an opportunity to
+provide meaningful feedback (e.g., errors, warnings)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$validate_compiler(compiler)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$validate()}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{compiler}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
-}
-\if{html}{\out{</div>}}
+\subsection{Returns}{
+\code{self}
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-evaluate_compiler"></a>}}
 \if{latex}{\out{\hypertarget{method-evaluate_compiler}{}}}
 \subsection{Method \code{evaluate_compiler()}}{
-Implementation of \code{Compiler$evaluate_compiler()}.
+Evaluates the plan being built by the compiler.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$evaluate_compiler(compiler, ...)}\if{html}{\out{</div>}}
 }
@@ -162,14 +159,16 @@ Implementation of \code{Compiler$evaluate_compiler()}.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{compiler}, unchanged
+A table-like object whose structure is defined by the
+\link{SubstraitCompiler} class. The returned object should have a
+\code{\link[=as.data.frame]{as.data.frame()}} method.
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-resolve_function"></a>}}
 \if{latex}{\out{\hypertarget{method-resolve_function}{}}}
 \subsection{Method \code{resolve_function()}}{
-Implementation of \code{Compiler$resolve_function()}.
+Resolves an R function call as a Substrait function call.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template)}\if{html}{\out{</div>}}
 }
@@ -190,6 +189,10 @@ objects created while evaluating the user-provided arguments
 \code{substrait.AggregateFunction}.}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A modified \code{template} with \code{function_reference},
+\code{args}, and \code{output_type} set.
 }
 }
 \if{html}{\out{<hr>}}
