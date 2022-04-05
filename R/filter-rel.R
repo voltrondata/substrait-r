@@ -30,7 +30,7 @@ substrait_filter <- function(.compiler, ...) {
     quos,
     as_substrait,
     .ptype = "substrait.Expression",
-    consumer = .compiler,
+    compiler = .compiler,
     context = context
   )
 
@@ -54,14 +54,14 @@ substrait_filter <- function(.compiler, ...) {
 
 
 # Take filtered rows and create the appropriate substrait message
-build_filters <- function(df, filters, consumer) {
+build_filters <- function(df, filters, compiler) {
   context <- new_context(df)
 
   expressions <- lapply(
     filters,
     as_substrait,
     .ptype = "substrait.Expression",
-    consumer = consumer,
+    compiler = compiler,
     context = context
   )
 

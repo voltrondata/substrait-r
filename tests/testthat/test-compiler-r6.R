@@ -1,52 +1,52 @@
 
 test_that("SubstraitCompiler can be created", {
-  consumer <- SubstraitCompiler$new()
-  expect_s3_class(consumer, "SubstraitCompiler")
+  compiler <- SubstraitCompiler$new()
+  expect_s3_class(compiler, "SubstraitCompiler")
 })
 
 
 test_that("SubstraitCompiler$next_id() works", {
-  consumer <- SubstraitCompiler$new()
-  expect_identical(consumer$next_id(), 1L)
-  expect_identical(consumer$next_id(), 2L)
+  compiler <- SubstraitCompiler$new()
+  expect_identical(compiler$next_id(), 1L)
+  expect_identical(compiler$next_id(), 2L)
 })
 
 test_that("SubstraitCompiler$create_compiler() works", {
-  consumer <- SubstraitCompiler$new()
+  compiler <- SubstraitCompiler$new()
 
   # By default, objects are have their schemas extracted and are turned into
   # named tables
   tbl <- data.frame(a = 1L, b = "one")
-  compiler <- consumer$create_compiler(tbl)
+  compiler <- compiler$create_compiler(tbl)
 
   expect_s3_class(compiler$rel, "substrait_Rel")
 
   expect_match(compiler$rel$read$named_table$names, "^named_table_")
   expect_identical(
-    consumer$named_table(compiler$rel$read$named_table$names),
+    compiler$named_table(compiler$rel$read$named_table$names),
     tbl
   )
 })
 
 test_that("substrait_compiler_function_id() works", {
-  consumer <- SubstraitCompiler$new()
+  compiler <- SubstraitCompiler$new()
 
   expect_equal(
-    consumer$function_id("some_fun", list()),
+    compiler$function_id("some_fun", list()),
     1L
   )
   expect_equal(
-    consumer$function_id("some_fun", list()),
+    compiler$function_id("some_fun", list()),
     1L
   )
   expect_identical(
-    as.list(consumer$function_extension(1)),
+    as.list(compiler$function_extension(1)),
     list(name = "some_fun", arg_types = list())
   )
 
   # different arg types should trigger a new id
   expect_equal(
-    consumer$function_id(
+    compiler$function_id(
       "some_fun",
       list(
         substrait_i32()
@@ -57,7 +57,7 @@ test_that("substrait_compiler_function_id() works", {
 
   # ...but doing it again should get the same id
   expect_equal(
-    consumer$function_id(
+    compiler$function_id(
       "some_fun",
       list(
         substrait_i32()
@@ -69,10 +69,10 @@ test_that("substrait_compiler_function_id() works", {
 
 
 test_that("SubstraitCompiler$resolve_function() works", {
-  consumer <- SubstraitCompiler$new()
+  compiler <- SubstraitCompiler$new()
 
   expect_identical(
-    consumer$resolve_function(
+    compiler$resolve_function(
       "some_fun",
       list(1L),
       substrait$Expression$ScalarFunction$create()

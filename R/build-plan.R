@@ -10,7 +10,7 @@ build_plan <- function(x) {
 #' @export
 build_plan.substrait_dplyr_query <- function(x) {
   data <- as.data.frame(x)
-  consumer <- SubstraitCompiler$new()
+  compiler <- SubstraitCompiler$new()
 
   filtered_rows <- attr(x, "filtered_rows")
 
@@ -21,7 +21,7 @@ build_plan.substrait_dplyr_query <- function(x) {
     plan <- substrait$Rel$create(
       filter = substrait$FilterRel$create(
         input = plan,
-        condition = build_filters(data, filtered_rows, consumer)
+        condition = build_filters(data, filtered_rows, compiler)
       )
     )
   }

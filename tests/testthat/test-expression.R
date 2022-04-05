@@ -38,11 +38,11 @@ test_that("quosures with field references can be translated to Expressions", {
 })
 
 test_that("quosures with calls can be translated to Expressions", {
-  consumer <- SubstraitCompiler$new()
+  compiler <- SubstraitCompiler$new()
   context <- new_context(data.frame(a = double(), b = character()))
 
   expect_identical(
-    as_substrait(rlang::quo(some_fun(5L)), consumer = consumer, context = context),
+    as_substrait(rlang::quo(some_fun(5L)), compiler = compiler, context = context),
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
         function_reference = 1,
@@ -57,7 +57,7 @@ test_that("quosures with calls can be translated to Expressions", {
   )
 
   expect_identical(
-    as_substrait(rlang::quo(some_pkg::some_fun(5L)), consumer = consumer, context = context),
+    as_substrait(rlang::quo(some_pkg::some_fun(5L)), compiler = compiler, context = context),
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
         function_reference = 2,

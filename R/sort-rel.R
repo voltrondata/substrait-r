@@ -40,7 +40,7 @@ substrait_sort <- function(.compiler, ...) {
     with_inlined_sort_field,
     as_substrait,
     .ptype = "substrait.SortField",
-    consumer = .compiler,
+    compiler = .compiler,
     context = context
   )
 

@@ -27,7 +27,7 @@ test_that("substrait_filter() appends a FilterRel to a compiler", {
 })
 
 test_that("build_filters can create filter expressions", {
-  consumer <- SubstraitCompiler$new()
+  compiler <- SubstraitCompiler$new()
 
   query <- substrait_dplyr_query(
     mtcars,
@@ -36,7 +36,7 @@ test_that("build_filters can create filter expressions", {
   filters <- build_filters(
     as.data.frame(query),
     attr(query, "filtered_rows"),
-    consumer
+    compiler
   )
 
   expect_length(filters[[1]][["args"]], 2)
@@ -50,7 +50,7 @@ test_that("build_filters can create filter expressions", {
   )
 
   expect_identical(
-    consumer$function_extension(1)$name,
+    compiler$function_extension(1)$name,
     ">"
   )
 
@@ -71,7 +71,7 @@ test_that("build_filters can create filter expressions", {
   )
 
   expect_identical(
-    consumer$function_extension(2)$name,
+    compiler$function_extension(2)$name,
     "=="
   )
 

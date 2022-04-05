@@ -1,12 +1,12 @@
 
-#' Substrait Consumer
+#' Substrait Compiler
 #'
-#' In general, the substrait package provides consumer-agnostic tools to
-#' generate `substrait.Plan` objects. However, the consumer that will be
+#' In general, the substrait package provides compiler-agnostic tools to
+#' generate `substrait.Plan` objects. However, the compiler that will be
 #' evaluating the plan has more information and in many cases has the ability
 #' to provide more meaningful validation and output than substrait
-#' can provide on its own. The `Consumer` R6 class is a mutable object that
-#' provides substrait consumers the ability to customize the behaviour
+#' can provide on its own. The `Compiler` R6 class is a mutable object that
+#' provides substrait compilers the ability to customize the behaviour
 #' of the [substrait_compiler()] as it is created, modified, printed,
 #' and evaluated. While the object itself is mutable, it is cloned whenever
 #' the compiler is modified to minimize a user's interaction with reference
@@ -72,7 +72,7 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Implementation of `Consumer$create_compiler()`.
+    #' Implementation of `Compiler$create_compiler()`.
     #'
     #' @param ... Unused
     create_compiler = function(object, ...) {
@@ -103,7 +103,7 @@ SubstraitCompiler <- R6::R6Class(
     #' @param ... The dots passed to [print()]
     print_compiler = function(compiler, ...) {
       cat(sprintf("<substrait_compiler[%s]>\n", class(self)[1]))
-      str(compiler[setdiff(names(compiler), "consumer")])
+      str(compiler[setdiff(names(compiler), "compiler")])
       invisible(compiler)
     },
 
@@ -118,13 +118,13 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Implementation of `Consumer$validate_compiler()`.
+    #' Implementation of `Compiler$validate_compiler()`.
     validate_compiler = function(compiler) {
       compiler
     },
 
     #' @description
-    #' Implementation of `Consumer$evaluate_compiler()`.
+    #' Implementation of `Compiler$evaluate_compiler()`.
     #'
     #' @param ... Passed from [substrait_evaluate()]
     #'
@@ -135,7 +135,7 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Implementation of `Consumer$resolve_function()`.
+    #' Implementation of `Compiler$resolve_function()`.
     resolve_function = function(name, args, template, context = NULL) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)

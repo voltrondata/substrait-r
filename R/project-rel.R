@@ -25,7 +25,7 @@ substrait_project <- function(.compiler, ...) {
     rlang::enquos(..., .named = TRUE),
     as_substrait,
     .ptype = "substrait.Expression",
-    consumer = .compiler,
+    compiler = .compiler,
     context = context
   )
 

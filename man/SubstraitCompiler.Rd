@@ -2,19 +2,19 @@
 % Please edit documentation in R/compiler-r6.R
 \name{SubstraitCompiler}
 \alias{SubstraitCompiler}
-\title{Substrait Consumer}
+\title{Substrait Compiler}
 \description{
-Substrait Consumer
+Substrait Compiler
 
-Substrait Consumer
+Substrait Compiler
 }
 \details{
-In general, the substrait package provides consumer-agnostic tools to
-generate \code{substrait.Plan} objects. However, the consumer that will be
+In general, the substrait package provides compiler-agnostic tools to
+generate \code{substrait.Plan} objects. However, the compiler that will be
 evaluating the plan has more information and in many cases has the ability
 to provide more meaningful validation and output than substrait
-can provide on its own. The \code{Consumer} R6 class is a mutable object that
-provides substrait consumers the ability to customize the behaviour
+can provide on its own. The \code{Compiler} R6 class is a mutable object that
+provides substrait compilers the ability to customize the behaviour
 of the \code{\link[=substrait_compiler]{substrait_compiler()}} as it is created, modified, printed,
 and evaluated. While the object itself is mutable, it is cloned whenever
 the compiler is modified to minimize a user's interaction with reference
@@ -71,7 +71,7 @@ Create a new \link{SubstraitCompiler}
 \if{html}{\out{<a id="method-create_compiler"></a>}}
 \if{latex}{\out{\hypertarget{method-create_compiler}{}}}
 \subsection{Method \code{create_compiler()}}{
-Implementation of \code{Consumer$create_compiler()}.
+Implementation of \code{Compiler$create_compiler()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$create_compiler(object, ...)}\if{html}{\out{</div>}}
 }
@@ -130,7 +130,7 @@ The \code{object} that was passed
 \if{html}{\out{<a id="method-validate_compiler"></a>}}
 \if{latex}{\out{\hypertarget{method-validate_compiler}{}}}
 \subsection{Method \code{validate_compiler()}}{
-Implementation of \code{Consumer$validate_compiler()}.
+Implementation of \code{Compiler$validate_compiler()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$validate_compiler(compiler)}\if{html}{\out{</div>}}
 }
@@ -147,7 +147,7 @@ Implementation of \code{Consumer$validate_compiler()}.
 \if{html}{\out{<a id="method-evaluate_compiler"></a>}}
 \if{latex}{\out{\hypertarget{method-evaluate_compiler}{}}}
 \subsection{Method \code{evaluate_compiler()}}{
-Implementation of \code{Consumer$evaluate_compiler()}.
+Implementation of \code{Compiler$evaluate_compiler()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$evaluate_compiler(compiler, ...)}\if{html}{\out{</div>}}
 }
@@ -169,7 +169,7 @@ Implementation of \code{Consumer$evaluate_compiler()}.
 \if{html}{\out{<a id="method-resolve_function"></a>}}
 \if{latex}{\out{\hypertarget{method-resolve_function}{}}}
 \subsection{Method \code{resolve_function()}}{
-Implementation of \code{Consumer$resolve_function()}.
+Implementation of \code{Compiler$resolve_function()}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template, context = NULL)}\if{html}{\out{</div>}}
 }
