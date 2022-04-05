@@ -32,6 +32,24 @@ SubstraitCompiler <- R6::R6Class(
   "SubstraitCompiler",
   public = list(
 
+    #' @field rel The root of the current `substrait.Rel` tree.
+    rel = NULL,
+
+    #' @field schema A `substrait.NamedStruct` containing the field names
+    #'   and field types of `rel`.
+    schema = NULL,
+
+    #' @field mask A named list of `substrait.Expression` objects where the
+    #'   names are identical to the field names as provided in `schema`.
+    #'   This list is used as the data mask when evaluating expressions
+    #'   (e.g., [rlang::eval_tidy()]).
+    mask = NULL,
+
+    #' @field groups A named list of `substrait.Expression` to be used for
+    #'   future grouping (e.g., after calling [dplyr::group_by()]).
+    groups = NULL,
+
+
     #' @description
     #' Create a new [SubstraitCompiler]
     initialize = function() {
@@ -70,6 +88,12 @@ SubstraitCompiler <- R6::R6Class(
       )
 
       private$named_tables[[tbl_id]] <- object
+
+      self$rel <- rel
+      self$schema <- rel$read$base_schema
+      self$mask <- substrait_rel_mask(rel)
+      self$groups <- NULL
+
 
       new_substrait_compiler(
         list(

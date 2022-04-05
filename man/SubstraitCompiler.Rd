@@ -23,6 +23,24 @@ semantics.
 Get a function reference identifier for a given function/input
 argument combination.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{rel}}{The root of the current \code{substrait.Rel} tree.}
+
+\item{\code{schema}}{A \code{substrait.NamedStruct} containing the field names
+and field types of \code{rel}.}
+
+\item{\code{mask}}{A named list of \code{substrait.Expression} objects where the
+names are identical to the field names as provided in \code{schema}.
+This list is used as the data mask when evaluating expressions
+(e.g., \code{\link[rlang:eval_tidy]{rlang::eval_tidy()}}).}
+
+\item{\code{groups}}{A named list of \code{substrait.Expression} to be used for
+future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by()}}).}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
