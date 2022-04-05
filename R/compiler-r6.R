@@ -126,7 +126,7 @@ SubstraitCompiler <- R6::R6Class(
     #' @description
     #' Implementation of `Compiler$evaluate_compiler()`.
     #'
-    #' @param ... Passed from [substrait_evaluate()]
+    #' @param ... Extra arguments specific to the compiler type.
     #'
     #' @return `compiler`, unchanged
     #'

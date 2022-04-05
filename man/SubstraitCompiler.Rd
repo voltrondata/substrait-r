@@ -157,7 +157,7 @@ Implementation of \code{Compiler$evaluate_compiler()}.
 \describe{
 \item{\code{compiler}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
-\item{\code{...}}{Passed from \code{\link[=substrait_evaluate]{substrait_evaluate()}}}
+\item{\code{...}}{Extra arguments specific to the compiler type.}
 }
 \if{html}{\out{</div>}}
 }
@@ -171,7 +171,7 @@ Implementation of \code{Compiler$evaluate_compiler()}.
 \subsection{Method \code{resolve_function()}}{
 Implementation of \code{Compiler$resolve_function()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template, context = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -188,9 +188,6 @@ objects created while evaluating the user-provided arguments
 \item{\code{template}}{A \code{substrait.Expression.ScalarFunction}, a
 \code{substrait.Expression.WindowFunction}, or a
 \code{substrait.AggregateFunction}.}
-
-\item{\code{context}}{Experimental...a portion of the \code{compiler} needed
-to evaluate names and types when evaluating expressions.}
 }
 \if{html}{\out{</div>}}
 }

@@ -104,7 +104,7 @@ arrange.SubstraitCompiler <- function(.data, ...) {
 #' @importFrom dplyr collect
 #' @export
 collect.SubstraitCompiler <- function(x, ...) {
-  dplyr::as_tibble(substrait_evaluate(x, ...))
+  dplyr::as_tibble(x$evaluate_compiler())
 }
 
 # translate desc() call to the equivalent
