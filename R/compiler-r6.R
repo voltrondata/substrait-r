@@ -136,18 +136,19 @@ SubstraitCompiler <- R6::R6Class(
 
     #' @description
     #' Implementation of `Compiler$resolve_function()`.
-    resolve_function = function(name, args, template, context = NULL) {
+    resolve_function = function(name, args, template) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)
       args <- lapply(
         args,
         as_substrait,
         "substrait.Expression",
+        compiler = self
       )
 
       # resolve argument types (the `context` is needed to resolve the type of
       # field references)
-      arg_types <- lapply(args, as_substrait, "substrait.Type", context = context)
+      arg_types <- lapply(args, as_substrait, "substrait.Type", compiler = self)
 
       # resolve the function identifier
       id <- self$function_id(name, arg_types)

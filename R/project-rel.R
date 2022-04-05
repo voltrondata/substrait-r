@@ -25,15 +25,14 @@ substrait_project <- function(.compiler, ...) {
     rlang::enquos(..., .named = TRUE),
     as_substrait,
     .ptype = "substrait.Expression",
-    compiler = .compiler,
-    context = context
+    compiler = .compiler
   )
 
   types <- lapply(
     expressions,
     as_substrait,
     .ptype = "substrait.Type",
-    context = context
+    compiler = .compiler
   )
 
   rel <- substrait$Rel$create(

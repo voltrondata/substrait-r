@@ -54,15 +54,12 @@ substrait_filter <- function(.compiler, ...) {
 
 
 # Take filtered rows and create the appropriate substrait message
-build_filters <- function(df, filters, compiler) {
-  context <- new_context(df)
-
+build_filters <- function(compiler, filters) {
   expressions <- lapply(
     filters,
     as_substrait,
     .ptype = "substrait.Expression",
-    compiler = compiler,
-    context = context
+    compiler = compiler
   )
 
   combined_expressions <- Reduce("combine_expressions_and", expressions)
