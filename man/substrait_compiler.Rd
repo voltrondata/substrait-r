@@ -4,7 +4,7 @@
 \alias{substrait_compiler}
 \alias{substrait_compiler.SubstraitCompiler}
 \alias{substrait_compiler.default}
-\title{Build a Substrait plan}
+\title{Initialize a Substrait Compiler}
 \usage{
 substrait_compiler(object, ...)
 
@@ -21,7 +21,8 @@ substrait_compiler(object, ...)
 An object of class 'substrait_compiler'
 }
 \description{
-Build a Substrait plan
+Creates a \link{SubstraitCompiler} instance initialized with \code{object}
+(e.g., a \code{data.frame()}).
 }
 \examples{
 substrait_compiler(data.frame(col1 = 1 , col2 = "one"))

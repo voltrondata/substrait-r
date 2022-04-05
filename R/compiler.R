@@ -1,15 +1,16 @@
 
 #' Substrait Compiler
 #'
-#' In general, the substrait package provides compiler-agnostic tools to
-#' generate `substrait.Plan` objects. However, the consumer that will be
-#' evaluating the plan has more information and in many cases has the ability
-#' to provide more meaningful validation and output than substrait
-#' can provide on its own. The `Compiler` R6 class is a mutable object that
-#' provides substrait compilers the ability to customize the behaviour
-#' of the [substrait_compiler()] as it is created, modified, printed,
-#' and evaluated. While the object itself is mutable, it is cloned whenever
-#' the compiler is modified to minimize a user's interaction with reference
+#' The [SubstraitCompiler] defines a mutable object that accumulates information
+#' needed to evaluate a `substrait.Rel` tree. In addition to the
+#' `substrait.Rel` tree itself, the compiler must keep track of function
+#' identifiers, column names, and the R objects (e.g., data frames) that
+#' will be used as leaf nodes when the plan is evaluated. Specific consumers
+#' will need to subclass the [SubstraitCompiler] and implement the `$evaluate()`
+#' and/or `$resolve_function()` methods. Typically users will not interact
+#' with R6 methods but will use the pipeable interface
+#' (e.g. [substrait_project()]). The pipeable interface clones the compiler
+#' before it is modified to minimize the user's interaction to R6 reference
 #' semantics.
 #'
 #' @param object An object, most commonly a data.frame or table-like
@@ -238,7 +239,10 @@ SubstraitCompiler <- R6::R6Class(
   )
 )
 
-#' Build a Substrait plan
+#' Initialize a Substrait Compiler
+#'
+#' Creates a [SubstraitCompiler] instance initialized with `object`
+#' (e.g., a `data.frame()`).
 #'
 #' @param object A table-like object with which to create a compiler.
 #' @param ... Passed to the [SubstraitCompiler] when creating a new compiler

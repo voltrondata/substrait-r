@@ -9,15 +9,16 @@ Substrait Compiler
 Substrait Compiler
 }
 \details{
-In general, the substrait package provides compiler-agnostic tools to
-generate \code{substrait.Plan} objects. However, the consumer that will be
-evaluating the plan has more information and in many cases has the ability
-to provide more meaningful validation and output than substrait
-can provide on its own. The \code{Compiler} R6 class is a mutable object that
-provides substrait compilers the ability to customize the behaviour
-of the \code{\link[=substrait_compiler]{substrait_compiler()}} as it is created, modified, printed,
-and evaluated. While the object itself is mutable, it is cloned whenever
-the compiler is modified to minimize a user's interaction with reference
+The \link{SubstraitCompiler} defines a mutable object that accumulates information
+needed to evaluate a \code{substrait.Rel} tree. In addition to the
+\code{substrait.Rel} tree itself, the compiler must keep track of function
+identifiers, column names, and the R objects (e.g., data frames) that
+will be used as leaf nodes when the plan is evaluated. Specific consumers
+will need to subclass the \link{SubstraitCompiler} and implement the \verb{$evaluate()}
+and/or \verb{$resolve_function()} methods. Typically users will not interact
+with R6 methods but will use the pipeable interface
+(e.g. \code{\link[=substrait_project]{substrait_project()}}). The pipeable interface clones the compiler
+before it is modified to minimize the user's interaction to R6 reference
 semantics.
 
 Get a function reference identifier for a given function/input
