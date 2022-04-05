@@ -27,7 +27,7 @@ remotes::install_github("voltrondata/substrait-r")
 
 ## Example
 
-Basic `dplyr::select()`!
+Basic `dplyr::select()` using the Arrow Substrait consumer:
 
 ``` r
 library(substrait)
@@ -38,75 +38,24 @@ library(substrait)
 #>     filter
 library(dplyr)
 
-compiler <- substrait_compiler()
-
-query <- data.frame(letter = letters, number = 1:26) %>% 
-  substrait_dplyr_query() %>% 
-  filter(number < 5) %>% 
-  select(letter)
-
-substrait:::build_projections(
-  query, 
-  attr(query, "selected_columns")
-)
-#> [[1]]
-#> message of type 'substrait.Expression' with 1 field set
-#> selection {
-#>   direct_reference {
-#>     struct_field {
-#>       child {
-#>         struct_field {
-#>         }
-#>       }
-#>     }
-#>   }
-#> }
-
-substrait:::build_filters(
-  query, 
-  attr(query, "filtered_rows"), 
-  compiler = compiler
-)
-#> [[1]]
-#> message of type 'substrait.Expression' with 1 field set
-#> scalar_function {
-#>   function_reference: 1
-#>   args {
-#>     selection {
-#>       direct_reference {
-#>         struct_field {
-#>           field: 1
-#>           child {
-#>             struct_field {
-#>             }
-#>           }
-#>         }
-#>       }
-#>     }
-#>   }
-#>   args {
-#>     literal {
-#>       fp64: 5
-#>     }
-#>   }
-#>   output_type {
-#>   }
-#> }
-
-compiler$function_extensions_key[["1"]]
-#> $name
-#> [1] "<"
-#> 
-#> $arg_types
-#> $arg_types[[1]]
-#> message of type 'substrait.Type' with 1 field set
-#> i32 {
-#> }
-#> 
-#> $arg_types[[2]]
-#> message of type 'substrait.Type' with 1 field set
-#> fp64 {
-#> }
+mtcars %>% 
+  arrow_substrait_compiler() %>% 
+  select(mpg, wt) %>% 
+  collect()
+#> # A tibble: 32 × 2
+#>      mpg    wt
+#>    <dbl> <dbl>
+#>  1  21    2.62
+#>  2  21    2.88
+#>  3  22.8  2.32
+#>  4  21.4  3.22
+#>  5  18.7  3.44
+#>  6  18.1  3.46
+#>  7  14.3  3.57
+#>  8  24.4  3.19
+#>  9  22.8  3.15
+#> 10  19.2  3.44
+#> # … with 22 more rows
 ```
 
 ## Create ‘Substrait’ proto objects
@@ -194,35 +143,3 @@ as_substrait(msg_rpb)
 #>   5: 5
 #> }
 ```
-
-An approach more suited to the Substrait use-case is
-[nanopb](https://github.com/nanopb/nanopb), which is vendorable (i.e.,
-no linking to system libraries) and supports all the protocol buffer
-features used by Substrait. The compiled .proto encoders/decoders and
-vendored library is currently included in the `src/` directory but only
-one encoder is implemented:
-
-``` r
-bytes <- substrait:::r_encode_substrait_Type_Boolean(
-  type_variation_reference = 233,
-  nullablity = substrait$Type$Nullability$NULLABILITY_REQUIRED
-)
-
-cat(RProtoBuf::P("substrait.Type.Boolean")$read(bytes)$toString())
-#> type_variation_reference: 233
-#> nullability: NULLABILITY_REQUIRED
-```
-
-A note that I did try to generate bindings using the official Google C++
-code generator (i.e., what you get when you `brew install protobuf` and
-run `protoc`), but this requires linking to the exact version of
-protobuf that generated the C++ readers. This is pretty much impossible
-to make work because everybody ships a slightly different version of
-libprotobuf. The approach taken by RProtoBuf is to link to the system
-protobuf *compiler* library and compile the .proto files at runtime.
-That could work here, too, but would also require linking to a system
-library (the same ones that RProtoBuf does).
-
-There are probably other approaches, but most of them will require some
-type of auto-generated wrapper code and the portability and compile
-speed of nanopb is hard to beat.
