@@ -68,7 +68,7 @@ test_that("substrait_compiler_function_id() works", {
 })
 
 
-test_that("substrait_compiler_function() works", {
+test_that("SubstraitCompiler$resolve_function() works", {
   consumer <- SubstraitCompiler$new()
 
   expect_identical(
