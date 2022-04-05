@@ -2,13 +2,13 @@
 % Please edit documentation in R/compiler.R
 \name{substrait_compiler}
 \alias{substrait_compiler}
-\alias{substrait_compiler.substrait_compiler}
+\alias{substrait_compiler.SubstraitCompiler}
 \alias{substrait_compiler.default}
 \title{Build a Substrait plan}
 \usage{
 substrait_compiler(rel, ..., consumer = SubstraitCompiler$new())
 
-\method{substrait_compiler}{substrait_compiler}(rel, ..., consumer = SubstraitCompiler$new())
+\method{substrait_compiler}{SubstraitCompiler}(rel, ..., consumer = SubstraitCompiler$new())
 
 \method{substrait_compiler}{default}(rel, ..., consumer = SubstraitCompiler$new())
 }

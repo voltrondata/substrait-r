@@ -18,7 +18,7 @@ substrait_compiler <- function(rel, ..., consumer = SubstraitCompiler$new()) {
 
 #' @rdname substrait_compiler
 #' @export
-substrait_compiler.substrait_compiler <- function(rel, ..., consumer = SubstraitCompiler$new()) {
+substrait_compiler.SubstraitCompiler <- function(rel, ..., consumer = SubstraitCompiler$new()) {
   rel
 }
 
@@ -26,8 +26,4 @@ substrait_compiler.substrait_compiler <- function(rel, ..., consumer = Substrait
 #' @export
 substrait_compiler.default <- function(rel, ..., consumer = SubstraitCompiler$new()) {
   consumer$create_builder(rel, ...)
-}
-
-new_substrait_compiler <- function(x) {
-  structure(x, class = "substrait_compiler")
 }

@@ -94,16 +94,7 @@ SubstraitCompiler <- R6::R6Class(
       self$mask <- substrait_rel_mask(rel)
       self$groups <- NULL
 
-
-      new_substrait_compiler(
-        list(
-          rel = rel,
-          consumer = self,
-          schema = rel$read$base_schema,
-          mask = substrait_rel_mask(rel),
-          groups = NULL
-        )
-      )
+      self
     },
 
     #' @description
