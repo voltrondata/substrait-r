@@ -55,6 +55,18 @@ test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", 
   )
 })
 
+test_that("ArrowSubstraitCompiler can evaluate a plan with one relation", {
+  skip_if_not_installed("arrow")
+
+  df <- data.frame(
+    letter = letters[1:5],
+    number = 1:5
+  )
+
+  result <- arrow_substrait_compiler(df)$evaluate()
+  expect_identical(as.data.frame(df), df)
+})
+
 test_that("as_subtrait() works for arrow DataType", {
   skip_if_not_installed("arrow")
 

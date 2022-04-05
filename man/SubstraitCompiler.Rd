@@ -48,6 +48,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \item \href{#method-new}{\code{SubstraitCompiler$new()}}
 \item \href{#method-add_relation}{\code{SubstraitCompiler$add_relation()}}
 \item \href{#method-named_table}{\code{SubstraitCompiler$named_table()}}
+\item \href{#method-named_table_list}{\code{SubstraitCompiler$named_table_list()}}
 \item \href{#method-validate}{\code{SubstraitCompiler$validate()}}
 \item \href{#method-evaluate}{\code{SubstraitCompiler$evaluate()}}
 \item \href{#method-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
@@ -117,6 +118,19 @@ Retrieve a named table
 }
 \subsection{Returns}{
 The \code{object} that was passed
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-named_table_list"></a>}}
+\if{latex}{\out{\hypertarget{method-named_table_list}{}}}
+\subsection{Method \code{named_table_list()}}{
+Retrieve all named tables as a \code{\link[=list]{list()}}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$named_table_list()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+a named \code{\link[=list]{list()}} of objects
 }
 }
 \if{html}{\out{<hr>}}

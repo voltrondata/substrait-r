@@ -124,6 +124,14 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
+    #' Retrieve all named tables as a [list()]
+    #'
+    #' @return a named [list()] of objects
+    named_table_list = function() {
+      private$named_tables
+    },
+
+    #' @description
     #' Validates a compiler after it was modified. This is an opportunity to
     #' provide meaningful feedback (e.g., errors, warnings)
     #'

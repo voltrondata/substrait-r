@@ -45,7 +45,19 @@ ArrowSubstraitCompiler <- R6::R6Class(
     },
 
     evaluate = function(...) {
-      stop("Not implemented")
+      plan <- substrait$Plan$create(
+        relations = list(
+          substrait$PlanRel$create(
+            rel = self$rel
+          )
+        )
+      )
+
+      substrait_eval_arrow(
+        plan,
+        tables = self$named_table_list(),
+        col_names = self$schema$names
+      )
     }
   )
 )

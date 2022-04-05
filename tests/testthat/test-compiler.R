@@ -34,6 +34,10 @@ test_that("substrait_compiler() creates a compiler with a ReadRel from a data fr
     compiler$named_table(compiler$rel$read$named_table$names),
     tbl
   )
+  expect_identical(
+    compiler$named_table_list(),
+    rlang::list2(!!(compiler$rel$read$named_table$names) := tbl)
+  )
 })
 
 test_that("substrait_compiler() returns its input if it's already a compiler", {
