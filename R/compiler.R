@@ -12,7 +12,6 @@
 #' the compiler is modified to minimize a user's interaction with reference
 #' semantics.
 #'
-#' @param compiler A [substrait_compiler()]
 #' @param object An object, most commonly a data.frame or table-like
 #'   object.
 #' @param name The fully-qualified name of the function as it was
@@ -24,8 +23,6 @@
 #' @param template A `substrait.Expression.ScalarFunction`, a
 #'   `substrait.Expression.WindowFunction`, or a
 #'   `substrait.AggregateFunction`.
-#' @param context Experimental...a portion of the `compiler` needed
-#'   to evaluate names and types when evaluating expressions.
 #'
 #' @export
 SubstraitCompiler <- R6::R6Class(
@@ -142,8 +139,8 @@ SubstraitCompiler <- R6::R6Class(
     #' @return A table-like object whose structure is defined by the
     #'   [SubstraitCompiler] class. The returned object should have a
     #'   [as.data.frame()] method.
-    evaluate_compiler = function(compiler, ...) {
-      compiler
+    evaluate = function(...) {
+      stop("Not implemented")
     },
 
     #' @description

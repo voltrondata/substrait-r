@@ -48,7 +48,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \item \href{#method-add_relation}{\code{SubstraitCompiler$add_relation()}}
 \item \href{#method-named_table}{\code{SubstraitCompiler$named_table()}}
 \item \href{#method-validate}{\code{SubstraitCompiler$validate()}}
-\item \href{#method-evaluate_compiler}{\code{SubstraitCompiler$evaluate_compiler()}}
+\item \href{#method-evaluate}{\code{SubstraitCompiler$evaluate()}}
 \item \href{#method-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
 \item \href{#method-function_id}{\code{SubstraitCompiler$function_id()}}
 \item \href{#method-function_extension}{\code{SubstraitCompiler$function_extension()}}
@@ -133,19 +133,17 @@ provide meaningful feedback (e.g., errors, warnings)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluate_compiler"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluate_compiler}{}}}
-\subsection{Method \code{evaluate_compiler()}}{
+\if{html}{\out{<a id="method-evaluate"></a>}}
+\if{latex}{\out{\hypertarget{method-evaluate}{}}}
+\subsection{Method \code{evaluate()}}{
 Evaluates the plan being built by the compiler.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$evaluate_compiler(compiler, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$evaluate(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{compiler}}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
-
 \item{\code{...}}{Extra arguments specific to the compiler type.}
 }
 \if{html}{\out{</div>}}
