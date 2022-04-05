@@ -160,6 +160,16 @@ GenericConsumer <- R6::R6Class(
     },
 
     #' @description
+    #' Prints a preview the plan being built by `builder`
+    #'
+    #' @param ... The dots passed to [print()]
+    print_builder = function(builder, ...) {
+      cat(sprintf("<substrait_builder[%s]>\n", class(self)[1]))
+      str(builder[setdiff(names(builder), "consumer")])
+      invisible(builder)
+    },
+
+    #' @description
     #' Retrieve a named table
     #'
     #' @param name A table name

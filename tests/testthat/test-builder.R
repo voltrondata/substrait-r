@@ -48,3 +48,8 @@ test_that("substrait_evaluate() calls Consumer$finish()", {
   # (the default GenericConsumer$finish_builder() method does nothing)
   expect_identical(substrait_evaluate(builder), builder)
 })
+
+test_that("print()ing a substrait_builder calls Consumer$print_builder()", {
+  builder <- substrait_builder(data.frame(col1 = 1, col2 = "one"))
+  expect_output(expect_identical(print(builder), builder), "substrait_builder")
+})
