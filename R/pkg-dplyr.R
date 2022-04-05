@@ -22,7 +22,7 @@
 #' dplyr::transmute(compiler, mpg + 10)
 #' dplyr::arrange(compiler, desc(mpg))
 #'
-select.substrait_compiler <- function(.data, ...) {
+select.SubstraitCompiler <- function(.data, ...) {
   # Named vector of column names/indices
   column_indices <- tidyselect::eval_select(
     rlang::expr(c(...)),
@@ -37,10 +37,10 @@ select.substrait_compiler <- function(.data, ...) {
   substrait_project(.data, !!! new_mask)
 }
 
-#' @rdname select.substrait_compiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr rename
 #' @export
-rename.substrait_compiler <- function(.data, ...) {
+rename.SubstraitCompiler <- function(.data, ...) {
   # Named vector of column names/indices
   column_indices <- tidyselect::eval_rename(
     rlang::expr(c(...)),
@@ -59,32 +59,32 @@ rename.substrait_compiler <- function(.data, ...) {
   substrait_project(.data, !!! new_mask)
 }
 
-#' @rdname select.substrait_compiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr filter
 #' @export
-filter.substrait_compiler <- function(.data, ...) {
+filter.SubstraitCompiler <- function(.data, ...) {
   substrait_filter(.data, ...)
 }
 
-#' @rdname select.substrait_compiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr mutate
 #' @export
-mutate.substrait_compiler <- function(.data, ...) {
+mutate.SubstraitCompiler <- function(.data, ...) {
   mask <- .data$mask
   substrait_project(.data, !!! mask, ...)
 }
 
-#' @rdname select.substrait_compiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr transmute
 #' @export
-transmute.substrait_compiler <- function(.data, ...) {
+transmute.SubstraitCompiler <- function(.data, ...) {
   substrait_project(.data, ...)
 }
 
-#' @rdname select.substrait_compiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr arrange
 #' @export
-arrange.substrait_compiler <- function(.data, ...) {
+arrange.SubstraitCompiler <- function(.data, ...) {
   quos <- rlang::enquos(...)
 
   with_translated_desc <- lapply(
@@ -100,10 +100,10 @@ arrange.substrait_compiler <- function(.data, ...) {
   substrait_sort(.data, !!! with_translated_desc)
 }
 
-#' @rdname select.substrait_compiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr collect
 #' @export
-collect.substrait_compiler <- function(x, ...) {
+collect.SubstraitCompiler <- function(x, ...) {
   dplyr::as_tibble(substrait_evaluate(x, ...))
 }
 
