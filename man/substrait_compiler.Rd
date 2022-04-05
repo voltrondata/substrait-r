@@ -4,7 +4,6 @@
 \alias{substrait_compiler}
 \alias{substrait_compiler.substrait_compiler}
 \alias{substrait_compiler.default}
-\alias{substrait_evaluate}
 \title{Build a Substrait plan}
 \usage{
 substrait_compiler(rel, ..., consumer = SubstraitCompiler$new())
@@ -12,8 +11,6 @@ substrait_compiler(rel, ..., consumer = SubstraitCompiler$new())
 \method{substrait_compiler}{substrait_compiler}(rel, ..., consumer = SubstraitCompiler$new())
 
 \method{substrait_compiler}{default}(rel, ..., consumer = SubstraitCompiler$new())
-
-substrait_evaluate(builder, ...)
 }
 \arguments{
 \item{rel}{A table-like object with which to create a builder.}

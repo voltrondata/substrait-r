@@ -28,18 +28,6 @@ substrait_compiler.default <- function(rel, ..., consumer = SubstraitCompiler$ne
   consumer$create_builder(rel, ...)
 }
 
-#' @rdname substrait_compiler
-#' @export
-substrait_evaluate <- function(builder, ...) {
-  builder$consumer$evaluate_builder(builder, ...)
-}
-
-#' @export
-print.substrait_compiler <- function(x, ...) {
-  try(x$consumer$print_builder(x, ...))
-  invisible(x)
-}
-
 new_substrait_compiler <- function(x) {
   structure(x, class = "substrait_compiler")
 }

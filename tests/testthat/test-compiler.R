@@ -42,14 +42,3 @@ test_that("substrait_compiler() returns its input if it's already a builder", {
   builder <- substrait_compiler(data.frame(col1 = 1, col2 = "one"))
   expect_identical(substrait_compiler(builder), builder)
 })
-
-test_that("substrait_evaluate() calls Consumer$finish()", {
-  builder <- substrait_compiler(data.frame(col1 = 1, col2 = "one"))
-  # (the default SubstraitCompiler$finish_builder() method does nothing)
-  expect_identical(substrait_evaluate(builder), builder)
-})
-
-test_that("print()ing a substrait_compiler calls Consumer$print_builder()", {
-  builder <- substrait_compiler(data.frame(col1 = 1, col2 = "one"))
-  expect_output(expect_identical(print(builder), builder), "substrait_compiler")
-})
