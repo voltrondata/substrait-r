@@ -1,38 +1,8 @@
 
-#' Build a Substrait plan
-#'
-#' @param compiler A [substrait_compiler()]
-#' @param compiler A [SubstraitCompiler] instance
-#' @param rel A table-like object with which to create a compiler.
-#' @param ... Passed to the [SubstraitCompiler] when creating a new compiler
-#'
-#' @return An object of class 'substrait_compiler'
-#' @export
-#'
-#' @examples
-#' substrait_compiler(data.frame(col1 = 1 , col2 = "one"))
-#'
-substrait_compiler <- function(rel, ..., compiler = SubstraitCompiler$new()) {
-  UseMethod("substrait_compiler")
-}
-
-#' @rdname substrait_compiler
-#' @export
-substrait_compiler.SubstraitCompiler <- function(rel, ..., compiler = SubstraitCompiler$new()) {
-  rel
-}
-
-#' @rdname substrait_compiler
-#' @export
-substrait_compiler.default <- function(rel, ..., compiler = SubstraitCompiler$new()) {
-  compiler$create_compiler(rel, ...)
-}
-
-
 #' Substrait Compiler
 #'
 #' In general, the substrait package provides compiler-agnostic tools to
-#' generate `substrait.Plan` objects. However, the compiler that will be
+#' generate `substrait.Plan` objects. However, the consumer that will be
 #' evaluating the plan has more information and in many cases has the ability
 #' to provide more meaningful validation and output than substrait
 #' can provide on its own. The `Compiler` R6 class is a mutable object that
@@ -256,3 +226,32 @@ SubstraitCompiler <- R6::R6Class(
     id_counter = NULL
   )
 )
+
+#' Build a Substrait plan
+#'
+#' @param compiler A [SubstraitCompiler]
+#' @param object A table-like object with which to create a compiler.
+#' @param ... Passed to the [SubstraitCompiler] when creating a new compiler
+#'
+#' @return An object of class 'substrait_compiler'
+#' @export
+#'
+#' @examples
+#' substrait_compiler(data.frame(col1 = 1 , col2 = "one"))
+#'
+substrait_compiler <- function(object, ..., compiler = SubstraitCompiler$new()) {
+  UseMethod("substrait_compiler")
+}
+
+#' @rdname substrait_compiler
+#' @export
+substrait_compiler.SubstraitCompiler <- function(object, ..., compiler = SubstraitCompiler$new()) {
+  object
+}
+
+#' @rdname substrait_compiler
+#' @export
+substrait_compiler.default <- function(object, ..., compiler = SubstraitCompiler$new()) {
+  compiler$create_compiler(object, ...)
+}
+

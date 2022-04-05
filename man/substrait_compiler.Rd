@@ -6,18 +6,18 @@
 \alias{substrait_compiler.default}
 \title{Build a Substrait plan}
 \usage{
-substrait_compiler(rel, ..., compiler = SubstraitCompiler$new())
+substrait_compiler(object, ..., compiler = SubstraitCompiler$new())
 
-\method{substrait_compiler}{SubstraitCompiler}(rel, ..., compiler = SubstraitCompiler$new())
+\method{substrait_compiler}{SubstraitCompiler}(object, ..., compiler = SubstraitCompiler$new())
 
-\method{substrait_compiler}{default}(rel, ..., compiler = SubstraitCompiler$new())
+\method{substrait_compiler}{default}(object, ..., compiler = SubstraitCompiler$new())
 }
 \arguments{
-\item{rel}{A table-like object with which to create a compiler.}
+\item{object}{A table-like object with which to create a compiler.}
 
 \item{...}{Passed to the \link{SubstraitCompiler} when creating a new compiler}
 
-\item{compiler}{A \link{SubstraitCompiler} instance}
+\item{compiler}{A \link{SubstraitCompiler}}
 }
 \value{
 An object of class 'substrait_compiler'
