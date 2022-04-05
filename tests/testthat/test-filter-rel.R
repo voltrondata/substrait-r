@@ -5,7 +5,7 @@ test_that("substrait_filter() appends a FilterRel to a compiler", {
 
   result <- substrait_filter(compiler)
 
-  expect_s3_class(result, "substrait_compiler")
+  expect_s3_class(result, "SubstraitCompiler")
 
   # check that we did append a FilterRel
   expect_identical(
