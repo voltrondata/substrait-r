@@ -50,6 +50,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \item \href{#method-named_table}{\code{SubstraitCompiler$named_table()}}
 \item \href{#method-named_table_list}{\code{SubstraitCompiler$named_table_list()}}
 \item \href{#method-validate}{\code{SubstraitCompiler$validate()}}
+\item \href{#method-plan}{\code{SubstraitCompiler$plan()}}
 \item \href{#method-evaluate}{\code{SubstraitCompiler$evaluate()}}
 \item \href{#method-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
 \item \href{#method-function_id}{\code{SubstraitCompiler$function_id()}}
@@ -145,6 +146,20 @@ provide meaningful feedback (e.g., errors, warnings)
 
 \subsection{Returns}{
 \code{self}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-plan"></a>}}
+\if{latex}{\out{\hypertarget{method-plan}{}}}
+\subsection{Method \code{plan()}}{
+Assembles a \code{substrait.Plan} from the current information available
+to the compiler.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$plan()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A \code{substrait.Plan}
 }
 }
 \if{html}{\out{<hr>}}

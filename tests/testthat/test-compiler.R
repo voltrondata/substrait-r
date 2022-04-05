@@ -120,7 +120,6 @@ test_that("substrait_compiler_function_id() works", {
   )
 })
 
-
 test_that("SubstraitCompiler$resolve_function() works", {
   compiler <- SubstraitCompiler$new()
 
@@ -139,5 +138,28 @@ test_that("SubstraitCompiler$resolve_function() works", {
       ),
       output_type = substrait$Type$create()
     )
+  )
+})
+
+test_that("SubstraitCompiler$plan() includes rel and extensions", {
+  df <- data.frame(col = 1L)
+
+  compiler <- SubstraitCompiler$new(df)
+  fun <- compiler$resolve_function(
+    "some_fun",
+    list(1L),
+    substrait$Expression$ScalarFunction$create()
+  )
+
+  plan <- compiler$plan()
+  expect_identical(
+    plan$extension_uris[[1]]$extension_uri_anchor,
+    1
+  )
+
+  plan <- compiler$plan()
+  expect_identical(
+    plan$extensions[[1]]$extension_function$function_anchor,
+    fun$function_reference
   )
 })

@@ -141,6 +141,33 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
+    #' Assembles a `substrait.Plan` from the current information available
+    #' to the compiler.
+    #'
+    #' @return A `substrait.Plan`
+    #'
+    plan = function() {
+      substrait$Plan$create(
+        relations = list(
+          substrait$PlanRel$create(
+            rel = self$rel
+          )
+        ),
+        extension_uris = list(
+          private$extension_uri
+        ),
+        extensions = c(
+          lapply(
+            unname(private$function_extensions),
+            function(x) substrait$extensions$SimpleExtensionDeclaration$create(
+              extension_function = x
+            )
+          )
+        )
+      )
+    },
+
+    #' @description
     #' Evaluates the plan being built by the compiler.
     #'
     #' @param ... Extra arguments specific to the compiler type.

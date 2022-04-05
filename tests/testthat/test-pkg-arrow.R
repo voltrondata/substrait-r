@@ -1,7 +1,5 @@
 
 test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabular", {
-  skip_if_not_installed("arrow")
-
   rb <- arrow::record_batch(
     a_field = arrow::Array$create(integer(), arrow::int32())
   )
@@ -27,8 +25,6 @@ test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabul
 })
 
 test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", {
-  skip_if_not_installed("arrow")
-
   compiler <- ArrowSubstraitCompiler$new()
 
   translated <- compiler$resolve_function("abs", list(5), list())
@@ -56,7 +52,7 @@ test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", 
 })
 
 test_that("ArrowSubstraitCompiler can evaluate a plan with one relation", {
-  skip_if_not_installed("arrow")
+  skip_if_not(has_arrow_with_substrait())
 
   df <- data.frame(
     letter = letters[1:5],
@@ -67,9 +63,42 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with one relation", {
   expect_identical(as.data.frame(df), df)
 })
 
-test_that("as_subtrait() works for arrow DataType", {
-  skip_if_not_installed("arrow")
 
+test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
+  skip_if_not(has_arrow_with_substrait())
+
+  df <- data.frame(
+    letter = letters[1:5],
+    number = 1:5
+  )
+
+  compiler <- arrow_substrait_compiler(df)
+  result <- substrait_project(compiler, number)
+
+  skip("This doesn't work (returns zero columns)")
+  expect_identical(
+    as.data.frame(as.data.frame(result$evaluate())),
+    df["number"]
+  )
+})
+
+
+test_that("ArrowSubstraitCompiler can evaluate a plan with a function call", {
+  skip_if_not(has_arrow_with_substrait())
+
+  df <- data.frame(
+    letter = letters[1:5],
+    number = 1:5
+  )
+
+  compiler <- arrow_substrait_compiler(df)
+  result <- substrait_filter(compiler, number >= 4)
+
+  skip("This doesn't work (crashes)")
+  expect_identical(as.data.frame(result$evaluate()), df[df$number >= 4, ])
+})
+
+test_that("as_subtrait() works for arrow DataType", {
   expect_identical(
     as_substrait(arrow::bool()),
     substrait_boolean()
@@ -102,8 +131,6 @@ test_that("as_subtrait() works for arrow DataType", {
 })
 
 test_that("as_subtrait() works for arrow Field", {
-  skip_if_not_installed("arrow")
-
   expect_identical(
     as_substrait(arrow::field("a field", arrow::int32())),
     as_substrait(arrow::int32())
@@ -111,8 +138,6 @@ test_that("as_subtrait() works for arrow Field", {
 })
 
 test_that("as_substrait() works for arrow Schema", {
-  skip_if_not_installed("arrow")
-
   expect_identical(
     as_substrait(arrow::schema("a field" = arrow::int32())),
     substrait$NamedStruct$create(
@@ -127,8 +152,6 @@ test_that("as_substrait() works for arrow Schema", {
 })
 
 test_that("from_substrait() works for arrow DataType", {
-  skip_if_not_installed("arrow")
-
   expect_true(
     from_substrait(substrait$Type$create(), arrow::null()) ==
       arrow::null()
@@ -161,8 +184,6 @@ test_that("from_substrait() works for arrow DataType", {
 })
 
 test_that("from_substrait() works for arrow::schema()", {
-  skip_if_not_installed("arrow")
-
   expect_true(
     from_substrait(
       substrait$NamedStruct$create(
@@ -195,8 +216,6 @@ test_that("from_substrait() works for arrow::schema()", {
 })
 
 test_that("as_substrait() works for ArrowTabular", {
-  skip_if_not_installed("arrow")
-
   rb <- arrow::record_batch(
     a_field = arrow::Array$create(integer(), arrow::int32())
   )
@@ -213,8 +232,6 @@ test_that("as_substrait() works for ArrowTabular", {
 })
 
 test_that("from_substrait() works for RecordBatch", {
-  skip_if_not_installed("arrow")
-
   rb <- arrow::record_batch(
     a_field = arrow::Array$create(integer(), arrow::int32())
   )

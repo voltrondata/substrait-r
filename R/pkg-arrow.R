@@ -45,16 +45,13 @@ ArrowSubstraitCompiler <- R6::R6Class(
     },
 
     evaluate = function(...) {
-      plan <- substrait$Plan$create(
-        relations = list(
-          substrait$PlanRel$create(
-            rel = self$rel
-          )
-        )
-      )
+      plan <- self$plan()
+
+      plan$extension_uris[[1]]$uri <-
+        "https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml"
 
       substrait_eval_arrow(
-        plan,
+        plan = plan,
         tables = self$named_table_list(),
         col_names = self$schema$names
       )

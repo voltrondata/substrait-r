@@ -75,12 +75,7 @@ simple_integer_field_reference <- function(pos0) {
       direct_reference = substrait$Expression$ReferenceSegment$create(
         struct_field = substrait$Expression$ReferenceSegment$StructField$create(
           # 0-indexed!
-          field = pos0,
-          # dd: Do we need this? It seems like this would be indexing in to a
-          # nested struct (like df$col_that_is_a_df[[0]])?
-          child = substrait$Expression$ReferenceSegment$create(
-            struct_field = substrait$Expression$ReferenceSegment$StructField$create()
-          )
+          field = pos0
         )
       )
     )
