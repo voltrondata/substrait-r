@@ -31,9 +31,9 @@ test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", 
   translated_fun <- compiler$function_extension(translated$function_reference)
   expect_identical(translated_fun$name, "abs_checked")
 
-  translated <- compiler$resolve_function(">", list(5, 6), list())
+  translated <- compiler$resolve_function("+", list(5, 6), list())
   translated_fun <- compiler$function_extension(translated$function_reference)
-  expect_identical(translated_fun$name, "greater")
+  expect_identical(translated_fun$name, "add")
 
   expect_error(
     compiler$resolve_function("not_a_fun!", list(), list()),
@@ -46,7 +46,7 @@ test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", 
   )
 
   expect_error(
-    compiler$resolve_function(">", list(), list()),
+    compiler$resolve_function("+", list(), list()),
     "Expected two arguments"
   )
 })
@@ -81,7 +81,7 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
   )
 })
 
-test_that("ArrowSubstraitCompiler can evaluate a plan with a function call", {
+test_that("ArrowSubstraitCompiler can evaluate a project with a function call", {
   skip_if_not(has_arrow_with_substrait())
 
   df <- data.frame(
@@ -90,10 +90,12 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a function call", {
   )
 
   compiler <- arrow_substrait_compiler(df)
-  result <- substrait_filter(compiler, number >= 4)
+  result <- substrait_project(compiler, added = number + 1L)
 
-  skip("This doesn't work (crashes)")
-  expect_identical(as.data.frame(result$evaluate()), df[df$number >= 4, ])
+  expect_identical(
+    as.data.frame(as.data.frame(result$evaluate())),
+    data.frame(added = 2:6)
+  )
 })
 
 test_that("as_subtrait() works for arrow DataType", {

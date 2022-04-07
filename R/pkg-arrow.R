@@ -6,8 +6,14 @@ ArrowSubstraitCompiler <- R6::R6Class(
       # To get started, just replace the name of the function with the
       # arrow compute name for functions that don't have a custom
       # translation.
-      unary_map <- asNamespace("arrow")$.unary_function_map
-      binary_map <- asNamespace("arrow")$.binary_function_map
+      # unary_map <- asNamespace("arrow")$.unary_function_map
+      # binary_map <- asNamespace("arrow")$.binary_function_map
+
+      # 'add' is currently the only function that works:
+      # https://github.com/apache/arrow/blob/master/cpp/src/arrow/engine/substrait/extension_set.cc#L245-L253
+      # ...but also include one function that doesn't work so that we can test
+      unary_map <- c("abs" = "abs_checked")
+      binary_map <- c("+" = "add")
 
       name <- gsub("^.*?::", "", name)
       if (name %in% names(unary_map)) {
@@ -26,7 +32,7 @@ ArrowSubstraitCompiler <- R6::R6Class(
           stop(
             sprintf(
               "Expected two arguments in call to %s (%s) but got %d",
-              name, unname(unary_map[name]), length(args)
+              name, unname(binary_map[name]), length(args)
             )
           )
         }
