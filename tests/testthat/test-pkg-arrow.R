@@ -81,7 +81,6 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
   )
 })
 
-
 test_that("ArrowSubstraitCompiler can evaluate a plan with a function call", {
   skip_if_not(has_arrow_with_substrait())
 
