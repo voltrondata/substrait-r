@@ -39,22 +39,23 @@ library(substrait)
 library(dplyr)
 
 mtcars %>% 
-  arrow_substrait_compiler() %>% 
-  select(mpg, wt) %>% 
+  arrow_substrait_compiler() %>%
+  mutate(mpg_plus_one = mpg + 1) %>% 
+  select(mpg, wt, mpg_plus_one) %>% 
   collect()
-#> # A tibble: 32 × 2
-#>      mpg    wt
-#>    <dbl> <dbl>
-#>  1  21    2.62
-#>  2  21    2.88
-#>  3  22.8  2.32
-#>  4  21.4  3.22
-#>  5  18.7  3.44
-#>  6  18.1  3.46
-#>  7  14.3  3.57
-#>  8  24.4  3.19
-#>  9  22.8  3.15
-#> 10  19.2  3.44
+#> # A tibble: 32 × 3
+#>      mpg    wt mpg_plus_one
+#>    <dbl> <dbl>        <dbl>
+#>  1  21    2.62         22  
+#>  2  21    2.88         22  
+#>  3  22.8  2.32         23.8
+#>  4  21.4  3.22         22.4
+#>  5  18.7  3.44         19.7
+#>  6  18.1  3.46         19.1
+#>  7  14.3  3.57         15.3
+#>  8  24.4  3.19         25.4
+#>  9  22.8  3.15         23.8
+#> 10  19.2  3.44         20.2
 #> # … with 22 more rows
 ```
 

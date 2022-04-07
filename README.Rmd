@@ -42,8 +42,9 @@ library(substrait)
 library(dplyr)
 
 mtcars %>% 
-  arrow_substrait_compiler() %>% 
-  select(mpg, wt) %>% 
+  arrow_substrait_compiler() %>%
+  mutate(mpg_plus_one = mpg + 1) %>% 
+  select(mpg, wt, mpg_plus_one) %>% 
   collect()
 ```
 
