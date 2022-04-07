@@ -225,6 +225,8 @@ from_substrait.RecordBatch <- function(msg, x, ...) {
 }
 
 substrait_eval_arrow <- function(plan, tables, col_names) {
+  stopifnot(has_arrow_with_substrait())
+
   plan <- as_substrait(plan, "substrait.Plan")
   stopifnot(rlang::is_named2(tables))
 
@@ -299,7 +301,13 @@ substrait_eval_arrow <- function(plan, tables, col_names) {
 }
 
 has_arrow_with_substrait <- function() {
+  # ...we need arrow installed
   requireNamespace("arrow", quietly = TRUE) &&
+    # ...with do_exec_plan_substrait()
     "do_exec_plan_substrait" %in% names(getNamespace("arrow")) &&
-    length(formals(getNamespace("arrow")$do_exec_plan_substrait)) == 1
+    # ...with the right number of arguments (was modified by a recent PR)
+    length(formals(getNamespace("arrow")$do_exec_plan_substrait)) == 1 &&
+    # ...and we need it not to be a shell that will error because arrow wasn't
+    # built with ARROW_ENGINE=ON
+    identical(arrow::arrow_info()$capabilities["engine"], c("engine" = TRUE))
 }
