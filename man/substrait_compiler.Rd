@@ -2,59 +2,29 @@
 % Please edit documentation in R/compiler.R
 \name{substrait_compiler}
 \alias{substrait_compiler}
-\alias{substrait_compiler_function_id}
-\alias{substrait_compiler_function}
-\title{Substrait compiler}
+\alias{substrait_compiler.SubstraitCompiler}
+\alias{substrait_compiler.default}
+\title{Initialize a Substrait Compiler}
 \usage{
-substrait_compiler()
+substrait_compiler(object, ...)
 
-substrait_compiler_function_id(compiler, name, arg_types)
+\method{substrait_compiler}{SubstraitCompiler}(object, ...)
 
-substrait_compiler_function(
-  compiler,
-  name,
-  args,
-  pkg = NULL,
-  context = NULL,
-  ...
-)
+\method{substrait_compiler}{default}(object, ...)
 }
 \arguments{
-\item{compiler}{a \code{\link[=substrait_compiler]{substrait_compiler()}}}
+\item{object}{A table-like object with which to create a compiler.}
 
-\item{name}{A function name}
-
-\item{arg_types}{A \code{list()} of substrait.Type objects}
-
-\item{args}{A \code{list()} of arguments, which may be R objects or field
-references and may be named (i.e., these have not yet been converted
-into substrait.Expression objects).}
-
-\item{pkg}{An R package name or NULL if no R package name was present
-in the function call.}
-
-\item{context}{An optional context that can be used to pick the correct
-function (e.g., scalar, window, aggregate).}
-
-\item{...}{Passed to S3 methods.}
+\item{...}{Passed to the \link{SubstraitCompiler} when creating a new compiler}
 }
 \value{
-\itemize{
-\item \code{substrait_compiler()} returns an object of class "substrait_compiler"
-\item \code{substrait_compiler_function_id()} returns an integer identifier for
-a function with a given name and argument types
-\item \code{substrait_compiler_function()} returns
-a "substrait.Expression.ScalarFunction", a
-"substrait.Expression.WindowFunction", or a "substrait.AggregateFunction"
-depending on the \code{context}.
-}
+An object of class 'substrait_compiler'
 }
 \description{
-Substrait compiler
+Creates a \link{SubstraitCompiler} instance initialized with \code{object}
+(e.g., a \code{data.frame()}).
 }
 \examples{
-(compiler <- substrait_compiler())
-substrait_compiler_function_id(compiler, "some_func", list(integer()))
-substrait_compiler_function(compiler, "some_func", list(1L))
+substrait_compiler(data.frame(col1 = 1 , col2 = "one"))
 
 }

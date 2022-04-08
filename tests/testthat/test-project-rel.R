@@ -1,4 +1,23 @@
 
+test_that("substrait_project() can select all columns unchanged", {
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  compiler <- substrait_compiler(tbl)
+
+  result <- substrait_project(compiler, col1, col2)
+
+  expect_s3_class(result, "SubstraitCompiler")
+
+  # check that we did append a ProjectRel
+  expect_identical(
+    result$rel$project$input,
+    compiler$rel
+  )
+
+  # check that nothing else about the compiler changed
+  expect_identical(result$schema, compiler$schema)
+  expect_identical(result$mask, compiler$mask)
+})
+
 test_that("build_projections can create projection expressions", {
   query <- substrait_dplyr_query(
     mtcars,

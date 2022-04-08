@@ -23,29 +23,28 @@ test_that("quosures of atomics can be translated to Expression objects", {
 })
 
 test_that("quosures with field references can be translated to Expressions", {
-  context <- new_context(data.frame(a = double(), b = character()))
+  compiler <- substrait_compiler(data.frame(a = double(), b = character()))
 
   ref_a <- simple_integer_field_reference(0)
   ref_b <- simple_integer_field_reference(1)
 
-  expect_identical(as_substrait(rlang::quo(a), context = context), ref_a)
-  expect_identical(as_substrait(rlang::quo(.data$a), context = context), ref_a)
-  expect_identical(as_substrait(rlang::quo(.data[["a"]]), context = context), ref_a)
+  expect_identical(as_substrait(rlang::quo(a), compiler = compiler), ref_a)
+  expect_identical(as_substrait(rlang::quo(.data$a), compiler = compiler), ref_a)
+  expect_identical(as_substrait(rlang::quo(.data[["a"]]), compiler = compiler), ref_a)
 
-  expect_identical(as_substrait(rlang::quo(b), context = context), ref_b)
-  expect_identical(as_substrait(rlang::quo(.data$b), context = context), ref_b)
-  expect_identical(as_substrait(rlang::quo(.data[["b"]]), context = context), ref_b)
+  expect_identical(as_substrait(rlang::quo(b), compiler = compiler), ref_b)
+  expect_identical(as_substrait(rlang::quo(.data$b), compiler = compiler), ref_b)
+  expect_identical(as_substrait(rlang::quo(.data[["b"]]), compiler = compiler), ref_b)
 })
 
 test_that("quosures with calls can be translated to Expressions", {
-  compiler <- substrait_compiler()
-  context <- new_context(data.frame(a = double(), b = character()))
+  compiler <- substrait_compiler(data.frame(a = double(), b = character()))
 
   expect_identical(
-    as_substrait(rlang::quo(some_fun(5L)), compiler = compiler, context = context),
+    as_substrait(rlang::quo(some_fun(5L)), compiler = compiler),
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
-        function_reference = 1,
+        function_reference = 2,
         args = list(
           substrait$Expression$create(
             literal = substrait$Expression$Literal$create(i32 = 5L)
@@ -57,10 +56,10 @@ test_that("quosures with calls can be translated to Expressions", {
   )
 
   expect_identical(
-    as_substrait(rlang::quo(some_pkg::some_fun(5L)), compiler = compiler, context = context),
+    as_substrait(rlang::quo(some_pkg::some_fun(5L)), compiler = compiler),
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
-        function_reference = 2,
+        function_reference = 3,
         args = list(
           substrait$Expression$create(
             literal = substrait$Expression$Literal$create(i32 = 5L)
@@ -76,6 +75,32 @@ test_that("quosures with calls can be translated to Expressions", {
     substrait$Expression$create(
       literal = substrait$Expression$Literal$create(
         fp64 = sqrt(5L)
+      )
+    )
+  )
+})
+
+test_that("quosures can be translated to SortFields", {
+  expect_identical(
+    as_substrait(rlang::quo(5L), "substrait.SortField"),
+    substrait$SortField$create(
+      expr = substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(i32 = 5L)
+      )
+    )
+  )
+
+  expect_identical(
+    as_substrait(
+      substrait$SortField$create(
+        expr = substrait$Expression$create(
+          literal = substrait$Expression$Literal$create(i32 = 5L)
+        )
+      )
+    ),
+    substrait$SortField$create(
+      expr = substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(i32 = 5L)
       )
     )
   )
@@ -109,7 +134,7 @@ test_that("as_substrait() can convert Expression objects to Types", {
     as_substrait(
       simple_integer_field_reference(0L),
       "substrait.Type",
-      context = new_context(data.frame(a = 5L))
+      compiler = substrait_compiler(data.frame(a = 5L))
     ),
     substrait_i32()
   )
@@ -118,7 +143,7 @@ test_that("as_substrait() can convert Expression objects to Types", {
     as_substrait(
       simple_integer_field_reference(0L),
       "substrait.Type",
-      context = new_context(data.frame())
+      compiler = substrait_compiler(data.frame())
     ),
     "Field reference out of bounds"
   )
@@ -127,7 +152,7 @@ test_that("as_substrait() can convert Expression objects to Types", {
     as_substrait(
       simple_integer_field_reference(0L),
       "substrait.Type",
-      context = list()
+      compiler = list()
     ),
     "Can't guess field reference type without"
   )
