@@ -23,7 +23,7 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name Install package system dependencies
+      - name: Install package system dependencies
         run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v1
