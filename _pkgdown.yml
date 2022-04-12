@@ -19,5 +19,16 @@ reference:
   desc: Functions used to create substrait objects
   contents:
     - substrait_schema
+    - substrait_create
+    - build_plan
+    - as_substrait
+    - substrait-type
+
+- title: "substrait compilers"
+  desc: Functions for creating substrait compilers
+  contents:
+    - SubstraitCompiler
+    - substrait_compiler
+    - arrow_substrait_compiler
 
 
