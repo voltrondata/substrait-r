@@ -7,6 +7,7 @@ reference:
   contents:
     - select.SubstraitCompiler
 
+
 - title: "create substrait relations"
   desc: Functions used to create substrait relations
   contents:
