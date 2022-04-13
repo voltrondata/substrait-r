@@ -1,0 +1,34 @@
+template:
+  bootstrap: 5
+
+reference:
+- title: "Dplyr verbs"
+  desc: Implementations of dplyr verbs that can be used to generate Substrait plans
+  contents:
+    - select.SubstraitCompiler
+
+
+- title: "Create substrait relations"
+  desc: Functions used to create substrait relations
+  contents:
+    - substrait_sort
+    - substrait_project
+    - substrait_filter
+
+- title: "Create substrait objects"
+  desc: Functions used to create substrait objects
+  contents:
+    - substrait_schema
+    - substrait_create
+    - build_plan
+    - as_substrait
+    - substrait-type
+
+- title: "Substrait compilers"
+  desc: Functions for creating substrait compilers
+  contents:
+    - SubstraitCompiler
+    - substrait_compiler
+    - arrow_substrait_compiler
+
+
