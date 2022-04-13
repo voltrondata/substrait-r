@@ -1,8 +1,0 @@
-# select() doesn't work on variables that have been excluded in a previous select()
-
-    Code
-      base_table(mtcars) %>% dplyr::select(hp, mpg) %>% dplyr::select(carb)
-    Error <vctrs_error_subscript_oob>
-      Can't subset columns past the end.
-      x Column `carb` doesn't exist.
-
