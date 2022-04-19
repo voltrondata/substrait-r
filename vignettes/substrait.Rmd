@@ -1,0 +1,59 @@
+---
+title: "Introduction to substrait"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{substrait}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(substrait)
+```
+
+# Questions
+
+## What is Substrait?
+
+Substrait is a specification for query plans. It's an intermediate representation - something which can be used to translate between a front-end (e.g. ibis/dplyr) and a back-end (e.g. the Arrow Compute Engine, DuckDB).  Your first reaction to this may be asking "but isn't this extra work, and extra code?" to do something which was possible before - and you'd be absolutely correct.  The reason we think that this extra work is important and worthwhile is that it allows for a standardised way of allowing interoperability between different front-ends and back-ends.
+
+Imagine we have 2 different projects:
+* using a dplyr front-end to query the Arrow compute engine (like in arrow)
+* using SQL front-end to query the DuckDB compute engine (like in duckdb)
+
+An initial implementation of substrait would allow us to go dplyr->substrait->Arrow, or SQL->substrait->DuckDB.  This would involve implementing a dplyr->substrait producer (a producer is a library which generates substrait plans) and a SQL->substrait producer.  Both the Arrow compute engine and DuckDB backends would need updating so that they can act as substrait consumers - libraries which can take substrait plans and execute the analyses described in them.  
+
+The benefits of substrait appear when we can mix-and-match producers and consumers - now, instead of having to write and maintain the code to link each front-end and back-end, we should be able to take any substrait producer, produce a substrait plan, and send it to any substrait consumer.
+
+### What is a Substrait producer?
+
+A substrait producer is code which produces Substrait plans.  This package is an example of a substrait producer, but others include Python's ibis-substrait, DuckDb's substrait code, and more.
+
+### What is a Substrait consumer?
+
+A substrait consumer is something which consumes Substrait plans and runs the analyses described in them, e.g. duckDB; Arrow Compute Engine
+
+## What problems does it solve?
+
+* Interoperability and reduction of duplication - as the project matures, we will move towards being able to generate Substrait plans which can be evaluated by different back-ends.  This reduces the overheads of having so many different implementations.
+
+* Standardisation - having a common standard for data types and functions will simplify the aim of interoperability, and make it easier to share a common framework for query representation
+
+## How does this work?
+
+The Substrait specification provides object definitions via proto files.  It provides definitions for things like:
+* data types
+* expressions
+* joins
+* data operations (e.g. filtering)
+
+
+
+
