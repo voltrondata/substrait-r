@@ -22,15 +22,15 @@ library(substrait)
 
 ## What is Substrait?
 
-Substrait is a specification for query plans. It's an intermediate representation - something which can be used to translate between a front-end (e.g. ibis/dplyr) and a back-end (e.g. the Arrow Compute Engine, DuckDB).  Your first reaction to this may be asking "but isn't this extra work, and extra code?" to do something which was possible before - and you'd be absolutely correct.  The reason we think that this extra work is important and worthwhile is that it allows for a standardised way of allowing interoperability between different front-ends and back-ends.
+Substrait is a specification for query plans. It's an intermediate representation - something which can be used to translate between an API (e.g. ibis/dplyr/SQL) and an engine (e.g. the Arrow Compute Engine, DuckDB).  Your first reaction to this may be asking "but isn't this extra work, and extra code?" to do something which was possible before - and you'd be absolutely correct.  The reason we think that this extra work is important and worthwhile is that it allows for a standardised way of allowing interoperability between different APIs and engines.
 
 Imagine we have 2 different projects:
-* using a dplyr front-end to query the Arrow compute engine (like in arrow)
-* using SQL front-end to query the DuckDB compute engine (like in duckdb)
+* using the dplyr API to query the Arrow compute engine (like in arrow)
+* using SQL to query the DuckDB compute engine (like in duckdb)
 
 An initial implementation of substrait would allow us to go dplyr->substrait->Arrow, or SQL->substrait->DuckDB.  This would involve implementing a dplyr->substrait producer (a producer is a library which generates substrait plans) and a SQL->substrait producer.  Both the Arrow compute engine and DuckDB backends would need updating so that they can act as substrait consumers - libraries which can take substrait plans and execute the analyses described in them.  
 
-The benefits of substrait appear when we can mix-and-match producers and consumers - now, instead of having to write and maintain the code to link each front-end and back-end, we should be able to take any substrait producer, produce a substrait plan, and send it to any substrait consumer.
+The benefits of substrait appear when we can mix-and-match producers and consumers - now, instead of having to write and maintain the code to link each API and engine, we should be able to take any substrait producer, produce a substrait plan, and send it to any substrait consumer.
 
 ### What is a Substrait producer?
 
