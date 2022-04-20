@@ -44,16 +44,13 @@ A substrait consumer is something which consumes Substrait plans and runs the an
 
 * Interoperability and reduction of duplication - as the project matures, we will move towards being able to generate Substrait plans which can be evaluated by different back-ends.  This reduces the overheads of having so many different implementations.
 
-* Standardisation - having a common standard for data types and functions will simplify the aim of interoperability, and make it easier to share a common framework for query representation
+* Standardisation - having a common standard for data types and functions will simplify the aim of interoperability, and make it easier to share a common framework for query representation.
 
 ## How does this work?
 
 The Substrait specification provides object definitions via proto files.  It provides definitions for things like:
 * data types
 * expressions
+* relations
 * joins
 * data operations (e.g. filtering)
-
-
-
-
