@@ -20,7 +20,6 @@ reference:
   contents:
     - substrait_schema
     - substrait_create
-    - build_plan
     - as_substrait
     - substrait-type
 
