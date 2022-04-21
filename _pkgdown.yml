@@ -18,9 +18,7 @@ reference:
 - title: "Create substrait objects"
   desc: Functions used to create substrait objects
   contents:
-    - substrait_schema
     - substrait_create
-    - build_plan
     - as_substrait
     - substrait-type
 
