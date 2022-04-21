@@ -7,15 +7,28 @@ example_data <- tibble::tibble(
   lgl = sample(c(TRUE, FALSE, NA), 10, replace = TRUE),
   false = logical(10),
   chr = letters[c(1:5, NA, 7:10)],
-  fct = factor(letters[c(1:4, NA, NA, 7:10)])
+  #fct = factor(letters[c(1:4, NA, NA, 7:10)])
 )
 
-
 test_that("Empty select returns no columns", {
-  # compare_dplyr_binding(
-  #   .input %>% select() %>% collect(),
-  #   tbl
-  # )
+
+  # This doesn't work - see discussion here: https://substrait.slack.com/archives/C02D7CTQXHD/p1650537609741419
+  # out <- example_data %>%
+  #   arrow_substrait_compiler() %>%
+  #   select() %>%
+  #   collect()
+
+
+  out <- example_data %>%
+    arrow_substrait_compiler() %>%
+    select()
+
+  plan <- out$plan()
+
+  # i.e. expect that the project rel only has item "named" and not "expressions"
+  # write a nice helper function for this?
+  expect_named(plan[["relations"]][[1]][["rel"]][["project"]], "input")
+
 })
 
 # test_that("Empty select still includes the group_by columns", {
