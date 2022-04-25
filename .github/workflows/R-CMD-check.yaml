@@ -30,6 +30,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
 
+
     steps:
       - uses: actions/checkout@v2
 
@@ -47,5 +48,8 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
+
+      - name: Install Arrow with ARROW_SUBSTRAIT turned on
+        run: .github/scripts/install_arrow_substrait.sh
 
       - uses: r-lib/actions/check-r-package@v1
