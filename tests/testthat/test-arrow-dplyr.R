@@ -381,302 +381,247 @@ test_that("mutate with single value for recycling", {
   )
 })
 
-# test_that("dplyr::mutate's examples", {
-#   # Newly created variables are available immediately
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(name, mass) %>%
-#       mutate(
-#         mass2 = mass * 2,
-#         mass2_squared = mass2 * mass2
-#       ) %>%
-#       collect(),
-#     starwars # this is a test tibble that ships with dplyr
-#   )
-#
-#   # As well as adding new variables, you can use mutate() to
-#   # remove variables and modify existing variables.
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(name, height, mass, homeworld) %>%
-#       mutate(
-#         mass = NULL,
-#         height = height * 0.0328084 # convert to feet
-#       ) %>%
-#       collect(),
-#     starwars
-#   )
-#
-#   # Examples we don't support should succeed
-#   # but warn that they're pulling data into R to do so
-#
-#   # across and autosplicing: ARROW-11699
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(name, homeworld, species) %>%
-#       mutate(across(!name, as.factor)) %>%
-#       collect(),
-#     starwars,
-#     warning = "Expression across.*not supported in Arrow"
-#   )
-#
-#   # group_by then mutate
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(name, mass, homeworld) %>%
-#       group_by(homeworld) %>%
-#       mutate(rank = min_rank(desc(mass))) %>%
-#       collect(),
-#     starwars,
-#     warning = TRUE
-#   )
-#
-#   # `.before` and `.after` experimental args: ARROW-11701
-#   df <- tibble(x = 1, y = 2)
-#   compare_dplyr_binding(
-#     .input %>% mutate(z = x + y) %>% collect(),
-#     df
-#   )
-#   #> # A tibble: 1 x 3
-#   #>       x     y     z
-#   #>   <dbl> <dbl> <dbl>
-#   #> 1     1     2     3
-#
-#   compare_dplyr_binding(
-#     .input %>% mutate(z = x + y, .before = 1) %>% collect(),
-#     df
-#   )
-#   #> # A tibble: 1 x 3
-#   #>       z     x     y
-#   #>   <dbl> <dbl> <dbl>
-#   #> 1     3     1     2
-#   compare_dplyr_binding(
-#     .input %>% mutate(z = x + y, .after = x) %>% collect(),
-#     df
-#   )
-#   #> # A tibble: 1 x 3
-#   #>       x     z     y
-#   #>   <dbl> <dbl> <dbl>
-#   #> 1     1     3     2
-#
-#   # By default, mutate() keeps all columns from the input data.
-#   # Experimental: You can override with `.keep`
-#   df <- tibble(x = 1, y = 2, a = "a", b = "b")
-#   compare_dplyr_binding(
-#     .input %>% mutate(z = x + y, .keep = "all") %>% collect(), # the default
-#     df
-#   )
-#   #> # A tibble: 1 x 5
-#   #>       x     y a     b         z
-#   #>   <dbl> <dbl> <chr> <chr> <dbl>
-#   #> 1     1     2 a     b         3
-#   compare_dplyr_binding(
-#     .input %>% mutate(z = x + y, .keep = "used") %>% collect(),
-#     df
-#   )
-#   #> # A tibble: 1 x 3
-#   #>       x     y     z
-#   #>   <dbl> <dbl> <dbl>
-#   #> 1     1     2     3
-#   compare_dplyr_binding(
-#     .input %>% mutate(z = x + y, .keep = "unused") %>% collect(),
-#     df
-#   )
-#   #> # A tibble: 1 x 3
-#   #>   a     b         z
-#   #>   <chr> <chr> <dbl>
-#   #> 1 a     b         3
-#   compare_dplyr_binding(
-#     .input %>% mutate(z = x + y, x, .keep = "none") %>% collect(),
-#     df
-#   )
-#   #> # A tibble: 1 × 2
-#   #>       x     z
-#   #>   <dbl> <dbl>
-#   #> 1     1     3
-#
-#   # Grouping ----------------------------------------
-#   # The mutate operation may yield different results on grouped
-#   # tibbles because the expressions are computed within groups.
-#   # The following normalises `mass` by the global average:
-#   # TODO: ARROW-13926
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(name, mass, species) %>%
-#       mutate(mass_norm = mass / mean(mass, na.rm = TRUE)) %>%
-#       collect(),
-#     starwars,
-#     warning = "window function"
-#   )
-# })
-#
-# test_that("Can mutate after group_by as long as there are no aggregations", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, chr) %>%
-#       group_by(chr) %>%
-#       mutate(int = int + 6L) %>%
-#       collect(),
-#     tbl
-#   )
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(mean = int, chr) %>%
-#       # rename `int` to `mean` and use `mean` in `mutate()` to test that
-#       # `all_funs()` does not incorrectly identify it as an aggregate function
-#       group_by(chr) %>%
-#       mutate(mean = mean + 6L) %>%
-#       collect(),
-#     tbl
-#   )
-#   expect_warning(
-#     tbl %>%
-#       Table$create() %>%
-#       select(int, chr) %>%
-#       group_by(chr) %>%
-#       mutate(avg_int = mean(int)) %>%
-#       collect(),
-#     "window functions not currently supported in Arrow; pulling data into R",
-#     fixed = TRUE
-#   )
-#   expect_warning(
-#     tbl %>%
-#       Table$create() %>%
-#       select(mean = int, chr) %>%
-#       # rename `int` to `mean` and use `mean(mean)` in `mutate()` to test that
-#       # `all_funs()` detects `mean()` despite the collision with a column name
-#       group_by(chr) %>%
-#       mutate(avg_int = mean(mean)) %>%
-#       collect(),
-#     "window functions not currently supported in Arrow; pulling data into R",
-#     fixed = TRUE
-#   )
-# })
-#
-# test_that("handle bad expressions", {
-#   # TODO: search for functions other than mean() (see above test)
-#   # that need to be forced to fail because they error ambiguously
-#
-#   with_language("fr", {
-#     # expect_warning(., NA) because the usual behavior when it hits a filter
-#     # that it can't evaluate is to raise a warning, collect() to R, and retry
-#     # the filter. But we want this to error the first time because it's
-#     # a user error, not solvable by retrying in R
-#     expect_warning(
-#       expect_error(
-#         Table$create(tbl) %>% mutate(newvar = NOTAVAR + 2),
-#         "objet 'NOTAVAR' introuvable"
-#       ),
-#       NA
-#     )
-#   })
-# })
-#
-# test_that("Can't just add a vector column with mutate()", {
-#   expect_warning(
-#     expect_equal(
-#       Table$create(tbl) %>%
-#         select(int) %>%
-#         mutate(again = 1:10),
-#       tibble::tibble(int = tbl$int, again = 1:10)
-#     ),
-#     "In again = 1:10, only values of size one are recycled; pulling data into R"
-#   )
-# })
-#
-# test_that("print a mutated table", {
-#   expect_output(
-#     Table$create(tbl) %>%
-#       select(int) %>%
-#       mutate(twice = int * 2) %>%
-#       print(),
-#     "Table (query)
-# int: int32
-# twice: double (multiply_checked(int, 2))
-#
-# See $.data for the source Arrow object",
-#     fixed = TRUE
-#   )
-# })
-#
-# test_that("mutate and write_dataset", {
-#   skip_if_not_available("dataset")
-#   # See related test in test-dataset.R
-#
-#   first_date <- lubridate::ymd_hms("2015-04-29 03:12:39")
-#   df1 <- tibble(
-#     int = 1:10,
-#     dbl = as.numeric(1:10),
-#     lgl = rep(c(TRUE, FALSE, NA, TRUE, FALSE), 2),
-#     chr = letters[1:10],
-#     fct = factor(LETTERS[1:10]),
-#     ts = first_date + lubridate::days(1:10)
-#   )
-#
-#   second_date <- lubridate::ymd_hms("2017-03-09 07:01:02")
-#   df2 <- tibble(
-#     int = 101:110,
-#     dbl = c(as.numeric(51:59), NaN),
-#     lgl = rep(c(TRUE, FALSE, NA, TRUE, FALSE), 2),
-#     chr = letters[10:1],
-#     fct = factor(LETTERS[10:1]),
-#     ts = second_date + lubridate::days(10:1)
-#   )
-#
-#   dst_dir <- tempfile()
-#   stacked <- record_batch(rbind(df1, df2))
-#   stacked %>%
-#     mutate(twice = int * 2) %>%
-#     group_by(int) %>%
-#     write_dataset(dst_dir, format = "feather")
-#   expect_true(dir.exists(dst_dir))
-#   expect_identical(dir(dst_dir), sort(paste("int", c(1:10, 101:110), sep = "=")))
-#
-#   new_ds <- open_dataset(dst_dir, format = "feather")
-#
-#   expect_equal(
-#     new_ds %>%
-#       select(string = chr, integer = int, twice) %>%
-#       filter(integer > 6 & integer < 11) %>%
-#       collect() %>%
-#       summarize(mean = mean(integer)),
-#     df1 %>%
-#       select(string = chr, integer = int) %>%
-#       mutate(twice = integer * 2) %>%
-#       filter(integer > 6) %>%
-#       summarize(mean = mean(integer))
-#   )
-# })
-#
-# test_that("mutate and pmin/pmax", {
-#   df <- tibble(
-#     city = c("Chillan", "Valdivia", "Osorno"),
-#     val1 = c(200, 300, NA),
-#     val2 = c(100, NA, NA),
-#     val3 = c(0, NA, NA)
-#   )
-#
-#   compare_dplyr_binding(
-#     .input %>%
-#       mutate(
-#         max_val_1 = pmax(val1, val2, val3),
-#         max_val_2 = pmax(val1, val2, val3, na.rm = TRUE),
-#         min_val_1 = pmin(val1, val2, val3),
-#         min_val_2 = pmin(val1, val2, val3, na.rm = TRUE)
-#       ) %>%
-#       collect(),
-#     df
-#   )
-#
-#   compare_dplyr_binding(
-#     .input %>%
-#       mutate(
-#         max_val_1 = pmax(val1 - 100, 200, val1 * 100, na.rm = TRUE),
-#         min_val_1 = pmin(val1 - 100, 100, val1 * 100, na.rm = TRUE),
-#       ) %>%
-#       collect(),
-#     df
-#   )
-# })
-#
-#
+test_that("dplyr::mutate's examples", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/60")
+
+  # Newly created variables are available immediately
+  compare_arrow_dplyr_binding(
+    .input %>%
+      arrow_substrait_compiler() %>%
+      select(name, mass) %>%
+      mutate(
+        mass2 = mass * 2,
+        mass2_squared = mass2 * mass2
+      ) %>%
+      collect(),
+    starwars # this is a test tibble that ships with dplyr
+  )
+
+  # As well as adding new variables, you can use mutate() to
+  # remove variables and modify existing variables.
+  compare_arrow_dplyr_binding(
+    .input %>%
+      select(name, height, mass, homeworld) %>%
+      mutate(
+        mass = NULL,
+        height = height * 0.0328084 # convert to feet
+      ) %>%
+      collect(),
+    starwars
+  )
+
+})
+
+test_that("window functions", {
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  # Grouping ----------------------------------------
+  # The mutate operation may yield different results on grouped
+  # tibbles because the expressions are computed within groups.
+  # The following normalises `mass` by the global average:
+  compare_arrow_dplyr_binding(
+    .input %>%
+      select(name, mass, species) %>%
+      mutate(mass_norm = mass / mean(mass, na.rm = TRUE)) %>%
+      collect(),
+    starwars#,
+    #warning = "window function"
+  )
+})
+
+test_that("mutate() with keep argument", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/66")
+
+  # Experimental: You can override with `.keep`
+  df <- tibble(x = 1, y = 2, a = "a", b = "b")
+  compare_arrow_dplyr_binding(
+    .input %>% mutate(z = x + y, .keep = "all") %>% collect(), # the default
+    df
+  )
+  #> # A tibble: 1 x 5
+  #>       x     y a     b         z
+  #>   <dbl> <dbl> <chr> <chr> <dbl>
+  #> 1     1     2 a     b         3
+  compare_arrow_dplyr_binding(
+    .input %>% mutate(z = x + y, .keep = "used") %>% collect(),
+    df
+  )
+  #> # A tibble: 1 x 3
+  #>       x     y     z
+  #>   <dbl> <dbl> <dbl>
+  #> 1     1     2     3
+  compare_arrow_dplyr_binding(
+    .input %>% mutate(z = x + y, .keep = "unused") %>% collect(),
+    df
+  )
+  #> # A tibble: 1 x 3
+  #>   a     b         z
+  #>   <chr> <chr> <dbl>
+  #> 1 a     b         3
+  compare_arrow_dplyr_binding(
+    .input %>% mutate(z = x + y, x, .keep = "none") %>% collect(),
+    df
+  )
+  #> # A tibble: 1 × 2
+  #>       x     z
+  #>   <dbl> <dbl>
+  #> 1     1     3
+})
+
+test_that("mutate() with .before and .after", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/65")
+
+    # `.before` and `.after` experimental args: ARROW-11701
+  df <- tibble(x = 1, y = 2)
+  compare_arrow_dplyr_binding(
+    .input %>% mutate(z = x + y) %>% collect(),
+    df
+  )
+  #> # A tibble: 1 x 3
+  #>       x     y     z
+  #>   <dbl> <dbl> <dbl>
+  #> 1     1     2     3
+
+  compare_arrow_dplyr_binding(
+    .input %>% mutate(z = x + y, .before = 1) %>% collect(),
+    df
+  )
+  #> # A tibble: 1 x 3
+  #>       z     x     y
+  #>   <dbl> <dbl> <dbl>
+  #> 1     3     1     2
+  compare_arrow_dplyr_binding(
+    .input %>% mutate(z = x + y, .after = x) %>% collect(),
+    df
+  )
+  #> # A tibble: 1 x 3
+  #>       x     z     y
+  #>   <dbl> <dbl> <dbl>
+  #> 1     1     3     2
+
+})
+
+test_that("across()", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/64")
+  compare_arrow_dplyr_binding(
+    .input %>%
+      select(int, dbl, lgl) %>%
+      mutate(across(int, as.character)) %>%
+      collect(),
+    example_data
+  )
+})
+
+test_that("group_by() followed by mutate()", {
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  compare_arrow_dplyr_binding(
+    .input %>%
+      select(name, mass, homeworld) %>%
+      group_by(homeworld) %>%
+      mutate(rank = min_rank(desc(mass))) %>%
+      collect(),
+    starwars
+  )
+
+})
+
+test_that("Can mutate after group_by as long as there are no aggregations", {
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+
+  compare_arrow_dplyr_binding(
+    .input %>%
+      select(int, chr) %>%
+      group_by(chr) %>%
+      mutate(int = int + 6L) %>%
+      collect(),
+    tbl
+  )
+  compare_arrow_dplyr_binding(
+    .input %>%
+      select(mean = int, chr) %>%
+      # rename `int` to `mean` and use `mean` in `mutate()` to test that
+      # `all_funs()` does not incorrectly identify it as an aggregate function
+      group_by(chr) %>%
+      mutate(mean = mean + 6L) %>%
+      collect(),
+    tbl
+  )
+  expect_warning(
+    tbl %>%
+      Table$create() %>%
+      select(int, chr) %>%
+      group_by(chr) %>%
+      mutate(avg_int = mean(int)) %>%
+      collect(),
+    "window functions not currently supported in Arrow; pulling data into R",
+    fixed = TRUE
+  )
+  expect_warning(
+    tbl %>%
+      Table$create() %>%
+      select(mean = int, chr) %>%
+      # rename `int` to `mean` and use `mean(mean)` in `mutate()` to test that
+      # `all_funs()` detects `mean()` despite the collision with a column name
+      group_by(chr) %>%
+      mutate(avg_int = mean(mean)) %>%
+      collect(),
+    "window functions not currently supported in Arrow; pulling data into R",
+    fixed = TRUE
+  )
+})
+
+test_that("Can't just add a vector column with mutate()", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/63")
+
+  expect_warning(
+    expect_equal(
+      arrow_substrait_compiler(example_data) %>%
+        select(int) %>%
+        mutate(again = 1:10) %>%
+        collect(),
+      tibble::tibble(int = example_data$int, again = 1:10)
+    ),
+    "In again = 1:10, only values of size one are recycled; pulling data into R"
+  )
+})
+
+test_that("mutate and pmin/pmax", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/61")
+
+  df <- tibble(
+    city = c("Chillan", "Valdivia", "Osorno"),
+    val1 = c(200, 300, NA),
+    val2 = c(100, NA, NA),
+    val3 = c(0, NA, NA)
+  )
+
+  compare_arrow_dplyr_binding(
+    .input %>%
+      mutate(
+        max_val_1 = pmax(val1, val2, val3),
+        max_val_2 = pmax(val1, val2, val3, na.rm = TRUE),
+        min_val_1 = pmin(val1, val2, val3),
+        min_val_2 = pmin(val1, val2, val3, na.rm = TRUE)
+      ) %>%
+      collect(),
+    df
+  )
+
+  compare_arrow_dplyr_binding(
+    .input %>%
+      mutate(
+        max_val_1 = pmax(val1 - 100, 200, val1 * 100, na.rm = TRUE),
+        min_val_1 = pmin(val1 - 100, 100, val1 * 100, na.rm = TRUE),
+      ) %>%
+      collect(),
+    df
+  )
+})
+
