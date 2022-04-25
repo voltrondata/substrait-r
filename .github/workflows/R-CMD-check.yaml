@@ -42,8 +42,7 @@ jobs:
           use-public-rspm: true
 
       - if: runner.os == 'Linux'
-        run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev
-        run: sudo apt-get install -y cmake libcurl4-openssl-dev libssl-dev
+        run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake libcurl4-openssl-dev libssl-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
