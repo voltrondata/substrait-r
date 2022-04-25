@@ -1,4 +1,7 @@
 library(dplyr, warn.conflicts = FALSE)
+library(arrow)
+
+# dplyr::select()
 
 test_that("Empty select returns no columns", {
 
