@@ -1,3 +1,4 @@
+
 example_data <- tibble::tibble(
   int = c(1:3, NA_integer_, 5:10),
   dbl = c(1:8, NA, 10) + .1,
