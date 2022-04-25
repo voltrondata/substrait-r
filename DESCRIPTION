@@ -33,3 +33,6 @@ Imports:
     dplyr,
     ellipsis,
     R6
+Depends: 
+    R (>= 2.10)
+LazyData: true
