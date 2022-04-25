@@ -271,161 +271,116 @@ test_that("transmute() with NULL inputs", {
     example_data
   )
 })
-#
-# test_that("empty transmute()", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       transmute() %>%
-#       collect(),
-#     tbl
-#   )
-# })
-#
-# test_that("transmute with unnamed expressions", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, padded_strings) %>%
-#       transmute(
-#         int, # bare column name
-#         nchar(padded_strings) # expression
-#       ) %>%
-#       filter(int > 5) %>%
-#       collect(),
-#     tbl
-#   )
-# })
-#
-# test_that("transmute() with unsupported arguments", {
-#   expect_error(
-#     tbl %>%
-#       Table$create() %>%
-#       transmute(int = int + 42L, .keep = "all"),
-#     "`transmute()` does not support the `.keep` argument",
-#     fixed = TRUE
-#   )
-#   expect_error(
-#     tbl %>%
-#       Table$create() %>%
-#       transmute(int = int + 42L, .before = lgl),
-#     "`transmute()` does not support the `.before` argument",
-#     fixed = TRUE
-#   )
-#   expect_error(
-#     tbl %>%
-#       Table$create() %>%
-#       transmute(int = int + 42L, .after = chr),
-#     "`transmute()` does not support the `.after` argument",
-#     fixed = TRUE
-#   )
-# })
-#
-# test_that("transmute() defuses dots arguments (ARROW-13262)", {
-#   expect_warning(
-#     tbl %>%
-#       Table$create() %>%
-#       transmute(stringr::str_c(chr, chr)) %>%
-#       collect(),
-#     "Expression stringr::str_c(chr, chr) not supported in Arrow; pulling data into R",
-#     fixed = TRUE
-#   )
-# })
-#
-# test_that("mutate and refer to previous mutants", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, verses) %>%
-#       mutate(
-#         line_lengths = nchar(verses),
-#         longer = line_lengths * 10
-#       ) %>%
-#       filter(line_lengths > 15) %>%
-#       collect(),
-#     tbl
-#   )
-# })
-#
-# test_that("nchar() arguments", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, verses) %>%
-#       mutate(
-#         line_lengths = nchar(verses, type = "bytes"),
-#         longer = line_lengths * 10
-#       ) %>%
-#       filter(line_lengths > 15) %>%
-#       collect(),
-#     tbl
-#   )
-#   # This tests the whole abandon_ship() machinery
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, verses) %>%
-#       mutate(
-#         line_lengths = nchar(verses, type = "bytes", allowNA = TRUE),
-#         longer = line_lengths * 10
-#       ) %>%
-#       filter(line_lengths > 15) %>%
-#       collect(),
-#     tbl,
-#     warning = paste0(
-#       "In nchar\\(verses, type = \"bytes\", allowNA = TRUE\\), ",
-#       "allowNA = TRUE not supported in Arrow; pulling data into R"
-#     )
-#   )
-# })
-#
-# test_that("mutate with .data pronoun", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, verses) %>%
-#       mutate(
-#         line_lengths = str_length(verses),
-#         longer = .data$line_lengths * 10
-#       ) %>%
-#       filter(line_lengths > 15) %>%
-#       collect(),
-#     tbl
-#   )
-# })
-#
-# test_that("mutate with unnamed expressions", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, padded_strings) %>%
-#       mutate(
-#         int, # bare column name
-#         nchar(padded_strings) # expression
-#       ) %>%
-#       filter(int > 5) %>%
-#       collect(),
-#     tbl
-#   )
-# })
-#
-# test_that("mutate with reassigning same name", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       transmute(
-#         new = lgl,
-#         new = chr
-#       ) %>%
-#       collect(),
-#     tbl
-#   )
-# })
-#
-# test_that("mutate with single value for recycling", {
-#   compare_dplyr_binding(
-#     .input %>%
-#       select(int, padded_strings) %>%
-#       mutate(
-#         dr_bronner = 1 # ALL ONE!
-#       ) %>%
-#       collect(),
-#     tbl
-#   )
-# })
-#
+
+test_that("empty transmute()", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/51")
+  compare_arrow_dplyr_binding(
+    .input %>%
+      transmute() %>%
+      collect(),
+    example_data
+  )
+})
+
+test_that("transmute with unnamed expressions", {
+  compare_arrow_dplyr_binding(
+    .input %>%
+      transmute(
+        int, # bare column name
+        int + 1 # expression
+      ) %>%
+      collect(),
+    example_data
+  )
+})
+
+test_that("transmute() with unsupported arguments", {
+  skip("https://github.com/voltrondata/substrait-r/issues/58")
+
+  expect_error(
+    example_data %>%
+      arrow_substrait_compiler() %>%
+      transmute(int = int + 42L, .keep = "all"),
+    "`transmute()` does not support the `.keep` argument",
+    fixed = TRUE
+  )
+  expect_error(
+    example_data %>%
+      arrow_substrait_compiler() %>%
+      transmute(int = int + 42L, .before = lgl),
+    "`transmute()` does not support the `.before` argument",
+    fixed = TRUE
+  )
+  expect_error(
+    example_data %>%
+      arrow_substrait_compiler() %>%
+      transmute(int = int + 42L, .after = chr),
+    "`transmute()` does not support the `.after` argument",
+    fixed = TRUE
+  )
+})
+
+test_that("mutate and refer to previous mutants", {
+  compare_arrow_dplyr_binding(
+    .input %>%
+      mutate(
+        int10 = int + 10
+      ) %>%
+      select(int10) %>%
+      collect(),
+    example_data
+  )
+})
+
+test_that("mutate with .data pronoun", {
+
+  compare_arrow_dplyr_binding(
+    .input %>%
+      mutate(
+        int10 = .data$int + 10
+      ) %>%
+      collect(),
+    example_data
+  )
+
+})
+
+test_that("mutate with unnamed expressions", {
+  compare_arrow_dplyr_binding(
+    .input %>%
+      mutate(
+        int + 1 # expression
+      ) %>%
+      collect(),
+    example_data
+  )
+})
+
+test_that("mutate with reassigning same name", {
+  skip("https://github.com/voltrondata/substrait-r/issues/59")
+  compare_arrow_dplyr_binding(
+    .input %>%
+      transmute(
+        new = lgl,
+        new = chr
+      ) %>%
+      collect(),
+    example_data
+  )
+})
+
+test_that("mutate with single value for recycling", {
+  compare_arrow_dplyr_binding(
+    .input %>%
+      mutate(
+        dr_bronner = 1 # ALL ONE!
+      ) %>%
+      collect(),
+    example_data
+  )
+})
+
 # test_that("dplyr::mutate's examples", {
 #   # Newly created variables are available immediately
 #   compare_dplyr_binding(
