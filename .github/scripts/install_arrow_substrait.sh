@@ -1,3 +1,8 @@
+mkdir install_dir
+export ARROW_HOME=$(pwd)/install_dir
+export LD_LIBRARY_PATH=$ARROW_HOME/lib:$LD_LIBRARY_PATH
+
+# Build Arrow
 cd arrow/cpp
 mkdir build_dir
 cd build_dir
@@ -8,7 +13,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       -DARROW_WITH_ZLIB=ON   -DARROW_INSTALL_NAME_RPATH=OFF   -DARROW_EXTRA_ERROR_CONTEXT=ON \
       -DARROW_INSTALL_NAME_RPATH=OFF -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
 
-make install
+sudo make -j2 install
 
 cd ../../r/
 
