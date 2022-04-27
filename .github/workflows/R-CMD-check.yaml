@@ -40,6 +40,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          path: substrait
 
       - uses: r-lib/actions/setup-pandoc@v1
 
@@ -56,6 +58,7 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
+          working-directory: /home/runner/work/substrait-r/substrait-r/substrait
 
       - name: Checkout Arrow repo
         uses: actions/checkout@v3
@@ -92,4 +95,6 @@ jobs:
           R CMD INSTALL .
 
       - name: Run R CMD check
-        uses: r-lib/actions/check-r-package@v1
+        uses: r-lib/actions/check-r-package@v2
+        with:
+          working-directory: /home/runner/work/substrait-r/substrait-r/substrait
