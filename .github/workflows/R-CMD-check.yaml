@@ -55,7 +55,7 @@ jobs:
       #     extra-packages: rcmdcheck
 
       - name: Checkout Arrow repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: apache/arrow
           path: arrow
@@ -65,9 +65,9 @@ jobs:
           export LD_LIBRARY_PATH=$ARROW_HOME/lib:${LD_LIBRARY_PATH}
 
           mkdir install_dir
-          cd arrow/cpp
+          cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
           mkdir build_dir
-          cd arrow/cpp/build_dir
+          cd build_dir
 
           cmake -DCMAKE_INSTALL_PREFIX=${ARROW_HOME} \
           -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Debug  -DARROW_COMPUTE=ON   -DARROW_CSV=ON   -DARROW_DATASET=OFF \
@@ -79,7 +79,7 @@ jobs:
 
       - name: Install Arrow R package
         run: |
-          cd ../../r/
+          cd /home/runner/work/substrait-r/substrait-r/arrow/r/
           R CMD INSTALL .
 
       - name: Run R CMD check
