@@ -8,6 +8,11 @@ on:
 
 name: test-coverage
 
+concurrency:
+  group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+
 jobs:
   test-coverage:
     runs-on: ubuntu-latest

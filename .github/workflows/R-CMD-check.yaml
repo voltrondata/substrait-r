@@ -8,6 +8,11 @@ on:
 
 name: R-CMD-check
 
+concurrency:
+  group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
@@ -29,9 +34,14 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      ARROW_HOME: '/install_dir'
+      LD_LIBRARY_PATH: '/install_dir/lib'
+      ARROW_R_DEV: TRUE
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          path: substrait
 
       - uses: r-lib/actions/setup-pandoc@v1
 
@@ -42,10 +52,49 @@ jobs:
           use-public-rspm: true
 
       - if: runner.os == 'Linux'
-        run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev
+        run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - name: Setup substrait dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
+          working-directory: /home/runner/work/substrait-r/substrait-r/substrait
 
-      - uses: r-lib/actions/check-r-package@v1
+      - name: Checkout Arrow repo
+        uses: actions/checkout@v3
+        with:
+          repository: apache/arrow
+          path: arrow
+
+      - name: Install Arrow with ARROW_SUBSTRAIT turned on
+        run: |
+          
+
+          mkdir install_dir
+          cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
+          mkdir build_dir
+          cd build_dir
+
+          cmake -DCMAKE_INSTALL_PREFIX=${ARROW_HOME} \
+          -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Debug  -DARROW_COMPUTE=ON   -DARROW_CSV=ON   -DARROW_DATASET=OFF \
+          -DARROW_FILESYSTEM=ON   -DARROW_JEMALLOC=OFF   -DARROW_JSON=OFF   -DARROW_PARQUET=ON   -DARROW_WITH_SNAPPY=OFF \
+          -DARROW_WITH_ZLIB=OFF   -DARROW_INSTALL_NAME_RPATH=OFF   -DARROW_EXTRA_ERROR_CONTEXT=ON \
+          -DARROW_INSTALL_NAME_RPATH=OFF -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
+
+          sudo make -j2 install
+
+      - name: Setup arrow dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: /home/runner/work/substrait-r/substrait-r/arrow/r/
+
+      - name: Install Arrow R package
+        run: |
+          cd /home/runner/work/substrait-r/substrait-r/arrow/r/
+          make clean
+          R CMD INSTALL .
+
+      - name: Run R CMD check
+        uses: r-lib/actions/check-r-package@v2
+        with:
+          working-directory: /home/runner/work/substrait-r/substrait-r/substrait
