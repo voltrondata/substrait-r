@@ -80,6 +80,7 @@ jobs:
       - name: Install Arrow R package
         run: |
           cd /home/runner/work/substrait-r/substrait-r/arrow/r/
+          make clean
           R CMD INSTALL .
 
       - name: Run R CMD check
