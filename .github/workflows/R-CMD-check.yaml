@@ -82,5 +82,5 @@ jobs:
           cd ../../r/
           R CMD INSTALL .
 
-      - name Run R CMD check
+      - name: Run R CMD check
         uses: r-lib/actions/check-r-package@v1
