@@ -39,20 +39,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-pandoc@v1
-
-      - uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+      # - uses: r-lib/actions/setup-pandoc@v1
+      #
+      # - uses: r-lib/actions/setup-r@v1
+      #   with:
+      #     r-version: ${{ matrix.config.r }}
+      #     http-user-agent: ${{ matrix.config.http-user-agent }}
+      #     use-public-rspm: true
 
       - if: runner.os == 'Linux'
         run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake libcurl4-openssl-dev libssl-dev
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
-        with:
-          extra-packages: rcmdcheck
+      # - uses: r-lib/actions/setup-r-dependencies@v1
+      #   with:
+      #     extra-packages: rcmdcheck
 
       - name: Checkout Arrow repo
         uses: actions/checkout@v2
@@ -61,6 +61,26 @@ jobs:
           path: arrow
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
-        run: .github/scripts/install_arrow_substrait.sh
+        run: |
+          export LD_LIBRARY_PATH=$ARROW_HOME/lib:${LD_LIBRARY_PATH}
 
-      - uses: r-lib/actions/check-r-package@v1
+          mkdir install_dir
+          cd arrow/cpp
+          mkdir build_dir
+          cd arrow/cpp/build_dir
+
+          cmake -DCMAKE_INSTALL_PREFIX=${ARROW_HOME} \
+          -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Debug  -DARROW_COMPUTE=ON   -DARROW_CSV=ON   -DARROW_DATASET=OFF \
+          -DARROW_FILESYSTEM=ON   -DARROW_JEMALLOC=OFF   -DARROW_JSON=OFF   -DARROW_PARQUET=ON   -DARROW_WITH_SNAPPY=OFF \
+          -DARROW_WITH_ZLIB=OFF   -DARROW_INSTALL_NAME_RPATH=OFF   -DARROW_EXTRA_ERROR_CONTEXT=ON \
+          -DARROW_INSTALL_NAME_RPATH=OFF -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
+
+          sudo make -j2 install
+
+      - name: Install Arrow R package
+        run: |
+          cd ../../r/
+          R CMD INSTALL .
+
+      - name Run R CMD check
+        uses: r-lib/actions/check-r-package@v1
