@@ -57,8 +57,13 @@ jobs:
       - name: Setup substrait dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck
+          extra-packages: rcmdcheck, local::.
           working-directory: /home/runner/work/substrait-r/substrait-r/substrait
+
+      - name: Setup custom duckdb
+        run: |
+          substrait::install_custom_duckdb()
+        shell: Rscript {0}
 
       - name: Checkout Arrow repo
         uses: actions/checkout@v3
@@ -68,7 +73,7 @@ jobs:
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
         run: |
-          
+
 
           mkdir install_dir
           cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
