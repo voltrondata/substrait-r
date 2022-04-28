@@ -2,8 +2,6 @@ library(dplyr, warn.conflicts = FALSE)
 library(arrow)
 skip_if_not(has_arrow_with_substrait())
 
-# dplyr::select()
-
 test_that("Empty select returns no columns", {
   skip("https://github.com/voltrondata/substrait-r/issues/51")
 
