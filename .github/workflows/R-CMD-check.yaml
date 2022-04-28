@@ -66,10 +66,17 @@ jobs:
           repository: apache/arrow
           path: arrow
 
+      - name: Cache libarrow
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/install_dir
+             ${{ env.R_LIBS_USER }}/arrow
+          key: ${{ runner.os }}-${{ hashFiles('/home/runner/work/substrait-r/substrait-r/arrow/cpp/**', '/home/runner/work/substrait-r/substrait-r/arrow/r/**') }}
+
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
         run: |
-          
-
           mkdir install_dir
           cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
           mkdir build_dir
