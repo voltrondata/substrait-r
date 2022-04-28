@@ -1,12 +1,12 @@
 
-compare_arrow_dplyr_binding <- function(expr, tbl){
+compare_arrow_dplyr_binding <- function(expr, tbl, ...){
 
   expr <- rlang::enquo(expr)
   expected <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = tbl)))
 
   out_substrait <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl))))
 
-  expect_identical(out_substrait, expected)
+  expect_identical(out_substrait, expected, ...)
 
 }
 
@@ -74,7 +74,6 @@ with_language <- function(lang, expr) {
   Sys.setenv(LANGUAGE = lang)
   on.exit({
     Sys.setenv(LANGUAGE = old)
-    .cache$i18ized_error_pattern <<- NULL
   })
   if (!identical(before, i18ize_error_messages())) {
     skip(paste("This OS either does not support changing languages to", lang, "or it caches translations"))

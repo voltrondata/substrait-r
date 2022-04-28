@@ -318,12 +318,14 @@ test_that("Filtering on a column that doesn't exist errors correctly", {
 })
 
 test_that("Filtering with unsupported functions", {
+  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(int > 2, pnorm(dbl) > .99) %>%
       collect(),
-    example_data,
-    warning = "Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow; pulling data into R"
+    example_data#,
+    # this needs updating to refer to Substrait and not Arrow
+    # warning = "Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow; pulling data into R"
   )
   compare_arrow_dplyr_binding(
     .input %>%
@@ -333,14 +335,15 @@ test_that("Filtering with unsupported functions", {
         pnorm(dbl) > .99 # bad, opaque
       ) %>%
       collect(),
-    example_data,
-    warning = '\\* In nchar\\(chr, type = "bytes", allowNA = TRUE\\) == 1, allowNA = TRUE not supported in Arrow
-\\* Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow
-pulling data into R'
+    example_data#,
+#     warning = '\\* In nchar\\(chr, type = "bytes", allowNA = TRUE\\) == 1, allowNA = TRUE not supported in Arrow
+# \\* Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow
+# pulling data into R'
   )
 })
 
 test_that("Calling Arrow compute functions 'directly'", {
+  skip("can't call Arrow compute functions directly yet: https://github.com/voltrondata/substrait-r/issues/77")
   expect_equal(
     example_data %>%
       arrow_substrait_compiler() %>%
@@ -365,6 +368,7 @@ test_that("Calling Arrow compute functions 'directly'", {
 })
 
 test_that("filter() with .data pronoun", {
+  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(.data$dbl > 4) %>%
