@@ -62,7 +62,7 @@ jobs:
 
       - name: Setup custom duckdb
         run: |
-          substrait::install_custom_duckdb()
+          substrait:::install_custom_duckdb()
         shell: Rscript {0}
 
       - name: Checkout Arrow repo
