@@ -39,26 +39,45 @@ jobs:
       ARROW_R_DEV: TRUE
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Substrait
+        uses: actions/checkout@v3
         with:
           path: substrait
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - name: Set up pandoc
+        uses: r-lib/actions/setup-pandoc@v1
 
-      - uses: r-lib/actions/setup-r@v1
+      -name: Set up R
+        uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - if: runner.os == 'Linux'
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
         run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake
 
+      - name: Cache packages install
+        id: cache-packages
+        uses: actions/cache@v3
+        with:
+          path: |
+             ${{ env.R_LIBS_USER }}/
+          key: ${{ runner.os }}-${{ hashFiles('${{ env.R_LIBS_USER }}/') }}
+
+      - name: Setup arrow dependencies
+        if: steps.cache-packages.outputs.cache-hit != 'true'
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: /home/runner/work/substrait-r/substrait-r/arrow/r/
+
       - name: Setup substrait dependencies
+        if: steps.cache-packages.outputs.cache-hit != 'true'
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
-          working-directory: /home/runner/work/substrait-r/substrait-r/substrait
+          working-directory: /home/runner/work/substrait-r/substrait-r/substrait/r/
 
       - name: Checkout Arrow repo
         uses: actions/checkout@v3
@@ -67,15 +86,15 @@ jobs:
           path: arrow
 
       - name: Cache libarrow
-        id: cache
+        id: cache-libarrow-install
         uses: actions/cache@v3
         with:
           path: |
             ~/install_dir
-             ${{ env.R_LIBS_USER }}/arrow
-          key: ${{ runner.os }}-${{ hashFiles('/home/runner/work/substrait-r/substrait-r/arrow/cpp/**', '/home/runner/work/substrait-r/substrait-r/arrow/r/**') }}
+          key: ${{ runner.os }}-${{ hashFiles('~/install_dir') }}
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
+        if: steps.cache-libarrow-install.outputs.cache-hit != 'true'
         run: |
           mkdir install_dir
           cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
@@ -90,10 +109,6 @@ jobs:
 
           sudo make -j2 install
 
-      - name: Setup arrow dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          working-directory: /home/runner/work/substrait-r/substrait-r/arrow/r/
 
       - name: Install Arrow R package
         run: |
