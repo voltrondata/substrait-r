@@ -47,7 +47,7 @@ jobs:
       - name: Set up pandoc
         uses: r-lib/actions/setup-pandoc@v1
 
-      -name: Set up R
+      - name: Set up R
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
@@ -108,7 +108,6 @@ jobs:
           -DARROW_INSTALL_NAME_RPATH=OFF -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
 
           sudo make -j2 install
-
 
       - name: Install Arrow R package
         run: |
