@@ -178,6 +178,3 @@ test_that("relocate with selection helpers", {
     example_data
   )
 })
-
-
-
