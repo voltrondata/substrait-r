@@ -585,7 +585,7 @@ test_that("Can't just add a vector column with mutate()", {
         select(int) %>%
         mutate(again = 1:10) %>%
         collect(),
-      tibble::tibble(int = example_data$int, again = 1:10)
+      tibble(int = example_data$int, again = 1:10)
     ),
     "In again = 1:10, only values of size one are recycled; pulling data into R"
   )
