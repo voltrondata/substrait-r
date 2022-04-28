@@ -30,5 +30,5 @@ reference:
     - arrow_substrait_compiler
 
 - title: "Example datasets"
-  contents:contents
+  contents:
     - example_data
