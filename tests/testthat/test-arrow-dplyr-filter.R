@@ -3,6 +3,7 @@ library(stringr)
 
 
 test_that("filter() on is.na()", {
+  skip("is.na() not implemented yet https://github.com/voltrondata/substrait-r/issues/72")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(is.na(lgl)) %>%
@@ -33,6 +34,7 @@ test_that("Filter returning an empty Table should not segfault (ARROW-8354)", {
 })
 
 test_that("filtering with expression", {
+  skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/73")
   char_sym <- "b"
   compare_arrow_dplyr_binding(
     .input %>%
@@ -44,6 +46,9 @@ test_that("filtering with expression", {
 })
 
 test_that("filtering with arithmetic", {
+
+  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+
   compare_arrow_dplyr_binding(
     .input %>%
       filter(dbl + 1 > 3) %>%
@@ -102,6 +107,9 @@ test_that("filtering with arithmetic", {
 })
 
 test_that("filtering with expression + autocasting", {
+
+  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+
   compare_arrow_dplyr_binding(
     .input %>%
       filter(dbl + 1 > 3L) %>% # test autocasting with comparison to 3L
@@ -128,6 +136,7 @@ test_that("filtering with expression + autocasting", {
 })
 
 test_that("More complex select/filter", {
+  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/73")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(dbl > 2, chr == "d" | chr == "f") %>%
@@ -140,6 +149,7 @@ test_that("More complex select/filter", {
 })
 
 test_that("filter() with %in%", {
+  skip("%in% not yet implemented: https://github.com/voltrondata/substrait-r/issues/74")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(dbl > 2, chr %in% c("d", "f")) %>%
@@ -149,6 +159,7 @@ test_that("filter() with %in%", {
 })
 
 test_that("Negative scalar values", {
+  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(some_negative > -2) %>%
@@ -170,6 +181,9 @@ test_that("Negative scalar values", {
 })
 
 test_that("filter() with between()", {
+
+  skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/75")
+
   compare_arrow_dplyr_binding(
     .input %>%
       filter(between(dbl, 1, 2)) %>%
@@ -216,7 +230,8 @@ test_that("filter() with between()", {
 })
 
 test_that("filter() with string ops", {
-  skip_if_not_available("utf8proc")
+  # skip_if_not_available("utf8proc")
+  skip("string functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/18")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(dbl > 2, str_length(verses) > 25) %>%
@@ -234,7 +249,7 @@ test_that("filter() with string ops", {
 
 test_that("filter environment scope", {
   # "object 'b_var' not found"
-  compare_dplyr_error(.input %>% filter(chr == b_var), example_data)
+  compare_arrow_dplyr_error(.input %>% filter(chr == b_var), example_data)
 
   b_var <- "b"
   compare_arrow_dplyr_binding(
@@ -245,7 +260,7 @@ test_that("filter environment scope", {
   )
   # Also for functions
   # 'could not find function "isEqualTo"' because we haven't defined it yet
-  compare_dplyr_error(.input %>% filter(isEqualTo(int, 4)), example_data)
+  compare_arrow_dplyr_error(.input %>% filter(isEqualTo(int, 4)), example_data)
 
   # This works but only because there are S3 methods for those operations
   isEqualTo <- function(x, y) x == y & !is.na(x)
@@ -376,7 +391,7 @@ test_that("filter() with .data pronoun", {
 
   skip("test now faulty - code no longer gives error & outputs a empty tibble")
   # but there is an error if we don't override the masking with `.env`
-  compare_dplyr_error(
+  compare_arrow_dplyr_error(
     .input %>%
       filter(.data$dbl > chr) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
