@@ -23,7 +23,6 @@ test_that("basic mutate", {
 })
 
 test_that("mutate after select", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/55")
 
   compare_arrow_dplyr_binding(
@@ -33,11 +32,9 @@ test_that("mutate after select", {
       collect(),
     example_data
   )
-
 })
 
 test_that("mutate() with NULL inputs", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/56")
 
   compare_arrow_dplyr_binding(
@@ -46,7 +43,6 @@ test_that("mutate() with NULL inputs", {
       collect(),
     example_data
   )
-
 })
 
 
@@ -89,7 +85,6 @@ test_that("transmute() with NULL inputs", {
 })
 
 test_that("empty transmute()", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/51")
   compare_arrow_dplyr_binding(
     .input %>%
@@ -150,7 +145,6 @@ test_that("mutate and refer to previous mutants", {
 })
 
 test_that("mutate with .data pronoun", {
-
   compare_arrow_dplyr_binding(
     .input %>%
       mutate(
@@ -159,7 +153,6 @@ test_that("mutate with .data pronoun", {
       collect(),
     example_data
   )
-
 })
 
 test_that("mutate with unnamed expressions", {
@@ -198,7 +191,6 @@ test_that("mutate with single value for recycling", {
 })
 
 test_that("dplyr::mutate's examples", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/60")
 
   # Newly created variables are available immediately
@@ -226,7 +218,6 @@ test_that("dplyr::mutate's examples", {
       collect(),
     starwars
   )
-
 })
 
 test_that("window functions", {
@@ -240,13 +231,12 @@ test_that("window functions", {
       select(name, mass, species) %>%
       mutate(mass_norm = mass / mean(mass, na.rm = TRUE)) %>%
       collect(),
-    starwars#,
-    #warning = "window function"
+    starwars # ,
+    # warning = "window function"
   )
 })
 
 test_that("mutate() with keep argument", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/66")
 
   # Experimental: You can override with `.keep`
@@ -286,10 +276,9 @@ test_that("mutate() with keep argument", {
 })
 
 test_that("mutate() with .before and .after", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/65")
 
-    # `.before` and `.after` experimental args: ARROW-11701
+  # `.before` and `.after` experimental args: ARROW-11701
   df <- tibble(x = 1, y = 2)
   compare_arrow_dplyr_binding(
     .input %>% mutate(z = x + y) %>% collect(),
@@ -316,11 +305,9 @@ test_that("mutate() with .before and .after", {
   #>       x     z     y
   #>   <dbl> <dbl> <dbl>
   #> 1     1     3     2
-
 })
 
 test_that("across()", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/64")
   compare_arrow_dplyr_binding(
     .input %>%
@@ -332,7 +319,6 @@ test_that("across()", {
 })
 
 test_that("group_by() followed by mutate()", {
-
   skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_arrow_dplyr_binding(
     .input %>%
@@ -342,11 +328,9 @@ test_that("group_by() followed by mutate()", {
       collect(),
     starwars
   )
-
 })
 
 test_that("Can mutate after group_by as long as there are no aggregations", {
-
   skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
 
   compare_arrow_dplyr_binding(
@@ -392,7 +376,6 @@ test_that("Can mutate after group_by as long as there are no aggregations", {
 })
 
 test_that("Can't just add a vector column with mutate()", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/63")
 
   expect_warning(
@@ -408,7 +391,6 @@ test_that("Can't just add a vector column with mutate()", {
 })
 
 test_that("mutate and pmin/pmax", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/61")
 
   df <- tibble(
@@ -440,4 +422,3 @@ test_that("mutate and pmin/pmax", {
     df
   )
 })
-

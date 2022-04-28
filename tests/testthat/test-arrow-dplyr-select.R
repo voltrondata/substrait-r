@@ -5,18 +5,15 @@ skip_if_not(has_arrow_with_substrait())
 # dplyr::select()
 
 test_that("Empty select returns no columns", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/51")
 
   compare_arrow_dplyr_binding(
     .input %>% select() %>% collect(),
     example_data
   )
-
 })
 
 test_that("Empty select still includes the group_by columns", {
-
   skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
 
   expect_message(
@@ -26,30 +23,25 @@ test_that("Empty select still includes the group_by columns", {
     ),
     "Adding missing grouping variables"
   )
-
 })
 
 # These have been split out compared to the Arrow test file
 test_that("select()", {
-
   compare_arrow_dplyr_binding(
     .input %>%
       select(string = chr, int) %>%
       collect(),
     example_data
   )
-
 })
 
 test_that("rename()", {
-
   compare_arrow_dplyr_binding(
     .input %>%
       rename(string = chr) %>%
       collect(),
     example_data
   )
-
 })
 
 test_that("rename_with", {
@@ -58,17 +50,15 @@ test_that("rename_with", {
   compare_arrow_dplyr_binding(
     .input %>%
       rename_with(
-        ~paste0(.x, "_suffix"),
+        ~ paste0(.x, "_suffix"),
         .cols = c("int", "chr")
       ) %>%
       collect(),
     example_data
   )
-
 })
 
 test_that("select using selection helpers", {
-
   compare_arrow_dplyr_binding(
     .input %>%
       select(everything()) %>%
@@ -97,11 +87,9 @@ test_that("select using selection helpers", {
       collect(),
     example_data
   )
-
 })
 
 test_that("filtering with rename", {
-
   skip("substrait function not yet implemented")
   # Doesn't work as `==` function not yet implemented:
   # "Don't know how to convert call to `==` to Arrow"
@@ -123,7 +111,6 @@ test_that("filtering with rename", {
 })
 
 test_that("relocate", {
-
   skip("Relocate not yet implemented: https://github.com/voltrondata/substrait-r/issues/53")
 
   compare_arrow_dplyr_binding(
@@ -180,6 +167,3 @@ test_that("relocate with selection helpers", {
     example_data
   )
 })
-
-
-
