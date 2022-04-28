@@ -186,7 +186,7 @@ test_that("filter() with between()", {
 
   expect_identical(
     example_data %>%
-      record_batch() %>%
+      arrow_substrait_compiler() %>%
       filter(between(dbl, int, dbl2)) %>%
       collect(),
     example_data %>%
@@ -195,21 +195,21 @@ test_that("filter() with between()", {
 
   expect_error(
     example_data %>%
-      record_batch() %>%
+      arrow_substrait_compiler() %>%
       filter(between(dbl, 1, "2")) %>%
       collect()
   )
 
   expect_error(
     example_data %>%
-      record_batch() %>%
+      arrow_substrait_compiler() %>%
       filter(between(dbl, 1, NA)) %>%
       collect()
   )
 
   expect_error(
     example_data %>%
-      record_batch() %>%
+      arrow_substrait_compiler() %>%
       filter(between(chr, 1, 2)) %>%
       collect()
   )
@@ -283,7 +283,7 @@ test_that("Filtering on a column that doesn't exist errors correctly", {
     # a user error, not solvable by retrying in R
     expect_warning(
       expect_error(
-        example_data %>% record_batch() %>% filter(not_a_col == 42) %>% collect(),
+        example_data %>% arrow_substrait_compiler() %>% filter(not_a_col == 42) %>% collect(),
         "objet 'not_a_col' introuvable"
       ),
       NA
@@ -292,7 +292,7 @@ test_that("Filtering on a column that doesn't exist errors correctly", {
   with_language("en", {
     expect_warning(
       expect_error(
-        example_data %>% record_batch() %>% filter(not_a_col == 42) %>% collect(),
+        example_data %>% arrow_substrait_compiler() %>% filter(not_a_col == 42) %>% collect(),
         "object 'not_a_col' not found"
       ),
       NA
@@ -326,7 +326,7 @@ pulling data into R'
 test_that("Calling Arrow compute functions 'directly'", {
   expect_equal(
     example_data %>%
-      record_batch() %>%
+      arrow_substrait_compiler() %>%
       filter(arrow_add(dbl, 1) > 3L) %>%
       select(string = chr, int, dbl) %>%
       collect(),
@@ -337,7 +337,7 @@ test_that("Calling Arrow compute functions 'directly'", {
 
   compare_arrow_dplyr_binding(
     example_data %>%
-      record_batch() %>%
+      arrow_substrait_compiler() %>%
       filter(arrow_greater(arrow_add(dbl, 1), 3L)) %>%
       select(string = chr, int, dbl) %>%
       collect(),
