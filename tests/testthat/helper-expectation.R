@@ -64,3 +64,21 @@ i18ize_error_messages <- function() {
   )
   paste(purrr::map(out, ~ sub("X_____X", ".*", .)), collapse = "|")
 }
+
+with_language <- function(lang, expr) {
+  old <- Sys.getenv("LANGUAGE")
+  # Check what this message is before changing languages; this will
+  # trigger caching the transations if the OS does that (some do).
+  # If the OS does cache, then we can't test changing languages safely.
+  before <- i18ize_error_messages()
+  Sys.setenv(LANGUAGE = lang)
+  on.exit({
+    Sys.setenv(LANGUAGE = old)
+    .cache$i18ized_error_pattern <<- NULL
+  })
+  if (!identical(before, i18ize_error_messages())) {
+    skip(paste("This OS either does not support changing languages to", lang, "or it caches translations"))
+  }
+  force(expr)
+}
+
