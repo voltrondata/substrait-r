@@ -248,6 +248,7 @@ test_that("filter() with string ops", {
 })
 
 test_that("filter environment scope", {
+  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/73")
   # "object 'b_var' not found"
   compare_arrow_dplyr_error(.input %>% filter(chr == b_var), example_data)
 
@@ -260,13 +261,14 @@ test_that("filter environment scope", {
   )
   # Also for functions
   # 'could not find function "isEqualTo"' because we haven't defined it yet
+  skip("https://github.com/voltrondata/substrait-r/issues/76")
   compare_arrow_dplyr_error(.input %>% filter(isEqualTo(int, 4)), example_data)
 
   # This works but only because there are S3 methods for those operations
   isEqualTo <- function(x, y) x == y & !is.na(x)
   compare_arrow_dplyr_binding(
     .input %>%
-      select(-fct) %>% # factor levels aren't identical
+      select(-lgl) %>% # factor levels aren't identical
       filter(isEqualTo(int, 4)) %>%
       collect(),
     example_data
@@ -274,7 +276,7 @@ test_that("filter environment scope", {
   # Try something that needs to call another nse_func
   compare_arrow_dplyr_binding(
     .input %>%
-      select(-fct) %>%
+      select(-lgl) %>%
       filter(nchar(padded_strings) < 10) %>%
       collect(),
     example_data
@@ -283,7 +285,7 @@ test_that("filter environment scope", {
   skip("TODO: 14071")
   compare_arrow_dplyr_binding(
     .input %>%
-      select(-fct) %>%
+      select(-lgl) %>%
       filter(isShortString(padded_strings)) %>%
       collect(),
     example_data
