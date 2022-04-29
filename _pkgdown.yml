@@ -29,4 +29,6 @@ reference:
     - substrait_compiler
     - arrow_substrait_compiler
 
-
+- title: "Example datasets"
+  contents:
+    - example_data
