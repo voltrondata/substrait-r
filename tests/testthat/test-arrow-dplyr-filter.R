@@ -23,7 +23,7 @@ test_that("filter() with NAs in selection", {
   )
 })
 
-test_that("Filter returning an empty Table should not segfault (ARROW-8354)", {
+test_that("Filter should be able to return an empty table", {
   compare_arrow_dplyr_binding(
     .input %>%
       filter(false) %>%
