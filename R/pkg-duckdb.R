@@ -16,7 +16,6 @@
 #' @export
 #'
 #' @examplesIf has_duckdb_with_substrait()
-#' sql <- sprintf("SELECT * mtcars", tf)
 #' plan <- duckdb_get_substrait(
 #'   "SELECT * from mtcars",
 #'   tables = list(mtcars = mtcars)

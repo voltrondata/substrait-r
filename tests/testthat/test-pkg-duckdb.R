@@ -13,9 +13,10 @@ test_that("duckdb can roundtrip a substrait plan", {
     x
   })
 
-  expect_identical(
+  expect_equal(
     duckdb_from_substrait(plan, tables = list(mtcars = mtcars)),
-    tibble::as_tibble(mtcars)
+    mtcars,
+    ignore_attr = TRUE
   )
 })
 

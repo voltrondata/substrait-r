@@ -54,9 +54,9 @@ DuckDB Substrait Interface
 }
 \examples{
 \dontshow{if (has_duckdb_with_substrait()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-tf <- tempfile()
-arrow::write_parquet(mtcars, tf)
-sql <- sprintf("SELECT * from parquet_scan('\%s')", tf)
-plan <- duckdb_get_substrait(sql)
+plan <- duckdb_get_substrait(
+  "SELECT * from mtcars",
+  tables = list(mtcars = mtcars)
+)
 \dontshow{\}) # examplesIf}
 }
