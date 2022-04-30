@@ -73,8 +73,6 @@ jobs:
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
         run: |
-
-
           mkdir install_dir
           cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
           mkdir build_dir
