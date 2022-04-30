@@ -196,7 +196,10 @@ install_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir(),
 #' @rdname duckdb_get_substrait
 #' @export
 duckdb_with_substrait_lib_dir <- function() {
-  file.path(rappdirs::user_data_dir("R-substrait"), "duckdb_lib")
+  Sys.getenv(
+    "R_SUBSTRAIT_DUCKDB_LIB",
+    file.path(rappdirs::user_data_dir("R-substrait"), "duckdb_lib")
+  )
 }
 
 duckdb_encode_blob <- function(x) {

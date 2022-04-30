@@ -29,6 +29,11 @@ reference:
     - substrait_compiler
     - arrow_substrait_compiler
 
+- title: "DuckDB Substrait Interface"
+  desc: An interface to the DuckDB Substrait Implementation
+  contents:
+    - duckdb_get_substrait
+
 - title: "Example datasets"
   contents:
     - example_data

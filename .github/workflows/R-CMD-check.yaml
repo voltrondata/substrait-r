@@ -60,9 +60,17 @@ jobs:
           extra-packages: rcmdcheck, local::.
           working-directory: /home/runner/work/substrait-r/substrait-r/substrait
 
+      - name: Cache DuckDB with Substrait
+        uses: actions/cache@v3
+        with:
+          path: "~/.local/share/R-substrait/duckdb_lib"
+          key: ${{ runner.os }}-0
+
       - name: Setup custom duckdb
         run: |
-          substrait:::install_custom_duckdb()
+          if (!substrait::has_duckdb_with_substrait()) {
+            substrait::install_duckdb_with_substrait()
+          }
         shell: Rscript {0}
 
       - name: Checkout Arrow repo
