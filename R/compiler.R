@@ -150,7 +150,10 @@ SubstraitCompiler <- R6::R6Class(
       substrait$Plan$create(
         relations = list(
           substrait$PlanRel$create(
-            rel = self$rel
+            root = substrait$RelRoot$create(
+              input = self$rel,
+              names = self$schema$names
+            )
           )
         ),
         extension_uris = list(

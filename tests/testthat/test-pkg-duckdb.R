@@ -1,4 +1,15 @@
 
+test_that("duckdb_substrait_compiler() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  df <- data.frame(a = 1, b = "two", stringsAsFactors = FALSE)
+  compiler <- duckdb_substrait_compiler(df)
+
+  expect_s3_class(compiler, "DuckDBSubstraitCompiler")
+  result <- as.data.frame(compiler$evaluate())
+  expect_identical(as.data.frame(result), df)
+})
+
 test_that("duckdb can roundtrip a substrait plan", {
   skip_if_not(has_duckdb_with_substrait())
 

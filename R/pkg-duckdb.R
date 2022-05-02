@@ -219,3 +219,35 @@ duckdb_encode_blob <- function(x) {
 
 duckdb_works_cache <- new.env(parent = emptyenv())
 duckdb_works_cache$works <- NA
+
+
+
+#' Create an DuckDB Substrait Compiler
+#'
+#' @inheritParams arrow_substrait_compiler
+#'
+#' @return A [SubstraitCompiler] subclass.
+#' @export
+#'
+duckdb_substrait_compiler <- function(object, ...) {
+  DuckDBSubstraitCompiler$new(object, ...)
+}
+
+DuckDBSubstraitCompiler <- R6::R6Class(
+  "DuckDBSubstraitCompiler", inherit = SubstraitCompiler,
+  public = list(
+    resolve_function = function(name, args, template) {
+      # I'm not really sure what the best way to do this is! I don't know where
+      # the functions are defined right now.
+      super$resolve_function(name, args, template)
+    },
+
+    evaluate = function(...) {
+      duckdb_from_substrait(
+        plan = self$plan(),
+        tables = self$named_table_list(),
+        as_data_frame = FALSE
+      )
+    }
+  )
+)
