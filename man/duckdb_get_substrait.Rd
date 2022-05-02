@@ -55,8 +55,10 @@ DuckDB Substrait Interface
 \examples{
 \dontshow{if (has_duckdb_with_substrait()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 plan <- duckdb_get_substrait(
-  "SELECT * from mtcars",
+  "SELECT * from mtcars WHERE mpg > 30",
   tables = list(mtcars = mtcars)
 )
+
+duckdb_from_substrait(plan, tables = list(mtcars = mtcars))
 \dontshow{\}) # examplesIf}
 }

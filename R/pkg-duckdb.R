@@ -17,9 +17,11 @@
 #'
 #' @examplesIf has_duckdb_with_substrait()
 #' plan <- duckdb_get_substrait(
-#'   "SELECT * from mtcars",
+#'   "SELECT * from mtcars WHERE mpg > 30",
 #'   tables = list(mtcars = mtcars)
 #' )
+#'
+#' duckdb_from_substrait(plan, tables = list(mtcars = mtcars))
 #'
 duckdb_get_substrait <- function(sql, tables = list()) {
   stopifnot(has_duckdb_with_substrait())
@@ -62,12 +64,16 @@ duckdb_from_substrait <- function(plan, tables = list(),
 #' @rdname duckdb_get_substrait
 #' @export
 has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
+  if (!identical(duckdb_works_cache$works, NA)) {
+    return(duckdb_works_cache$works)
+  }
+
   # we also need arrow for this, so check that here
   if (!requireNamespace("arrow", quietly = TRUE)) {
     return(FALSE)
   }
 
-  tryCatch({
+  duckdb_works_cache$works <- tryCatch({
     query_duckdb_with_substrait(
       query_duckdb_with_substrait("CALL from_substrait()"),
       lib = lib
@@ -96,6 +102,8 @@ has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
       )
     }
   })
+
+  duckdb_works_cache$works
 }
 
 query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
@@ -191,6 +199,8 @@ install_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir(),
     list(DUCKDB_R_EXTENSIONS = "substrait"),
     callr::r(fun, list(lib), libpath = c(lib, .libPaths()), show = !quiet)
   )
+
+  duckdb_works_cache$works <- NA
 }
 
 #' @rdname duckdb_get_substrait
@@ -206,3 +216,6 @@ duckdb_encode_blob <- function(x) {
   data <- paste0("\\x", as.raw(x), collapse = "")
   paste0("'", data, "'::BLOB")
 }
+
+duckdb_works_cache <- new.env(parent = emptyenv())
+duckdb_works_cache$works <- NA
