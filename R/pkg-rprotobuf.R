@@ -18,7 +18,7 @@ as_substrait.Message <- function(x, .ptype = NULL, ...) {
   )
 
   structure(
-    content,
+    list(content = content),
     class = c(
       paste(c("substrait", nesting), collapse = "_"),
       "substrait_proto_message",

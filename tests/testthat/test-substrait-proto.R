@@ -27,7 +27,7 @@ test_that("substrait_create() works for substrait_proto_auto()", {
   expect_identical(
     substrait_create("substrait.Type.Boolean", nullability = 1),
     structure(
-      as.raw(c(0x10, 0x01)),
+      list(content = as.raw(c(0x10, 0x01))),
       class = c(
         "substrait_Type_Boolean",
         "substrait_proto_message",
@@ -107,7 +107,7 @@ test_that("substrait_proto_message class works", {
   expect_identical(
     substrait$Type$Boolean$create(nullability = 1),
     structure(
-      as.raw(c(0x10, 0x01)),
+      list(content = as.raw(c(0x10, 0x01))),
       class = c(
         "substrait_Type_Boolean",
         "substrait_proto_message",
@@ -142,7 +142,7 @@ test_that("substrait_proto_message class can be created with a message field", {
   expect_identical(
     substrait_boolean(),
     structure(
-      as.raw(c(0x0a, 0x00)),
+      list(content = as.raw(c(0x0a, 0x00))),
       class = c(
         "substrait_Type",
         "substrait_proto_message",
@@ -155,7 +155,7 @@ test_that("substrait_proto_message class can be created with a message field", {
   expect_identical(
     substrait$Type$create(bool_ = RProtoBuf::P("substrait.Type.Boolean")$new()),
     structure(
-      as.raw(c(0x0a, 0x00)),
+      list(content = as.raw(c(0x0a, 0x00))),
       class = c(
         "substrait_Type",
         "substrait_proto_message",
@@ -168,7 +168,7 @@ test_that("substrait_proto_message class can be created with a message field", {
   expect_identical(
     substrait_boolean(),
     structure(
-      as.raw(c(0x0a, 0x00)),
+      list(content = as.raw(c(0x0a, 0x00))),
       class = c(
         "substrait_Type",
         "substrait_proto_message",

@@ -143,7 +143,7 @@ make_ptype <- function(.qualified_name) {
     .qualified_name
   } else {
     structure(
-      raw(),
+      list(content = raw()),
       class = c(
         gsub("\\.", "_", .qualified_name),
         "substrait_proto_message",
@@ -175,7 +175,7 @@ create_substrait_message <- function(..., .qualified_name) {
   message <- rlang::exec(descriptor$new, !!! lst)
 
   structure(
-    message$serialize(NULL),
+    list(content = message$serialize(NULL)),
     class = c(
       gsub("\\.", "_", .qualified_name),
       "substrait_proto_message",
@@ -381,7 +381,7 @@ length.substrait_proto_message <- function(x) {
 
 #' @export
 as.raw.substrait_proto_message <- function(x, ...) {
-  unclass(x)
+  unclass(x)$content
 }
 
 #' @export
