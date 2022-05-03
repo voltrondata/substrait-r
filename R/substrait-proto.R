@@ -143,7 +143,7 @@ make_ptype <- function(.qualified_name) {
     .qualified_name
   } else {
     structure(
-      raw(),
+      list(content = raw()),
       class = c(
         gsub("\\.", "_", .qualified_name),
         "substrait_proto_message",
@@ -175,7 +175,7 @@ create_substrait_message <- function(..., .qualified_name) {
   message <- rlang::exec(descriptor$new, !!! lst)
 
   structure(
-    message$serialize(NULL),
+    list(content = message$serialize(NULL)),
     class = c(
       gsub("\\.", "_", .qualified_name),
       "substrait_proto_message",
@@ -259,7 +259,7 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
         value
       } else if (inherits(value, "substrait_proto_message")) {
         descriptor <- RProtoBuf::P(.qualified_name)
-        return(descriptor$read(unclass(value)))
+        return(descriptor$read(as.raw(value)))
       } else if (inherits(value, "substrait_proto_auto")) {
         clean_value(
           substrait_create(.qualified_name, !!! unclass(value)),
@@ -287,7 +287,7 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
 print.substrait_proto_message <- function(x, ...) {
   .qualified_name <- gsub("_", ".", class(x)[1])
   descriptor <- RProtoBuf::P(.qualified_name)
-  pb_message <- descriptor$read(unclass(x))
+  pb_message <- descriptor$read(as.raw(x))
 
   print(pb_message, ...)
   cat(pb_message$toString())
@@ -299,7 +299,7 @@ print.substrait_proto_message <- function(x, ...) {
 as.list.substrait_proto_message <- function(x, ..., recursive = FALSE) {
   .qualified_name <- make_qualified_name(x)
   descriptor <- RProtoBuf::P(.qualified_name)
-  pb_message <- descriptor$read(unclass(x))
+  pb_message <- descriptor$read(as.raw(x))
 
   msg_names <- names(pb_message)
   msg_names <- msg_names[vapply(msg_names, pb_message$has, logical(1))]
@@ -377,6 +377,11 @@ length.substrait_proto_message <- function(x) {
   lst <- as.list(x)
   lst[[name]] <- value
   substrait_create(gsub("_", ".", class(x)[1]), !!! lst)
+}
+
+#' @export
+as.raw.substrait_proto_message <- function(x, ...) {
+  unclass(x)$content
 }
 
 #' @export

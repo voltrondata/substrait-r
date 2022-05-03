@@ -2,7 +2,7 @@
 as_rprotobuf <- function(x) {
   .qualified_name <- gsub("_", ".", class(x)[1])
   descriptor <- RProtoBuf::P(.qualified_name)
-  descriptor$read(unclass(x))
+  descriptor$read(as.raw(x))
 }
 
 #' @export
@@ -18,7 +18,7 @@ as_substrait.Message <- function(x, .ptype = NULL, ...) {
   )
 
   structure(
-    content,
+    list(content = content),
     class = c(
       paste(c("substrait", nesting), collapse = "_"),
       "substrait_proto_message",

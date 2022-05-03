@@ -37,8 +37,10 @@ duckdb_get_substrait <- function(sql, tables = list()) {
   )
   plan <- unclass(result[[1]])[[1]]
   ptype <- make_ptype("substrait.Plan")
-  class(plan) <- class(ptype)
-  plan
+  structure(
+    list(content = plan),
+    class = class(ptype)
+  )
 }
 
 

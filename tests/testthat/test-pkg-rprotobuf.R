@@ -1,7 +1,7 @@
 
 test_that("as_rprotobuf() works", {
   obj <- structure(
-    as.raw(c(0x10, 0x01)),
+    list(content = as.raw(c(0x10, 0x01))),
     class = c(
       "substrait_Type_Boolean",
       "substrait_proto_message",
@@ -18,7 +18,7 @@ test_that("as_substrait() works for RProtoBuf Message", {
   expect_identical(
     as_substrait(RProtoBuf::P("substrait.Type.Boolean")$new(nullability = 1)),
     structure(
-      as.raw(c(0x10, 0x01)),
+      list(content = as.raw(c(0x10, 0x01))),
       class = c(
         "substrait_Type_Boolean",
         "substrait_proto_message",
@@ -33,7 +33,7 @@ test_that("as_substrait() works for RProtoBuf Message", {
       .ptype = "substrait.Type.Boolean"
     ),
     structure(
-      as.raw(c(0x10, 0x01)),
+      list(content = as.raw(c(0x10, 0x01))),
       class = c(
         "substrait_Type_Boolean",
         "substrait_proto_message",
