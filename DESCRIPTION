@@ -33,7 +33,8 @@ Imports:
     vctrs,
     dplyr,
     ellipsis,
-    R6
+    R6,
+    purrr
 Depends: 
     R (>= 2.10)
 LazyData: true

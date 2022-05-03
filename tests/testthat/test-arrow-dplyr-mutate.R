@@ -278,7 +278,7 @@ test_that("mutate() with keep argument", {
 test_that("mutate() with .before and .after", {
   skip("https://github.com/voltrondata/substrait-r/issues/65")
 
-  # `.before` and `.after` experimental args: ARROW-11701
+  # `.before` and `.after` experimental args
   df <- tibble(x = 1, y = 2)
   compare_arrow_dplyr_binding(
     .input %>% mutate(z = x + y) %>% collect(),
