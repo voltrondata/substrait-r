@@ -239,6 +239,15 @@ substrait_eval_arrow <- function(plan, tables, col_names) {
   # only support plans with exactly one relation in the relations list for now
   stopifnot(length(plan$relations) == 1)
 
+  # arrow uses PlanRel(rel = ) instead of PlanRel(root = RelRoot(input = ))
+  if (!is.null(plan$relations[[1]]$root)) {
+    plan_rel <- substrait$PlanRel$create(
+      rel = plan$relations[[1]]$root$input
+    )
+
+    plan$relations[[1]] <- plan_rel
+  }
+
   temp_parquet <- vapply(tables, function(i) tempfile(), character(1))
   on.exit(unlink(temp_parquet))
 
@@ -315,5 +324,5 @@ has_arrow_with_substrait <- function() {
     length(formals(getNamespace("arrow")$do_exec_plan_substrait)) == 1 &&
     # ...and we need it not to be a shell that will error because arrow wasn't
     # built with ARROW_ENGINE=ON
-    identical(arrow::arrow_info()$capabilities["engine"], c("engine" = TRUE))
+    identical(arrow::arrow_info()$capabilities["substrait"], c("substrait" = TRUE))
 }

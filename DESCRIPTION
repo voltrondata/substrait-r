@@ -20,6 +20,12 @@ RoxygenNote: 7.1.2
 Suggests: 
     arrow,
     covr,
+    duckdb,
+    DBI,
+    callr,
+    rappdirs,
+    remotes,
+    withr,
     stringr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

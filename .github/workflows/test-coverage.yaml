@@ -33,6 +33,19 @@ jobs:
         with:
           extra-packages: covr
 
+      - name: Cache DuckDB with Substrait
+        uses: actions/cache@v3
+        with:
+          path: "~/.local/share/R-substrait/duckdb_lib"
+          key: ${{ runner.os }}-0
+
+      - name: Setup custom duckdb
+        run: |
+          if (!substrait::has_duckdb_with_substrait()) {
+            substrait::install_duckdb_with_substrait()
+          }
+        shell: Rscript {0}
+
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}
