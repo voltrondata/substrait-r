@@ -7,7 +7,7 @@ library(stringr)
 test_that("basic mutate", {
   compare_arrow_dplyr_binding(
     .input %>%
-      mutate(int2 = int + 6L) %>%
+      mutate(newcol = dbl + 6L) %>%
       collect(),
     example_data
   )
@@ -58,7 +58,7 @@ test_that("empty mutate()", {
 test_that("transmute", {
   compare_arrow_dplyr_binding(
     .input %>%
-      transmute(int = int + 6L) %>%
+      transmute(new_col = dbl + 6L) %>%
       collect(),
     example_data
   )
@@ -68,7 +68,7 @@ test_that("transmute respect bespoke dplyr implementation", {
   # see: https://github.com/tidyverse/dplyr/issues/6086
   compare_arrow_dplyr_binding(
     .input %>%
-      transmute(dbl, int = int + 6L) %>%
+      transmute(dbl, new_col = dbl + 6L) %>%
       collect(),
     example_data
   )
