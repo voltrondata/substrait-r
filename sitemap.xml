@@ -22,6 +22,12 @@
     <loc>/reference/as_substrait.html</loc>
   </url>
   <url>
+    <loc>/reference/duckdb_get_substrait.html</loc>
+  </url>
+  <url>
+    <loc>/reference/duckdb_substrait_compiler.html</loc>
+  </url>
+  <url>
     <loc>/reference/example_data.html</loc>
   </url>
   <url>
