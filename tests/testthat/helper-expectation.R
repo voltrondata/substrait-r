@@ -62,7 +62,7 @@ i18ize_error_messages <- function() {
     obj = tryCatch(eval(parse(text = "X_____X")), error = function(e) conditionMessage(e)),
     fun = tryCatch(eval(parse(text = "X_____X()")), error = function(e) conditionMessage(e))
   )
-  paste(purrr::map(out, ~ sub("X_____X", ".*", .)), collapse = "|")
+  paste(lapply(out, function(x) sub("X_____X", ".*", x)), collapse = "|")
 }
 
 with_language <- function(lang, expr) {

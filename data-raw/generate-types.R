@@ -143,13 +143,13 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
 
     if (identical(formals_flat, "")) {
       constructor <- glue::glue('\n{ indent }  create = function(...) {{
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(.qualified_name = "{ type$name_qualified }")
       }}')
     } else {
       constructor <- glue::glue(
 '\n{ indent }  create = function(..., { formals_flat }) {{
-  ellipsis::check_dots_empty()
+  rlang::check_dots_empty()
   create_substrait_message(
 { sanitizers_flat },
   .qualified_name = "{ type$name_qualified }"

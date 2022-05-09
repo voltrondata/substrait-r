@@ -17,7 +17,7 @@ substrait <- list(
   ),
   Any = list(
     create = function(..., type_url = unspecified(), value = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         type_url = clean_value(type_url, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
         value = clean_value(value, "TYPE_BYTES", "TYPE_BYTES", repeated = FALSE),
@@ -28,7 +28,7 @@ substrait <- list(
   Capabilities = list(
     SimpleExtension = list(
       create = function(..., uri = unspecified(), function_keys = unspecified(), type_keys = unspecified(), type_variation_keys = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           uri = clean_value(uri, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
           function_keys = clean_value(function_keys, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
@@ -39,7 +39,7 @@ substrait <- list(
       }
     ),
     create = function(..., substrait_versions = unspecified(), advanced_extension_type_urls = unspecified(), simple_extensions = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         substrait_versions = clean_value(substrait_versions, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
         advanced_extension_type_urls = clean_value(advanced_extension_type_urls, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
@@ -50,7 +50,7 @@ substrait <- list(
   ),
   AggregateFunction = list(
     create = function(..., function_reference = unspecified(), args = unspecified(), sorts = unspecified(), phase = unspecified(), output_type = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         function_reference = clean_value(function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
         args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
@@ -64,7 +64,7 @@ substrait <- list(
   Expression = list(
     Cast = list(
       create = function(..., type = unspecified(), input = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type = clean_value(type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           input = clean_value(input, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
@@ -75,7 +75,7 @@ substrait <- list(
     EmbeddedFunction = list(
       PythonPickleFunction = list(
         create = function(..., function_ = unspecified(), prerequisite = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             function_ = clean_value(function_, "TYPE_BYTES", "TYPE_BYTES", repeated = FALSE),
             prerequisite = clean_value(prerequisite, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
@@ -85,7 +85,7 @@ substrait <- list(
       ),
       WebAssemblyFunction = list(
         create = function(..., script = unspecified(), prerequisite = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             script = clean_value(script, "TYPE_BYTES", "TYPE_BYTES", repeated = FALSE),
             prerequisite = clean_value(prerequisite, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
@@ -94,7 +94,7 @@ substrait <- list(
         }
       ),
       create = function(..., arguments = unspecified(), output_type = unspecified(), python_pickle_function = unspecified(), web_assembly_function = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
@@ -107,12 +107,12 @@ substrait <- list(
     Enum = list(
       Empty = list(
         create = function(...) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(.qualified_name = "substrait.Expression.Enum.Empty")
         }
       ),
       create = function(..., specified = unspecified(), unspecified = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           specified = clean_value(specified, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
           unspecified = clean_value(unspecified, "TYPE_MESSAGE", "substrait.Expression.Enum.Empty", repeated = FALSE),
@@ -123,12 +123,12 @@ substrait <- list(
     FieldReference = list(
       RootReference = list(
         create = function(...) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(.qualified_name = "substrait.Expression.FieldReference.RootReference")
         }
       ),
       create = function(..., direct_reference = unspecified(), masked_reference = unspecified(), expression = unspecified(), root_reference = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           direct_reference = clean_value(direct_reference, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment", repeated = FALSE),
           masked_reference = clean_value(masked_reference, "TYPE_MESSAGE", "substrait.Expression.MaskExpression", repeated = FALSE),
@@ -141,7 +141,7 @@ substrait <- list(
     IfThen = list(
       IfClause = list(
         create = function(..., if_ = unspecified(), then = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             if_ = clean_value(if_, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
             then = clean_value(then, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
@@ -150,7 +150,7 @@ substrait <- list(
         }
       ),
       create = function(..., ifs = unspecified(), else_ = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           ifs = clean_value(ifs, "TYPE_MESSAGE", "substrait.Expression.IfThen.IfClause", repeated = TRUE),
           else_ = clean_value(else_, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
@@ -161,7 +161,7 @@ substrait <- list(
     Literal = list(
       Decimal = list(
         create = function(..., value = unspecified(), precision = unspecified(), scale = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             value = clean_value(value, "TYPE_BYTES", "TYPE_BYTES", repeated = FALSE),
             precision = clean_value(precision, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
@@ -172,7 +172,7 @@ substrait <- list(
       ),
       IntervalDayToSecond = list(
         create = function(..., days = unspecified(), seconds = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             days = clean_value(days, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
             seconds = clean_value(seconds, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
@@ -182,7 +182,7 @@ substrait <- list(
       ),
       IntervalYearToMonth = list(
         create = function(..., years = unspecified(), months = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             years = clean_value(years, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
             months = clean_value(months, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
@@ -192,7 +192,7 @@ substrait <- list(
       ),
       List = list(
         create = function(..., values = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             values = clean_value(values, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = TRUE),
             .qualified_name = "substrait.Expression.Literal.List"
@@ -202,7 +202,7 @@ substrait <- list(
       Map = list(
         KeyValue = list(
           create = function(..., key = unspecified(), value = unspecified()) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(
               key = clean_value(key, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = FALSE),
               value = clean_value(value, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = FALSE),
@@ -211,7 +211,7 @@ substrait <- list(
           }
         ),
         create = function(..., key_values = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             key_values = clean_value(key_values, "TYPE_MESSAGE", "substrait.Expression.Literal.Map.KeyValue", repeated = TRUE),
             .qualified_name = "substrait.Expression.Literal.Map"
@@ -220,7 +220,7 @@ substrait <- list(
       ),
       Struct = list(
         create = function(..., fields = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             fields = clean_value(fields, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = TRUE),
             .qualified_name = "substrait.Expression.Literal.Struct"
@@ -229,7 +229,7 @@ substrait <- list(
       ),
       VarChar = list(
         create = function(..., value = unspecified(), length = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             value = clean_value(value, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
             length = clean_value(length, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -238,7 +238,7 @@ substrait <- list(
         }
       ),
       create = function(..., boolean = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year_to_month = unspecified(), interval_day_to_second = unspecified(), fixed_char = unspecified(), var_char = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), map = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), null = unspecified(), list = unspecified(), empty_list = unspecified(), empty_map = unspecified(), nullable = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           boolean = clean_value(boolean, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
           i8 = clean_value(i8, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
@@ -276,7 +276,7 @@ substrait <- list(
         ListSelectItem = list(
           ListElement = list(
             create = function(..., field = unspecified()) {
-              ellipsis::check_dots_empty()
+              rlang::check_dots_empty()
               create_substrait_message(
                 field = clean_value(field, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
                 .qualified_name = "substrait.Expression.MaskExpression.ListSelect.ListSelectItem.ListElement"
@@ -285,7 +285,7 @@ substrait <- list(
           ),
           ListSlice = list(
             create = function(..., start = unspecified(), end = unspecified()) {
-              ellipsis::check_dots_empty()
+              rlang::check_dots_empty()
               create_substrait_message(
                 start = clean_value(start, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
                 end = clean_value(end, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
@@ -294,7 +294,7 @@ substrait <- list(
             }
           ),
           create = function(..., item = unspecified(), slice = unspecified()) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(
               item = clean_value(item, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.ListSelect.ListSelectItem.ListElement", repeated = FALSE),
               slice = clean_value(slice, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.ListSelect.ListSelectItem.ListSlice", repeated = FALSE),
@@ -303,7 +303,7 @@ substrait <- list(
           }
         ),
         create = function(..., selection = unspecified(), child = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             selection = clean_value(selection, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.ListSelect.ListSelectItem", repeated = TRUE),
             child = clean_value(child, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.Select", repeated = FALSE),
@@ -314,7 +314,7 @@ substrait <- list(
       MapSelect = list(
         MapKey = list(
           create = function(..., map_key = unspecified()) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(
               map_key = clean_value(map_key, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
               .qualified_name = "substrait.Expression.MaskExpression.MapSelect.MapKey"
@@ -323,7 +323,7 @@ substrait <- list(
         ),
         MapKeyExpression = list(
           create = function(..., map_key_expression = unspecified()) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(
               map_key_expression = clean_value(map_key_expression, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
               .qualified_name = "substrait.Expression.MaskExpression.MapSelect.MapKeyExpression"
@@ -331,7 +331,7 @@ substrait <- list(
           }
         ),
         create = function(..., key = unspecified(), expression = unspecified(), child = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             key = clean_value(key, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.MapSelect.MapKey", repeated = FALSE),
             expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.MapSelect.MapKeyExpression", repeated = FALSE),
@@ -342,7 +342,7 @@ substrait <- list(
       ),
       Select = list(
         create = function(..., struct_ = unspecified(), list = unspecified(), map = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.StructSelect", repeated = FALSE),
             list = clean_value(list, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.ListSelect", repeated = FALSE),
@@ -353,7 +353,7 @@ substrait <- list(
       ),
       StructItem = list(
         create = function(..., field = unspecified(), child = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             field = clean_value(field, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
             child = clean_value(child, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.Select", repeated = FALSE),
@@ -363,7 +363,7 @@ substrait <- list(
       ),
       StructSelect = list(
         create = function(..., struct_items = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             struct_items = clean_value(struct_items, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.StructItem", repeated = TRUE),
             .qualified_name = "substrait.Expression.MaskExpression.StructSelect"
@@ -371,7 +371,7 @@ substrait <- list(
         }
       ),
       create = function(..., select = unspecified(), maintain_singular_struct = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           select = clean_value(select, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.StructSelect", repeated = FALSE),
           maintain_singular_struct = clean_value(maintain_singular_struct, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
@@ -382,7 +382,7 @@ substrait <- list(
     MultiOrList = list(
       Record = list(
         create = function(..., fields = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             fields = clean_value(fields, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
             .qualified_name = "substrait.Expression.MultiOrList.Record"
@@ -390,7 +390,7 @@ substrait <- list(
         }
       ),
       create = function(..., value = unspecified(), options = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           value = clean_value(value, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           options = clean_value(options, "TYPE_MESSAGE", "substrait.Expression.MultiOrList.Record", repeated = TRUE),
@@ -401,7 +401,7 @@ substrait <- list(
     ReferenceSegment = list(
       ListElement = list(
         create = function(..., offset = unspecified(), child = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             offset = clean_value(offset, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
             child = clean_value(child, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment", repeated = FALSE),
@@ -411,7 +411,7 @@ substrait <- list(
       ),
       MapKey = list(
         create = function(..., map_key = unspecified(), child = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             map_key = clean_value(map_key, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = FALSE),
             child = clean_value(child, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment", repeated = FALSE),
@@ -421,7 +421,7 @@ substrait <- list(
       ),
       StructField = list(
         create = function(..., field = unspecified(), child = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             field = clean_value(field, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
             child = clean_value(child, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment", repeated = FALSE),
@@ -430,7 +430,7 @@ substrait <- list(
         }
       ),
       create = function(..., map_key = unspecified(), struct_field = unspecified(), list_element = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           map_key = clean_value(map_key, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment.MapKey", repeated = FALSE),
           struct_field = clean_value(struct_field, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment.StructField", repeated = FALSE),
@@ -441,7 +441,7 @@ substrait <- list(
     ),
     ScalarFunction = list(
       create = function(..., function_reference = unspecified(), args = unspecified(), output_type = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           function_reference = clean_value(function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
@@ -452,7 +452,7 @@ substrait <- list(
     ),
     SingularOrList = list(
       create = function(..., value = unspecified(), options = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           value = clean_value(value, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
           options = clean_value(options, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
@@ -463,7 +463,7 @@ substrait <- list(
     SwitchExpression = list(
       IfValue = list(
         create = function(..., if_ = unspecified(), then = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             if_ = clean_value(if_, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = FALSE),
             then = clean_value(then, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
@@ -472,7 +472,7 @@ substrait <- list(
         }
       ),
       create = function(..., ifs = unspecified(), else_ = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           ifs = clean_value(ifs, "TYPE_MESSAGE", "substrait.Expression.SwitchExpression.IfValue", repeated = TRUE),
           else_ = clean_value(else_, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
@@ -484,13 +484,13 @@ substrait <- list(
       Bound = list(
         CurrentRow = list(
           create = function(...) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(.qualified_name = "substrait.Expression.WindowFunction.Bound.CurrentRow")
           }
         ),
         Following = list(
           create = function(..., offset = unspecified()) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(
               offset = clean_value(offset, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
               .qualified_name = "substrait.Expression.WindowFunction.Bound.Following"
@@ -499,7 +499,7 @@ substrait <- list(
         ),
         Preceding = list(
           create = function(..., offset = unspecified()) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(
               offset = clean_value(offset, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
               .qualified_name = "substrait.Expression.WindowFunction.Bound.Preceding"
@@ -508,12 +508,12 @@ substrait <- list(
         ),
         Unbounded = list(
           create = function(...) {
-            ellipsis::check_dots_empty()
+            rlang::check_dots_empty()
             create_substrait_message(.qualified_name = "substrait.Expression.WindowFunction.Bound.Unbounded")
           }
         ),
         create = function(..., preceding = unspecified(), following = unspecified(), current_row = unspecified(), unbounded = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             preceding = clean_value(preceding, "TYPE_MESSAGE", "substrait.Expression.WindowFunction.Bound.Preceding", repeated = FALSE),
             following = clean_value(following, "TYPE_MESSAGE", "substrait.Expression.WindowFunction.Bound.Following", repeated = FALSE),
@@ -524,7 +524,7 @@ substrait <- list(
         }
       ),
       create = function(..., function_reference = unspecified(), partitions = unspecified(), sorts = unspecified(), upper_bound = unspecified(), lower_bound = unspecified(), phase = unspecified(), output_type = unspecified(), args = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           function_reference = clean_value(function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           partitions = clean_value(partitions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
@@ -539,7 +539,7 @@ substrait <- list(
       }
     ),
     create = function(..., literal = unspecified(), selection = unspecified(), scalar_function = unspecified(), window_function = unspecified(), if_then = unspecified(), switch_expression = unspecified(), singular_or_list = unspecified(), multi_or_list = unspecified(), enum_ = unspecified(), cast = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         literal = clean_value(literal, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = FALSE),
         selection = clean_value(selection, "TYPE_MESSAGE", "substrait.Expression.FieldReference", repeated = FALSE),
@@ -571,7 +571,7 @@ substrait <- list(
       }
     ),
     create = function(..., expr = unspecified(), direction = unspecified(), comparison_function_reference = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         expr = clean_value(expr, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
         direction = clean_value(direction, "TYPE_ENUM", "substrait.SortField.SortDirection", repeated = FALSE),
@@ -583,7 +583,7 @@ substrait <- list(
   FunctionSignature = list(
     Aggregate = list(
       create = function(..., arguments = unspecified(), name = unspecified(), description = unspecified(), deterministic = unspecified(), session_dependent = unspecified(), output_type = unspecified(), variadic = unspecified(), normal = unspecified(), ordered = unspecified(), max_set = unspecified(), intermediate_type = unspecified(), implementations = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.FunctionSignature.Argument", repeated = TRUE),
           name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
@@ -604,7 +604,7 @@ substrait <- list(
     Argument = list(
       EnumArgument = list(
         create = function(..., options = unspecified(), optional = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             options = clean_value(options, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
             optional = clean_value(optional, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
@@ -614,7 +614,7 @@ substrait <- list(
       ),
       TypeArgument = list(
         create = function(..., type = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             type = clean_value(type, "TYPE_MESSAGE", "substrait.ParameterizedType", repeated = FALSE),
             .qualified_name = "substrait.FunctionSignature.Argument.TypeArgument"
@@ -623,7 +623,7 @@ substrait <- list(
       ),
       ValueArgument = list(
         create = function(..., type = unspecified(), constant = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             type = clean_value(type, "TYPE_MESSAGE", "substrait.ParameterizedType", repeated = FALSE),
             constant = clean_value(constant, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
@@ -632,7 +632,7 @@ substrait <- list(
         }
       ),
       create = function(..., name = unspecified(), value = unspecified(), type = unspecified(), enum_ = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
           value = clean_value(value, "TYPE_MESSAGE", "substrait.FunctionSignature.Argument.ValueArgument", repeated = FALSE),
@@ -644,7 +644,7 @@ substrait <- list(
     ),
     Description = list(
       create = function(..., language = unspecified(), body = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           language = clean_value(language, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
           body = clean_value(body, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
@@ -654,7 +654,7 @@ substrait <- list(
     ),
     FinalArgNormal = list(
       create = function(...) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(.qualified_name = "substrait.FunctionSignature.FinalArgNormal")
       }
     ),
@@ -671,7 +671,7 @@ substrait <- list(
         }
       ),
       create = function(..., min_args = unspecified(), max_args = unspecified(), consistency = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           min_args = clean_value(min_args, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
           max_args = clean_value(max_args, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
@@ -693,7 +693,7 @@ substrait <- list(
         }
       ),
       create = function(..., type = unspecified(), uri = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type = clean_value(type, "TYPE_ENUM", "substrait.FunctionSignature.Implementation.Type", repeated = FALSE),
           uri = clean_value(uri, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
@@ -703,7 +703,7 @@ substrait <- list(
     ),
     Scalar = list(
       create = function(..., arguments = unspecified(), name = unspecified(), description = unspecified(), deterministic = unspecified(), session_dependent = unspecified(), output_type = unspecified(), variadic = unspecified(), normal = unspecified(), implementations = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.FunctionSignature.Argument", repeated = TRUE),
           name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
@@ -731,7 +731,7 @@ substrait <- list(
         }
       ),
       create = function(..., arguments = unspecified(), name = unspecified(), description = unspecified(), deterministic = unspecified(), session_dependent = unspecified(), intermediate_type = unspecified(), output_type = unspecified(), variadic = unspecified(), normal = unspecified(), ordered = unspecified(), max_set = unspecified(), window_type = unspecified(), implementations = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.FunctionSignature.Argument", repeated = TRUE),
           name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
@@ -751,14 +751,14 @@ substrait <- list(
       }
     ),
     create = function(...) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(.qualified_name = "substrait.FunctionSignature")
     }
   ),
   ParameterizedType = list(
     IntegerOption = list(
       create = function(..., literal = unspecified(), parameter = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           literal = clean_value(literal, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
           parameter = clean_value(parameter, "TYPE_MESSAGE", "substrait.ParameterizedType.IntegerParameter", repeated = FALSE),
@@ -768,7 +768,7 @@ substrait <- list(
     ),
     IntegerParameter = list(
       create = function(..., name = unspecified(), range_start_inclusive = unspecified(), range_end_exclusive = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
           range_start_inclusive = clean_value(range_start_inclusive, "TYPE_MESSAGE", "substrait.ParameterizedType.NullableInteger", repeated = FALSE),
@@ -779,7 +779,7 @@ substrait <- list(
     ),
     NullableInteger = list(
       create = function(..., value = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           value = clean_value(value, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
           .qualified_name = "substrait.ParameterizedType.NullableInteger"
@@ -788,7 +788,7 @@ substrait <- list(
     ),
     ParameterizedDecimal = list(
       create = function(..., scale = unspecified(), precision = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           scale = clean_value(scale, "TYPE_MESSAGE", "substrait.ParameterizedType.IntegerOption", repeated = FALSE),
           precision = clean_value(precision, "TYPE_MESSAGE", "substrait.ParameterizedType.IntegerOption", repeated = FALSE),
@@ -800,7 +800,7 @@ substrait <- list(
     ),
     ParameterizedFixedBinary = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_MESSAGE", "substrait.ParameterizedType.IntegerOption", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -811,7 +811,7 @@ substrait <- list(
     ),
     ParameterizedFixedChar = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_MESSAGE", "substrait.ParameterizedType.IntegerOption", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -822,7 +822,7 @@ substrait <- list(
     ),
     ParameterizedList = list(
       create = function(..., type = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type = clean_value(type, "TYPE_MESSAGE", "substrait.ParameterizedType", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -833,7 +833,7 @@ substrait <- list(
     ),
     ParameterizedMap = list(
       create = function(..., key = unspecified(), value = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           key = clean_value(key, "TYPE_MESSAGE", "substrait.ParameterizedType", repeated = FALSE),
           value = clean_value(value, "TYPE_MESSAGE", "substrait.ParameterizedType", repeated = FALSE),
@@ -845,7 +845,7 @@ substrait <- list(
     ),
     ParameterizedNamedStruct = list(
       create = function(..., names = unspecified(), struct_ = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
           struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.ParameterizedType.ParameterizedStruct", repeated = FALSE),
@@ -855,7 +855,7 @@ substrait <- list(
     ),
     ParameterizedStruct = list(
       create = function(..., types = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           types = clean_value(types, "TYPE_MESSAGE", "substrait.ParameterizedType", repeated = TRUE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -866,7 +866,7 @@ substrait <- list(
     ),
     ParameterizedVarChar = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_MESSAGE", "substrait.ParameterizedType.IntegerOption", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -877,7 +877,7 @@ substrait <- list(
     ),
     TypeParameter = list(
       create = function(..., name = unspecified(), bounds = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
           bounds = clean_value(bounds, "TYPE_MESSAGE", "substrait.ParameterizedType", repeated = TRUE),
@@ -886,7 +886,7 @@ substrait <- list(
       }
     ),
     create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined_pointer = unspecified(), type_parameter = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         bool_ = clean_value(bool_, "TYPE_MESSAGE", "substrait.Type.Boolean", repeated = FALSE),
         i8 = clean_value(i8, "TYPE_MESSAGE", "substrait.Type.I8", repeated = FALSE),
@@ -919,7 +919,7 @@ substrait <- list(
   ),
   Plan = list(
     create = function(..., extension_uris = unspecified(), extensions = unspecified(), relations = unspecified(), advanced_extensions = unspecified(), expected_type_urls = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         extension_uris = clean_value(extension_uris, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionURI", repeated = TRUE),
         extensions = clean_value(extensions, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration", repeated = TRUE),
@@ -932,7 +932,7 @@ substrait <- list(
   ),
   PlanRel = list(
     create = function(..., rel = unspecified(), root = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         rel = clean_value(rel, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         root = clean_value(root, "TYPE_MESSAGE", "substrait.RelRoot", repeated = FALSE),
@@ -943,7 +943,7 @@ substrait <- list(
   AggregateRel = list(
     Grouping = list(
       create = function(..., grouping_expressions = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           grouping_expressions = clean_value(grouping_expressions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           .qualified_name = "substrait.AggregateRel.Grouping"
@@ -952,7 +952,7 @@ substrait <- list(
     ),
     Measure = list(
       create = function(..., measure = unspecified(), filter = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           measure = clean_value(measure, "TYPE_MESSAGE", "substrait.AggregateFunction", repeated = FALSE),
           filter = clean_value(filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
@@ -961,7 +961,7 @@ substrait <- list(
       }
     ),
     create = function(..., common = unspecified(), input = unspecified(), groupings = unspecified(), measures = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
@@ -974,7 +974,7 @@ substrait <- list(
   ),
   ExtensionLeafRel = list(
     create = function(..., common = unspecified(), detail = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
@@ -984,7 +984,7 @@ substrait <- list(
   ),
   ExtensionMultiRel = list(
     create = function(..., common = unspecified(), inputs = unspecified(), detail = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
@@ -995,7 +995,7 @@ substrait <- list(
   ),
   ExtensionSingleRel = list(
     create = function(..., common = unspecified(), input = unspecified(), detail = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
@@ -1006,7 +1006,7 @@ substrait <- list(
   ),
   FetchRel = list(
     create = function(..., common = unspecified(), input = unspecified(), offset = unspecified(), count = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
@@ -1019,7 +1019,7 @@ substrait <- list(
   ),
   FilterRel = list(
     create = function(..., common = unspecified(), input = unspecified(), condition = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
@@ -1046,7 +1046,7 @@ substrait <- list(
       }
     ),
     create = function(..., common = unspecified(), left = unspecified(), right = unspecified(), expression = unspecified(), post_join_filter = unspecified(), type = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         left = clean_value(left, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
@@ -1061,7 +1061,7 @@ substrait <- list(
   ),
   ProjectRel = list(
     create = function(..., common = unspecified(), input = unspecified(), expressions = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
@@ -1074,7 +1074,7 @@ substrait <- list(
   ReadRel = list(
     ExtensionTable = list(
       create = function(..., detail = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
           .qualified_name = "substrait.ReadRel.ExtensionTable"
@@ -1094,7 +1094,7 @@ substrait <- list(
           }
         ),
         create = function(..., uri_path = unspecified(), uri_path_glob = unspecified(), uri_file = unspecified(), uri_folder = unspecified(), format = unspecified(), partition_index = unspecified(), start = unspecified(), length = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             uri_path = clean_value(uri_path, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
             uri_path_glob = clean_value(uri_path_glob, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
@@ -1109,7 +1109,7 @@ substrait <- list(
         }
       ),
       create = function(..., items = unspecified(), advanced_extension = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           items = clean_value(items, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles", repeated = TRUE),
           advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
@@ -1119,7 +1119,7 @@ substrait <- list(
     ),
     NamedTable = list(
       create = function(..., names = unspecified(), advanced_extension = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
           advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
@@ -1129,7 +1129,7 @@ substrait <- list(
     ),
     VirtualTable = list(
       create = function(..., values = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           values = clean_value(values, "TYPE_MESSAGE", "substrait.Expression.Literal.Struct", repeated = TRUE),
           .qualified_name = "substrait.ReadRel.VirtualTable"
@@ -1137,7 +1137,7 @@ substrait <- list(
       }
     ),
     create = function(..., common = unspecified(), base_schema = unspecified(), filter = unspecified(), projection = unspecified(), advanced_extension = unspecified(), virtual_table = unspecified(), local_files = unspecified(), named_table = unspecified(), extension_table = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         base_schema = clean_value(base_schema, "TYPE_MESSAGE", "substrait.NamedStruct", repeated = FALSE),
@@ -1154,7 +1154,7 @@ substrait <- list(
   ),
   Rel = list(
     create = function(..., read = unspecified(), filter = unspecified(), fetch = unspecified(), aggregate = unspecified(), sort = unspecified(), join = unspecified(), project = unspecified(), set = unspecified(), extension_single = unspecified(), extension_multi = unspecified(), extension_leaf = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         read = clean_value(read, "TYPE_MESSAGE", "substrait.ReadRel", repeated = FALSE),
         filter = clean_value(filter, "TYPE_MESSAGE", "substrait.FilterRel", repeated = FALSE),
@@ -1174,13 +1174,13 @@ substrait <- list(
   RelCommon = list(
     Direct = list(
       create = function(...) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(.qualified_name = "substrait.RelCommon.Direct")
       }
     ),
     Emit = list(
       create = function(..., output_mapping = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           output_mapping = clean_value(output_mapping, "TYPE_INT32", "TYPE_INT32", repeated = TRUE),
           .qualified_name = "substrait.RelCommon.Emit"
@@ -1190,7 +1190,7 @@ substrait <- list(
     Hint = list(
       RuntimeConstraint = list(
         create = function(..., advanced_extension = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
             .qualified_name = "substrait.RelCommon.Hint.RuntimeConstraint"
@@ -1199,7 +1199,7 @@ substrait <- list(
       ),
       Stats = list(
         create = function(..., row_count = unspecified(), record_size = unspecified(), advanced_extension = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             row_count = clean_value(row_count, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
             record_size = clean_value(record_size, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
@@ -1209,7 +1209,7 @@ substrait <- list(
         }
       ),
       create = function(..., stats = unspecified(), constraint = unspecified(), advanced_extension = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           stats = clean_value(stats, "TYPE_MESSAGE", "substrait.RelCommon.Hint.Stats", repeated = FALSE),
           constraint = clean_value(constraint, "TYPE_MESSAGE", "substrait.RelCommon.Hint.RuntimeConstraint", repeated = FALSE),
@@ -1219,7 +1219,7 @@ substrait <- list(
       }
     ),
     create = function(..., direct = unspecified(), emit = unspecified(), hint = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         direct = clean_value(direct, "TYPE_MESSAGE", "substrait.RelCommon.Direct", repeated = FALSE),
         emit = clean_value(emit, "TYPE_MESSAGE", "substrait.RelCommon.Emit", repeated = FALSE),
@@ -1231,7 +1231,7 @@ substrait <- list(
   ),
   RelRoot = list(
     create = function(..., input = unspecified(), names = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
@@ -1256,7 +1256,7 @@ substrait <- list(
       }
     ),
     create = function(..., common = unspecified(), inputs = unspecified(), op = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
@@ -1268,7 +1268,7 @@ substrait <- list(
   ),
   SortRel = list(
     create = function(..., common = unspecified(), input = unspecified(), sorts = unspecified(), advanced_extension = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
         input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
@@ -1302,7 +1302,7 @@ substrait <- list(
         }
       ),
       create = function(..., op_type = unspecified(), arg1 = unspecified(), arg2 = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           op_type = clean_value(op_type, "TYPE_ENUM", "substrait.DerivationExpression.BinaryOp.BinaryOpType", repeated = FALSE),
           arg1 = clean_value(arg1, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
@@ -1313,7 +1313,7 @@ substrait <- list(
     ),
     ExpressionDecimal = list(
       create = function(..., scale = unspecified(), precision = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           scale = clean_value(scale, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
           precision = clean_value(precision, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
@@ -1325,7 +1325,7 @@ substrait <- list(
     ),
     ExpressionFixedBinary = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1336,7 +1336,7 @@ substrait <- list(
     ),
     ExpressionFixedChar = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1347,7 +1347,7 @@ substrait <- list(
     ),
     ExpressionList = list(
       create = function(..., type = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type = clean_value(type, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1358,7 +1358,7 @@ substrait <- list(
     ),
     ExpressionMap = list(
       create = function(..., key = unspecified(), value = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           key = clean_value(key, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
           value = clean_value(value, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
@@ -1370,7 +1370,7 @@ substrait <- list(
     ),
     ExpressionNamedStruct = list(
       create = function(..., names = unspecified(), struct_ = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
           struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.DerivationExpression.ExpressionStruct", repeated = FALSE),
@@ -1380,7 +1380,7 @@ substrait <- list(
     ),
     ExpressionStruct = list(
       create = function(..., types = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           types = clean_value(types, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = TRUE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1391,7 +1391,7 @@ substrait <- list(
     ),
     ExpressionVarChar = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
           variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1402,7 +1402,7 @@ substrait <- list(
     ),
     IfElse = list(
       create = function(..., if_condition = unspecified(), if_return = unspecified(), else_return = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           if_condition = clean_value(if_condition, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
           if_return = clean_value(if_return, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
@@ -1414,7 +1414,7 @@ substrait <- list(
     ReturnProgram = list(
       Assignment = list(
         create = function(..., name = unspecified(), expression = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             name = clean_value(name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
             expression = clean_value(expression, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
@@ -1423,7 +1423,7 @@ substrait <- list(
         }
       ),
       create = function(..., assignments = unspecified(), final_expression = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           assignments = clean_value(assignments, "TYPE_MESSAGE", "substrait.DerivationExpression.ReturnProgram.Assignment", repeated = TRUE),
           final_expression = clean_value(final_expression, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
@@ -1443,7 +1443,7 @@ substrait <- list(
         }
       ),
       create = function(..., op_type = unspecified(), arg = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           op_type = clean_value(op_type, "TYPE_ENUM", "substrait.DerivationExpression.UnaryOp.UnaryOpType", repeated = FALSE),
           arg = clean_value(arg, "TYPE_MESSAGE", "substrait.DerivationExpression", repeated = FALSE),
@@ -1452,7 +1452,7 @@ substrait <- list(
       }
     ),
     create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined_pointer = unspecified(), type_parameter_name = unspecified(), integer_parameter_name = unspecified(), integer_literal = unspecified(), unary_op = unspecified(), binary_op = unspecified(), if_else = unspecified(), return_program = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         bool_ = clean_value(bool_, "TYPE_MESSAGE", "substrait.Type.Boolean", repeated = FALSE),
         i8 = clean_value(i8, "TYPE_MESSAGE", "substrait.Type.I8", repeated = FALSE),
@@ -1491,7 +1491,7 @@ substrait <- list(
   ),
   NamedStruct = list(
     create = function(..., names = unspecified(), struct_ = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
         struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.Type.Struct", repeated = FALSE),
@@ -1513,7 +1513,7 @@ substrait <- list(
     ),
     Binary = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1523,7 +1523,7 @@ substrait <- list(
     ),
     Boolean = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1533,7 +1533,7 @@ substrait <- list(
     ),
     Date = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1543,7 +1543,7 @@ substrait <- list(
     ),
     Decimal = list(
       create = function(..., scale = unspecified(), precision = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           scale = clean_value(scale, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
           precision = clean_value(precision, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
@@ -1555,7 +1555,7 @@ substrait <- list(
     ),
     FP32 = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1565,7 +1565,7 @@ substrait <- list(
     ),
     FP64 = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1575,7 +1575,7 @@ substrait <- list(
     ),
     FixedBinary = list(
       create = function(..., length = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1586,7 +1586,7 @@ substrait <- list(
     ),
     FixedChar = list(
       create = function(..., length = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1597,7 +1597,7 @@ substrait <- list(
     ),
     I16 = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1607,7 +1607,7 @@ substrait <- list(
     ),
     I32 = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1617,7 +1617,7 @@ substrait <- list(
     ),
     I64 = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1627,7 +1627,7 @@ substrait <- list(
     ),
     I8 = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1637,7 +1637,7 @@ substrait <- list(
     ),
     IntervalDay = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1647,7 +1647,7 @@ substrait <- list(
     ),
     IntervalYear = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1657,7 +1657,7 @@ substrait <- list(
     ),
     List = list(
       create = function(..., type = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type = clean_value(type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1668,7 +1668,7 @@ substrait <- list(
     ),
     Map = list(
       create = function(..., key = unspecified(), value = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           key = clean_value(key, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           value = clean_value(value, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
@@ -1680,7 +1680,7 @@ substrait <- list(
     ),
     String = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1690,7 +1690,7 @@ substrait <- list(
     ),
     Struct = list(
       create = function(..., types = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           types = clean_value(types, "TYPE_MESSAGE", "substrait.Type", repeated = TRUE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1701,7 +1701,7 @@ substrait <- list(
     ),
     Time = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1711,7 +1711,7 @@ substrait <- list(
     ),
     Timestamp = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1721,7 +1721,7 @@ substrait <- list(
     ),
     TimestampTZ = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1731,7 +1731,7 @@ substrait <- list(
     ),
     UUID = list(
       create = function(..., type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
@@ -1741,7 +1741,7 @@ substrait <- list(
     ),
     VarChar = list(
       create = function(..., length = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           length = clean_value(length, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
           type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1751,7 +1751,7 @@ substrait <- list(
       }
     ),
     create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined_type_reference = unspecified()) {
-      ellipsis::check_dots_empty()
+      rlang::check_dots_empty()
       create_substrait_message(
         bool_ = clean_value(bool_, "TYPE_MESSAGE", "substrait.Type.Boolean", repeated = FALSE),
         i8 = clean_value(i8, "TYPE_MESSAGE", "substrait.Type.I8", repeated = FALSE),
@@ -1784,7 +1784,7 @@ substrait <- list(
   extensions = list(
     AdvancedExtension = list(
       create = function(..., optimization = unspecified(), enhancement = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           optimization = clean_value(optimization, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
           enhancement = clean_value(enhancement, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
@@ -1795,7 +1795,7 @@ substrait <- list(
     SimpleExtensionDeclaration = list(
       ExtensionFunction = list(
         create = function(..., extension_uri_reference = unspecified(), function_anchor = unspecified(), name = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             extension_uri_reference = clean_value(extension_uri_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
             function_anchor = clean_value(function_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1806,7 +1806,7 @@ substrait <- list(
       ),
       ExtensionType = list(
         create = function(..., extension_uri_reference = unspecified(), type_anchor = unspecified(), name = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             extension_uri_reference = clean_value(extension_uri_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
             type_anchor = clean_value(type_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1817,7 +1817,7 @@ substrait <- list(
       ),
       ExtensionTypeVariation = list(
         create = function(..., extension_uri_reference = unspecified(), type_variation_anchor = unspecified(), name = unspecified()) {
-          ellipsis::check_dots_empty()
+          rlang::check_dots_empty()
           create_substrait_message(
             extension_uri_reference = clean_value(extension_uri_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
             type_variation_anchor = clean_value(type_variation_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -1827,7 +1827,7 @@ substrait <- list(
         }
       ),
       create = function(..., extension_type = unspecified(), extension_type_variation = unspecified(), extension_function = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           extension_type = clean_value(extension_type, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionType", repeated = FALSE),
           extension_type_variation = clean_value(extension_type_variation, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionTypeVariation", repeated = FALSE),
@@ -1838,7 +1838,7 @@ substrait <- list(
     ),
     SimpleExtensionURI = list(
       create = function(..., extension_uri_anchor = unspecified(), uri = unspecified()) {
-        ellipsis::check_dots_empty()
+        rlang::check_dots_empty()
         create_substrait_message(
           extension_uri_anchor = clean_value(extension_uri_anchor, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           uri = clean_value(uri, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
