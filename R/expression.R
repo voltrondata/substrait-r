@@ -74,11 +74,11 @@ substrait_eval_expr <- function(x, compiler, env) {
       env = env
     )
 
-    # resolve the function call as an expression from the compiler
-    # only scalar functions for now
+    # Resolve the function call as an expression from the compiler, with
+    # only scalar functions for now. The return value could be another type
+    # of expression (e.g., IfThen) depending on the function.
     template <- substrait$Expression$ScalarFunction$create()
-    fun <- compiler$resolve_function(name, args, template)
-    substrait$Expression$create(scalar_function = fun)
+    as_substrait(compiler$resolve_function(name, args, template), "substrait.Expression")
   } else {
     rlang::eval_tidy(x, compiler$mask, env)
   }
@@ -132,6 +132,19 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., compiler = 
 
       guessed_type
     },
+    NextMethod()
+  )
+}
+
+#' @export
+as_substrait.substrait_Expression_ScalarFunction <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    return(x)
+  }
+
+  switch(
+    make_qualified_name(.ptype),
+    "substrait.Expression" = substrait$Expression$create(scalar_function = x),
     NextMethod()
   )
 }

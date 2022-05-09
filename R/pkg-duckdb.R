@@ -239,9 +239,79 @@ DuckDBSubstraitCompiler <- R6::R6Class(
   "DuckDBSubstraitCompiler", inherit = SubstraitCompiler,
   public = list(
     resolve_function = function(name, args, template) {
-      # I'm not really sure what the best way to do this is! I don't know where
-      # the functions are defined right now.
-      super$resolve_function(name, args, template)
+      # Note that this is a quick-and-dirty implementation designed to help
+      # test the core functionality with realistic tests. The fact that this
+      # is pretty ugly suggests that expression translation should maybe live
+      # in the compiler rather than its current form (functions in
+      # expressions.R).
+
+      # skip package names for now
+      name <- gsub("^.*?::", "", name)
+
+      # Note: super$resolve_function() will skip any custom things we do here,
+      # whereas self$resolve_function() will apply translations as we
+      # implement them here.
+      switch(
+        name,
+        "==" = super$resolve_function("equal", args, template),
+        "!=" = super$resolve_function("notequal", args, template),
+        ">=" = super$resolve_function("greaterthanequal", args, template),
+        "<=" = super$resolve_function("lessthanequal", args, template),
+        ">" = super$resolve_function("greaterthan", args, template),
+        "<" = super$resolve_function("lessthan", args, template),
+        "between" = super$resolve_function(
+          "and",
+          list(
+            super$resolve_function("greaterthanequal", args[-3], template),
+            super$resolve_function("lessthanequal", args[-2], template)
+          ),
+          template
+        ),
+        "&" = super$resolve_function("and", args, template),
+        "|" = super$resolve_function("or", args, template),
+        # while I'm sure that "not" exists somehow, this is the only way
+        # I can get it to work for now (NULLs are not handled properly here)
+        "!" = {
+          super$resolve_function(
+            "cast",
+            args = list(
+              substrait$Expression$create(
+                if_then = substrait$Expression$IfThen$create(
+                  ifs = list(
+                    substrait$Expression$IfThen$IfClause$create(
+                      if_ = as_substrait(
+                        args[[1]],
+                        "substrait.Expression",
+                        compiler = compiler
+                      ),
+                      then = as_substrait(FALSE, "substrait.Expression")
+                    )
+                  ),
+                  else_ = as_substrait(TRUE, "substrait.Expression")
+                )
+              ),
+              "BOOLEAN"
+            ),
+            template
+          )
+        },
+        "is.na" = {
+          self$resolve_function(
+            "!",
+            list(
+              as_substrait(
+                super$resolve_function("is_not_null", args, template),
+                "substrait.Expression"
+              )
+            ),
+            template
+          )
+        },
+        # pass through by default (but listing here the functions that are
+        # known to work with the same names as R)
+        "+" = , "-" = , "*" = , "/" = , "^" = ,
+        super$resolve_function(name, args, template)
+      )
     },
 
     evaluate = function(...) {
