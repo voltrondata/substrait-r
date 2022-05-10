@@ -4,6 +4,8 @@ on:
     types: closed
   push:
     branches: check_skipped_tests
+  pr:
+    branches: main
 
 name: check_skipped_tests
 
