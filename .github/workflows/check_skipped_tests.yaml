@@ -100,7 +100,7 @@ jobs:
             issues_causing_skips,
             closed_issues
           )
-          Print("Runnable tests: ")
+          print("Runnable tests: ")
           print(runnable_tests)
 
           # Post to Slack
