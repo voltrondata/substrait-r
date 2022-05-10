@@ -4,6 +4,8 @@ skip_if_not(has_arrow_with_substrait())
 
 library(stringr)
 
+skip("Testing 1..2..3: https://github.com/voltrondata/substrait-r/issues/62")
+
 test_that("basic mutate", {
   compare_arrow_dplyr_binding(
     .input %>%
