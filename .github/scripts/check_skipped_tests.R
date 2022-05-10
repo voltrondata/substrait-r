@@ -55,10 +55,11 @@ get_closed_issues <- function(){
 test_files <- list.files("tests/testthat", full.names = TRUE, pattern = "*.R")
 runnable_tests <- find_runnable_tests(
   issues_causing_skips = find_issues_in_files(test_files),
-  closed_issues
-  # = get_closed_issues()
+  closed_issues = get_closed_issues()
 )
 
+
+# Post to Slack
 msg_title <- paste("Tests which can now be unskipped! :tada:")
 
 msg_body <- paste0(runnable_tests, collapse = "\n ")
