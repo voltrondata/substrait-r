@@ -4,7 +4,7 @@ skip_if_not(has_arrow_with_substrait())
 
 test_that("filter() on is.na()", {
   skip("is.na() not implemented yet https://github.com/voltrondata/substrait-r/issues/93")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(is.na(lgl)) %>%
       select(chr, int, lgl) %>%
@@ -14,7 +14,7 @@ test_that("filter() on is.na()", {
 })
 
 test_that("filter() with NAs in selection", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(lgl) %>%
       select(chr, int, lgl) %>%
@@ -24,7 +24,7 @@ test_that("filter() with NAs in selection", {
 })
 
 test_that("Filter should be able to return an empty table", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(false) %>%
       select(chr, int, lgl) %>%
@@ -36,7 +36,7 @@ test_that("Filter should be able to return an empty table", {
 test_that("filtering with expression", {
   skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
   char_sym <- "b"
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(chr == char_sym) %>%
       select(string = chr, int) %>%
@@ -49,7 +49,7 @@ test_that("filtering with arithmetic", {
 
   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl + 1 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -57,7 +57,7 @@ test_that("filtering with arithmetic", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl / 2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -65,7 +65,7 @@ test_that("filtering with arithmetic", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl / 2L > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -73,7 +73,7 @@ test_that("filtering with arithmetic", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(int / 2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -81,7 +81,7 @@ test_that("filtering with arithmetic", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(int / 2L > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -89,7 +89,7 @@ test_that("filtering with arithmetic", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl %/% 2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -97,7 +97,7 @@ test_that("filtering with arithmetic", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl^2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -110,7 +110,7 @@ test_that("filtering with expression + autocasting", {
 
   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl + 1 > 3L) %>% # test autocasting with comparison to 3L
       select(string = chr, int, dbl) %>%
@@ -118,7 +118,7 @@ test_that("filtering with expression + autocasting", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(int + 1 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -126,7 +126,7 @@ test_that("filtering with expression + autocasting", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(int^2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -137,7 +137,7 @@ test_that("filtering with expression + autocasting", {
 
 test_that("More complex select/filter", {
   skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl > 2, chr == "d" | chr == "f") %>%
       select(chr, int, lgl) %>%
@@ -150,7 +150,7 @@ test_that("More complex select/filter", {
 
 test_that("filter() with %in%", {
   skip("%in% not yet implemented: https://github.com/voltrondata/substrait-r/issues/74")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl > 2, chr %in% c("d", "f")) %>%
       collect(),
@@ -160,19 +160,19 @@ test_that("filter() with %in%", {
 
 test_that("Negative scalar values", {
   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(some_negative > -2) %>%
       collect(),
     example_data
   )
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(some_negative %in% -1) %>%
       collect(),
     example_data
   )
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(int == -some_negative) %>%
       collect(),
@@ -184,14 +184,14 @@ test_that("filter() with between()", {
 
   skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/94")
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(between(dbl, 1, 2)) %>%
       collect(),
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(between(dbl, 0.5, 2)) %>%
       collect(),
@@ -232,14 +232,14 @@ test_that("filter() with between()", {
 test_that("filter() with string ops", {
   # skip_if_not_available("utf8proc")
   skip("string functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/18")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl > 2, str_length(verses) > 25) %>%
       collect(),
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(dbl > 2, str_length(str_trim(padded_strings, "left")) > 5) %>%
       collect(),
@@ -253,7 +253,7 @@ test_that("filter environment scope", {
   compare_arrow_dplyr_error(.input %>% filter(chr == b_var), example_data)
 
   b_var <- "b"
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(chr == b_var) %>%
       collect(),
@@ -266,7 +266,7 @@ test_that("filter environment scope", {
 
   # This works but only because there are S3 methods for those operations
   isEqualTo <- function(x, y) x == y & !is.na(x)
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(-lgl) %>% # factor levels aren't identical
       filter(isEqualTo(int, 4)) %>%
@@ -274,7 +274,7 @@ test_that("filter environment scope", {
     example_data
   )
   # Try something that needs to call another nse_func
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(-lgl) %>%
       filter(nchar(padded_strings) < 10) %>%
@@ -283,7 +283,7 @@ test_that("filter environment scope", {
   )
   isShortString <- function(x) nchar(x) < 10
   skip("TODO: 14071")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(-lgl) %>%
       filter(isShortString(padded_strings)) %>%
@@ -319,7 +319,7 @@ test_that("Filtering on a column that doesn't exist errors correctly", {
 
 test_that("Filtering with unsupported functions", {
   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(int > 2, pnorm(dbl) > .99) %>%
       collect(),
@@ -327,7 +327,7 @@ test_that("Filtering with unsupported functions", {
     # this needs updating to refer to Substrait and not Arrow
     # warning = "Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow; pulling data into R"
   )
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(
         nchar(chr, type = "bytes", allowNA = TRUE) == 1, # bad, Arrow msg
@@ -355,7 +355,7 @@ test_that("Calling Arrow compute functions 'directly'", {
       select(string = chr, int, dbl)
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     example_data %>%
       arrow_substrait_compiler() %>%
       filter(arrow_greater(arrow_add(dbl, 1), 3L)) %>%
@@ -369,7 +369,7 @@ test_that("Calling Arrow compute functions 'directly'", {
 
 test_that("filter() with .data pronoun", {
   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(.data$dbl > 4) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
@@ -377,7 +377,7 @@ test_that("filter() with .data pronoun", {
     example_data
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(is.na(.data$lgl)) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
@@ -387,7 +387,7 @@ test_that("filter() with .data pronoun", {
 
   # and the .env pronoun too!
   chr <- 4
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       filter(.data$dbl > .env$chr) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
