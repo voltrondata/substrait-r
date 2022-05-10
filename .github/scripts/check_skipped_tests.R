@@ -64,7 +64,7 @@ msg_title <- paste("Tests which can now be unskipped! :tada:")
 msg_body <- paste0(runnable_tests, collapse = "\n ")
 
 if (length(runnable_tests) > 0) {
-  httr::POST(
+  req <- httr::POST(
     url = Sys.getenv("SLACK_WEBHOOK_URL"),
     body = paste(
       '{"attachments": [{',
