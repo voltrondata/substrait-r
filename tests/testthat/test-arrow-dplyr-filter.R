@@ -34,7 +34,7 @@ test_that("Filter should be able to return an empty table", {
 })
 
 test_that("filtering with expression", {
-  skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/73")
+  skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
   char_sym <- "b"
   compare_arrow_dplyr_binding(
     .input %>%
@@ -136,7 +136,7 @@ test_that("filtering with expression + autocasting", {
 })
 
 test_that("More complex select/filter", {
-  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/73")
+  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
   compare_arrow_dplyr_binding(
     .input %>%
       filter(dbl > 2, chr == "d" | chr == "f") %>%
@@ -248,7 +248,7 @@ test_that("filter() with string ops", {
 })
 
 test_that("filter environment scope", {
-  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/73")
+  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
   # "object 'b_var' not found"
   compare_arrow_dplyr_error(.input %>% filter(chr == b_var), example_data)
 
