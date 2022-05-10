@@ -182,7 +182,7 @@ test_that("Negative scalar values", {
 
 test_that("filter() with between()", {
 
-  skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/75")
+  skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/94")
 
   compare_arrow_dplyr_binding(
     .input %>%
