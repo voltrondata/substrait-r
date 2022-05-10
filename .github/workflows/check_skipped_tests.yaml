@@ -1,10 +1,6 @@
 on:
   issues:
     types: closed
-  push:
-    branches: check_skipped_tests
-  pull_request:
-    branches: main
 
 name: check_skipped_tests
 
