@@ -1,0 +1,29 @@
+
+on:
+  issues:
+    types: closed
+
+name: check_skipped_tests
+
+jobs:
+  check_skipped_tests:
+    runs-on: ubuntu-latest
+
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: substrait
+
+      - name: Install R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          use-public-rspm: true
+
+      - name: Install script dependencies
+        run: Rscript -e "install.packages(c('dplyr', 'stringr', 'purrr', 'rlang', 'jsonlite', 'httr'))"
+
+      - name: Run script
+        run: .github/scripts/check_skipped_tests.R
