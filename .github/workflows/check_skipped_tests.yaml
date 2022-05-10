@@ -89,6 +89,7 @@ jobs:
             closed_issues = get_closed_issues()
           )
 
+          print(runnable_tests)
 
           # Post to Slack
           msg_title <- paste("Tests which can now be unskipped! :tada:")
