@@ -30,4 +30,5 @@ jobs:
         run: Rscript -e "install.packages(c('dplyr', 'stringr', 'purrr', 'rlang', 'jsonlite', 'httr'))"
 
       - name: Run script
+        shell: Rscript {0}
         run: .github/scripts/check_skipped_tests.R
