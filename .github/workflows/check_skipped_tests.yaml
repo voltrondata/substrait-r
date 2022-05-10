@@ -87,7 +87,7 @@ jobs:
           print("Test files:")
           print(test_files)
 
-          issues_causing_skips <- find_issues_in_files(test_files),
+          issues_causing_skips <- find_issues_in_files(test_files)
           closed_issues <- get_closed_issues()
 
           print("Issues causing skips:")
