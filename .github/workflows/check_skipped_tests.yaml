@@ -3,7 +3,7 @@ on:
     types: closed
   push:
       branches: main
-  pr:
+  pull_request:
       branches: main
 
 name: check_skipped_tests
