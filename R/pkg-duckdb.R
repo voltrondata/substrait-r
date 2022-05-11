@@ -307,6 +307,67 @@ DuckDBSubstraitCompiler <- R6::R6Class(
             template
           )
         },
+        "c" = {
+          # this limits the usage of c() to literals, which is probably the most
+          # common usage (e.g., col %in% c("a", "b"))
+          substrait$Expression$create(
+            literal = substrait$Expression$Literal$create(
+              list = substrait$Expression$Literal$List$create(
+                values = lapply(args, as_substrait, "substrait.Expression.Literal")
+              )
+            )
+          )
+        },
+        "%in%" = {
+          # duckdb implements this using == and or, according to
+          # duckdb_get_substrait()
+          lhs <- as_substrait(args[[1]], "substrait.Expression", compiler = self)
+          rhs <- as_substrait(args[[2]], "substrait.Expression", compiler = self)
+
+          # if the rhs is a regular literal, wrap in a list
+          rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
+
+          if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
+            rhs <- substrait$Expression$create(
+              literal = substrait$Expression$Literal$create(
+                list = substrait$Expression$Literal$List$create(
+                  values = list(rhs$literal)
+                )
+              )
+            )
+          } else if (!rhs_is_list) {
+            rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
+          }
+
+          if (length(rhs$literal$list$values) == 0) {
+            return(as_substrait(FALSE, "substrait.Expression"))
+          } else if (length(rhs$literal$list$values) == 1) {
+            return(
+              super$resolve_function(
+                "equal",
+                list(lhs, rhs$literal$list$values[[1]]),
+                template
+              )
+            )
+          }
+
+          equal_expressions <- lapply(rhs$literal$list$values, function(value) {
+            as_substrait(
+              super$resolve_function("equal", list(lhs, value), template),
+              "substrait.Expression"
+            )
+          })
+
+          combine_or <- function(lhs, rhs) {
+            as_substrait(
+              super$resolve_function("or", list(lhs, rhs), template),
+              "substrait.Expression"
+            )
+          }
+
+          Reduce(combine_or, equal_expressions)
+        },
+
         # pass through by default (but listing here the functions that are
         # known to work with the same names as R)
         "+" = , "-" = , "*" = , "/" = , "^" = ,
