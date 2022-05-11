@@ -3,6 +3,8 @@ on:
     types: closed
   push:
       branches: main
+  pr:
+      branches: use-env-secret
 
 name: check_skipped_tests
 
