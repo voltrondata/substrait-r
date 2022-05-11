@@ -3,7 +3,9 @@ library(stringr)
 skip_if_not(has_arrow_with_substrait())
 
 test_that("filter() on is.na()", {
+  skip("is.na() error https://github.com/voltrondata/substrait-r/issues/95")
   skip("is.na() not implemented yet https://github.com/voltrondata/substrait-r/issues/93")
+
   compare_dplyr_binding(
     .input %>%
       filter(is.na(lgl)) %>%
