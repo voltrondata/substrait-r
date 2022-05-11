@@ -146,6 +146,63 @@ test_that("duckdb translation for is.na() works", {
   )
 })
 
+test_that("duckdb translation for %in% works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  # case of zero items
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::filter(col %in% c()) %>%
+      dplyr::collect(),
+    tibble::tibble(col = character())
+  )
+
+  # case of one item (translates to ==)
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::filter(col %in% c("d")) %>%
+      dplyr::collect(),
+    tibble::tibble(col = c("d"))
+  )
+
+  # case of n items (translates to == reduced with or)
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::filter(col %in% c("d", "e")) %>%
+      dplyr::collect(),
+    tibble::tibble(col = c("d", "e"))
+  )
+
+  # make sure that a user-provided literal will also work
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::filter(col %in% !! letters) %>%
+      dplyr::collect(),
+    tibble::tibble(col = letters)
+  )
+
+  # ...even if that literal reduces to a scalar literal
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::filter(col %in% !! c("d")) %>%
+      dplyr::collect(),
+    tibble::tibble(col = "d")
+  )
+
+  # make sure that a non-list literal on the rhs errors
+  expect_error(
+    tibble::tibble(col = letters) %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::filter(col %in% col),
+    "must be a list literal"
+  )
+})
+
 test_that("duckdb can roundtrip a substrait plan", {
   skip_if_not(has_duckdb_with_substrait())
 
