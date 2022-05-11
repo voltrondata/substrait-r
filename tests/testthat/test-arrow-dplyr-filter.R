@@ -36,9 +36,10 @@ test_that("Filter should be able to return an empty table", {
 })
 
 test_that("filtering with expression", {
-  skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
+  #skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
   char_sym <- "b"
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(chr == char_sym) %>%
       select(string = chr, int) %>%
@@ -49,7 +50,7 @@ test_that("filtering with expression", {
 
 test_that("filtering with arithmetic", {
 
-  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+#  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
 
   compare_dplyr_binding(
     .input %>%
