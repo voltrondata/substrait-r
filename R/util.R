@@ -1,16 +1,22 @@
 
-compare_arrow_dplyr_binding <- function(expr, tbl, ...){
+compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...){
 
   expr <- rlang::enquo(expr)
   expected <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = tbl)))
 
-  out_substrait <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl))))
+  if ("arrow" %in% engine) {
+    out_substrait <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl))))
+    expect_identical(out_substrait, expected, ...)
+  }
 
-  expect_identical(out_substrait, expected, ...)
+  if ("duckdb" %in% engine) {
+    out_duckdb <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = duckdb_substrait_compiler(tbl))))
+    expect_identical(out_duckdb, expected, ...)
+  }
 
 }
 
-compare_arrow_dplyr_error <- function(expr, tbl, ...) {
+compare_dplyr_error <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
   # ensure we have supplied tbl
   force(tbl)
 
@@ -45,14 +51,28 @@ compare_arrow_dplyr_error <- function(expr, tbl, ...) {
   # This expectation will tell us "dplyr on data.frame errored is not TRUE"
   expect_true(identical(typeof(msg), "character"), label = "dplyr on data.frame errored")
 
-  expect_error(
-    rlang::eval_tidy(
-      expr,
-      rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl)))
-    ),
-    msg,
+  if ("arrow" %in% engine) {
+    expect_error(
+      rlang::eval_tidy(
+        expr,
+        rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl)))
+      ),
+      msg,
+      ...
+    )
+  }
+
+  if ("duckdb" %in% engine) {
+    expect_error(
+      rlang::eval_tidy(
+        expr,
+        rlang::new_data_mask(rlang::env(.input = duckdb_substrait_compiler(tbl)))
+      ),
+      msg,
     ...
-  )
+    )
+  }
+
 }
 
 i18ize_error_messages <- function() {

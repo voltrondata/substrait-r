@@ -5,7 +5,17 @@ skip_if_not(has_arrow_with_substrait())
 library(stringr)
 
 test_that("basic mutate", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      mutate(newcol = some_negative -  2L) %>%
+      collect(),
+    example_data
+  )
+
+  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+  compare_dplyr_binding(
+    engine = "arrow",
     .input %>%
       mutate(newcol = dbl + 6L) %>%
       collect(),
@@ -14,7 +24,7 @@ test_that("basic mutate", {
 
   skip("https://github.com/voltrondata/substrait-r/issues/54")
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(int = int + 6L) %>%
       collect(),
@@ -25,7 +35,7 @@ test_that("basic mutate", {
 test_that("mutate after select", {
   skip("https://github.com/voltrondata/substrait-r/issues/55")
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(int, chr) %>%
       mutate(int2 = int + 6L) %>%
@@ -37,7 +47,7 @@ test_that("mutate after select", {
 test_that("mutate() with NULL inputs", {
   skip("https://github.com/voltrondata/substrait-r/issues/56")
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(int2 = NULL) %>%
       collect(),
@@ -45,9 +55,8 @@ test_that("mutate() with NULL inputs", {
   )
 })
 
-
 test_that("empty mutate()", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate() %>%
       collect(),
@@ -56,9 +65,10 @@ test_that("empty mutate()", {
 })
 
 test_that("transmute", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      transmute(new_col = dbl + 6L) %>%
+      transmute(new_col = some_negative -  2L) %>%
       collect(),
     example_data
   )
@@ -66,9 +76,9 @@ test_that("transmute", {
 
 test_that("transmute respect bespoke dplyr implementation", {
   # see: https://github.com/tidyverse/dplyr/issues/6086
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
-      transmute(dbl, new_col = dbl + 6L) %>%
+      transmute(dbl, new_col = some_negative + 6L) %>%
       collect(),
     example_data
   )
@@ -76,7 +86,7 @@ test_that("transmute respect bespoke dplyr implementation", {
 
 test_that("transmute() with NULL inputs", {
   skip("https://github.com/voltrondata/substrait-r/issues/56")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       transmute(int = NULL) %>%
       collect(),
@@ -86,7 +96,7 @@ test_that("transmute() with NULL inputs", {
 
 test_that("empty transmute()", {
   skip("https://github.com/voltrondata/substrait-r/issues/51")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       transmute() %>%
       collect(),
@@ -95,7 +105,7 @@ test_that("empty transmute()", {
 })
 
 test_that("transmute with unnamed expressions", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       transmute(
         int, # bare column name
@@ -133,7 +143,7 @@ test_that("transmute() with unsupported arguments", {
 })
 
 test_that("mutate and refer to previous mutants", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(
         int10 = int + 10
@@ -145,7 +155,7 @@ test_that("mutate and refer to previous mutants", {
 })
 
 test_that("mutate with .data pronoun", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(
         int10 = .data$int + 10
@@ -156,7 +166,7 @@ test_that("mutate with .data pronoun", {
 })
 
 test_that("mutate with unnamed expressions", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(
         int + 1 # expression
@@ -168,7 +178,7 @@ test_that("mutate with unnamed expressions", {
 
 test_that("mutate with reassigning same name", {
   skip("https://github.com/voltrondata/substrait-r/issues/59")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       transmute(
         new = lgl,
@@ -180,7 +190,7 @@ test_that("mutate with reassigning same name", {
 })
 
 test_that("mutate with single value for recycling", {
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(
         dr_bronner = 1 # ALL ONE!
@@ -194,7 +204,7 @@ test_that("dplyr::mutate's examples", {
   skip("https://github.com/voltrondata/substrait-r/issues/60")
 
   # Newly created variables are available immediately
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       arrow_substrait_compiler() %>%
       select(name, mass) %>%
@@ -208,7 +218,7 @@ test_that("dplyr::mutate's examples", {
 
   # As well as adding new variables, you can use mutate() to
   # remove variables and modify existing variables.
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(name, height, mass, homeworld) %>%
       mutate(
@@ -226,7 +236,7 @@ test_that("window functions", {
   # The mutate operation may yield different results on grouped
   # tibbles because the expressions are computed within groups.
   # The following normalises `mass` by the global average:
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(name, mass, species) %>%
       mutate(mass_norm = mass / mean(mass, na.rm = TRUE)) %>%
@@ -241,7 +251,7 @@ test_that("mutate() with keep argument", {
 
   # Experimental: You can override with `.keep`
   df <- tibble(x = 1, y = 2, a = "a", b = "b")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>% mutate(z = x + y, .keep = "all") %>% collect(), # the default
     df
   )
@@ -249,7 +259,7 @@ test_that("mutate() with keep argument", {
   #>       x     y a     b         z
   #>   <dbl> <dbl> <chr> <chr> <dbl>
   #> 1     1     2 a     b         3
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>% mutate(z = x + y, .keep = "used") %>% collect(),
     df
   )
@@ -257,7 +267,7 @@ test_that("mutate() with keep argument", {
   #>       x     y     z
   #>   <dbl> <dbl> <dbl>
   #> 1     1     2     3
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>% mutate(z = x + y, .keep = "unused") %>% collect(),
     df
   )
@@ -265,7 +275,7 @@ test_that("mutate() with keep argument", {
   #>   a     b         z
   #>   <chr> <chr> <dbl>
   #> 1 a     b         3
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>% mutate(z = x + y, x, .keep = "none") %>% collect(),
     df
   )
@@ -280,7 +290,7 @@ test_that("mutate() with .before and .after", {
 
   # `.before` and `.after` experimental args
   df <- tibble(x = 1, y = 2)
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>% mutate(z = x + y) %>% collect(),
     df
   )
@@ -289,7 +299,7 @@ test_that("mutate() with .before and .after", {
   #>   <dbl> <dbl> <dbl>
   #> 1     1     2     3
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>% mutate(z = x + y, .before = 1) %>% collect(),
     df
   )
@@ -297,7 +307,7 @@ test_that("mutate() with .before and .after", {
   #>       z     x     y
   #>   <dbl> <dbl> <dbl>
   #> 1     3     1     2
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>% mutate(z = x + y, .after = x) %>% collect(),
     df
   )
@@ -309,7 +319,7 @@ test_that("mutate() with .before and .after", {
 
 test_that("across()", {
   skip("https://github.com/voltrondata/substrait-r/issues/64")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(int, dbl, lgl) %>%
       mutate(across(int, as.character)) %>%
@@ -320,7 +330,7 @@ test_that("across()", {
 
 test_that("group_by() followed by mutate()", {
   skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(name, mass, homeworld) %>%
       group_by(homeworld) %>%
@@ -333,7 +343,7 @@ test_that("group_by() followed by mutate()", {
 test_that("Can mutate after group_by as long as there are no aggregations", {
   skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(int, chr) %>%
       group_by(chr) %>%
@@ -341,7 +351,7 @@ test_that("Can mutate after group_by as long as there are no aggregations", {
       collect(),
     tbl
   )
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       select(mean = int, chr) %>%
       # rename `int` to `mean` and use `mean` in `mutate()` to test that
@@ -400,7 +410,7 @@ test_that("mutate and pmin/pmax", {
     val3 = c(0, NA, NA)
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(
         max_val_1 = pmax(val1, val2, val3),
@@ -412,7 +422,7 @@ test_that("mutate and pmin/pmax", {
     df
   )
 
-  compare_arrow_dplyr_binding(
+  compare_dplyr_binding(
     .input %>%
       mutate(
         max_val_1 = pmax(val1 - 100, 200, val1 * 100, na.rm = TRUE),
