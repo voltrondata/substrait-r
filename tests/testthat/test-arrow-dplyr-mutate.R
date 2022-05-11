@@ -6,6 +6,16 @@ library(stringr)
 
 test_that("basic mutate", {
   compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      mutate(newcol = some_negative -  2L) %>%
+      collect(),
+    example_data
+  )
+
+  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+  compare_dplyr_binding(
+    engine = "arrow",
     .input %>%
       mutate(newcol = dbl + 6L) %>%
       collect(),
@@ -45,7 +55,6 @@ test_that("mutate() with NULL inputs", {
   )
 })
 
-
 test_that("empty mutate()", {
   compare_dplyr_binding(
     .input %>%
@@ -57,8 +66,9 @@ test_that("empty mutate()", {
 
 test_that("transmute", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      transmute(new_col = dbl + 6L) %>%
+      transmute(new_col = some_negative -  2L) %>%
       collect(),
     example_data
   )
@@ -68,7 +78,7 @@ test_that("transmute respect bespoke dplyr implementation", {
   # see: https://github.com/tidyverse/dplyr/issues/6086
   compare_dplyr_binding(
     .input %>%
-      transmute(dbl, new_col = dbl + 6L) %>%
+      transmute(dbl, new_col = some_negative + 6L) %>%
       collect(),
     example_data
   )
