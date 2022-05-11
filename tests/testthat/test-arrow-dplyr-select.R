@@ -78,7 +78,6 @@ test_that("select using selection helpers", {
     example_data
   )
 
-
   compare_dplyr_binding(
     .input %>%
       select(where(is.numeric)) %>%
