@@ -9,7 +9,7 @@ on:
 name: check_skipped_tests
 
 env:
-  SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 jobs:
   check_skipped_tests:
