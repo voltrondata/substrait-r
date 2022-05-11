@@ -256,7 +256,7 @@ test_that("filter() with string ops", {
 
 test_that("filter environment scope", {
   # "object 'b_var' not found"
-  compare_arrow_dplyr_error(.input %>% filter(chr == b_var), example_data)
+  compare_dplyr_error(.input %>% filter(chr == b_var), example_data)
 
   b_var <- "b"
   compare_dplyr_binding(
@@ -269,10 +269,15 @@ test_that("filter environment scope", {
   )
   # Also for functions
   # 'could not find function "isEqualTo"' because we haven't defined it yet
-  skip("https://github.com/voltrondata/substrait-r/issues/76")
-  compare_arrow_dplyr_error(.input %>% filter(isEqualTo(int, 4)), example_data)
+  skip("https://github.com/voltrondata/substrait-r/issues/100")
+  compare_dplyr_error(
+    .input %>% filter(isEqualTo(int, 4)),
+    example_data
+  )
 
+  skip("== not defined (Arrow) https://github.com/voltrondata/substrait-r/issues/76")
   # This works but only because there are S3 methods for those operations
+  skip("user-defined functions not supported https://github.com/voltrondata/substrait-r/issues/102")
   isEqualTo <- function(x, y) x == y & !is.na(x)
   compare_dplyr_binding(
     .input %>%
@@ -290,7 +295,7 @@ test_that("filter environment scope", {
     example_data
   )
   isShortString <- function(x) nchar(x) < 10
-  skip("TODO: 14071")
+  skip("user-defined functions not supported https://github.com/voltrondata/substrait-r/issues/102")
   compare_dplyr_binding(
     .input %>%
       select(-lgl) %>%
@@ -325,9 +330,11 @@ test_that("Filtering on a column that doesn't exist errors correctly", {
   })
 })
 
+## YOU WERE UP TO HERE!!!! ###
 test_that("Filtering with unsupported functions", {
-  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+  skip("https://github.com/voltrondata/substrait-r/issues/103")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(int > 2, pnorm(dbl) > .99) %>%
       collect(),
@@ -376,16 +383,21 @@ test_that("Calling Arrow compute functions 'directly'", {
 })
 
 test_that("filter() with .data pronoun", {
-  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+
   compare_dplyr_binding(
+    #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    engine = "duckdb",
     .input %>%
-      filter(.data$dbl > 4) %>%
+      filter(.data$dbl == 4) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
       collect(),
     example_data
   )
 
+  skip("is.na error - https://github.com/voltrondata/substrait-r/issues/95")
   compare_dplyr_binding(
+    #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    engine = "duckdb",
     .input %>%
       filter(is.na(.data$lgl)) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
@@ -394,8 +406,11 @@ test_that("filter() with .data pronoun", {
   )
 
   # and the .env pronoun too!
+  skip(".env doesn't work - https://github.com/voltrondata/substrait-r/issues/104")
   chr <- 4
   compare_dplyr_binding(
+    #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    engine = "duckdb",
     .input %>%
       filter(.data$dbl > .env$chr) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
@@ -403,13 +418,4 @@ test_that("filter() with .data pronoun", {
     example_data
   )
 
-  skip("test now faulty - code no longer gives error & outputs a empty tibble")
-  # but there is an error if we don't override the masking with `.env`
-  compare_arrow_dplyr_error(
-    .input %>%
-      filter(.data$dbl > chr) %>%
-      select(.data$chr, .data$int, .data$lgl) %>%
-      collect(),
-    example_data
-  )
 })
