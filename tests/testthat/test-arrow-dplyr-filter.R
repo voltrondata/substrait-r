@@ -115,7 +115,7 @@ test_that("filtering with arithmetic", {
 test_that("filtering with expression + autocasting", {
 
   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
-
+  skip("< and > errors https://github.com/voltrondata/substrait-r/issues/105")
   compare_dplyr_binding(
     .input %>%
       filter(dbl + 1 > 3L) %>% # test autocasting with comparison to 3L
