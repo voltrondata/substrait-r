@@ -139,8 +139,10 @@ test_that("filtering with expression + autocasting", {
 })
 
 test_that("More complex select/filter", {
-  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
+  # skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
+  skip("https://github.com/voltrondata/substrait-r/issues/97")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(dbl > 2, chr == "d" | chr == "f") %>%
       select(chr, int, lgl) %>%
@@ -152,7 +154,8 @@ test_that("More complex select/filter", {
 })
 
 test_that("filter() with %in%", {
-  skip("%in% not yet implemented: https://github.com/voltrondata/substrait-r/issues/74")
+  skip("%in% not yet implemented (Arrow): https://github.com/voltrondata/substrait-r/issues/74")
+  skip("%in% not yet implemented (DuckDB): https://github.com/voltrondata/substrait-r/issues/98")
   compare_dplyr_binding(
     .input %>%
       filter(dbl > 2, chr %in% c("d", "f")) %>%
@@ -185,9 +188,10 @@ test_that("Negative scalar values", {
 
 test_that("filter() with between()", {
 
-  skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/94")
-
+  #skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/94")
+  skip("https://github.com/voltrondata/substrait-r/issues/99")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(between(dbl, 1, 2)) %>%
       collect(),
@@ -251,12 +255,13 @@ test_that("filter() with string ops", {
 })
 
 test_that("filter environment scope", {
-  skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
   # "object 'b_var' not found"
   compare_arrow_dplyr_error(.input %>% filter(chr == b_var), example_data)
 
   b_var <- "b"
   compare_dplyr_binding(
+    #   skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
+    engine = "duckdb",
     .input %>%
       filter(chr == b_var) %>%
       collect(),
