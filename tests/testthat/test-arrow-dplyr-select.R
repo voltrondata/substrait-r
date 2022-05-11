@@ -3,8 +3,8 @@ library(arrow)
 skip_if_not(has_arrow_with_substrait())
 
 test_that("Empty select returns no columns", {
-  skip("https://github.com/voltrondata/substrait-r/issues/51")
-
+  skip("Arrow - https://github.com/voltrondata/substrait-r/issues/51")
+  skip("DuckDB - https://github.com/voltrondata/substrait-r/issues/96")
   compare_dplyr_binding(
     .input %>% select() %>% collect(),
     example_data
@@ -88,18 +88,20 @@ test_that("select using selection helpers", {
 })
 
 test_that("filtering with rename", {
-  skip("substrait function not yet implemented")
-  # Doesn't work as `==` function not yet implemented:
-  # "Don't know how to convert call to `==` to Arrow"
 
+  # skip("https://github.com/voltrondata/substrait-r/issues/92")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(chr == "b") %>%
       select(string = chr, int) %>%
       collect(),
     example_data
   )
+
+  skip("https://github.com/voltrondata/substrait-r/issues/97")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(string = chr, int) %>%
       filter(string == "b") %>%
