@@ -6,6 +6,7 @@ on:
   pull_request:
       branches: main
 
+
 name: check_skipped_tests
 
 env:
