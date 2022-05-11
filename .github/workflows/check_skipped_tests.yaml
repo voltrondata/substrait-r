@@ -2,7 +2,9 @@ on:
   issues:
     types: closed
   push:
-      branches: [main, use-env-secret]
+      branches: main
+  pr:
+      branches: main
 
 name: check_skipped_tests
 
