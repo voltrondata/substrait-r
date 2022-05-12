@@ -254,16 +254,16 @@ DuckDBSubstraitCompiler <- R6::R6Class(
       switch(
         name,
         "==" = super$resolve_function("equal", args, template),
-        "!=" = super$resolve_function("notequal", args, template),
-        ">=" = super$resolve_function("greaterthanequal", args, template),
-        "<=" = super$resolve_function("lessthanequal", args, template),
-        ">" = super$resolve_function("greaterthan", args, template),
-        "<" = super$resolve_function("lessthan", args, template),
+        "!=" = super$resolve_function("not_equal", args, template),
+        ">=" = super$resolve_function("gte", args, template),
+        "<=" = super$resolve_function("lte", args, template),
+        ">" = super$resolve_function("gt", args, template),
+        "<" = super$resolve_function("lt", args, template),
         "between" = super$resolve_function(
           "and",
           list(
-            super$resolve_function("greaterthanequal", args[-3], template),
-            super$resolve_function("lessthanequal", args[-2], template)
+            super$resolve_function("gte", args[-3], template),
+            super$resolve_function("lte", args[-2], template)
           ),
           template
         ),
@@ -272,10 +272,12 @@ DuckDBSubstraitCompiler <- R6::R6Class(
         # while I'm sure that "not" exists somehow, this is the only way
         # I can get it to work for now (NULLs are not handled properly here)
         "!" = {
-          super$resolve_function(
-            "cast",
-            args = list(
-              substrait$Expression$create(
+          substrait$Expression$create(
+            cast = substrait$Expression$Cast$create(
+              type = substrait$Type$create(
+                bool_ = substrait$Type$Boolean$create()
+              ),
+              input = substrait$Expression$create(
                 if_then = substrait$Expression$IfThen$create(
                   ifs = list(
                     substrait$Expression$IfThen$IfClause$create(
@@ -289,10 +291,8 @@ DuckDBSubstraitCompiler <- R6::R6Class(
                   ),
                   else_ = as_substrait(TRUE, "substrait.Expression")
                 )
-              ),
-              "BOOLEAN"
-            ),
-            template
+              )
+            )
           )
         },
         "is.na" = {
