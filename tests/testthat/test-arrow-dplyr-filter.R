@@ -271,7 +271,7 @@ test_that("filter() with string ops", {
 
 test_that("filter environment scope", {
   # "object 'b_var' not found"
-  compare_dplyr_error(.input %>% filter(chr == b_var), example_data)
+  # compare_dplyr_error(.input %>% filter(chr == b_var), example_data)
 
   b_var <- "b"
   compare_dplyr_binding(
