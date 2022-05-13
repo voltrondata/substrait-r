@@ -37,7 +37,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: "~/.local/share/R-substrait/duckdb_lib"
-          key: ${{ runner.os }}-0
+          key: ${{ runner.os }}-1
 
       - name: Setup custom duckdb
         run: |
