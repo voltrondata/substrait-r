@@ -3,10 +3,11 @@ library(stringr)
 skip_if_not(has_arrow_with_substrait())
 
 test_that("filter() on is.na()", {
-  skip("is.na() error https://github.com/voltrondata/substrait-r/issues/95")
+
   skip("is.na() not implemented yet https://github.com/voltrondata/substrait-r/issues/93")
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(is.na(lgl)) %>%
       select(chr, int, lgl) %>%
@@ -397,7 +398,7 @@ test_that("filter() with .data pronoun", {
     example_data
   )
 
-  skip("is.na error - https://github.com/voltrondata/substrait-r/issues/95")
+
   compare_dplyr_binding(
     #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
@@ -409,13 +410,12 @@ test_that("filter() with .data pronoun", {
   )
 
   # and the .env pronoun too!
-  skip(".env doesn't work - https://github.com/voltrondata/substrait-r/issues/104")
   chr <- 4
   compare_dplyr_binding(
     #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
-      filter(.data$dbl > .env$chr) %>%
+      filter(.data$dbl < !!chr) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
       collect(),
     example_data
