@@ -4,8 +4,7 @@ skip_if_not(has_arrow_with_substrait())
 
 test_that("filter() on is.na()", {
 
-  skip("is.na() not implemented yet https://github.com/voltrondata/substrait-r/issues/93")
-
+  # skip("is.na() not implemented yet https://github.com/voltrondata/substrait-r/issues/93")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -52,61 +51,66 @@ test_that("filtering with expression", {
 
 test_that("filtering with arithmetic", {
 
-
-  skip("< and > errors https://github.com/voltrondata/substrait-r/issues/105")
   compare_dplyr_binding(
     # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
-      filter(dbl + 1 > 3) %>%
+      filter(some_negative + 1 > 3) %>%
       select(string = chr, int, dbl) %>%
       collect(),
     example_data
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(dbl / 2 > 3) %>%
+      filter(some_negative / 2 > 3) %>%
       select(string = chr, int, dbl) %>%
       collect(),
     example_data
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(dbl / 2L > 3) %>%
+      filter(some_negative / 2L > 3) %>%
       select(string = chr, int, dbl) %>%
       collect(),
     example_data
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(int / 2 > 3) %>%
+      filter(some_negative / 2 > 3) %>%
       select(string = chr, int, dbl) %>%
       collect(),
     example_data
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(int / 2L > 3) %>%
+      filter(some_negative / 2L > 3) %>%
+      select(string = chr, int, dbl) %>%
+      collect(),
+    example_data
+  )
+
+  skip("%/% not inplemented yet https://github.com/voltrondata/substrait-r/issues/110")
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      filter(some_negative %/% 2 > 3) %>%
       select(string = chr, int, dbl) %>%
       collect(),
     example_data
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(dbl %/% 2 > 3) %>%
-      select(string = chr, int, dbl) %>%
-      collect(),
-    example_data
-  )
-
-  compare_dplyr_binding(
-    .input %>%
-      filter(dbl^2 > 3) %>%
+      filter(int^2 > 3) %>%
       select(string = chr, int, dbl) %>%
       collect(),
     example_data
@@ -115,17 +119,18 @@ test_that("filtering with arithmetic", {
 
 test_that("filtering with expression + autocasting", {
 
-  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
-  skip("< and > errors https://github.com/voltrondata/substrait-r/issues/105")
   compare_dplyr_binding(
+    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    engine = "duckdb",
     .input %>%
-      filter(dbl + 1 > 3L) %>% # test autocasting with comparison to 3L
+      filter(some_negative + 1 > 3L) %>% # test autocasting with comparison to 3L
       select(string = chr, int, dbl) %>%
       collect(),
     example_data
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(int + 1 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -134,6 +139,7 @@ test_that("filtering with expression + autocasting", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(int^2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -158,33 +164,38 @@ test_that("More complex select/filter", {
 })
 
 test_that("filter() with %in%", {
-  skip("%in% not yet implemented (Arrow): https://github.com/voltrondata/substrait-r/issues/74")
-  skip("%in% not yet implemented (DuckDB): https://github.com/voltrondata/substrait-r/issues/98")
+  # skip("%in% not yet implemented (Arrow): https://github.com/voltrondata/substrait-r/issues/74")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(dbl > 2, chr %in% c("d", "f")) %>%
+      filter(chr %in% c("d", "f")) %>%
       collect(),
     example_data
   )
 })
 
 test_that("Negative scalar values", {
-  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+  # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(some_negative > -2) %>%
       collect(),
     example_data
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(some_negative %in% -1) %>%
+      filter(int == -some_negative) %>%
       collect(),
     example_data
   )
+
+   skip("error withn %in% and negative number - https://github.com/voltrondata/substrait-r/issues/112")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      filter(int == -some_negative) %>%
+      filter(some_negative %in% -1) %>%
       collect(),
     example_data
   )
@@ -193,7 +204,6 @@ test_that("Negative scalar values", {
 test_that("filter() with between()", {
 
   #skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/94")
-  skip("https://github.com/voltrondata/substrait-r/issues/99")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -203,6 +213,7 @@ test_that("filter() with between()", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(between(dbl, 0.5, 2)) %>%
       collect(),
@@ -211,7 +222,7 @@ test_that("filter() with between()", {
 
   expect_identical(
     example_data %>%
-      arrow_substrait_compiler() %>%
+      duckdb_substrait_compiler() %>%
       filter(between(dbl, int, dbl2)) %>%
       collect(),
     example_data %>%
@@ -220,21 +231,21 @@ test_that("filter() with between()", {
 
   expect_error(
     example_data %>%
-      arrow_substrait_compiler() %>%
+      duck_substrait_compiler() %>%
       filter(between(dbl, 1, "2")) %>%
       collect()
   )
 
   expect_error(
     example_data %>%
-      arrow_substrait_compiler() %>%
+      duckdb_substrait_compiler() %>%
       filter(between(dbl, 1, NA)) %>%
       collect()
   )
 
   expect_error(
     example_data %>%
-      arrow_substrait_compiler() %>%
+      duckdb_substrait_compiler() %>%
       filter(between(chr, 1, 2)) %>%
       collect()
   )
