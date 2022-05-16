@@ -57,7 +57,7 @@ jobs:
       - name: Setup substrait dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck, local::.
+          extra-packages: rcmdcheck, local::., arrow=?ignore
           working-directory: /home/runner/work/substrait-r/substrait-r/substrait
 
       - name: Cache DuckDB with Substrait
