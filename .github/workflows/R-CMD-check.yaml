@@ -54,6 +54,26 @@ jobs:
       - if: runner.os == 'Linux'
         run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake
 
+      - name: Setup substrait dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: rcmdcheck, local::., arrow=?ignore
+          working-directory: /home/runner/work/substrait-r/substrait-r/substrait
+
+      - name: Cache DuckDB with Substrait
+        uses: actions/cache@v3
+        with:
+          path: "~/.local/share/R-substrait/duckdb_lib"
+          key: ${{ runner.os }}-1
+
+      - name: Setup custom duckdb
+        run: |
+          if (!substrait::has_duckdb_with_substrait()) {
+            substrait::install_duckdb_with_substrait()
+          }
+        shell: Rscript {0}
+
+
       - name: Checkout Arrow repo
         uses: actions/checkout@v3
         with:
@@ -85,25 +105,6 @@ jobs:
           cd /home/runner/work/substrait-r/substrait-r/arrow/r/
           make clean
           R CMD INSTALL .
-
-      - name: Setup substrait dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: rcmdcheck, local::.
-          working-directory: /home/runner/work/substrait-r/substrait-r/substrait
-
-      - name: Cache DuckDB with Substrait
-        uses: actions/cache@v3
-        with:
-          path: "~/.local/share/R-substrait/duckdb_lib"
-          key: ${{ runner.os }}-1
-
-      - name: Setup custom duckdb
-        run: |
-          if (!substrait::has_duckdb_with_substrait()) {
-            substrait::install_duckdb_with_substrait()
-          }
-        shell: Rscript {0}
 
       - name: Run R CMD check
         uses: r-lib/actions/check-r-package@v2
