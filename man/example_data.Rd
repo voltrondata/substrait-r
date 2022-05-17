@@ -13,6 +13,9 @@ data(example_data)
 \description{
 Data for use in examples and tests with multiple different data types
 }
+\details{
+Currently generated via:
+}
 \examples{
 data(example_data)
 }

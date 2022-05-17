@@ -15,7 +15,7 @@ test_that("basic mutate", {
 
   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
   compare_dplyr_binding(
-    engine = "arrow",
+    engine = "duckdb",
     .input %>%
       mutate(newcol = dbl + 6L) %>%
       collect(),
@@ -23,7 +23,6 @@ test_that("basic mutate", {
   )
 
   skip("https://github.com/voltrondata/substrait-r/issues/54")
-
   compare_dplyr_binding(
     .input %>%
       mutate(int = int + 6L) %>%
@@ -34,7 +33,6 @@ test_that("basic mutate", {
 
 test_that("mutate after select", {
   skip("https://github.com/voltrondata/substrait-r/issues/55")
-
   compare_dplyr_binding(
     .input %>%
       select(int, chr) %>%
@@ -66,6 +64,7 @@ test_that("empty mutate()", {
 
 test_that("transmute", {
   compare_dplyr_binding(
+    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
       transmute(new_col = some_negative -  2L) %>%
@@ -206,7 +205,6 @@ test_that("dplyr::mutate's examples", {
   # Newly created variables are available immediately
   compare_dplyr_binding(
     .input %>%
-      arrow_substrait_compiler() %>%
       select(name, mass) %>%
       mutate(
         mass2 = mass * 2,
