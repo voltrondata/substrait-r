@@ -35,7 +35,10 @@ test_that("group_by supports creating/renaming", {
       collect(),
     tbl
   )
+<<<<<<< HEAD
 
+=======
+>>>>>>> Add group_by tests
   compare_dplyr_binding(
     .input %>%
       group_by(chr, numbers = int * 4) %>%
