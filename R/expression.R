@@ -21,7 +21,8 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = SubstraitComp
         result
       } else {
         substrait$SortField$create(
-          expr = as_substrait(result, "substrait.Expression")
+          expr = as_substrait(result, "substrait.Expression"),
+          direction = "SORT_DIRECTION_ASC_NULLS_LAST"
         )
       }
     },

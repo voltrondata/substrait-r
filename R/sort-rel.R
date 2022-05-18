@@ -26,6 +26,13 @@ substrait_sort <- function(.compiler, ...) {
     list_of_expressions = .compiler$mask
   )
 
+  # Rather than an expression, the SortRel needs a list of SortFields,
+  # each of which is an Expression + a sort direction. Rather than use
+  # desc(), which is specific to dplyr and only lets us specify one
+  # sort direction, we define our own wrapper substrait_sort_field()
+  # to allow marking an expression with a sort direction. We don't want
+  # substrait_sort_field() to get translated by the SubstraitCompiler,
+  # so we have to inline references to it in the user-provided expressions.
   with_inlined_sort_field <- lapply(
     quos,
     function(quo) {
@@ -58,53 +65,18 @@ substrait_sort <- function(.compiler, ...) {
 
 #' @rdname substrait_sort
 #' @export
-substrait_sort_field <- function(expr, direction = "SORT_DIRECTION_UNSPECIFIED") {
+substrait_sort_field <- function(expr, direction = "SORT_DIRECTION_ASC_NULLS_LAST") {
   expr <- as_substrait(expr, "substrait.Expression")
   substrait$SortField$create(expr = expr, direction = direction)
 }
 
 expr_replace_sort_field <- function(expr) {
+  # if the outer call in expr is substrait_sort_field(...), inline the
+  # function so that the symbol isn't translated by the SubstraitCompiler
   if (rlang::is_call(expr, "substrait_sort_field")) {
     expr[[1]] <- substrait_sort_field
     expr
   } else {
     expr
-  }
-}
-
-# Take selected columns and create the appropriate substrait message
-build_sort <- function(df, sort_cols, sort_desc) {
-  # get numeric matches of column positions
-  locs <- match(
-    unname(vapply(sort_cols, as.character, character(1))),
-    names(df)
-  )
-
-  # -1 as it's 0-indexed
-  to_sort <- Map(list, field = locs - 1, desc = sort_desc)
-
-  sort_expressions <- lapply(
-    to_sort,
-    sort_field
-  )
-
-  sort_expressions
-}
-
-sort_field <- function(ref) {
-  substrait$SortField$create(
-    expr = simple_integer_field_reference(ref$field),
-    direction = dplyr_desc_to_substrait(ref$desc)
-  )
-}
-
-# Convert from dplyr sort order to substrait sort order
-dplyr_desc_to_substrait <- function(dplyr_desc) {
-  if (dplyr_desc) {
-    # SORT_DIRECTION_DESC_NULLS_LAST = 4
-    4
-  } else {
-    # SORT_DIRECTION_ASC_NULLS_LAST = 2
-    2
   }
 }

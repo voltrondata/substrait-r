@@ -7,7 +7,7 @@
 \usage{
 substrait_sort(.compiler, ...)
 
-substrait_sort_field(expr, direction = "SORT_DIRECTION_UNSPECIFIED")
+substrait_sort_field(expr, direction = "SORT_DIRECTION_ASC_NULLS_LAST")
 }
 \arguments{
 \item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}

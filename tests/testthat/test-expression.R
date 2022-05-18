@@ -86,7 +86,8 @@ test_that("quosures can be translated to SortFields", {
     substrait$SortField$create(
       expr = substrait$Expression$create(
         literal = substrait$Expression$Literal$create(i32 = 5L)
-      )
+      ),
+      direction = "SORT_DIRECTION_ASC_NULLS_LAST"
     )
   )
 
