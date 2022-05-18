@@ -1,13 +1,14 @@
 library(dplyr, warn.conflicts = FALSE)
 skip_if_not(has_arrow_with_substrait())
 
-skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
 
 # randomize order of rows in test data
 tbl <- slice_sample(example_data, prop = 1L)
 
 test_that("arrange() on integer, double, and character columns", {
+
   compare_dplyr_binding(
+    # skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
     engine = "duckdb",
     .input %>%
       arrange(int, chr) %>%
@@ -15,13 +16,17 @@ test_that("arrange() on integer, double, and character columns", {
     tbl
   )
   compare_dplyr_binding(
+    # skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
     engine = "duckdb",
     .input %>%
       arrange(int, desc(dbl)) %>%
       collect(),
     tbl
   )
+
+  skip("This fails on duckdb too - https://github.com/voltrondata/substrait-r/issues/122")
   compare_dplyr_binding(
+    # skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
     engine = "duckdb",
     .input %>%
       arrange(int, desc(desc(dbl))) %>%
