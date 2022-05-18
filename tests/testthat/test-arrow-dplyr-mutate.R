@@ -6,6 +6,7 @@ library(stringr)
 
 test_that("basic mutate", {
   compare_dplyr_binding(
+    #   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
       mutate(newcol = some_negative -  2L) %>%
@@ -13,8 +14,8 @@ test_that("basic mutate", {
     example_data
   )
 
-  skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
   compare_dplyr_binding(
+    #   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
       mutate(newcol = dbl + 6L) %>%
