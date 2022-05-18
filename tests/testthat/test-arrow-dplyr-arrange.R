@@ -8,24 +8,28 @@ tbl <- slice_sample(example_data, prop = 1L)
 
 test_that("arrange() on integer, double, and character columns", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(int, chr) %>%
       collect(),
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(int, desc(dbl)) %>%
       collect(),
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(int, desc(desc(dbl))) %>%
       collect(),
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(int) %>%
       arrange(desc(dbl)) %>%
@@ -33,12 +37,14 @@ test_that("arrange() on integer, double, and character columns", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(int + dbl, chr) %>%
       collect(),
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       mutate(zzz = int + dbl, ) %>%
       arrange(zzz, chr) %>%
@@ -46,6 +52,7 @@ test_that("arrange() on integer, double, and character columns", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       mutate(zzz = int + dbl) %>%
       arrange(int + dbl, chr) %>%
