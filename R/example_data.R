@@ -3,11 +3,11 @@
 #' Data for use in examples and tests with multiple different data types
 #'
 #' Currently generated via:
-#' tibble::tibble(
-#'  int = c(-.Machine$integer.max, 2L, 3L, NA_integer_, 5L, 6L, 7L, 8L, 9L,
-#'  .Machine$integer.max),
-#'  dbl = c(-Inf, -.Machine$double.xmax, -.Machine$double.xmin, 0,
-#'  .Machine$double.xmin, pi, .Machine$double.xmax, Inf, NaN, NA_real_),
+#' example_data <- tibble::tibble(
+#'  int = c(-3212L, 2L, 3L, NA_integer_, 5L, 6L, 7L, 8L, 9L,
+#'  3212L),
+#'  dbl = c(-999, -99, -9, 0,
+#'  9, pi, 99, 10000, 10000, NA_real_),
 #'  dbl2 = c(-Inf, 5, 5, 5, 5, 5, 5, 5, 5, 5),
 #'  lgl = c(NA, TRUE, NA, TRUE, FALSE, FALSE, NA, TRUE, FALSE, TRUE),
 #'  false = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
@@ -34,7 +34,7 @@
 #'  #   "2017-08-21 18:26:40",
 #'  #   "9999-12-31 23:59:59"
 #'  # ))
-#')
+#' )
 #'
 #' @docType data
 #'
