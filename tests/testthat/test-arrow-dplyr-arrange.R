@@ -65,19 +65,25 @@ test_that("arrange() on integer, double, and character columns", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       mutate(int + dbl) %>%
       arrange(int + dbl, chr) %>%
       collect(),
     tbl
   )
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       arrange(int, dbl) %>%
       collect(),
     tbl
   )
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
     .input %>%
       group_by(lgl) %>%
@@ -85,6 +91,8 @@ test_that("arrange() on integer, double, and character columns", {
       collect(),
     tbl
   )
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
     .input %>%
       group_by(lgl, grp2) %>%
@@ -93,6 +101,8 @@ test_that("arrange() on integer, double, and character columns", {
     tbl %>%
       mutate(grp2 = ifelse(is.na(lgl), 1L, as.integer(lgl)))
   )
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
     .input %>%
       group_by(lgl) %>%
@@ -100,6 +110,8 @@ test_that("arrange() on integer, double, and character columns", {
       pull(lgl),
     tbl
   )
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
     .input %>%
       arrange() %>%
@@ -107,6 +119,8 @@ test_that("arrange() on integer, double, and character columns", {
     tbl %>%
       group_by(lgl)
   )
+
+  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
     .input %>%
       group_by(lgl) %>%
@@ -114,7 +128,10 @@ test_that("arrange() on integer, double, and character columns", {
       collect(),
     tbl
   )
+
+  skip("error with empty arrange: https://github.com/voltrondata/substrait-r/issues/123")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange() %>%
       collect(),
@@ -122,6 +139,7 @@ test_that("arrange() on integer, double, and character columns", {
   )
   test_sort_col <- "chr"
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(!!sym(test_sort_col)) %>%
       collect(),
@@ -130,6 +148,7 @@ test_that("arrange() on integer, double, and character columns", {
   )
   test_sort_cols <- c("int", "dbl")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(!!!syms(test_sort_cols)) %>%
       collect(),
@@ -138,6 +157,8 @@ test_that("arrange() on integer, double, and character columns", {
 })
 
 test_that("arrange() on datetime columns", {
+
+  skip("datetime types not yet supported: https://github.com/voltrondata/substrait-r/issues/124")
   compare_dplyr_binding(
     .input %>%
       arrange(dttm, int) %>%
