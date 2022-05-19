@@ -176,6 +176,7 @@ test_that("arrange() on datetime columns", {
 
 test_that("arrange() on logical columns", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       arrange(lgl, int) %>%
       collect(),
@@ -184,6 +185,7 @@ test_that("arrange() on logical columns", {
 })
 
 test_that("arrange() with bad inputs", {
+  skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
   expect_error(
     tbl %>%
       arrow_substrait_compiler() %>%
