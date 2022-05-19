@@ -185,6 +185,46 @@ test_that("arrange() on logical columns", {
 })
 
 test_that("arrange() with bad inputs", {
+
+  # test on DuckDB here
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      arrange(1) %>%
+      collect(),
+    example_data
+  )
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      arrange(2 + 2) %>%
+      collect(),
+    example_data
+  )
+
+  expect_error(
+    tbl %>%
+      duckdb_substrait_compiler() %>%
+      arrange(aertidjfgjksertyj),
+    "not found",
+    fixed = TRUE
+  )
+  expect_error(
+    tbl %>%
+      duckdb_substrait_compiler() %>%
+      arrange(desc(aertidjfgjksertyj + iaermxiwerksxsdqq)),
+    "not found",
+    fixed = TRUE
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      arrange(desc(int, chr)) %>%
+      collect(),
+    example_data
+  )
+
   skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
   expect_error(
     tbl %>%
