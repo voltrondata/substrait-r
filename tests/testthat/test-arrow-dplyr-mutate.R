@@ -117,7 +117,6 @@ test_that("transmute with unnamed expressions", {
 })
 
 test_that("transmute() with unsupported arguments", {
-  skip("https://github.com/voltrondata/substrait-r/issues/58")
 
   expect_error(
     example_data %>%
