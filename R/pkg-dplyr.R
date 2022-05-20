@@ -87,6 +87,10 @@ transmute.SubstraitCompiler <- function(.data, ...) {
 arrange.SubstraitCompiler <- function(.data, ...) {
   quos <- rlang::enquos(...)
 
+  if (rlang::is_empty(quos)) {
+    return(.data)
+  }
+
   with_translated_desc <- lapply(
     quos,
     function(quo) {
