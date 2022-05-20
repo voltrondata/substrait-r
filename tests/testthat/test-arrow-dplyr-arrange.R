@@ -217,16 +217,8 @@ test_that("arrange() with bad inputs", {
     fixed = TRUE
   )
 
-  compare_dplyr_error(
-    .input %>%
-      arrange(desc(int, chr)) %>%
-      collect(),
-    tbl
-  )
-
   skip("desc not yet properly implemented: https://github.com/voltrondata/substrait-r/issues/125")
   compare_dplyr_error(
-    engine = "duckdb",
     .input %>%
       arrange(desc(int, chr)) %>%
       collect(),
