@@ -129,14 +129,13 @@ test_that("arrange() on integer, double, and character columns", {
     tbl
   )
 
-  skip("error with empty arrange: https://github.com/voltrondata/substrait-r/issues/123")
   compare_dplyr_binding(
-    engine = "duckdb",
     .input %>%
       arrange() %>%
       collect(),
     tbl
   )
+
   test_sort_col <- "chr"
   compare_dplyr_binding(
     engine = "duckdb",
