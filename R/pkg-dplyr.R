@@ -78,6 +78,8 @@ mutate.SubstraitCompiler <- function(.data, ...) {
 #' @importFrom dplyr transmute
 #' @export
 transmute.SubstraitCompiler <- function(.data, ...) {
+
+  dplyr:::check_transmute_args(...)
   substrait_project(.data, ...)
 }
 
