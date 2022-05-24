@@ -78,6 +78,8 @@ mutate.SubstraitCompiler <- function(.data, ...) {
 #' @importFrom dplyr transmute
 #' @export
 transmute.SubstraitCompiler <- function(.data, ...) {
+
+  check_transmute_args(...)
   substrait_project(.data, ...)
 }
 
@@ -124,4 +126,16 @@ expr_replace_desc <- function(expr) {
 
 simulate_data_frame <- function(compiler) {
   from_substrait(compiler$schema, data.frame())
+}
+
+check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang::caller_env()){
+    if (!missing(.keep)) {
+        abort("The `.keep` argument is not supported.", call = error_call)
+    }
+    if (!missing(.before)) {
+        abort("The `.before` argument is not supported.", call = error_call)
+    }
+    if (!missing(.after)) {
+        abort("The `.after` argument is not supported.", call = error_call)
+    }
 }

@@ -117,28 +117,27 @@ test_that("transmute with unnamed expressions", {
 })
 
 test_that("transmute() with unsupported arguments", {
-  skip("https://github.com/voltrondata/substrait-r/issues/58")
 
-  expect_error(
-    example_data %>%
-      arrow_substrait_compiler() %>%
+  compare_dplyr_error(
+    .input %>%
       transmute(int = int + 42L, .keep = "all"),
     "`transmute()` does not support the `.keep` argument",
-    fixed = TRUE
+    fixed = TRUE,
+    example_data
   )
-  expect_error(
-    example_data %>%
-      arrow_substrait_compiler() %>%
+  compare_dplyr_error(
+    .input %>%
       transmute(int = int + 42L, .before = lgl),
     "`transmute()` does not support the `.before` argument",
-    fixed = TRUE
+    fixed = TRUE,
+    example_data
   )
-  expect_error(
-    example_data %>%
-      arrow_substrait_compiler() %>%
+  compare_dplyr_error(
+    .input %>%
       transmute(int = int + 42L, .after = chr),
     "`transmute()` does not support the `.after` argument",
-    fixed = TRUE
+    fixed = TRUE,
+    example_data
   )
 })
 
