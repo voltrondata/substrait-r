@@ -17,6 +17,8 @@ tbl$verses <- verses[[1]]
 tbl$padded_strings <- stringr::str_pad(letters[1:10], width = 2 * (1:10) + 1, side = "both")
 tbl$some_grouping <- rep(c(1, 2), 5)
 
+skip("summarise not yet implemented: https://github.com/voltrondata/substrait-r/issues/29")
+
 test_that("Can aggregate in Arrow", {
   compare_dplyr_binding(
     .input %>%
@@ -230,37 +232,6 @@ test_that("n_distinct() on dataset", {
     tbl,
     warning = "Multiple arguments"
   )
-})
-
-test_that("Functions that take ... but we only accept a single arg", {
-  compare_dplyr_binding(
-    .input %>%
-      summarize(distinct = n_distinct()) %>%
-      collect(),
-    tbl,
-    warning = "0 arguments"
-  )
-  compare_dplyr_binding(
-    .input %>%
-      summarize(distinct = n_distinct(int, lgl)) %>%
-      collect(),
-    tbl,
-    warning = "Multiple arguments"
-  )
-  # Now that we've demonstrated that the whole machinery works, let's test
-  # the agg_funcs directly
-  expect_error(call_binding_agg("n_distinct"), "n_distinct() with 0 arguments", fixed = TRUE)
-  expect_error(call_binding_agg("sum"), "sum() with 0 arguments", fixed = TRUE)
-  expect_error(call_binding_agg("any"), "any() with 0 arguments", fixed = TRUE)
-  expect_error(call_binding_agg("all"), "all() with 0 arguments", fixed = TRUE)
-  expect_error(call_binding_agg("min"), "min() with 0 arguments", fixed = TRUE)
-  expect_error(call_binding_agg("max"), "max() with 0 arguments", fixed = TRUE)
-  expect_error(call_binding_agg("n_distinct", 1, 2), "Multiple arguments to n_distinct()")
-  expect_error(call_binding_agg("sum", 1, 2), "Multiple arguments to sum")
-  expect_error(call_binding_agg("any", 1, 2), "Multiple arguments to any()")
-  expect_error(call_binding_agg("all", 1, 2), "Multiple arguments to all()")
-  expect_error(call_binding_agg("min", 1, 2), "Multiple arguments to min()")
-  expect_error(call_binding_agg("max", 1, 2), "Multiple arguments to max()")
 })
 
 test_that("median()", {
