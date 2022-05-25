@@ -1,6 +1,8 @@
 
 #' @export
-as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = SubstraitCompiler$new()) {
+as_substrait.quosure <- function(x, .ptype = NULL, ...,
+                                 compiler = SubstraitCompiler$new(),
+                                 template = substrait$Expression$ScalarFunction$create()) {
   if (is.null(.ptype)) {
     .ptype <- "substrait.Expression"
   }
@@ -8,12 +10,34 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = SubstraitComp
   .qualified_name <- make_qualified_name(.ptype)
   switch(
     .qualified_name,
+    "substrait.AggregateRel.Measure" = {
+      # evaluate the result using special rules for function calls
+      result <- substrait_eval_expr(
+        rlang::quo_get_expr(x),
+        compiler = compiler,
+        env = rlang::quo_get_env(x),
+        template = template
+      )
+
+      # Allow caller to handle something that isn't an aggregate function
+      # (e.g., by adding a post-mutate step)
+      if (!inherits(result, "substrait_AggregateFunction")) {
+
+      }
+
+      # The only valid result here is an AggregateFunction (other values
+      # aren't yet supported)
+      substrait$AggregateRel$Measure$create(
+        measure = as_substrait(result, "substrait.AggregateFunction")
+      )
+    },
     "substrait.SortField" = {
       # evaluate the result using special rules for function calls
       result <- substrait_eval_expr(
         rlang::quo_get_expr(x),
         compiler = compiler,
-        env = rlang::quo_get_env(x)
+        env = rlang::quo_get_env(x),
+        template = template
       )
 
       # ...but wrap result in SortField if it isn't already one
@@ -31,7 +55,8 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = SubstraitComp
       result <- substrait_eval_expr(
         rlang::quo_get_expr(x),
         compiler = compiler,
-        env = rlang::quo_get_env(x)
+        env = rlang::quo_get_env(x),
+        template = template
       )
 
       # the result might be an atomic R object and not an Expression yet,
@@ -42,7 +67,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ..., compiler = SubstraitComp
   )
 }
 
-substrait_eval_expr <- function(x, compiler, env) {
+substrait_eval_expr <- function(x, compiler, env, template) {
   if (rlang::is_call(x, c("$", "[["))) {
     if (rlang::is_symbol(x[[2]], ".data") && rlang::is_symbol(x[[1]], c("$", "[["))) {
       return(rlang::eval_tidy(x, compiler$mask, env))
@@ -66,23 +91,70 @@ substrait_eval_expr <- function(x, compiler, env) {
       return(rlang::eval_tidy(x, compiler$mask, env))
     }
 
-    # evaluate the arguments first (because we need the types to resolve
-    # the function)
+    # Evaluate the arguments first because we need the types to resolve
+    # the function. For aggregations, we don't pass on the template (e.g.,
+    # in sum(x + 1), `+` is not an aggregate function)
     args <- lapply(
       x[-1],
       substrait_eval_expr,
       compiler = compiler,
-      env = env
+      env = env,
+      template = if (inherits(template, "substrait_AggregateFunction")) {
+        substrait$Expression$ScalarFunction$create()
+      } else {
+        template
+      }
     )
 
-    # Resolve the function call as an expression from the compiler, with
-    # only scalar functions for now. The return value could be another type
-    # of expression (e.g., IfThen) depending on the function.
-    template <- substrait$Expression$ScalarFunction$create()
-    as_substrait(compiler$resolve_function(name, args, template), "substrait.Expression")
+    # Resolve the function call as an expression from the compiler.
+    # The return value could be another type of expression (e.g., IfThen)
+    # depending on the function, or an AggregateFunction if we're
+    # aggregating
+    result <- compiler$resolve_function(name, args, template)
+
+    if (inherits(template, "substrait_AggregateFunction")) {
+      as_substrait(result, "substrait.AggregateFunction")
+    } else {
+      as_substrait(result, "substrait.Expression")
+    }
   } else {
     rlang::eval_tidy(x, compiler$mask, env)
   }
+}
+
+substrait_eval_call <- function(x, compiler, env, template) {
+  # resolve the function and package (or if it's an inline function,
+  # evaluate it)
+  fun_expr <- x[[1]]
+  pkg <- NULL
+  name <- NULL
+
+  if (rlang::is_call(fun_expr, "::")) {
+    pkg <- as.character(fun_expr[[2]])
+    name <- as.character(fun_expr[[3]])
+    name <- paste0(pkg, "::", name)
+  } else if (is.symbol(fun_expr)) {
+    name <- as.character(fun_expr)
+  } else {
+    return(rlang::eval_tidy(x, compiler$mask, env))
+  }
+
+  # Evaluate the arguments first because we need the types to resolve
+  # the function. For aggregations, we don't pass on the template (e.g.,
+  # in sum(x + 1), `+` is not an aggregate function)
+  args <- lapply(
+    x[-1],
+    substrait_eval_expr,
+    compiler = compiler,
+    env = env,
+    template = if (inherits(template, "substrait_AggregateFunction")) {
+      substrait$Expression$ScalarFunction$create()
+    } else {
+      template
+    }
+  )
+
+  compiler$resolve_function(name, args, template)
 }
 
 #' @export
