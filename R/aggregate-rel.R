@@ -85,6 +85,11 @@ substrait_group_by <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
   quos <- rlang::enquos(..., .named = TRUE)
+  if (length(quos) == 0) {
+    .compiler$groups <- NULL
+    return(.compiler)
+  }
+
   context <- list(
     schema = .compiler$schema,
     list_of_expressions = .compiler$mask
@@ -104,7 +109,5 @@ substrait_group_by <- function(.compiler, ...) {
 #' @rdname substrait_aggregate
 #' @export
 substrait_ungroup <- function(.compiler) {
-  .compiler <- substrait_compiler(.compiler)$clone()
-  .compiler$groups <- NULL
-  .compiler
+  substrait_group_by(.compiler)
 }

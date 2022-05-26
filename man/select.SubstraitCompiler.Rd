@@ -7,6 +7,9 @@
 \alias{mutate.SubstraitCompiler}
 \alias{transmute.SubstraitCompiler}
 \alias{arrange.SubstraitCompiler}
+\alias{group_by.SubstraitCompiler}
+\alias{ungroup.SubstraitCompiler}
+\alias{summarise.SubstraitCompiler}
 \alias{collect.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
@@ -21,6 +24,12 @@
 \method{transmute}{SubstraitCompiler}(.data, ...)
 
 \method{arrange}{SubstraitCompiler}(.data, ...)
+
+\method{group_by}{SubstraitCompiler}(.data, ..., .add = FALSE, .drop = NULL)
+
+\method{ungroup}{SubstraitCompiler}(x, ...)
+
+\method{summarise}{SubstraitCompiler}(.data, ..., .groups = NULL)
 
 \method{collect}{SubstraitCompiler}(x, ...)
 }
