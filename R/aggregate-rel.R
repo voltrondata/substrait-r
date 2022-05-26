@@ -36,7 +36,7 @@ substrait_aggregate <- function(.compiler, ...) {
       input = .compiler$rel,
       groupings = list(
         substrait$AggregateRel$Grouping$create(
-          grouping_expressions = .compiler$groups
+          grouping_expressions = as.list(.compiler$groups)
         )
       ),
       measures = measures
