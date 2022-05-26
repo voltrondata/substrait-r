@@ -48,3 +48,21 @@ test_that("substrait_aggregate() can evaluate a simple aggregation expression", 
     )
   )
 })
+
+test_that("simple aggregation can be evaluated by DuckDB", {
+  skip_if_not(has_duckdb_with_substrait())
+  skip_if_not_installed("dplyr")
+
+  df <- data.frame(a = c(1, 1, 2, 2, 3), b = 1:5)
+  expect_identical(
+    df %>%
+      duckdb_substrait_compiler() %>%
+      substrait_group_by(a) %>%
+      substrait_aggregate(c = sum(a + 1)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      a = c(1, 2, 3),
+      c = c(4, 6, 4)
+    )
+  )
+})
