@@ -49,20 +49,79 @@ test_that("substrait_aggregate() can evaluate a simple aggregation expression", 
   )
 })
 
-test_that("simple aggregation can be evaluated by DuckDB", {
+test_that("simple aggregations can be evaluated by DuckDB", {
   skip_if_not(has_duckdb_with_substrait())
   skip_if_not_installed("dplyr")
 
-  df <- data.frame(a = c(1, 1, 2, 2, 3), b = 1:5)
+  df <- data.frame(
+    a = c(1, 1, 2, 2, 3),
+    b = c(1, 1, 1, 2, 2),
+    c = 1:5
+  )
+
+  # check zero, one, and two grouping levels
+  expect_identical(
+    df %>%
+      duckdb_substrait_compiler() %>%
+      substrait_aggregate(c = sum(c + 1)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      c = as.double(sum(2:6))
+    )
+  )
+
   expect_identical(
     df %>%
       duckdb_substrait_compiler() %>%
       substrait_group_by(a) %>%
-      substrait_aggregate(c = sum(a + 1)) %>%
+      substrait_aggregate(c = sum(c + 1)) %>%
       dplyr::collect(),
     tibble::tibble(
       a = c(1, 2, 3),
-      c = c(4, 6, 4)
+      c = c(5, 9, 6)
+    )
+  )
+
+  expect_identical(
+    df %>%
+      duckdb_substrait_compiler() %>%
+      substrait_group_by(a, b) %>%
+      substrait_aggregate(c = sum(c + 1)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      a = c(1, 2, 2, 3),
+      b = c(1, 1, 2, 2),
+      c = c(5, 4, 5, 6)
+    )
+  )
+
+  # check zero measures and >1 measure
+  expect_identical(
+    df %>%
+      duckdb_substrait_compiler() %>%
+      substrait_group_by(a, b) %>%
+      substrait_aggregate() %>%
+      dplyr::collect(),
+    tibble::tibble(
+      a = c(1, 2, 2, 3),
+      b = c(1, 1, 2, 2)
+    )
+  )
+
+  expect_identical(
+    df %>%
+      duckdb_substrait_compiler() %>%
+      substrait_group_by(a, b) %>%
+      substrait_aggregate(
+        c = sum(c + 1),
+        d = sum(c)
+      ) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      a = c(1, 2, 2, 3),
+      b = c(1, 1, 2, 2),
+      c = c(5, 4, 5, 6),
+      d = c(3, 3, 4, 5)
     )
   )
 })
