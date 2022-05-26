@@ -18,26 +18,33 @@ test_that("substrait_aggregate() can evaluate a simple aggregation expression", 
 
   compiler <- substrait_compiler(df)
   grouped <- substrait_group_by(compiler, a)
-  agg <- substrait_aggregate(grouped, sum(b + 1))
-  expect_s3_class(agg$rel, "substrait_AggregateRel")
+  agg <- substrait_aggregate(grouped, c = sum(b + 1))
+
+  expect_s3_class(agg$rel$aggregate, "substrait_AggregateRel")
   expect_identical(
-    agg$rel$groupings[[1]]$grouping_expressions[[1]],
+    agg$rel$aggregate$groupings[[1]]$grouping_expressions[[1]],
     simple_integer_field_reference(0)
   )
   expect_s3_class(
-    agg$rel$measures[[1]]$measure,
+    agg$rel$aggregate$measures[[1]]$measure,
     "substrait_AggregateFunction"
   )
-
   expect_identical(
     agg$function_extension(
-      agg$rel$measures[[1]]$measure$function_reference
+      agg$rel$aggregate$measures[[1]]$measure$function_reference
     )$name,
     "sum"
   )
-
   expect_s3_class(
-    agg$rel$measures[[1]]$measure$args[[1]]$scalar_function,
+    agg$rel$aggregate$measures[[1]]$measure$args[[1]]$scalar_function,
     "substrait_Expression_ScalarFunction"
+  )
+  expect_identical(agg$schema$names, c("a", "c"))
+  expect_identical(
+    agg$mask,
+    list(
+      a = simple_integer_field_reference(0),
+      c = simple_integer_field_reference(1)
+    )
   )
 })

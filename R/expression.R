@@ -175,6 +175,19 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., compiler = 
 }
 
 #' @export
+as_substrait.substrait_AggregateRel_Measure <- function(x, .ptype = NULL, ..., compiler = NULL) {
+  if (is.null(.ptype)) {
+    .ptype <- x
+  }
+
+  switch(
+    make_qualified_name(.ptype),
+    "substrait.Type" = x$measure$output_type %||% substrait$Type$create(),
+    NextMethod()
+  )
+}
+
+#' @export
 as_substrait.substrait_Expression_ScalarFunction <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
     return(x)

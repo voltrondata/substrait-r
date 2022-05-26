@@ -3,11 +3,14 @@
 \name{substrait_aggregate}
 \alias{substrait_aggregate}
 \alias{substrait_group_by}
+\alias{substrait_ungroup}
 \title{Aggregate}
 \usage{
 substrait_aggregate(.compiler, ...)
 
 substrait_group_by(.compiler, ...)
+
+substrait_ungroup(.compiler)
 }
 \arguments{
 \item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
@@ -16,7 +19,7 @@ substrait_group_by(.compiler, ...)
 \item \code{substrait_aggregate()}: A named list of expressions to be evaluated in the context
 of the aggregation.
 \itemize{
-\item \code{substrait_group_by()}: A named list of expressions to be used as groupings
+\item \code{substrait_group_by()}: A list of expressions to be used as groupings
 for aggregation.
 }
 }}
