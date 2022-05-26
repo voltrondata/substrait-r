@@ -35,8 +35,10 @@ substrait_aggregate <- function(.compiler, ...) {
 
   .compiler$rel <- substrait$AggregateRel$create(
     input = .compiler$rel,
-    groupings = substrait$AggregateRel$Grouping$create(
-      grouping_expressions = .compiler$groups
+    groupings = list(
+      substrait$AggregateRel$Grouping$create(
+        grouping_expressions = .compiler$groups
+      )
     ),
     measures = measures
   )
@@ -50,20 +52,21 @@ substrait_aggregate <- function(.compiler, ...) {
 substrait_group_by <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
-  quos <- rlang::enquos(...)
+  quos <- rlang::enquos(..., .named = TRUE)
   context <- list(
     schema = .compiler$schema,
     list_of_expressions = .compiler$mask
   )
 
-  groupings <- lapply(
+  .compiler$groups <- lapply(
     quos,
     as_substrait,
-    .ptype = "substrait.AggregateRel.Measure",
+    .ptype = "substrait.Expression",
     compiler = .compiler,
     context = context
   )
 
+  .compiler
 }
 
 #' @rdname substrait_aggregate

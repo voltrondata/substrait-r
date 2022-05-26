@@ -122,41 +122,6 @@ substrait_eval_expr <- function(x, compiler, env, template) {
   }
 }
 
-substrait_eval_call <- function(x, compiler, env, template) {
-  # resolve the function and package (or if it's an inline function,
-  # evaluate it)
-  fun_expr <- x[[1]]
-  pkg <- NULL
-  name <- NULL
-
-  if (rlang::is_call(fun_expr, "::")) {
-    pkg <- as.character(fun_expr[[2]])
-    name <- as.character(fun_expr[[3]])
-    name <- paste0(pkg, "::", name)
-  } else if (is.symbol(fun_expr)) {
-    name <- as.character(fun_expr)
-  } else {
-    return(rlang::eval_tidy(x, compiler$mask, env))
-  }
-
-  # Evaluate the arguments first because we need the types to resolve
-  # the function. For aggregations, we don't pass on the template (e.g.,
-  # in sum(x + 1), `+` is not an aggregate function)
-  args <- lapply(
-    x[-1],
-    substrait_eval_expr,
-    compiler = compiler,
-    env = env,
-    template = if (inherits(template, "substrait_AggregateFunction")) {
-      substrait$Expression$ScalarFunction$create()
-    } else {
-      template
-    }
-  )
-
-  compiler$resolve_function(name, args, template)
-}
-
 #' @export
 as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., compiler = NULL) {
   if (is.null(.ptype)) {
