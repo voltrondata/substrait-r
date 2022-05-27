@@ -8,6 +8,9 @@
 #'   - `filter()`: see [dplyr::filter()]
 #'   - `mutate()`: see [dplyr::mutate()]
 #'   - `arrange()`: see [dplyr::arrange()]
+#' @param .drop Not supported, see [dplyr::group_by()]
+#' @inheritParams dplyr::group_by
+#' @inheritParams dplyr::summarise
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
