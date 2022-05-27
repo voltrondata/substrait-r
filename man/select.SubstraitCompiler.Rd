@@ -7,6 +7,9 @@
 \alias{mutate.SubstraitCompiler}
 \alias{transmute.SubstraitCompiler}
 \alias{arrange.SubstraitCompiler}
+\alias{group_by.SubstraitCompiler}
+\alias{ungroup.SubstraitCompiler}
+\alias{summarise.SubstraitCompiler}
 \alias{collect.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
@@ -22,6 +25,12 @@
 
 \method{arrange}{SubstraitCompiler}(.data, ...)
 
+\method{group_by}{SubstraitCompiler}(.data, ..., .add = FALSE, .drop = NULL)
+
+\method{ungroup}{SubstraitCompiler}(x, ...)
+
+\method{summarise}{SubstraitCompiler}(.data, ..., .groups = NULL)
+
 \method{collect}{SubstraitCompiler}(x, ...)
 }
 \arguments{
@@ -36,6 +45,14 @@
 \item \code{arrange()}: see \code{\link[dplyr:arrange]{dplyr::arrange()}}
 }
 }}
+
+\item{.add}{Use \code{TRUE} to add the groupings to the current groupings and
+\code{FALSE} to reset the grouping.}
+
+\item{.drop}{Not supported, see \code{\link[dplyr:group_by]{dplyr::group_by()}}}
+
+\item{.groups}{One of "drop_last", "drop", or "keep"
+(see \code{\link[dplyr:summarise]{dplyr::summarise()}}).}
 }
 \value{
 A modified \code{\link[=substrait_compiler]{substrait_compiler()}}

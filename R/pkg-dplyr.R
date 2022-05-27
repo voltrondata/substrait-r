@@ -8,6 +8,11 @@
 #'   - `filter()`: see [dplyr::filter()]
 #'   - `mutate()`: see [dplyr::mutate()]
 #'   - `arrange()`: see [dplyr::arrange()]
+#' @param .drop Not supported, see [dplyr::group_by()]
+#' @param .add Use `TRUE` to add the groupings to the current groupings and
+#'   `FALSE` to reset the grouping.
+#' @param .groups One of "drop_last", "drop", or "keep"
+#'   (see [dplyr::summarise()]).
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -104,6 +109,59 @@ arrange.SubstraitCompiler <- function(.data, ...) {
   )
 
   substrait_sort(.data, !!! with_translated_desc)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr group_by
+#' @export
+group_by.SubstraitCompiler <- function(.data, ..., .add = FALSE, .drop = NULL) {
+  if (!is.null(.drop)) {
+    stop("`group_by(..., .drop)` is not supported for SubstraitCompiler")
+  }
+
+  if (.add) {
+    old_groups <- .data$groups
+    .data <- substrait_group_by(.data, ...)
+    .data$groups <- c(old_groups, .data$groups)
+    .data
+  } else {
+    substrait_group_by(.data, ...)
+  }
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr ungroup
+#' @export
+ungroup.SubstraitCompiler <- function(x, ...) {
+  substrait_ungroup(x)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr summarise
+#' @export
+summarise.SubstraitCompiler <- function(.data, ..., .groups = NULL) {
+  .groups <- .groups %||% "drop_last"
+
+  n_groups <- length(.data$groups)
+
+  .data <- substrait_aggregate(.data, ...)
+
+  if (identical(.groups, "drop")) {
+    .data
+  } else if (identical(.groups, "drop_last")) {
+    new_n_groups <- max(0, n_groups - 1)
+    substrait_group_by(
+      .data,
+      !!! rlang::syms(.data$schema$names[seq_len(new_n_groups)])
+    )
+  } else if (identical(.groups, "keep")) {
+    substrait_group_by(
+      .data,
+      !!! rlang::syms(.data$schema$names[seq_len(n_groups)])
+    )
+  } else {
+    stop("Unknown value for `.groups`")
+  }
 }
 
 #' @rdname select.SubstraitCompiler
