@@ -9,8 +9,10 @@
 #'   - `mutate()`: see [dplyr::mutate()]
 #'   - `arrange()`: see [dplyr::arrange()]
 #' @param .drop Not supported, see [dplyr::group_by()]
-#' @inheritParams dplyr::group_by
-#' @inheritParams dplyr::summarise
+#' @param .add Use `TRUE` to add the groupings to the current groupings and
+#'   `FALSE` to reset the grouping.
+#' @param .groups One of "drop_last", "drop", or "keep"
+#'   (see [dplyr::summarise()]).
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select

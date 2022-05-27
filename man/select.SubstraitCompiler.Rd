@@ -46,35 +46,13 @@
 }
 }}
 
-\item{.add}{When \code{FALSE}, the default, \code{group_by()} will
-override existing groups. To add to the existing groups, use
-\code{.add = TRUE}.
-
-This argument was previously called \code{add}, but that prevented
-creating a new grouping variable called \code{add}, and conflicts with
-our naming conventions.}
+\item{.add}{Use \code{TRUE} to add the groupings to the current groupings and
+\code{FALSE} to reset the grouping.}
 
 \item{.drop}{Not supported, see \code{\link[dplyr:group_by]{dplyr::group_by()}}}
 
-\item{.groups}{\ifelse{{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}} Grouping structure of the result.
-\itemize{
-\item "drop_last": dropping the last level of grouping. This was the
-only supported option before version 1.0.0.
-\item "drop": All levels of grouping are dropped.
-\item "keep": Same grouping structure as \code{.data}.
-\item "rowwise": Each row is its own group.
-}
-
-When \code{.groups} is not specified, it is chosen
-based on the number of rows of the results:
-\itemize{
-\item If all the results have 1 row, you get "drop_last".
-\item If the number of rows varies, you get "keep".
-}
-
-In addition, a message informs you of that choice, unless the result is ungrouped,
-the option "dplyr.summarise.inform" is set to \code{FALSE},
-or when \code{summarise()} is called from a function in a package.}
+\item{.groups}{One of "drop_last", "drop", or "keep"
+(see \code{\link[dplyr:summarise]{dplyr::summarise()}}).}
 }
 \value{
 A modified \code{\link[=substrait_compiler]{substrait_compiler()}}
