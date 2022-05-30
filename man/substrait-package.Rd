@@ -4,8 +4,7 @@
 \name{substrait-package}
 \title{substrait: 'Substrait' Cross-Language Serialization for Relational Algebra}
 \description{
-Provides an R interface to the 'Substrait' cross-language
-  serialization for relational algebra.
+Provides an R interface to the 'Substrait' cross-language serialization for relational algebra.
 }
 \author{
 \strong{Maintainer}: Dewey Dunnington \email{dewey@fishandwhistle.net} (\href{https://orcid.org/0000-0002-9415-4582}{ORCID})

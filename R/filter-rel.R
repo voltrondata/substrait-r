@@ -21,17 +21,11 @@ substrait_filter <- function(.compiler, ...) {
     quos <- rlang::quos(TRUE)
   }
 
-  context <- list(
-    schema = .compiler$schema,
-    list_of_expressions = .compiler$mask
-  )
-
   expressions <- lapply(
     quos,
     as_substrait,
     .ptype = "substrait.Expression",
-    compiler = .compiler,
-    context = context
+    compiler = .compiler
   )
 
   combined_expressions_quo <- Reduce("combine_expressions_and", expressions)

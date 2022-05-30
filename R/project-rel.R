@@ -16,25 +16,34 @@
 substrait_project <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
-  context <- list(
-    schema = .compiler$schema,
-    list_of_expressions = .compiler$mask
-  )
+  # evaluate expressions sequentially, updating the compiler as we go so that
+  # fields created by earlier arguments are accessible from later arguments
+  quos <- rlang::enquos(..., .named = TRUE)
+  expressions <- list()
+  types <- list()
 
-  expressions <- lapply(
-    rlang::enquos(..., .named = TRUE),
-    as_substrait,
-    .ptype = "substrait.Expression",
-    compiler = .compiler
-  )
+  for (i in seq_along(quos)) {
+    # do the evaluation and calculate the output type
+    name <- names(quos)[i]
+    value <- as_substrait(
+      quos[[i]],
+      .ptype = "substrait.Expression",
+      compiler = .compiler
+    )
+    type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
 
-  types <- lapply(
-    expressions,
-    as_substrait,
-    .ptype = "substrait.Type",
-    compiler = .compiler
-  )
+    # update the compiler
+    .compiler$mask[[name]] <- value
+    .compiler$schema$names <- union(.compiler$schema$names, name)
+    .compiler$schema$struct_$types[[match(name, .compiler$schema$names)]] <-
+      type
 
+    # keep track of the new expressions and types
+    expressions[[name]] <- value
+    types[[name]] <- type
+  }
+
+  # create the relation with the new expressions and types
   rel <- substrait$Rel$create(
     project = substrait$ProjectRel$create(
       input = .compiler$rel,
@@ -46,7 +55,13 @@ substrait_project <- function(.compiler, ...) {
   .compiler$rel <- rel
   .compiler$schema$names <- names(expressions)
   .compiler$schema$struct_$types <- types
-  .compiler$mask <- expressions
+
+  # reset the mask
+  .compiler$mask <- lapply(
+    seq_along(types) - 1L,
+    simple_integer_field_reference
+  )
+  names(.compiler$mask) <- names(types)
 
   .compiler$validate()
 }

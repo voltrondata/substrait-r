@@ -15,10 +15,6 @@ substrait_aggregate <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
   quos <- rlang::enquos(..., .named = TRUE)
-  context <- list(
-    schema = .compiler$schema,
-    list_of_expressions = .compiler$mask
-  )
 
   # have to rethink this because we need to keep track of a
   # post_mutate step for expressions like sum(x) + 1
@@ -27,7 +23,6 @@ substrait_aggregate <- function(.compiler, ...) {
     as_substrait,
     .ptype = "substrait.AggregateRel.Measure",
     compiler = .compiler,
-    context = context,
     template = substrait$AggregateFunction$create()
   )
 
@@ -90,17 +85,11 @@ substrait_group_by <- function(.compiler, ...) {
     return(.compiler)
   }
 
-  context <- list(
-    schema = .compiler$schema,
-    list_of_expressions = .compiler$mask
-  )
-
   .compiler$groups <- lapply(
     quos,
     as_substrait,
     .ptype = "substrait.Expression",
-    compiler = .compiler,
-    context = context
+    compiler = .compiler
   )
 
   .compiler
