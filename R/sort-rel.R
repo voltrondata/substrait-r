@@ -21,11 +21,6 @@ substrait_sort <- function(.compiler, ...) {
 
   quos <- rlang::enquos(...)
 
-  context <- list(
-    schema = .compiler$schema,
-    list_of_expressions = .compiler$mask
-  )
-
   # Rather than an expression, the SortRel needs a list of SortFields,
   # each of which is an Expression + a sort direction. Rather than use
   # desc(), which is specific to dplyr and only lets us specify one
@@ -47,8 +42,7 @@ substrait_sort <- function(.compiler, ...) {
     with_inlined_sort_field,
     as_substrait,
     .ptype = "substrait.SortField",
-    compiler = .compiler,
-    context = context
+    compiler = .compiler
   )
 
   rel <- substrait$Rel$create(

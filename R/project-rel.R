@@ -16,11 +16,6 @@
 substrait_project <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
-  context <- list(
-    schema = .compiler$schema,
-    list_of_expressions = .compiler$mask
-  )
-
   # evaluate expressions sequentially, updating the compiler as we go so that
   # fields created by earlier arguments are accessible from later arguments
   quos <- rlang::enquos(..., .named = TRUE)
