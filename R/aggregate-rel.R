@@ -85,17 +85,11 @@ substrait_group_by <- function(.compiler, ...) {
     return(.compiler)
   }
 
-  context <- list(
-    schema = .compiler$schema,
-    list_of_expressions = .compiler$mask
-  )
-
   .compiler$groups <- lapply(
     quos,
     as_substrait,
     .ptype = "substrait.Expression",
-    compiler = .compiler,
-    context = context
+    compiler = .compiler
   )
 
   .compiler
