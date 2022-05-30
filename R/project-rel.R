@@ -46,7 +46,12 @@ substrait_project <- function(.compiler, ...) {
   .compiler$rel <- rel
   .compiler$schema$names <- names(expressions)
   .compiler$schema$struct_$types <- types
-  .compiler$mask <- expressions
+
+  .compiler$mask <- lapply(
+    seq_along(types) - 1L,
+    simple_integer_field_reference
+  )
+  names(.compiler$mask) <- names(types)
 
   .compiler$validate()
 }
