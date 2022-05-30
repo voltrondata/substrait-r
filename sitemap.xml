@@ -46,6 +46,9 @@
     <loc>/reference/substrait-type.html</loc>
   </url>
   <url>
+    <loc>/reference/substrait_aggregate.html</loc>
+  </url>
+  <url>
     <loc>/reference/substrait_compiler.html</loc>
   </url>
   <url>
