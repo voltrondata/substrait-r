@@ -17,14 +17,16 @@ tbl$verses <- verses[[1]]
 tbl$padded_strings <- stringr::str_pad(letters[1:10], width = 2 * (1:10) + 1, side = "both")
 tbl$some_grouping <- rep(c(1, 2), 5)
 
-test_that("Can aggregate in Arrow", {
+test_that("Can aggregate", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(total = sum(int, na.rm = TRUE)) %>%
       collect(),
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(total = sum(int)) %>%
       collect(),
@@ -34,6 +36,7 @@ test_that("Can aggregate in Arrow", {
 
 test_that("Group by sum on dataset", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(total = sum(int, na.rm = TRUE)) %>%
@@ -42,6 +45,7 @@ test_that("Group by sum on dataset", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(total = sum(int * 4, na.rm = TRUE)) %>%
@@ -50,6 +54,7 @@ test_that("Group by sum on dataset", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(total = sum(int)) %>%
@@ -60,6 +65,7 @@ test_that("Group by sum on dataset", {
 
 test_that("Group by mean on dataset", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(mean = mean(int, na.rm = TRUE)) %>%
@@ -68,6 +74,7 @@ test_that("Group by mean on dataset", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(mean = mean(int, na.rm = FALSE)) %>%
@@ -77,7 +84,9 @@ test_that("Group by mean on dataset", {
 })
 
 test_that("Group by sd on dataset", {
+
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(sd = sd(int, na.rm = TRUE)) %>%
@@ -86,6 +95,7 @@ test_that("Group by sd on dataset", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(sd = sd(int, na.rm = FALSE)) %>%
@@ -96,6 +106,7 @@ test_that("Group by sd on dataset", {
 
 test_that("Group by var on dataset", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(var = var(int, na.rm = TRUE)) %>%
@@ -104,6 +115,7 @@ test_that("Group by var on dataset", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(var = var(int, na.rm = FALSE)) %>%
@@ -114,6 +126,7 @@ test_that("Group by var on dataset", {
 
 test_that("n()", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(counts = n()) %>%
       collect(),
@@ -121,6 +134,7 @@ test_that("n()", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(counts = n()) %>%
@@ -132,6 +146,7 @@ test_that("n()", {
 
 test_that("Group by any/all", {
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(any(lgl, na.rm = TRUE)) %>%
@@ -139,6 +154,7 @@ test_that("Group by any/all", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(all(lgl, na.rm = TRUE)) %>%
@@ -146,6 +162,7 @@ test_that("Group by any/all", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(any(lgl, na.rm = FALSE)) %>%
@@ -153,6 +170,7 @@ test_that("Group by any/all", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(all(lgl, na.rm = FALSE)) %>%
@@ -161,6 +179,7 @@ test_that("Group by any/all", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       mutate(has_words = nchar(verses) < 0) %>%
       group_by(some_grouping) %>%
@@ -169,6 +188,7 @@ test_that("Group by any/all", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       mutate(has_words = nchar(verses) < 0) %>%
       group_by(some_grouping) %>%
@@ -177,6 +197,7 @@ test_that("Group by any/all", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(has_words = all(nchar(verses) < 0, na.rm = TRUE)) %>%
@@ -188,6 +209,7 @@ test_that("Group by any/all", {
 test_that("n_distinct() on dataset", {
   # With groupby
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(distinct = n_distinct(lgl, na.rm = FALSE)) %>%
@@ -195,6 +217,7 @@ test_that("n_distinct() on dataset", {
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(distinct = n_distinct(lgl, na.rm = TRUE)) %>%
@@ -203,12 +226,14 @@ test_that("n_distinct() on dataset", {
   )
   # Without groupby
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(distinct = n_distinct(lgl, na.rm = FALSE)) %>%
       collect(),
     tbl
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(distinct = n_distinct(lgl, na.rm = TRUE)) %>%
       collect(),
@@ -216,6 +241,7 @@ test_that("n_distinct() on dataset", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(distinct = n_distinct(int, lgl)) %>%
       collect(),
@@ -223,6 +249,7 @@ test_that("n_distinct() on dataset", {
     warning = "Multiple arguments"
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(some_grouping) %>%
       summarize(distinct = n_distinct(int, lgl)) %>%
