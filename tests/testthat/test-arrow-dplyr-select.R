@@ -98,7 +98,6 @@ test_that("filtering with rename", {
     example_data
   )
 
-  skip("https://github.com/voltrondata/substrait-r/issues/97")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
