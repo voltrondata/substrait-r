@@ -15,9 +15,10 @@ example_with_logical_factors <- tibble::tibble(
   )
 )
 
-skip("https://github.com/voltrondata/substrait-r/issues/134")
 
 test_that("group_by groupings are recorded", {
+  skip("select after group_by: https://github.com/voltrondata/substrait-r/issues/136")
+
   compare_dplyr_binding(
     .input %>%
       group_by(chr) %>%
@@ -29,16 +30,14 @@ test_that("group_by groupings are recorded", {
 })
 
 test_that("group_by supports creating/renaming", {
+  skip("https://github.com/voltrondata/substrait-r/issues/137")
   compare_dplyr_binding(
     .input %>%
       group_by(chr, numbers = int) %>%
       collect(),
     tbl
   )
-<<<<<<< HEAD
 
-=======
->>>>>>> Add group_by tests
   compare_dplyr_binding(
     .input %>%
       group_by(chr, numbers = int * 4) %>%
@@ -54,6 +53,7 @@ test_that("group_by supports creating/renaming", {
 })
 
 test_that("ungroup", {
+  skip("select after group_by: https://github.com/voltrondata/substrait-r/issues/136")
   compare_dplyr_binding(
     .input %>%
       group_by(chr) %>%
@@ -81,6 +81,7 @@ test_that("ungroup", {
 })
 
 test_that("group_by then rename", {
+  skip("select after group_by: https://github.com/voltrondata/substrait-r/issues/136")
   compare_dplyr_binding(
     .input %>%
       group_by(chr) %>%
