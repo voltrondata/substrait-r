@@ -17,8 +17,6 @@ tbl$verses <- verses[[1]]
 tbl$padded_strings <- stringr::str_pad(letters[1:10], width = 2 * (1:10) + 1, side = "both")
 tbl$some_grouping <- rep(c(1, 2), 5)
 
-skip("summarise not yet implemented: https://github.com/voltrondata/substrait-r/issues/29")
-
 test_that("Can aggregate in Arrow", {
   compare_dplyr_binding(
     .input %>%
