@@ -165,6 +165,11 @@ summarise.SubstraitCompiler <- function(.data, ..., .groups = NULL) {
 }
 
 #' @rdname select.SubstraitCompiler
+#' @importFrom dplyr summarize
+#' @export
+summarize.SubstraitCompiler <- summarise.SubstraitCompiler
+
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr collect
 #' @export
 collect.SubstraitCompiler <- function(x, ...) {
