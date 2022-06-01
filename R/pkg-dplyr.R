@@ -168,7 +168,8 @@ summarise.SubstraitCompiler <- function(.data, ..., .groups = NULL) {
 #' @importFrom dplyr collect
 #' @export
 collect.SubstraitCompiler <- function(x, ...) {
-  dplyr::as_tibble(x$evaluate(...))
+  out <- dplyr::as_tibble(x$evaluate(...))
+  group_by(out, !!! rlang::syms(names(x$groups)))
 }
 
 # translate desc() call to the equivalent
