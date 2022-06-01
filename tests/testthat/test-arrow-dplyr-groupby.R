@@ -15,7 +15,7 @@ example_with_logical_factors <- tibble::tibble(
   )
 )
 
-skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+skip("https://github.com/voltrondata/substrait-r/issues/134")
 
 test_that("group_by groupings are recorded", {
   compare_dplyr_binding(
@@ -35,6 +35,7 @@ test_that("group_by supports creating/renaming", {
       collect(),
     tbl
   )
+
   compare_dplyr_binding(
     .input %>%
       group_by(chr, numbers = int * 4) %>%
