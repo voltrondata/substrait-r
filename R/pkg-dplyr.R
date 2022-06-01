@@ -168,8 +168,15 @@ summarise.SubstraitCompiler <- function(.data, ..., .groups = NULL) {
 #' @importFrom dplyr collect
 #' @export
 collect.SubstraitCompiler <- function(x, ...) {
+
   out <- dplyr::as_tibble(x$evaluate(...))
-  group_by(out, !!! rlang::syms(names(x$groups)))
+
+  # add back in grouping if needed
+  if (!rlang::is_empty(x$groups)) {
+    out <- dplyr::grouped_df(out, intersect(names(out), names(x$groups)))
+  }
+
+  out
 }
 
 # translate desc() call to the equivalent
