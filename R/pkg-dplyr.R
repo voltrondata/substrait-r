@@ -177,7 +177,6 @@ collect.SubstraitCompiler <- function(x, ...) {
   }
 
   out
-
 }
 
 # translate desc() call to the equivalent
