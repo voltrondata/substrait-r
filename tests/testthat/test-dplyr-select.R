@@ -12,7 +12,7 @@ test_that("Empty select returns no columns", {
 })
 
 test_that("Empty select still includes the group_by columns", {
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip("add back in missing col: https://github.com/voltrondata/substrait-r/issues/136")
 
   expect_message(
     compare_dplyr_binding(

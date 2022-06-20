@@ -229,12 +229,13 @@ test_that("dplyr::mutate's examples", {
 })
 
 test_that("window functions", {
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip("window functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/157")
   # Grouping ----------------------------------------
   # The mutate operation may yield different results on grouped
   # tibbles because the expressions are computed within groups.
   # The following normalises `mass` by the global average:
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(name, mass, species) %>%
       mutate(mass_norm = mass / mean(mass, na.rm = TRUE)) %>%
@@ -327,29 +328,31 @@ test_that("across()", {
 })
 
 test_that("group_by() followed by mutate()", {
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip("window functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/157")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      select(name, mass, homeworld) %>%
-      group_by(homeworld) %>%
-      mutate(rank = min_rank(desc(mass))) %>%
+      select(int, dbl, lgl) %>%
+      group_by(lgl) %>%
+      mutate(min_int = min(int)) %>%
       collect(),
-    starwars
+    example_data
   )
 })
 
 test_that("Can mutate after group_by as long as there are no aggregations", {
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(int, chr) %>%
       group_by(chr) %>%
       mutate(int = int + 6L) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(mean = int, chr) %>%
       # rename `int` to `mean` and use `mean` in `mutate()` to test that
@@ -357,11 +360,13 @@ test_that("Can mutate after group_by as long as there are no aggregations", {
       group_by(chr) %>%
       mutate(mean = mean + 6L) %>%
       collect(),
-    tbl
+    example_data
   )
+
+  skip("window functions not supported: https://github.com/voltrondata/substrait-r/issues/157")
   expect_warning(
-    tbl %>%
-      Table$create() %>%
+    example_data %>%
+      duckdb_substrait_compiler() %>%
       select(int, chr) %>%
       group_by(chr) %>%
       mutate(avg_int = mean(int)) %>%
