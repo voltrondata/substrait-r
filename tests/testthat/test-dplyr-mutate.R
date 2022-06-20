@@ -229,7 +229,7 @@ test_that("dplyr::mutate's examples", {
 })
 
 test_that("window functions", {
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip("window functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/157")
   # Grouping ----------------------------------------
   # The mutate operation may yield different results on grouped
   # tibbles because the expressions are computed within groups.
@@ -328,14 +328,15 @@ test_that("across()", {
 })
 
 test_that("group_by() followed by mutate()", {
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip("window functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/157")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
-      select(name, mass, homeworld) %>%
-      group_by(homeworld) %>%
-      mutate(rank = min_rank(desc(mass))) %>%
+      select(int, dbl, lgl) %>%
+      group_by(lgl) %>%
+      mutate(min_int = min(int)) %>%
       collect(),
-    starwars
+    example_data
   )
 })
 
