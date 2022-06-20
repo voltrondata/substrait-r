@@ -13,7 +13,7 @@ test_that("arrange() on integer, double, and character columns", {
     .input %>%
       arrange(int, chr) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
     # skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
@@ -21,7 +21,7 @@ test_that("arrange() on integer, double, and character columns", {
     .input %>%
       arrange(int, desc(dbl)) %>%
       collect(),
-    tbl
+    example_data
   )
 
   skip("This fails on duckdb too - https://github.com/voltrondata/substrait-r/issues/122")
@@ -31,7 +31,7 @@ test_that("arrange() on integer, double, and character columns", {
     .input %>%
       arrange(int, desc(desc(dbl))) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
     engine = "duckdb",
@@ -39,14 +39,14 @@ test_that("arrange() on integer, double, and character columns", {
       arrange(int) %>%
       arrange(desc(dbl)) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
       arrange(int + dbl, chr) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
     engine = "duckdb",
@@ -54,7 +54,7 @@ test_that("arrange() on integer, double, and character columns", {
       mutate(zzz = int + dbl, ) %>%
       arrange(zzz, chr) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
     engine = "duckdb",
@@ -62,7 +62,7 @@ test_that("arrange() on integer, double, and character columns", {
       mutate(zzz = int + dbl) %>%
       arrange(int + dbl, chr) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
     engine = "duckdb",
@@ -70,70 +70,60 @@ test_that("arrange() on integer, double, and character columns", {
       mutate(int + dbl) %>%
       arrange(int + dbl, chr) %>%
       collect(),
-    tbl
+    example_data
   )
 
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       arrange(int, dbl) %>%
       collect(),
-    tbl
+    example_data
   )
 
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       arrange(int, dbl, .by_group = TRUE) %>%
       collect(),
-    tbl
+    example_data
   )
 
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
   compare_dplyr_binding(
     .input %>%
       group_by(lgl, grp2) %>%
       arrange(int, dbl, .by_group = TRUE) %>%
       collect(),
-    tbl %>%
+    example_data %>%
       mutate(grp2 = ifelse(is.na(lgl), 1L, as.integer(lgl)))
   )
 
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
+  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
   compare_dplyr_binding(
     .input %>%
       group_by(lgl) %>%
       arrange(.by_group = TRUE) %>%
       pull(lgl),
-    tbl
+    example_data
   )
 
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
-  compare_dplyr_binding(
-    .input %>%
-      arrange() %>%
-      collect(),
-    tbl %>%
-      group_by(lgl)
-  )
-
-  skip("group_by not yet implemented: https://github.com/voltrondata/substrait-r/issues/28")
   compare_dplyr_binding(
     .input %>%
       group_by(lgl) %>%
       arrange() %>%
       collect(),
-    tbl
+    example_data
   )
 
   compare_dplyr_binding(
     .input %>%
       arrange() %>%
       collect(),
-    tbl
+    example_data
   )
 
   test_sort_col <- "chr"
@@ -142,7 +132,7 @@ test_that("arrange() on integer, double, and character columns", {
     .input %>%
       arrange(!!sym(test_sort_col)) %>%
       collect(),
-    tbl %>%
+    example_data %>%
       select(chr, lgl)
   )
   test_sort_cols <- c("int", "dbl")
@@ -151,7 +141,7 @@ test_that("arrange() on integer, double, and character columns", {
     .input %>%
       arrange(!!!syms(test_sort_cols)) %>%
       collect(),
-    tbl
+    example_data
   )
 })
 
@@ -179,7 +169,7 @@ test_that("arrange() on logical columns", {
     .input %>%
       arrange(lgl, int) %>%
       collect(),
-    tbl
+    example_data
   )
 })
 
