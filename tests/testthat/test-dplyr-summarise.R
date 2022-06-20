@@ -503,7 +503,7 @@ test_that("summarize() with min() and max()", {
   )
 
   # multiple dots arguments to min(), max() not supported
-  skip("https://github.com/voltrondata/substrait-r/issues/150")
+  skip("error calling max on diff types: https://github.com/voltrondata/substrait-r/issues/150")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -524,7 +524,7 @@ test_that("summarize() with min() and max()", {
 
   # min(logical) or max(logical) yields integer in R
   # min(Boolean) or max(Boolean) yields Boolean in Arrow
-  skip("https://github.com/voltrondata/substrait-r/issues/152")
+  skip("as.logical not implemented: https://github.com/voltrondata/substrait-r/issues/152")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -539,7 +539,9 @@ test_that("summarize() with min() and max()", {
 })
 
 test_that("min() and max() on character strings", {
+  skip("error calling max on diff types: https://github.com/voltrondata/substrait-r/issues/150")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(
         min_chr = min(chr, na.rm = TRUE),
@@ -562,10 +564,14 @@ test_that("min() and max() on character strings", {
 })
 
 test_that("summarise() with !!sym()", {
+
+  skip("any/all not implemented: https://github.com/voltrondata/substrait-r/issues/144")
+
   test_chr_col <- "int"
   test_dbl_col <- "dbl"
   test_lgl_col <- "lgl"
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(false) %>%
       summarise(
@@ -585,7 +591,11 @@ test_that("summarise() with !!sym()", {
 })
 
 test_that("Filter and aggregate", {
+
+  skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
+
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       filter(lgl == 2) %>%
       summarize(total = sum(int, na.rm = TRUE)) %>%
@@ -621,6 +631,9 @@ test_that("Filter and aggregate", {
 })
 
 test_that("Group by edge cases", {
+
+    skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
+
   compare_dplyr_binding(
     .input %>%
       group_by(lgl * 2) %>%
@@ -639,6 +652,9 @@ test_that("Group by edge cases", {
 })
 
 test_that("Do things after summarize", {
+
+    skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
+
   group2_sum <- example_data %>%
     group_by(lgl) %>%
     filter(int > 5) %>%
@@ -674,8 +690,11 @@ test_that("Do things after summarize", {
 })
 
 test_that("Expressions on aggregations", {
+
+  skip("any not implemented: https://github.com/voltrondata/substrait-r/issues/144")
   # This is what it effectively is
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       summarize(
@@ -749,7 +768,10 @@ test_that("Expressions on aggregations", {
 })
 
 test_that("Summarize with 0 arguments", {
+
+  skip("different order: https://github.com/voltrondata/substrait-r/issues/154")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       summarize() %>%
@@ -759,8 +781,10 @@ test_that("Summarize with 0 arguments", {
 })
 
 test_that("Not (yet) supported: implicit join", {
+  skip("complex expressions not supported: https://github.com/voltrondata/substrait-r/issues/155")
   withr::local_options(list(arrow.debug = TRUE))
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       summarize(
@@ -845,7 +869,9 @@ test_that("Not (yet) supported: implicit join", {
 })
 
 test_that(".groups argument", {
+  skip("n() not yet supported: https://github.com/voltrondata/substrait-r/issues/143")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl, int < 6) %>%
       summarize(count = n()) %>%
@@ -853,6 +879,7 @@ test_that(".groups argument", {
     example_data
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl, int < 6) %>%
       summarize(count = n(), .groups = "drop_last") %>%
@@ -899,11 +926,14 @@ test_that("summarize() handles group_by .drop", {
   # Error: Type error: Sorting not supported for type dictionary<values=string, indices=int8, ordered=0>
   withr::local_options(list(arrow.summarise.sort = FALSE))
 
+  skip("factors not yet supported: https://github.com/voltrondata/substrait-r/issues/138")
+
   example_data <- tibble(
     x = 1:10,
     y = factor(rep(c("a", "c"), each = 5), levels = c("a", "b", "c"))
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(y) %>%
       count() %>%
@@ -943,7 +973,10 @@ test_that("summarise() passes through type information for temporary columns", {
   # applies to ifelse and case_when(), in which argument types are checked
   # within a translated function (previously this failed because the appropriate
   # schema was not available for n() > 1, mean(y), and mean(z))
+
+  skip("https://github.com/voltrondata/substrait-r/issues/156")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(x) %>%
       summarise(r = if_else(n() > 1, mean(y), mean(z))) %>%
@@ -957,9 +990,13 @@ test_that("summarise() passes through type information for temporary columns", {
 })
 
 test_that("summarise() can handle scalars and literal values", {
+
+  skip("https://github.com/voltrondata/substrait-r/issues/153")
+
   some_scalar_value <- 2L
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>% summarise(y = 1L) %>% collect(),
     example_data
   )
@@ -972,30 +1009,5 @@ test_that("summarise() can handle scalars and literal values", {
   compare_dplyr_binding(
     .input %>% summarise(y = !!some_scalar_value) %>% collect(),
     example_data
-  )
-
-  expect_identical(
-    record_batch(example_data) %>% summarise(y = 1L) %>% collect(),
-    tibble(y = 1L)
-  )
-
-  expect_identical(
-    record_batch(example_data) %>% summarise(y = Expression$scalar(1L)) %>% collect(),
-    tibble(y = 1L)
-  )
-
-  expect_identical(
-    record_batch(example_data) %>% summarise(y = Scalar$create(1L)) %>% collect(),
-    tibble(y = 1L)
-  )
-
-  expect_identical(
-    record_batch(example_data) %>% summarise(y = some_scalar_value) %>% collect(),
-    tibble(y = 2L)
-  )
-
-  expect_identical(
-    record_batch(example_data) %>% summarise(y = !!some_scalar_value) %>% collect(),
-    tibble(y = 2L)
   )
 })
