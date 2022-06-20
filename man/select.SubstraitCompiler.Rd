@@ -10,6 +10,7 @@
 \alias{group_by.SubstraitCompiler}
 \alias{ungroup.SubstraitCompiler}
 \alias{summarise.SubstraitCompiler}
+\alias{summarize.SubstraitCompiler}
 \alias{collect.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
@@ -30,6 +31,8 @@
 \method{ungroup}{SubstraitCompiler}(x, ...)
 
 \method{summarise}{SubstraitCompiler}(.data, ..., .groups = NULL)
+
+summarize.SubstraitCompiler(.data, ..., .groups = NULL)
 
 \method{collect}{SubstraitCompiler}(x, ...)
 }
