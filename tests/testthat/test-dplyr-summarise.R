@@ -6,6 +6,8 @@ withr::local_options(list(
   dplyr.summarise.inform = FALSE
 ))
 
+skip_if_not(has_arrow_with_substrait())
+
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 
@@ -271,6 +273,9 @@ test_that("n_distinct() on dataset", {
 })
 
 test_that("median()", {
+
+  skip("median not yet implemented: https://github.com/voltrondata/substrait-r/issues/146")
+
   # When medians are integer-valued, stats::median() sometimes returns output of
   # type integer, whereas whereas the Arrow approx_median kernels always return
   # output of type float64. The calls to median(int, ...) in the tests below
@@ -329,6 +334,7 @@ test_that("median()", {
 })
 
 test_that("quantile()", {
+  skip("quantile not yet implemented: https://github.com/voltrondata/substrait-r/issues/147")
   # The default method for stats::quantile() throws an error when na.rm = FALSE
   # and the input contains NA or NaN, whereas the Arrow tdigest kernels return
   # null in this situation. To work around this known difference, the tests
@@ -434,7 +440,11 @@ test_that("quantile()", {
 })
 
 test_that("summarize() with min() and max()", {
+
+
   compare_dplyr_binding(
+    # skip("min and max not implemented yet: https://github.com/voltrondata/substrait-r/issues/148")
+    engine = "duckdb",
     .input %>%
       select(int, chr) %>%
       filter(int > 5) %>% # this filters out the NAs in `int`
@@ -443,6 +453,8 @@ test_that("summarize() with min() and max()", {
     example_data,
   )
   compare_dplyr_binding(
+    # skip("min and max not implemented yet: https://github.com/voltrondata/substrait-r/issues/148")
+    engine = "duckdb",
     .input %>%
       select(int, chr) %>%
       filter(int > 5) %>% # this filters out the NAs in `int`
@@ -453,14 +465,20 @@ test_that("summarize() with min() and max()", {
       collect(),
     example_data,
   )
+
+  skip("doesn't work with NAs: https://github.com/voltrondata/substrait-r/issues/149")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(int, chr) %>%
       summarize(min_int = min(int), max_int = max(int)) %>%
       collect(),
     example_data,
   )
+
+  skip("Error calling min on two integer columns: https://github.com/voltrondata/substrait-r/issues/151")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(int) %>%
       summarize(
@@ -470,7 +488,10 @@ test_that("summarize() with min() and max()", {
       collect(),
     example_data,
   )
+
+  skip("max on int and double doesn't work: https://github.com/voltrondata/substrait-r/issues/150")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(dbl, int) %>%
       summarize(
@@ -482,7 +503,9 @@ test_that("summarize() with min() and max()", {
   )
 
   # multiple dots arguments to min(), max() not supported
+  skip("https://github.com/voltrondata/substrait-r/issues/150")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       summarize(min_mult = min(dbl, int)) %>%
       collect(),
@@ -490,6 +513,7 @@ test_that("summarize() with min() and max()", {
     warning = "Multiple arguments to min\\(\\) not supported in Arrow"
   )
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(int, dbl, dbl2) %>%
       summarize(max_mult = max(int, dbl, dbl2)) %>%
@@ -500,7 +524,9 @@ test_that("summarize() with min() and max()", {
 
   # min(logical) or max(logical) yields integer in R
   # min(Boolean) or max(Boolean) yields Boolean in Arrow
+  skip("https://github.com/voltrondata/substrait-r/issues/152")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       select(lgl) %>%
       summarize(
