@@ -441,9 +441,9 @@ test_that("quantile()", {
 
 test_that("summarize() with min() and max()", {
 
+  skip("min and max not implemented yet: https://github.com/voltrondata/substrait-r/issues/148")
 
   compare_dplyr_binding(
-    # skip("min and max not implemented yet: https://github.com/voltrondata/substrait-r/issues/148")
     engine = "duckdb",
     .input %>%
       select(int, chr) %>%
