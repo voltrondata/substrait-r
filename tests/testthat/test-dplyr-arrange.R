@@ -206,12 +206,12 @@ test_that("arrange() with bad inputs", {
     fixed = TRUE
   )
 
-  skip("desc not yet properly implemented: https://github.com/voltrondata/substrait-r/issues/125")
-  compare_dplyr_error(
-    .input %>%
-      arrange(desc(int, chr)) %>%
-      collect(),
-    example_data
+  expect_error(
+    tbl %>%
+      duckdb_substrait_compiler() %>%
+      arrange(desc(int, chr)),
+    "must be called with exactly one argument",
+    fixed = TRUE
   )
 
   skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")

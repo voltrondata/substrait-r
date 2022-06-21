@@ -186,7 +186,13 @@ collect.SubstraitCompiler <- function(x, ...) {
 
 # translate desc() call to the equivalent
 expr_replace_desc <- function(expr) {
+
   if (rlang::is_call(expr, "desc")) {
+
+    if (length(expr) > 2) {
+      rlang::abort("`desc()` must be called with exactly one argument.", call = parent.frame(3))
+    }
+
     expr[[1]] <- rlang::sym("substrait_sort_field")
     expr[[3]] <- "SORT_DIRECTION_DESC_NULLS_LAST"
     expr
