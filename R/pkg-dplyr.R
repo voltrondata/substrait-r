@@ -217,7 +217,8 @@ swap_sort_direction <- function(sort_direction){
   switch(
     sort_direction,
     "SORT_DIRECTION_DESC_NULLS_LAST" = "SORT_DIRECTION_ASC_NULLS_LAST",
-    "SORT_DIRECTION_ASC_NULLS_LAST" = "SORT_DIRECTION_DESC_NULLS_LAST"
+    "SORT_DIRECTION_ASC_NULLS_LAST" = "SORT_DIRECTION_DESC_NULLS_LAST",
+    stop(sprintf("Unsupported sort direction: '%s'"), sort_direction)
   )
 }
 
