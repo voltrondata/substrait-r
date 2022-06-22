@@ -44,7 +44,6 @@ test_that("mutate after select", {
 })
 
 test_that("mutate() with NULL inputs", {
-  skip("https://github.com/voltrondata/substrait-r/issues/56")
 
   compare_dplyr_binding(
     .input %>%
@@ -85,7 +84,7 @@ test_that("transmute respect bespoke dplyr implementation", {
 })
 
 test_that("transmute() with NULL inputs", {
-  skip("https://github.com/voltrondata/substrait-r/issues/56")
+  skip("https://github.com/voltrondata/substrait-r/issues/163")
   compare_dplyr_binding(
     .input %>%
       transmute(int = NULL) %>%
