@@ -213,7 +213,7 @@ expr_replace_desc <- function(expr) {
   }
 }
 
-swap_sort_direction <- function(sort_direction){
+swap_sort_direction <- function(sort_direction) {
   switch(
     sort_direction,
     "SORT_DIRECTION_DESC_NULLS_LAST" = "SORT_DIRECTION_ASC_NULLS_LAST",
