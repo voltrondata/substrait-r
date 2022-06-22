@@ -24,7 +24,15 @@ test_that("arrange() on integer, double, and character columns", {
     example_data
   )
 
-  skip("This fails on duckdb too - https://github.com/voltrondata/substrait-r/issues/122")
+  compare_dplyr_binding(
+    # skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
+    engine = "duckdb",
+    .input %>%
+      arrange(desc(desc(dbl))) %>%
+      collect(),
+    example_data
+  )
+
   compare_dplyr_binding(
     # skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
     engine = "duckdb",
@@ -102,15 +110,6 @@ test_that("arrange() on integer, double, and character columns", {
       mutate(grp2 = ifelse(is.na(lgl), 1L, as.integer(lgl)))
   )
 
-  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
-  compare_dplyr_binding(
-    .input %>%
-      group_by(lgl) %>%
-      arrange(.by_group = TRUE) %>%
-      pull(lgl),
-    example_data
-  )
-
   compare_dplyr_binding(
     .input %>%
       group_by(lgl) %>%
@@ -143,6 +142,16 @@ test_that("arrange() on integer, double, and character columns", {
       collect(),
     example_data
   )
+
+  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
+  compare_dplyr_binding(
+    .input %>%
+      group_by(lgl) %>%
+      arrange(.by_group = TRUE) %>%
+      pull(lgl),
+    example_data
+  )
+
 })
 
 test_that("arrange() on datetime columns", {

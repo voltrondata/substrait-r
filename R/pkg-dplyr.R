@@ -189,16 +189,36 @@ expr_replace_desc <- function(expr) {
 
   if (rlang::is_call(expr, "desc")) {
 
-    if (length(expr) > 2) {
-      rlang::abort("`desc()` must be called with exactly one argument.", call = parent.frame(3))
+    sort_direction <- "SORT_DIRECTION_DESC_NULLS_LAST"
+
+    while (rlang::is_call(expr, "desc")) {
+      if (length(expr) > 2) {
+        rlang::abort("`desc()` must be called with exactly one argument.", call = parent.frame(3))
+      }
+
+      if (rlang::is_call(expr[[2]], "desc")) {
+        sort_direction <- swap_sort_direction(sort_direction)
+        expr <- expr[[2]]
+      } else {
+        break()
+      }
+
     }
 
     expr[[1]] <- rlang::sym("substrait_sort_field")
-    expr[[3]] <- "SORT_DIRECTION_DESC_NULLS_LAST"
+    expr[[3]] <- sort_direction
     expr
   } else {
     expr
   }
+}
+
+swap_sort_direction <- function(sort_direction){
+  switch(
+    sort_direction,
+    "SORT_DIRECTION_DESC_NULLS_LAST" = "SORT_DIRECTION_ASC_NULLS_LAST",
+    "SORT_DIRECTION_ASC_NULLS_LAST" = "SORT_DIRECTION_DESC_NULLS_LAST"
+  )
 }
 
 simulate_data_frame <- function(compiler) {
