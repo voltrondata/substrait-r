@@ -94,7 +94,7 @@ transmute.SubstraitCompiler <- function(.data, ...) {
 arrange.SubstraitCompiler <- function(.data, ..., .by_group = FALSE) {
 
   if (.by_group) {
-    quos <- rlang::quos(!!!syms(names(.data$groups)), ...)
+    quos <- rlang::quos(!!! rlang::syms(names(.data$groups)), ...)
   } else {
     quos <- rlang::enquos(...)
   }
