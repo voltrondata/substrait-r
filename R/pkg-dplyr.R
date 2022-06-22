@@ -200,7 +200,7 @@ expr_replace_desc <- function(expr) {
         sort_direction <- swap_sort_direction(sort_direction)
         expr <- expr[[2]]
       } else {
-        break()
+        break
       }
 
     }
