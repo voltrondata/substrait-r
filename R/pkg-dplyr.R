@@ -91,8 +91,13 @@ transmute.SubstraitCompiler <- function(.data, ...) {
 #' @rdname select.SubstraitCompiler
 #' @importFrom dplyr arrange
 #' @export
-arrange.SubstraitCompiler <- function(.data, ...) {
-  quos <- rlang::enquos(...)
+arrange.SubstraitCompiler <- function(.data, ..., .by_group = FALSE) {
+
+  if (.by_group) {
+    quos <- rlang::quos(!!!syms(names(.data$groups)), ...)
+  } else {
+    quos <- rlang::enquos(...)
+  }
 
   if (rlang::is_empty(quos)) {
     return(.data)
