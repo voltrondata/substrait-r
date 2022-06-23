@@ -13,6 +13,7 @@
 #'   `FALSE` to reset the grouping.
 #' @param .groups One of "drop_last", "drop", or "keep"
 #'   (see [dplyr::summarise()]).
+#' @param .by_group sort by grouping variable? see[dplyr::arrange()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -91,8 +92,13 @@ transmute.SubstraitCompiler <- function(.data, ...) {
 #' @rdname select.SubstraitCompiler
 #' @importFrom dplyr arrange
 #' @export
-arrange.SubstraitCompiler <- function(.data, ...) {
-  quos <- rlang::enquos(...)
+arrange.SubstraitCompiler <- function(.data, ..., .by_group = FALSE) {
+
+  if (.by_group) {
+    quos <- rlang::quos(!!! rlang::syms(names(.data$groups)), ...)
+  } else {
+    quos <- rlang::enquos(...)
+  }
 
   if (rlang::is_empty(quos)) {
     return(.data)

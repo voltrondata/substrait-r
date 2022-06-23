@@ -90,7 +90,6 @@ test_that("arrange() on integer, double, and character columns", {
     example_data
   )
 
-  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -100,8 +99,16 @@ test_that("arrange() on integer, double, and character columns", {
     example_data
   )
 
-  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
   compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      arrange(int, dbl, .by_group = TRUE) %>%
+      collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl, grp2) %>%
       arrange(int, dbl, .by_group = TRUE) %>%
@@ -143,12 +150,12 @@ test_that("arrange() on integer, double, and character columns", {
     example_data
   )
 
-  skip(".by_group not yet implemented: https://github.com/voltrondata/substrait-r/issues/158")
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       arrange(.by_group = TRUE) %>%
-      pull(lgl),
+      collect(),
     example_data
   )
 

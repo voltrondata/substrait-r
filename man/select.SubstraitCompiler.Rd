@@ -24,7 +24,7 @@
 
 \method{transmute}{SubstraitCompiler}(.data, ...)
 
-\method{arrange}{SubstraitCompiler}(.data, ...)
+\method{arrange}{SubstraitCompiler}(.data, ..., .by_group = FALSE)
 
 \method{group_by}{SubstraitCompiler}(.data, ..., .add = FALSE, .drop = NULL)
 
@@ -32,7 +32,7 @@
 
 \method{summarise}{SubstraitCompiler}(.data, ..., .groups = NULL)
 
-summarize.SubstraitCompiler(.data, ..., .groups = NULL)
+\method{summarize}{SubstraitCompiler}(.data, ..., .groups = NULL)
 
 \method{collect}{SubstraitCompiler}(x, ...)
 }
@@ -48,6 +48,8 @@ summarize.SubstraitCompiler(.data, ..., .groups = NULL)
 \item \code{arrange()}: see \code{\link[dplyr:arrange]{dplyr::arrange()}}
 }
 }}
+
+\item{.by_group}{sort by grouping variable? see\code{\link[dplyr:arrange]{dplyr::arrange()}}}
 
 \item{.add}{Use \code{TRUE} to add the groupings to the current groupings and
 \code{FALSE} to reset the grouping.}
