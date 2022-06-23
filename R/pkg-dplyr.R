@@ -13,6 +13,7 @@
 #'   `FALSE` to reset the grouping.
 #' @param .groups One of "drop_last", "drop", or "keep"
 #'   (see [dplyr::summarise()]).
+#' @param .by_group sort by grouping variable? see[dplyr::arrange()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
