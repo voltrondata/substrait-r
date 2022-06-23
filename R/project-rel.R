@@ -46,6 +46,9 @@ substrait_project <- function(.compiler, ...) {
     } else {
       expressions[[name]] <- NULL
       types[[name]] <- NULL
+      .compiler$mask[[name]] <- NULL
+      .compiler$schema$struct_$types[[match(name, .compiler$schema$names)]] <- NULL
+      .compiler$schema$names <- .compiler$schema$names[.compiler$schema$names != name]
     }
   }
 
