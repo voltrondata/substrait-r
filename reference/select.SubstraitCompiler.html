@@ -58,7 +58,7 @@
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for SubstraitCompiler</span>
-<span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .by_group <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S3 method for SubstraitCompiler</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .add <span class="op">=</span> <span class="cn">FALSE</span>, .drop <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
@@ -69,7 +69,8 @@
 <span class="co"># S3 method for SubstraitCompiler</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .groups <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
-<span class="fu">summarize.SubstraitCompiler</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .groups <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
+<span class="co"># S3 method for SubstraitCompiler</span>
+<span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .groups <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
 <span class="co"># S3 method for SubstraitCompiler</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
@@ -88,6 +89,10 @@
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange()</a></code>: see <code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">dplyr::arrange()</a></code></p></li>
 </ul></li>
 </ul></dd>
+
+
+<dt>.by_group</dt>
+<dd><p>sort by grouping variable? see<code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">dplyr::arrange()</a></code></p></dd>
 
 
 <dt>.add</dt>
