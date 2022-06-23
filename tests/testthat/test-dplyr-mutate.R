@@ -53,7 +53,6 @@ test_that("mutate() with NULL inputs", {
   )
 
   compare_dplyr_error(
-    engine = "duckdb",
     .input %>%
       mutate(int = NULL, int2 = int + 1) %>%
       collect(),
