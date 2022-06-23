@@ -49,6 +49,8 @@
 }
 }}
 
+\item{.by_group}{sort by grouping variable? see\code{\link[dplyr:arrange]{dplyr::arrange()}}}
+
 \item{.add}{Use \code{TRUE} to add the groupings to the current groupings and
 \code{FALSE} to reset the grouping.}
 
