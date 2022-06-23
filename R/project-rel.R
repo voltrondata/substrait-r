@@ -46,6 +46,8 @@ substrait_project <- function(.compiler, ...) {
     } else {
       expressions[[name]] <- NULL
       types[[name]] <- NULL
+      # remove from compiler so that we can't use the NULL column later
+      # (as per dplyr behaviour)
       .compiler$mask[[name]] <- NULL
       index_match <- match(name, .compiler$schema$names)
       if (!is.na(index_match)) {
