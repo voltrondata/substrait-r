@@ -51,6 +51,16 @@ test_that("mutate() with NULL inputs", {
       collect(),
     example_data
   )
+
+  compare_dplyr_error(
+    engine = "duckdb",
+    .input %>%
+      duckdb_substrait_compiler() %>%
+      mutate(int = NULL, int2 = int + 1) %>%
+      collect(),
+    example_data
+  )
+
 })
 
 test_that("empty mutate()", {

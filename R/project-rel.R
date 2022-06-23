@@ -23,10 +23,10 @@ substrait_project <- function(.compiler, ...) {
   types <- list()
 
   for (i in seq_along(quos)) {
+    name <- names(quos)[i]
     if (!rlang::quo_is_null(quos[[i]])) {
 
-      # do the evaluation and calculate the output type
-    name <- names(quos)[i]
+    # do the evaluation and calculate the output type
     value <- as_substrait(
       quos[[i]],
       .ptype = "substrait.Expression",
@@ -43,6 +43,9 @@ substrait_project <- function(.compiler, ...) {
     # keep track of the new expressions and types
     expressions[[name]] <- value
     types[[name]] <- type
+    } else {
+      expressions[[name]] <- NULL
+      types[[name]] <- NULL
     }
   }
 
