@@ -102,6 +102,14 @@ test_that("arrange() on integer, double, and character columns", {
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
+      arrange(int, dbl, .by_group = TRUE) %>%
+      collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
       group_by(lgl, grp2) %>%
       arrange(int, dbl, .by_group = TRUE) %>%
       collect(),
