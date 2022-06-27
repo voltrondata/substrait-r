@@ -23,24 +23,38 @@ substrait_project <- function(.compiler, ...) {
   types <- list()
 
   for (i in seq_along(quos)) {
-    # do the evaluation and calculate the output type
     name <- names(quos)[i]
-    value <- as_substrait(
-      quos[[i]],
-      .ptype = "substrait.Expression",
-      compiler = .compiler
-    )
-    type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
+    if (!rlang::quo_is_null(quos[[i]])) {
 
-    # update the compiler
-    .compiler$mask[[name]] <- value
-    .compiler$schema$names <- union(.compiler$schema$names, name)
-    .compiler$schema$struct_$types[[match(name, .compiler$schema$names)]] <-
-      type
+      # do the evaluation and calculate the output type
+      value <- as_substrait(
+        quos[[i]],
+        .ptype = "substrait.Expression",
+        compiler = .compiler
+      )
+      type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
 
-    # keep track of the new expressions and types
-    expressions[[name]] <- value
-    types[[name]] <- type
+      # update the compiler
+      .compiler$mask[[name]] <- value
+      .compiler$schema$names <- union(.compiler$schema$names, name)
+      .compiler$schema$struct_$types[[match(name, .compiler$schema$names)]] <-
+        type
+
+      # keep track of the new expressions and types
+      expressions[[name]] <- value
+      types[[name]] <- type
+    } else {
+      expressions[[name]] <- NULL
+      types[[name]] <- NULL
+      # remove from compiler so that we can't use the NULL column later
+      # (as per dplyr behaviour)
+      .compiler$mask[[name]] <- NULL
+      index_match <- match(name, .compiler$schema$names)
+      if (!is.na(index_match)) {
+        .compiler$schema$struct_$types[[index_match]] <- NULL
+      }
+      .compiler$schema$names <- .compiler$schema$names[.compiler$schema$names != name]
+    }
   }
 
   # create the relation with the new expressions and types
