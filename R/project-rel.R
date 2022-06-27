@@ -26,23 +26,23 @@ substrait_project <- function(.compiler, ...) {
     name <- names(quos)[i]
     if (!rlang::quo_is_null(quos[[i]])) {
 
-    # do the evaluation and calculate the output type
-    value <- as_substrait(
-      quos[[i]],
-      .ptype = "substrait.Expression",
-      compiler = .compiler
-    )
-    type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
+      # do the evaluation and calculate the output type
+      value <- as_substrait(
+        quos[[i]],
+        .ptype = "substrait.Expression",
+        compiler = .compiler
+      )
+      type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
 
-    # update the compiler
-    .compiler$mask[[name]] <- value
-    .compiler$schema$names <- union(.compiler$schema$names, name)
-    .compiler$schema$struct_$types[[match(name, .compiler$schema$names)]] <-
-      type
+      # update the compiler
+      .compiler$mask[[name]] <- value
+      .compiler$schema$names <- union(.compiler$schema$names, name)
+      .compiler$schema$struct_$types[[match(name, .compiler$schema$names)]] <-
+        type
 
-    # keep track of the new expressions and types
-    expressions[[name]] <- value
-    types[[name]] <- type
+      # keep track of the new expressions and types
+      expressions[[name]] <- value
+      types[[name]] <- type
     } else {
       expressions[[name]] <- NULL
       types[[name]] <- NULL
