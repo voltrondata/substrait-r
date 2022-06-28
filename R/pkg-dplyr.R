@@ -14,7 +14,8 @@
 #' @param .groups One of "drop_last", "drop", or "keep"
 #'   (see [dplyr::summarise()]).
 #' @param .by_group sort by grouping variable? see[dplyr::arrange()]
-#' @param .cols Columns to rename see[dplyr::rename_with()]
+#' @param .cols Columns to rename; see[dplyr::rename_with()]
+#' @param .fn Function to transform selected `.cols`; see[dplyr::rename_with()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select

@@ -52,7 +52,9 @@
 }
 }}
 
-\item{.cols}{Columns to rename see\code{\link[dplyr:rename]{dplyr::rename_with()}}}
+\item{.fn}{Function to transform selected \code{.cols}; see\code{\link[dplyr:rename]{dplyr::rename_with()}}}
+
+\item{.cols}{Columns to rename; see\code{\link[dplyr:rename]{dplyr::rename_with()}}}
 
 \item{.by_group}{sort by grouping variable? see\code{\link[dplyr:arrange]{dplyr::arrange()}}}
 
