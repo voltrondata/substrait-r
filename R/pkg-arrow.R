@@ -311,7 +311,7 @@ substrait_eval_arrow <- function(plan, tables, col_names) {
   result <- result[names]
 
   # reassign the column names
-  names(result) <- col_names
+  names(result) <- col_names %||% character(0)
   result
 }
 
