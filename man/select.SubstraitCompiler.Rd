@@ -3,6 +3,7 @@
 \name{select.SubstraitCompiler}
 \alias{select.SubstraitCompiler}
 \alias{rename.SubstraitCompiler}
+\alias{rename_with.SubstraitCompiler}
 \alias{filter.SubstraitCompiler}
 \alias{mutate.SubstraitCompiler}
 \alias{transmute.SubstraitCompiler}
@@ -17,6 +18,8 @@
 \method{select}{SubstraitCompiler}(.data, ...)
 
 \method{rename}{SubstraitCompiler}(.data, ...)
+
+\method{rename_with}{SubstraitCompiler}(.data, .fn, .cols = everything(), ...)
 
 \method{filter}{SubstraitCompiler}(.data, ...)
 
@@ -48,6 +51,8 @@
 \item \code{arrange()}: see \code{\link[dplyr:arrange]{dplyr::arrange()}}
 }
 }}
+
+\item{.cols}{Columns to rename see\code{\link[dplyr:rename]{dplyr::rename_with()}}}
 
 \item{.by_group}{sort by grouping variable? see\code{\link[dplyr:arrange]{dplyr::arrange()}}}
 
