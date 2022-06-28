@@ -14,6 +14,7 @@
 #' @param .groups One of "drop_last", "drop", or "keep"
 #'   (see [dplyr::summarise()]).
 #' @param .by_group sort by grouping variable? see[dplyr::arrange()]
+#' @param .cols Columns to rename see[dplyr::rename_with()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -63,6 +64,15 @@ rename.SubstraitCompiler <- function(.data, ...) {
   )
 
   substrait_project(.data, !!! new_mask)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr rename_with
+#' @export
+rename_with.SubstraitCompiler <- function(.data, .fn, .cols = everything(), ...) {
+  .fn <- rlang::as_function(.fn)
+  old_names <- dplyr::select(.data, {{ .cols }})$schema$names
+  dplyr::rename(.data, !!rlang::set_names(old_names, .fn(old_names)))
 }
 
 #' @rdname select.SubstraitCompiler
