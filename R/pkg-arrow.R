@@ -40,7 +40,7 @@ ArrowSubstraitCompiler <- R6::R6Class(
         name <- unname(binary_map[[name]])
       } else {
         rlang::abort(
-          paste0('could not find function "',  name, '"')
+          paste0('Could not find function "',  name, '"')
         )
       }
 
