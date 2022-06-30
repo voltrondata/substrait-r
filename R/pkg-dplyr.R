@@ -35,6 +35,26 @@ select.SubstraitCompiler <- function(.data, ...) {
     from_substrait(.data$schema, data.frame())
   )
 
+  # restore groups
+  if (!rlang::is_empty(.data$groups)) {
+
+    prepend_cols <- tidyselect::eval_select(
+      rlang::expr(names(.data$groups)),
+      from_substrait(.data$schema, data.frame())
+    )
+
+    column_indices <- c(prepend_cols, column_indices)
+
+    cat(
+      paste(
+        "Adding missing grouping variables:",
+        paste0("`", names(prepend_cols), "`", collapse = ", ")
+      ),
+      fill = TRUE
+    )
+
+  }
+
   new_mask <- rlang::set_names(
     rlang::syms(.data$schema$names[column_indices]),
     names(column_indices)
