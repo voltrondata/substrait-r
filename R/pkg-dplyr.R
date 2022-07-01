@@ -37,7 +37,7 @@ select.SubstraitCompiler <- function(.data, ...) {
 
   # restore groups
   if (!rlang::is_empty(.data$groups)) {
-    cols_used <- vapply(enquos(...), rlang::quo_name, character(1))
+    cols_used <- vapply(rlang::enquos(...), rlang::quo_name, character(1))
     missing_cols <- setdiff(names(.data$groups), cols_used)
 
     if (!rlang::is_empty(missing_cols)) {
