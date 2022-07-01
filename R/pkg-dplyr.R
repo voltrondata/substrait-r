@@ -29,7 +29,7 @@
 #' dplyr::arrange(compiler, desc(mpg))
 #'
 select.SubstraitCompiler <- function(.data, ...) {
-  # Named vector of column names/indices
+
   column_indices <- tidyselect::eval_select(
     rlang::expr(c(...)),
     from_substrait(.data$schema, data.frame())
@@ -37,22 +37,25 @@ select.SubstraitCompiler <- function(.data, ...) {
 
   # restore groups
   if (!rlang::is_empty(.data$groups)) {
+    cols_used <- vapply(enquos(...), quo_name, character(1))
+    missing_cols <- setdiff(names(.data$groups), cols_used)
 
-    prepend_cols <- tidyselect::eval_select(
-      rlang::expr(names(.data$groups)),
-      from_substrait(.data$schema, data.frame())
-    )
+    if (!rlang::is_empty(missing_cols)) {
+      prepend_cols <- tidyselect::eval_select(
+        missing_cols,
+        from_substrait(.data$schema, data.frame())
+      )
 
-    column_indices <- c(prepend_cols, column_indices)
+      column_indices <- c(prepend_cols, column_indices)
 
-    cat(
-      paste(
-        "Adding missing grouping variables:",
-        paste0("`", names(prepend_cols), "`", collapse = ", ")
-      ),
-      fill = TRUE
-    )
-
+      cat(
+        paste(
+          "Adding missing grouping variables:",
+          paste0("`", names(prepend_cols), "`", collapse = ", ")
+        ),
+        fill = TRUE
+      )
+    }
   }
 
   new_mask <- rlang::set_names(
@@ -60,7 +63,7 @@ select.SubstraitCompiler <- function(.data, ...) {
     names(column_indices)
   )
 
-  substrait_project(.data, !!! new_mask)
+  substrait_project(.data, !!!new_mask)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -82,7 +85,7 @@ rename.SubstraitCompiler <- function(.data, ...) {
     new_column_names
   )
 
-  substrait_project(.data, !!! new_mask)
+  substrait_project(.data, !!!new_mask)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -97,14 +100,13 @@ filter.SubstraitCompiler <- function(.data, ...) {
 #' @export
 mutate.SubstraitCompiler <- function(.data, ...) {
   mask <- .data$mask
-  substrait_project(.data, !!! mask, ...)
+  substrait_project(.data, !!!mask, ...)
 }
 
 #' @rdname select.SubstraitCompiler
 #' @importFrom dplyr transmute
 #' @export
 transmute.SubstraitCompiler <- function(.data, ...) {
-
   check_transmute_args(...)
   substrait_project(.data, ...)
 }
@@ -113,9 +115,8 @@ transmute.SubstraitCompiler <- function(.data, ...) {
 #' @importFrom dplyr arrange
 #' @export
 arrange.SubstraitCompiler <- function(.data, ..., .by_group = FALSE) {
-
   if (.by_group) {
-    quos <- rlang::quos(!!! rlang::syms(names(.data$groups)), ...)
+    quos <- rlang::quos(!!!rlang::syms(names(.data$groups)), ...)
   } else {
     quos <- rlang::enquos(...)
   }
@@ -134,7 +135,7 @@ arrange.SubstraitCompiler <- function(.data, ..., .by_group = FALSE) {
     }
   )
 
-  substrait_sort(.data, !!! with_translated_desc)
+  substrait_sort(.data, !!!with_translated_desc)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -178,12 +179,12 @@ summarise.SubstraitCompiler <- function(.data, ..., .groups = NULL) {
     new_n_groups <- max(0, n_groups - 1)
     substrait_group_by(
       .data,
-      !!! rlang::syms(.data$schema$names[seq_len(new_n_groups)])
+      !!!rlang::syms(.data$schema$names[seq_len(new_n_groups)])
     )
   } else if (identical(.groups, "keep")) {
     substrait_group_by(
       .data,
-      !!! rlang::syms(.data$schema$names[seq_len(n_groups)])
+      !!!rlang::syms(.data$schema$names[seq_len(n_groups)])
     )
   } else {
     stop("Unknown value for `.groups`")
@@ -199,7 +200,6 @@ summarize.SubstraitCompiler <- summarise.SubstraitCompiler
 #' @importFrom dplyr collect
 #' @export
 collect.SubstraitCompiler <- function(x, ...) {
-
   out <- dplyr::as_tibble(x$evaluate(...))
 
   # add back in grouping if needed
@@ -212,9 +212,7 @@ collect.SubstraitCompiler <- function(x, ...) {
 
 # translate desc() call to the equivalent
 expr_replace_desc <- function(expr) {
-
   if (rlang::is_call(expr, "desc")) {
-
     sort_direction <- "SORT_DIRECTION_DESC_NULLS_LAST"
 
     while (rlang::is_call(expr, "desc")) {
@@ -228,7 +226,6 @@ expr_replace_desc <- function(expr) {
       } else {
         break
       }
-
     }
 
     expr[[1]] <- rlang::sym("substrait_sort_field")
@@ -240,8 +237,7 @@ expr_replace_desc <- function(expr) {
 }
 
 swap_sort_direction <- function(sort_direction) {
-  switch(
-    sort_direction,
+  switch(sort_direction,
     "SORT_DIRECTION_DESC_NULLS_LAST" = "SORT_DIRECTION_ASC_NULLS_LAST",
     "SORT_DIRECTION_ASC_NULLS_LAST" = "SORT_DIRECTION_DESC_NULLS_LAST",
     stop(sprintf("Unsupported sort direction: '%s'"), sort_direction)
@@ -252,14 +248,14 @@ simulate_data_frame <- function(compiler) {
   from_substrait(compiler$schema, data.frame())
 }
 
-check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang::caller_env()){
-    if (!missing(.keep)) {
-        abort("The `.keep` argument is not supported.", call = error_call)
-    }
-    if (!missing(.before)) {
-        abort("The `.before` argument is not supported.", call = error_call)
-    }
-    if (!missing(.after)) {
-        abort("The `.after` argument is not supported.", call = error_call)
-    }
+check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang::caller_env()) {
+  if (!missing(.keep)) {
+    abort("The `.keep` argument is not supported.", call = error_call)
+  }
+  if (!missing(.before)) {
+    abort("The `.before` argument is not supported.", call = error_call)
+  }
+  if (!missing(.after)) {
+    abort("The `.after` argument is not supported.", call = error_call)
+  }
 }
