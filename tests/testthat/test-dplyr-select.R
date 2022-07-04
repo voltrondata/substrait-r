@@ -4,11 +4,16 @@ skip_if_not(has_arrow_with_substrait())
 
 test_that("Empty select returns no columns", {
   skip("Arrow - https://github.com/voltrondata/substrait-r/issues/51")
-  skip("DuckDB - https://github.com/voltrondata/substrait-r/issues/96")
   compare_dplyr_binding(
     .input %>% select() %>% collect(),
     example_data
   )
+
+  expect_error(
+    example_data %>% duckdb_substrait_compiler() %>% select() %>% collect(),
+    "Column list must not be empty"
+  )
+
 })
 
 test_that("Empty select still includes the group_by columns", {
