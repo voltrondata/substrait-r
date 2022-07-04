@@ -62,8 +62,8 @@
 </h2>
 <p>You can install the development version of substrait from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"voltrondata/substrait-r"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"voltrondata/substrait-r"</span><span class="op">)</span></span></code></pre></div>
 <p>You will need a <a href="https://arrow.apache.org/docs/r/articles/developers/setup.html" class="external-link">development version of the arrow package</a> to actually evaluate anything (in particular, with Arrow configured using <code>-DARROW_ENGINE=ON</code>).</p>
 </div>
 <div class="section level2">
@@ -71,126 +71,126 @@
 </h2>
 <p>Basic construction of a Substrait plan and evaluating it using the Arrow Substrait consumer:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">substrait</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-
-<span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="reference/arrow_substrait_compiler.html">arrow_substrait_compiler</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>mpg_plus_one <span class="op">=</span> <span class="va">mpg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">wt</span>, <span class="va">mpg_plus_one</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 32 × 3</span>
-<span class="co">#&gt;      mpg    wt mpg_plus_one</span>
-<span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;</span>
-<span class="co">#&gt;  1  21    2.62         22  </span>
-<span class="co">#&gt;  2  21    2.88         22  </span>
-<span class="co">#&gt;  3  22.8  2.32         23.8</span>
-<span class="co">#&gt;  4  21.4  3.22         22.4</span>
-<span class="co">#&gt;  5  18.7  3.44         19.7</span>
-<span class="co">#&gt;  6  18.1  3.46         19.1</span>
-<span class="co">#&gt;  7  14.3  3.57         15.3</span>
-<span class="co">#&gt;  8  24.4  3.19         25.4</span>
-<span class="co">#&gt;  9  22.8  3.15         23.8</span>
-<span class="co">#&gt; 10  19.2  3.44         20.2</span>
-<span class="co">#&gt; # … with 22 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">substrait</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/arrow_substrait_compiler.html">arrow_substrait_compiler</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>mpg_plus_one <span class="op">=</span> <span class="va">mpg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">wt</span>, <span class="va">mpg_plus_one</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 32 × 3</span></span>
+<span><span class="co">#&gt;      mpg    wt mpg_plus_one</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  21    2.62         22  </span></span>
+<span><span class="co">#&gt;  2  21    2.88         22  </span></span>
+<span><span class="co">#&gt;  3  22.8  2.32         23.8</span></span>
+<span><span class="co">#&gt;  4  21.4  3.22         22.4</span></span>
+<span><span class="co">#&gt;  5  18.7  3.44         19.7</span></span>
+<span><span class="co">#&gt;  6  18.1  3.46         19.1</span></span>
+<span><span class="co">#&gt;  7  14.3  3.57         15.3</span></span>
+<span><span class="co">#&gt;  8  24.4  3.19         25.4</span></span>
+<span><span class="co">#&gt;  9  22.8  3.15         23.8</span></span>
+<span><span class="co">#&gt; 10  19.2  3.44         20.2</span></span>
+<span><span class="co">#&gt; # … with 22 more rows</span></span></code></pre></div>
 <p>You can inspect the Plan that will be generated by saving the result and calling <code>$plan()</code>. This doesn’t require a special Arrow build.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">compiler</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>col1 <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="reference/substrait_compiler.html">substrait_compiler</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>mpg_plus_one <span class="op">=</span> <span class="va">col1</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
-
-<span class="va">compiler</span><span class="op">$</span><span class="fu">plan</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; message of type 'substrait.Plan' with 3 fields set</span>
-<span class="co">#&gt; extension_uris {</span>
-<span class="co">#&gt;   extension_uri_anchor: 1</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; extensions {</span>
-<span class="co">#&gt;   extension_function {</span>
-<span class="co">#&gt;     extension_uri_reference: 1</span>
-<span class="co">#&gt;     function_anchor: 2</span>
-<span class="co">#&gt;     name: "+"</span>
-<span class="co">#&gt;   }</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; relations {</span>
-<span class="co">#&gt;   rel {</span>
-<span class="co">#&gt;     project {</span>
-<span class="co">#&gt;       input {</span>
-<span class="co">#&gt;         read {</span>
-<span class="co">#&gt;           base_schema {</span>
-<span class="co">#&gt;             names: "col1"</span>
-<span class="co">#&gt;             struct_ {</span>
-<span class="co">#&gt;               types {</span>
-<span class="co">#&gt;                 i32 {</span>
-<span class="co">#&gt;                 }</span>
-<span class="co">#&gt;               }</span>
-<span class="co">#&gt;             }</span>
-<span class="co">#&gt;           }</span>
-<span class="co">#&gt;           named_table {</span>
-<span class="co">#&gt;             names: "named_table_1"</span>
-<span class="co">#&gt;           }</span>
-<span class="co">#&gt;         }</span>
-<span class="co">#&gt;       }</span>
-<span class="co">#&gt;       expressions {</span>
-<span class="co">#&gt;         selection {</span>
-<span class="co">#&gt;           direct_reference {</span>
-<span class="co">#&gt;             struct_field {</span>
-<span class="co">#&gt;             }</span>
-<span class="co">#&gt;           }</span>
-<span class="co">#&gt;         }</span>
-<span class="co">#&gt;       }</span>
-<span class="co">#&gt;       expressions {</span>
-<span class="co">#&gt;         scalar_function {</span>
-<span class="co">#&gt;           function_reference: 2</span>
-<span class="co">#&gt;           args {</span>
-<span class="co">#&gt;             selection {</span>
-<span class="co">#&gt;               direct_reference {</span>
-<span class="co">#&gt;                 struct_field {</span>
-<span class="co">#&gt;                 }</span>
-<span class="co">#&gt;               }</span>
-<span class="co">#&gt;             }</span>
-<span class="co">#&gt;           }</span>
-<span class="co">#&gt;           args {</span>
-<span class="co">#&gt;             literal {</span>
-<span class="co">#&gt;               fp64: 1</span>
-<span class="co">#&gt;             }</span>
-<span class="co">#&gt;           }</span>
-<span class="co">#&gt;           output_type {</span>
-<span class="co">#&gt;           }</span>
-<span class="co">#&gt;         }</span>
-<span class="co">#&gt;       }</span>
-<span class="co">#&gt;     }</span>
-<span class="co">#&gt;   }</span>
-<span class="co">#&gt; }</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">compiler</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>col1 <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/substrait_compiler.html">substrait_compiler</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>mpg_plus_one <span class="op">=</span> <span class="va">col1</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">compiler</span><span class="op">$</span><span class="fu">plan</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; message of type 'substrait.Plan' with 3 fields set</span></span>
+<span><span class="co">#&gt; extension_uris {</span></span>
+<span><span class="co">#&gt;   extension_uri_anchor: 1</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; extensions {</span></span>
+<span><span class="co">#&gt;   extension_function {</span></span>
+<span><span class="co">#&gt;     extension_uri_reference: 1</span></span>
+<span><span class="co">#&gt;     function_anchor: 2</span></span>
+<span><span class="co">#&gt;     name: "+"</span></span>
+<span><span class="co">#&gt;   }</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; relations {</span></span>
+<span><span class="co">#&gt;   rel {</span></span>
+<span><span class="co">#&gt;     project {</span></span>
+<span><span class="co">#&gt;       input {</span></span>
+<span><span class="co">#&gt;         read {</span></span>
+<span><span class="co">#&gt;           base_schema {</span></span>
+<span><span class="co">#&gt;             names: "col1"</span></span>
+<span><span class="co">#&gt;             struct_ {</span></span>
+<span><span class="co">#&gt;               types {</span></span>
+<span><span class="co">#&gt;                 i32 {</span></span>
+<span><span class="co">#&gt;                 }</span></span>
+<span><span class="co">#&gt;               }</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;           named_table {</span></span>
+<span><span class="co">#&gt;             names: "named_table_1"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         }</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;       expressions {</span></span>
+<span><span class="co">#&gt;         selection {</span></span>
+<span><span class="co">#&gt;           direct_reference {</span></span>
+<span><span class="co">#&gt;             struct_field {</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         }</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;       expressions {</span></span>
+<span><span class="co">#&gt;         scalar_function {</span></span>
+<span><span class="co">#&gt;           function_reference: 2</span></span>
+<span><span class="co">#&gt;           args {</span></span>
+<span><span class="co">#&gt;             selection {</span></span>
+<span><span class="co">#&gt;               direct_reference {</span></span>
+<span><span class="co">#&gt;                 struct_field {</span></span>
+<span><span class="co">#&gt;                 }</span></span>
+<span><span class="co">#&gt;               }</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;           args {</span></span>
+<span><span class="co">#&gt;             literal {</span></span>
+<span><span class="co">#&gt;               fp64: 1</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;           output_type {</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         }</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;   }</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="create-substrait-proto-objects">Create ‘Substrait’ proto objects<a class="anchor" aria-label="anchor" href="#create-substrait-proto-objects"></a>
 </h2>
 <p>You can create Substrait proto objects using the <code>substrait</code> base object or using <code><a href="reference/substrait_create.html">substrait_create()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">substrait</span><span class="op">$</span><span class="va">Type</span><span class="op">$</span><span class="va">Boolean</span><span class="op">$</span><span class="fu">create</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; message of type 'substrait.Type.Boolean' with 0 fields set</span>
-<span class="fu"><a href="reference/substrait_create.html">substrait_create</a></span><span class="op">(</span><span class="st">"substrait.Type.Boolean"</span><span class="op">)</span>
-<span class="co">#&gt; message of type 'substrait.Type.Boolean' with 0 fields set</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">substrait</span><span class="op">$</span><span class="va">Type</span><span class="op">$</span><span class="va">Boolean</span><span class="op">$</span><span class="fu">create</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; message of type 'substrait.Type.Boolean' with 0 fields set</span></span>
+<span><span class="fu"><a href="reference/substrait_create.html">substrait_create</a></span><span class="op">(</span><span class="st">"substrait.Type.Boolean"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; message of type 'substrait.Type.Boolean' with 0 fields set</span></span></code></pre></div>
 <p>You can convert an R object <em>to</em> a Substrait object using <code>as_substrait(object, type)</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_substrait.html">as_substrait</a></span><span class="op">(</span><span class="fl">4L</span>, <span class="st">"substrait.Expression"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; message of type 'substrait.Expression' with 1 field set</span>
-<span class="co">#&gt; literal {</span>
-<span class="co">#&gt;   i32: 4</span>
-<span class="co">#&gt; }</span></code></pre></div>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_substrait.html">as_substrait</a></span><span class="op">(</span><span class="fl">4L</span>, <span class="st">"substrait.Expression"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; message of type 'substrait.Expression' with 1 field set</span></span>
+<span><span class="co">#&gt; literal {</span></span>
+<span><span class="co">#&gt;   i32: 4</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The <code>type</code> can be either a string of the qualified name or an object (which is needed to communicate certain types like <code>"substrait.Expression.Literal.Decimal"</code> which has a <code>precision</code> and <code>scale</code> in addition to the <code>value</code>).</p>
 <p>Restore an R object <em>from</em> a Substrait object using <code>from_substrait(message, prototype)</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/as_substrait.html">from_substrait</a></span><span class="op">(</span><span class="va">msg</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 4</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/as_substrait.html">from_substrait</a></span><span class="op">(</span><span class="va">msg</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>Substrait objects are list-like (i.e., methods defined for <code>[[</code> and <code>$</code>), so you can get or set fields. Note that unset is different than <code>NULL</code> (just like an R list).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">msg</span><span class="op">$</span><span class="va">literal</span> <span class="op">&lt;-</span> <span class="va">substrait</span><span class="op">$</span><span class="va">Expression</span><span class="op">$</span><span class="va">Literal</span><span class="op">$</span><span class="fu">create</span><span class="op">(</span>i32 <span class="op">=</span> <span class="fl">5L</span><span class="op">)</span>
-<span class="va">msg</span>
-<span class="co">#&gt; message of type 'substrait.Expression' with 1 field set</span>
-<span class="co">#&gt; literal {</span>
-<span class="co">#&gt;   i32: 5</span>
-<span class="co">#&gt; }</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">msg</span><span class="op">$</span><span class="va">literal</span> <span class="op">&lt;-</span> <span class="va">substrait</span><span class="op">$</span><span class="va">Expression</span><span class="op">$</span><span class="va">Literal</span><span class="op">$</span><span class="fu">create</span><span class="op">(</span>i32 <span class="op">=</span> <span class="fl">5L</span><span class="op">)</span></span>
+<span><span class="va">msg</span></span>
+<span><span class="co">#&gt; message of type 'substrait.Expression' with 1 field set</span></span>
+<span><span class="co">#&gt; literal {</span></span>
+<span><span class="co">#&gt;   i32: 5</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The constructors are currently implemented using about 1000 lines of auto-generated code made by inspecting the nanopb-compiled .proto files and RProtoBuf. This is probably not the best final approach but allows us to get started writing good <code><a href="reference/as_substrait.html">as_substrait()</a></code> and <code><a href="reference/as_substrait.html">from_substrait()</a></code> methods for various types of R objects.</p>
 </div>
 <div class="section level2">
@@ -198,17 +198,17 @@
 </h2>
 <p>Substrait objects are represented as a classed version of the <code><a href="https://rdrr.io/r/base/raw.html" class="external-link">raw()</a></code> vector containing serialized data. This makes the representation independent from the protocol buffer library use to encode/deocde the objects and is particularly useful with <code>expect_identical()</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0a 02 28 05</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0a 02 28 05</span></span></code></pre></div>
 <p>Currently, the <a href="https://cran.r-project.org/package=RProtoBuf" class="external-link">RProtoBuf</a> package is used to serialize and deserialize objects. The RProtoBuf package provides excellent coverage of the protocol buffer API and is well-suited to general use; however, the Substrait package only uses a small portion of these features. The package registers the .proto files from Substrait (of which this package has an internal copy) so that you can use RProtobuf to read, modify, and write messages independent of the constructors in the package.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">msg_rpb</span> <span class="op">&lt;-</span> <span class="fu">RProtoBuf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RProtoBuf/man/P.html" class="external-link">P</a></span><span class="op">(</span><span class="st">"substrait.Type"</span><span class="op">)</span><span class="op">$</span><span class="fu">read</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; message of type 'substrait.Type' with 1 field set</span>
-<span class="fu"><a href="reference/as_substrait.html">as_substrait</a></span><span class="op">(</span><span class="va">msg_rpb</span><span class="op">)</span>
-<span class="co">#&gt; message of type 'substrait.Type' with 1 field set</span>
-<span class="co">#&gt; bool_ {</span>
-<span class="co">#&gt;   5: 5</span>
-<span class="co">#&gt; }</span></code></pre></div>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">msg_rpb</span> <span class="op">&lt;-</span> <span class="fu">RProtoBuf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RProtoBuf/man/P.html" class="external-link">P</a></span><span class="op">(</span><span class="st">"substrait.Type"</span><span class="op">)</span><span class="op">$</span><span class="fu">read</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; message of type 'substrait.Type' with 1 field set</span></span>
+<span><span class="fu"><a href="reference/as_substrait.html">as_substrait</a></span><span class="op">(</span><span class="va">msg_rpb</span><span class="op">)</span></span>
+<span><span class="co">#&gt; message of type 'substrait.Type' with 1 field set</span></span>
+<span><span class="co">#&gt; bool_ {</span></span>
+<span><span class="co">#&gt;   5: 5</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">

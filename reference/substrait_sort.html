@@ -42,9 +42,9 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">substrait_sort</span><span class="op">(</span><span class="va">.compiler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">substrait_sort_field</span><span class="op">(</span><span class="va">expr</span>, direction <span class="op">=</span> <span class="st">"SORT_DIRECTION_ASC_NULLS_LAST"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">substrait_sort</span><span class="op">(</span><span class="va">.compiler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_sort_field</span><span class="op">(</span><span class="va">expr</span>, direction <span class="op">=</span> <span class="st">"SORT_DIRECTION_ASC_NULLS_LAST"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,11 +76,11 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">substrait_sort</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="st">"one"</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="va">a</span>,</span>
-<span class="r-in">  <span class="fu">substrait_sort_field</span><span class="op">(</span><span class="va">b</span>, <span class="st">"SORT_DIRECTION_DESC_NULLS_LAST"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">substrait_sort</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="st">"one"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="va">a</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">substrait_sort_field</span><span class="op">(</span><span class="va">b</span>, <span class="st">"SORT_DIRECTION_DESC_NULLS_LAST"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;SubstraitCompiler&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Public:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     add_relation: function (object, ...) </span>
@@ -107,7 +107,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>     named_tables: list</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     type_extensions: list</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     type_variations: list</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

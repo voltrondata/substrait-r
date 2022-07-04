@@ -107,7 +107,7 @@ future grouping (e.g., after calling <code><a href="https://dplyr.tidyverse.org/
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Create a new SubstraitCompiler.</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/SubstraitCompiler.html">SubstraitCompiler</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>object <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/SubstraitCompiler.html">SubstraitCompiler</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>object <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -130,7 +130,7 @@ object.</p></dd>
 <code>substrait.Rel.ReadRel</code>) and sets <code>schema</code> and <code>mask</code> to represent
 the root of the relation tree.</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">add_relation</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">add_relation</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -151,7 +151,7 @@ object.</p></dd>
 <h3 id="method-named-table-">Method <code>named_table()</code><a class="anchor" aria-label="anchor" href="#method-named-table-"></a></h3>
 <p>Retrieve a named table</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">named_table</span><span class="op">(</span><span class="va">name</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">named_table</span><span class="op">(</span><span class="va">name</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -171,7 +171,7 @@ object.</p></dd>
 <h3 id="method-named-table-list-">Method <code>named_table_list()</code><a class="anchor" aria-label="anchor" href="#method-named-table-list-"></a></h3>
 <p>Retrieve all named tables as a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code></p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">named_table_list</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">named_table_list</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -184,7 +184,7 @@ object.</p></dd>
 <p>Validates a compiler after it was modified. This is an opportunity to
 provide meaningful feedback (e.g., errors, warnings)</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">validate</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">validate</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -197,7 +197,7 @@ provide meaningful feedback (e.g., errors, warnings)</p><div class="section">
 <p>Assembles a <code>substrait.Plan</code> from the current information available
 to the compiler.</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">plan</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">plan</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -209,7 +209,7 @@ to the compiler.</p><div class="section">
 <h3 id="method-evaluate-">Method <code>evaluate()</code><a class="anchor" aria-label="anchor" href="#method-evaluate-"></a></h3>
 <p>Evaluates the plan being built by the compiler.</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">evaluate</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">evaluate</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -231,7 +231,7 @@ SubstraitCompiler class. The returned object should have a
 <h3 id="method-resolve-function-">Method <code>resolve_function()</code><a class="anchor" aria-label="anchor" href="#method-resolve-function-"></a></h3>
 <p>Resolves an R function call as a Substrait function call.</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">resolve_function</span><span class="op">(</span><span class="va">name</span>, <span class="va">args</span>, <span class="va">template</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">resolve_function</span><span class="op">(</span><span class="va">name</span>, <span class="va">args</span>, <span class="va">template</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -267,7 +267,7 @@ objects created while evaluating the user-provided arguments
 
 <div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">function_id</span><span class="op">(</span><span class="va">name</span>, <span class="va">arg_types</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">function_id</span><span class="op">(</span><span class="va">name</span>, <span class="va">arg_types</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -293,7 +293,7 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 <h3 id="method-function-extension-">Method <code>function_extension()</code><a class="anchor" aria-label="anchor" href="#method-function-extension-"></a></h3>
 <p>Retrieve a function extension by anchor/reference</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">function_extension</span><span class="op">(</span><span class="va">id</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">function_extension</span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -314,7 +314,7 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 <h3 id="method-next-id-">Method <code>next_id()</code><a class="anchor" aria-label="anchor" href="#method-next-id-"></a></h3>
 <p>Get the next unique identifier.</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">next_id</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">next_id</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -327,7 +327,7 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">

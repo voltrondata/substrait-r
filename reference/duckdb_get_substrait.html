@@ -42,24 +42,24 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">duckdb_get_substrait</span><span class="op">(</span><span class="va">sql</span>, tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">duckdb_from_substrait</span><span class="op">(</span>
-  <span class="va">plan</span>,
-  tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  col_names <span class="op">=</span> <span class="va">plan</span><span class="op">$</span><span class="va">relations</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">root</span><span class="op">$</span><span class="va">names</span>,
-  as_data_frame <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">has_duckdb_with_substrait</span><span class="op">(</span>lib <span class="op">=</span> <span class="fu">duckdb_with_substrait_lib_dir</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">install_duckdb_with_substrait</span><span class="op">(</span>
-  lib <span class="op">=</span> <span class="fu">duckdb_with_substrait_lib_dir</span><span class="op">(</span><span class="op">)</span>,
-  force <span class="op">=</span> <span class="cn">TRUE</span>,
-  quiet <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="fu">duckdb_with_substrait_lib_dir</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">duckdb_get_substrait</span><span class="op">(</span><span class="va">sql</span>, tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">duckdb_from_substrait</span><span class="op">(</span></span>
+<span>  <span class="va">plan</span>,</span>
+<span>  tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  col_names <span class="op">=</span> <span class="va">plan</span><span class="op">$</span><span class="va">relations</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">root</span><span class="op">$</span><span class="va">names</span>,</span>
+<span>  as_data_frame <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">has_duckdb_with_substrait</span><span class="op">(</span>lib <span class="op">=</span> <span class="fu">duckdb_with_substrait_lib_dir</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">install_duckdb_with_substrait</span><span class="op">(</span></span>
+<span>  lib <span class="op">=</span> <span class="fu">duckdb_with_substrait_lib_dir</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  force <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">duckdb_with_substrait_lib_dir</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -103,14 +103,14 @@ data.frame.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># has_duckdb_with_substrait()</span></span>
-<span class="r-in"><span class="va">plan</span> <span class="op">&lt;-</span> <span class="fu">duckdb_get_substrait</span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"SELECT * from mtcars WHERE mpg &gt; 30"</span>,</span>
-<span class="r-in">  tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mtcars <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">duckdb_from_substrait</span><span class="op">(</span><span class="va">plan</span>, tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mtcars <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># has_duckdb_with_substrait()</span></span></span>
+<span class="r-in"><span><span class="va">plan</span> <span class="op">&lt;-</span> <span class="fu">duckdb_get_substrait</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"SELECT * from mtcars WHERE mpg &gt; 30"</span>,</span></span>
+<span class="r-in"><span>  tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mtcars <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">duckdb_from_substrait</span><span class="op">(</span><span class="va">plan</span>, tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mtcars <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

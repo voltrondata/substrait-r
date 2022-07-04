@@ -42,37 +42,37 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">substrait_boolean</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_i8</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_i16</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_i32</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_i64</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_fp32</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_fp64</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_string</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_binary</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_timestamp</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_timestamp_tz</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_date</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_time</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_interval_year</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_interval_day</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">substrait_uuid</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">substrait_boolean</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_i8</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_i16</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_i32</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_i64</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_fp32</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_fp64</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_string</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_binary</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_timestamp</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_timestamp_tz</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_date</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_time</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_interval_year</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_interval_day</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">substrait_uuid</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -84,23 +84,23 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">substrait_boolean</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">substrait_boolean</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> message of type 'substrait.Type' with 1 field set</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> bool_ {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-in"><span class="fu">substrait_i32</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">substrait_i32</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> message of type 'substrait.Type' with 1 field set</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> i32 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-in"><span class="fu">substrait_fp64</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">substrait_fp64</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> message of type 'substrait.Type' with 1 field set</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fp64 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-in"><span class="fu">substrait_string</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">substrait_string</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> message of type 'substrait.Type' with 1 field set</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> string {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
