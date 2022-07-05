@@ -236,3 +236,16 @@ test_that("blob encoder works", {
   )
   expect_identical(tbl$col[[1]], as.raw(1:5))
 })
+
+test_that("duckdb raises error for empty projection", {
+  skip_if_not(has_duckdb_with_substrait())
+  tbl <- tibble::tibble(col = c(1, 2, NA))
+
+  expect_error(
+     tbl %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(),
+    "Column list must not be empty"
+  )
+})
+

@@ -137,12 +137,6 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @return `self`
     validate = function() {
-
-      # DuckDB backend doesn't accept empty SELECT clause
-      if (inherits(self, "DuckDBSubstraitCompiler") && length(self$schema$names) == 0) {
-        rlang::abort("Column list must not be empty")
-      }
-
       self
     },
 
