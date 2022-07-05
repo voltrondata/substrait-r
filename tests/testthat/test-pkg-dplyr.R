@@ -28,6 +28,21 @@ test_that("dplyr::select() for substrait_compiler wraps substrait_project()", {
   )
 })
 
+test_that("group_by() adds missing groups back in", {
+  skip_if_not_installed("dplyr")
+
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  compiler <- substrait_compiler(tbl)
+
+  expect_message(
+    compiler %>%
+      substrait_group_by(col1) %>%
+      select(col2),
+    "Adding missing grouping variables: `col1`"
+  )
+
+})
+
 test_that("rename() for substrait_compiler renames columns", {
   skip_if_not_installed("dplyr")
 
