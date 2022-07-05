@@ -370,8 +370,15 @@ DuckDBSubstraitCompiler <- R6::R6Class(
 
         # pass through by default (but listing here the functions that are
         # known to work with the same names as R)
-        "+" = , "-" = , "*" = , "/" = , "^" = ,
-        super$resolve_function(name, args, template)
+        "+" = ,
+        "-" = ,
+        "*" = ,
+        "/" = ,
+        "^" = ,
+        "sum" = super$resolve_function(name, args, template),
+        rlang::abort(
+          paste0('could not find function "',  name, '"')
+        )
       )
     },
 

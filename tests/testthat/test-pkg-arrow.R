@@ -37,7 +37,7 @@ test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", 
 
   expect_error(
     compiler$resolve_function("not_a_fun!", list(), list()),
-    "Don't know how to convert call to"
+    'could not find function "not_a_fun!"'
   )
 
   expect_error(

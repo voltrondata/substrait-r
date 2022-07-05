@@ -39,11 +39,8 @@ ArrowSubstraitCompiler <- R6::R6Class(
 
         name <- unname(binary_map[[name]])
       } else {
-        stop(
-          sprintf(
-            "Don't know how to convert call to `%s` to Arrow",
-            name
-          )
+        rlang::abort(
+          paste0('could not find function "',  name, '"')
         )
       }
 

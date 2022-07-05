@@ -284,7 +284,6 @@ test_that("filter environment scope", {
   )
   # Also for functions
   # 'could not find function "isEqualTo"' because we haven't defined it yet
-  skip("https://github.com/voltrondata/substrait-r/issues/100")
   compare_dplyr_error(
     .input %>% filter(isEqualTo(int, 4)),
     example_data
