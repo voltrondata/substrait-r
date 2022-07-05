@@ -94,6 +94,13 @@ test_that("transmute respect bespoke dplyr implementation", {
 test_that("transmute() with NULL inputs", {
 
   compare_dplyr_binding(
+    .input %>%
+      transmute(int = NULL, new_col = dbl) %>%
+      collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
     engine = "arrow",
     .input %>%
       transmute(int = NULL) %>%
