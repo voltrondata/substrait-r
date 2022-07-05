@@ -30,9 +30,11 @@
 #'
 select.SubstraitCompiler <- function(.data, ...) {
 
+  sim_data <- simulate_data_frame(.data)
+
   column_indices <- tidyselect::eval_select(
     rlang::expr(c(...)),
-    from_substrait(.data$schema, data.frame())
+    sim_data
   )
 
   # restore groups
@@ -43,7 +45,7 @@ select.SubstraitCompiler <- function(.data, ...) {
     if (!rlang::is_empty(missing_cols)) {
       prepend_cols <- tidyselect::eval_select(
         missing_cols,
-        from_substrait(.data$schema, data.frame())
+        sim_data
       )
 
       column_indices <- c(prepend_cols, column_indices)
@@ -73,7 +75,7 @@ rename.SubstraitCompiler <- function(.data, ...) {
   # Named vector of column names/indices
   column_indices <- tidyselect::eval_rename(
     rlang::expr(c(...)),
-    from_substrait(.data$schema, data.frame())
+    simulate_data_frame(.data)
   )
 
   column_names <- names(.data$mask)
