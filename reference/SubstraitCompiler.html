@@ -91,19 +91,19 @@ future grouping (e.g., after calling <code><a href="https://dplyr.tidyverse.org/
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-new"><code>SubstraitCompiler$new()</code></a></p></li>
-<li><p><a href="#method-add_relation"><code>SubstraitCompiler$add_relation()</code></a></p></li>
-<li><p><a href="#method-named_table"><code>SubstraitCompiler$named_table()</code></a></p></li>
-<li><p><a href="#method-named_table_list"><code>SubstraitCompiler$named_table_list()</code></a></p></li>
-<li><p><a href="#method-validate"><code>SubstraitCompiler$validate()</code></a></p></li>
-<li><p><a href="#method-plan"><code>SubstraitCompiler$plan()</code></a></p></li>
-<li><p><a href="#method-evaluate"><code>SubstraitCompiler$evaluate()</code></a></p></li>
-<li><p><a href="#method-resolve_function"><code>SubstraitCompiler$resolve_function()</code></a></p></li>
-<li><p><a href="#method-function_id"><code>SubstraitCompiler$function_id()</code></a></p></li>
-<li><p><a href="#method-function_extension"><code>SubstraitCompiler$function_extension()</code></a></p></li>
-<li><p><a href="#method-next_id"><code>SubstraitCompiler$next_id()</code></a></p></li>
-<li><p><a href="#method-clone"><code>SubstraitCompiler$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-new"></a><div class="section">
+<ul><li><p><a href="#method-SubstraitCompiler-new"><code>SubstraitCompiler$new()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-add_relation"><code>SubstraitCompiler$add_relation()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-named_table"><code>SubstraitCompiler$named_table()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-named_table_list"><code>SubstraitCompiler$named_table_list()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-validate"><code>SubstraitCompiler$validate()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-plan"><code>SubstraitCompiler$plan()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-evaluate"><code>SubstraitCompiler$evaluate()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-resolve_function"><code>SubstraitCompiler$resolve_function()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-function_id"><code>SubstraitCompiler$function_id()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-function_extension"><code>SubstraitCompiler$function_extension()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-next_id"><code>SubstraitCompiler$next_id()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-clone"><code>SubstraitCompiler$clone()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-SubstraitCompiler-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Create a new SubstraitCompiler.</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -124,7 +124,7 @@ object.</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-add_relation"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-add_relation"></a><div class="section">
 <h3 id="method-add-relation-">Method <code>add_relation()</code><a class="anchor" aria-label="anchor" href="#method-add-relation-"></a></h3>
 <p>Sets the <code>rel</code> of this compiler to a <code>substrait.Rel</code> (usually a
 <code>substrait.Rel.ReadRel</code>) and sets <code>schema</code> and <code>mask</code> to represent
@@ -147,7 +147,7 @@ object.</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-named_table"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-named_table"></a><div class="section">
 <h3 id="method-named-table-">Method <code>named_table()</code><a class="anchor" aria-label="anchor" href="#method-named-table-"></a></h3>
 <p>Retrieve a named table</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
@@ -167,7 +167,7 @@ object.</p></dd>
 <p>The <code>object</code> that was passed</p>
 </div>
 
-</div><p></p><hr><a id="method-named_table_list"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-named_table_list"></a><div class="section">
 <h3 id="method-named-table-list-">Method <code>named_table_list()</code><a class="anchor" aria-label="anchor" href="#method-named-table-list-"></a></h3>
 <p>Retrieve all named tables as a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code></p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
@@ -179,7 +179,7 @@ object.</p></dd>
 <p>a named <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of objects</p>
 </div>
 
-</div><p></p><hr><a id="method-validate"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-validate"></a><div class="section">
 <h3 id="method-validate-">Method <code>validate()</code><a class="anchor" aria-label="anchor" href="#method-validate-"></a></h3>
 <p>Validates a compiler after it was modified. This is an opportunity to
 provide meaningful feedback (e.g., errors, warnings)</p><div class="section">
@@ -192,7 +192,7 @@ provide meaningful feedback (e.g., errors, warnings)</p><div class="section">
 <p><code>self</code></p>
 </div>
 
-</div><p></p><hr><a id="method-plan"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-plan"></a><div class="section">
 <h3 id="method-plan-">Method <code>plan()</code><a class="anchor" aria-label="anchor" href="#method-plan-"></a></h3>
 <p>Assembles a <code>substrait.Plan</code> from the current information available
 to the compiler.</p><div class="section">
@@ -205,7 +205,7 @@ to the compiler.</p><div class="section">
 <p>A <code>substrait.Plan</code></p>
 </div>
 
-</div><p></p><hr><a id="method-evaluate"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-evaluate"></a><div class="section">
 <h3 id="method-evaluate-">Method <code>evaluate()</code><a class="anchor" aria-label="anchor" href="#method-evaluate-"></a></h3>
 <p>Evaluates the plan being built by the compiler.</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
@@ -227,7 +227,7 @@ SubstraitCompiler class. The returned object should have a
 <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> method.</p>
 </div>
 
-</div><p></p><hr><a id="method-resolve_function"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-resolve_function"></a><div class="section">
 <h3 id="method-resolve-function-">Method <code>resolve_function()</code><a class="anchor" aria-label="anchor" href="#method-resolve-function-"></a></h3>
 <p>Resolves an R function call as a Substrait function call.</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
@@ -262,7 +262,7 @@ objects created while evaluating the user-provided arguments
 <code>args</code>, and <code>output_type</code> set.</p>
 </div>
 
-</div><p></p><hr><a id="method-function_id"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-function_id"></a><div class="section">
 <h3 id="method-function-id-">Method <code>function_id()</code><a class="anchor" aria-label="anchor" href="#method-function-id-"></a></h3>
 
 <div class="section">
@@ -289,7 +289,7 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 <p>An integer function reference</p>
 </div>
 
-</div><p></p><hr><a id="method-function_extension"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-function_extension"></a><div class="section">
 <h3 id="method-function-extension-">Method <code>function_extension()</code><a class="anchor" aria-label="anchor" href="#method-function-extension-"></a></h3>
 <p>Retrieve a function extension by anchor/reference</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
@@ -310,7 +310,7 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 <code>substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction</code>.</p>
 </div>
 
-</div><p></p><hr><a id="method-next_id"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-next_id"></a><div class="section">
 <h3 id="method-next-id-">Method <code>next_id()</code><a class="anchor" aria-label="anchor" href="#method-next-id-"></a></h3>
 <p>Get the next unique identifier.</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
@@ -323,7 +323,7 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 <code>next_id()</code> for this instance.</p>
 </div>
 
-</div><p></p><hr><a id="method-clone"></a><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
