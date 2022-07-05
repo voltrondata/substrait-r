@@ -40,6 +40,18 @@ test_that("rename() for substrait_compiler renames columns", {
   )
 })
 
+test_that("rename_with() for substrait_compiler renames columns using a function", {
+  skip_if_not_installed("dplyr")
+
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  compiler <- substrait_compiler(tbl)
+
+  expect_identical(
+    dplyr::rename_with(compiler, toupper),
+    substrait_project(compiler, "COL1" = col1, "COL2" = col2)
+  )
+})
+
 test_that("filter() for substrait_compiler wraps substrait_filter()", {
   skip_if_not_installed("dplyr")
 

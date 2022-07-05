@@ -48,7 +48,6 @@ test_that("rename()", {
 })
 
 test_that("rename_with", {
-  skip("rename_with not yet implemented: https://github.com/voltrondata/substrait-r/issues/52")
 
   compare_dplyr_binding(
     .input %>%

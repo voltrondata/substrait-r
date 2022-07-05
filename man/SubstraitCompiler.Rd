@@ -45,23 +45,23 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{SubstraitCompiler$new()}}
-\item \href{#method-add_relation}{\code{SubstraitCompiler$add_relation()}}
-\item \href{#method-named_table}{\code{SubstraitCompiler$named_table()}}
-\item \href{#method-named_table_list}{\code{SubstraitCompiler$named_table_list()}}
-\item \href{#method-validate}{\code{SubstraitCompiler$validate()}}
-\item \href{#method-plan}{\code{SubstraitCompiler$plan()}}
-\item \href{#method-evaluate}{\code{SubstraitCompiler$evaluate()}}
-\item \href{#method-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
-\item \href{#method-function_id}{\code{SubstraitCompiler$function_id()}}
-\item \href{#method-function_extension}{\code{SubstraitCompiler$function_extension()}}
-\item \href{#method-next_id}{\code{SubstraitCompiler$next_id()}}
-\item \href{#method-clone}{\code{SubstraitCompiler$clone()}}
+\item \href{#method-SubstraitCompiler-new}{\code{SubstraitCompiler$new()}}
+\item \href{#method-SubstraitCompiler-add_relation}{\code{SubstraitCompiler$add_relation()}}
+\item \href{#method-SubstraitCompiler-named_table}{\code{SubstraitCompiler$named_table()}}
+\item \href{#method-SubstraitCompiler-named_table_list}{\code{SubstraitCompiler$named_table_list()}}
+\item \href{#method-SubstraitCompiler-validate}{\code{SubstraitCompiler$validate()}}
+\item \href{#method-SubstraitCompiler-plan}{\code{SubstraitCompiler$plan()}}
+\item \href{#method-SubstraitCompiler-evaluate}{\code{SubstraitCompiler$evaluate()}}
+\item \href{#method-SubstraitCompiler-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
+\item \href{#method-SubstraitCompiler-function_id}{\code{SubstraitCompiler$function_id()}}
+\item \href{#method-SubstraitCompiler-function_extension}{\code{SubstraitCompiler$function_extension()}}
+\item \href{#method-SubstraitCompiler-next_id}{\code{SubstraitCompiler$next_id()}}
+\item \href{#method-SubstraitCompiler-clone}{\code{SubstraitCompiler$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-new"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new \link{SubstraitCompiler}.
 \subsection{Usage}{
@@ -80,8 +80,8 @@ object.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_relation"></a>}}
-\if{latex}{\out{\hypertarget{method-add_relation}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-add_relation"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-add_relation}{}}}
 \subsection{Method \code{add_relation()}}{
 Sets the \code{rel} of this compiler to a \code{substrait.Rel} (usually a
 \code{substrait.Rel.ReadRel}) and sets \code{schema} and \code{mask} to represent
@@ -102,8 +102,8 @@ object.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-named_table"></a>}}
-\if{latex}{\out{\hypertarget{method-named_table}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-named_table"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-named_table}{}}}
 \subsection{Method \code{named_table()}}{
 Retrieve a named table
 \subsection{Usage}{
@@ -122,8 +122,8 @@ The \code{object} that was passed
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-named_table_list"></a>}}
-\if{latex}{\out{\hypertarget{method-named_table_list}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-named_table_list"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-named_table_list}{}}}
 \subsection{Method \code{named_table_list()}}{
 Retrieve all named tables as a \code{\link[=list]{list()}}
 \subsection{Usage}{
@@ -135,8 +135,8 @@ a named \code{\link[=list]{list()}} of objects
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-validate"></a>}}
-\if{latex}{\out{\hypertarget{method-validate}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-validate"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-validate}{}}}
 \subsection{Method \code{validate()}}{
 Validates a compiler after it was modified. This is an opportunity to
 provide meaningful feedback (e.g., errors, warnings)
@@ -149,8 +149,8 @@ provide meaningful feedback (e.g., errors, warnings)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-plan"></a>}}
-\if{latex}{\out{\hypertarget{method-plan}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-plan"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-plan}{}}}
 \subsection{Method \code{plan()}}{
 Assembles a \code{substrait.Plan} from the current information available
 to the compiler.
@@ -163,8 +163,8 @@ A \code{substrait.Plan}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-evaluate"></a>}}
-\if{latex}{\out{\hypertarget{method-evaluate}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-evaluate"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-evaluate}{}}}
 \subsection{Method \code{evaluate()}}{
 Evaluates the plan being built by the compiler.
 \subsection{Usage}{
@@ -185,8 +185,8 @@ A table-like object whose structure is defined by the
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-resolve_function"></a>}}
-\if{latex}{\out{\hypertarget{method-resolve_function}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-resolve_function"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-resolve_function}{}}}
 \subsection{Method \code{resolve_function()}}{
 Resolves an R function call as a Substrait function call.
 \subsection{Usage}{
@@ -216,8 +216,8 @@ A modified \code{template} with \code{function_reference},
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-function_id"></a>}}
-\if{latex}{\out{\hypertarget{method-function_id}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-function_id"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-function_id}{}}}
 \subsection{Method \code{function_id()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$function_id(name, arg_types)}\if{html}{\out{</div>}}
@@ -239,8 +239,8 @@ An integer function reference
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-function_extension"></a>}}
-\if{latex}{\out{\hypertarget{method-function_extension}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-function_extension"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-function_extension}{}}}
 \subsection{Method \code{function_extension()}}{
 Retrieve a function extension by anchor/reference
 \subsection{Usage}{
@@ -260,8 +260,8 @@ A
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-next_id"></a>}}
-\if{latex}{\out{\hypertarget{method-next_id}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-next_id"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-next_id}{}}}
 \subsection{Method \code{next_id()}}{
 Get the next unique identifier.
 \subsection{Usage}{
@@ -274,8 +274,8 @@ An integer that has not been returned by a previous call to
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-SubstraitCompiler-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
