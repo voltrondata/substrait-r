@@ -48,7 +48,7 @@ select.SubstraitCompiler <- function(.data, ...) {
 
       column_indices <- c(prepend_cols, column_indices)
 
-      cat(
+      rlang::inform(
         paste(
           "Adding missing grouping variables:",
           paste0("`", names(prepend_cols), "`", collapse = ", ")
