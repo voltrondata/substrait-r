@@ -381,7 +381,14 @@ DuckDBSubstraitCompiler <- R6::R6Class(
         )
       )
     },
-
+    validate = function(){
+      super$validate()
+      # DuckDB backend doesn't accept empty SELECT clause
+      if (length(self$schema$names) == 0) {
+        rlang::abort("Column list must not be empty")
+      }
+      self
+    },
     evaluate = function(...) {
       duckdb_from_substrait(
         plan = self$plan(),

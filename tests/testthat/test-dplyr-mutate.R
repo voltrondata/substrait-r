@@ -92,12 +92,29 @@ test_that("transmute respect bespoke dplyr implementation", {
 })
 
 test_that("transmute() with NULL inputs", {
-  skip("https://github.com/voltrondata/substrait-r/issues/163")
+
   compare_dplyr_binding(
+    .input %>%
+      transmute(int = NULL, new_col = dbl) %>%
+      collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "arrow",
     .input %>%
       transmute(int = NULL) %>%
       collect(),
     example_data
+  )
+
+  # Empty SELECT not valid in DuckDB
+  expect_error(
+    example_data %>%
+      duckdb_substrait_compiler() %>%
+      transmute(int = NULL) %>%
+      collect(),
+    "Column list must not be empty"
   )
 })
 
