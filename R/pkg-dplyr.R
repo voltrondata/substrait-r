@@ -229,7 +229,6 @@ collect.SubstraitCompiler <- function(x, ...) {
 #' @importFrom dplyr relocate
 #' @export
 relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL) {
-
   to_move <- tidyselect::eval_select(expr(c(...)), simulate_data_frame(.data))
 
   .before <- rlang::enquo(.before)
@@ -275,8 +274,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
     new_column_names[pos]
   )
 
-  substrait_project(.data, !!! new_mask)
-
+  substrait_project(.data, !!!new_mask)
 }
 
 # translate desc() call to the equivalent
