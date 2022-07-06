@@ -256,8 +256,8 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
     }
   }
 
-  lhs <- setdiff(seq2(1, where - 1), to_move)
-  rhs <- setdiff(seq2(where + 1, ncol(simulate_data_frame(.data))), to_move)
+  lhs <- setdiff(rlang::seq2(1, where - 1), to_move)
+  rhs <- setdiff(rlang::seq2(where + 1, ncol(simulate_data_frame(.data))), to_move)
 
   pos <- unique(c(lhs, to_move, rhs))
 
