@@ -232,10 +232,10 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
 
   to_move <- tidyselect::eval_select(expr(c(...)), simulate_data_frame(.data))
 
-  .before <- enquo(.before)
-  .after <- enquo(.after)
-  has_before <- !quo_is_null(.before)
-  has_after <- !quo_is_null(.after)
+  .before <- rlang::enquo(.before)
+  .after <- rlang::enquo(.after)
+  has_before <- !rlang::quo_is_null(.before)
+  has_after <- !rlang::quo_is_null(.after)
 
   if (has_before && has_after) {
     abort("Must supply only one of `.before` and `.after`.")
