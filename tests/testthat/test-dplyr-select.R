@@ -161,6 +161,14 @@ test_that("relocate with selection helpers", {
   # works after other dplyr verbs
   compare_dplyr_binding(
     .input %>%
+      mutate(int2 = int) %>%
+      relocate(dbl, lgl, .after = int2) %>%
+      collect(),
+    example_data
+  )
+  skip("Casting functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/152")
+  compare_dplyr_binding(
+    .input %>%
       mutate(false = as.numeric(false)) %>%
       relocate(int, lgl, .after = where(is.numeric)) %>%
       collect(),
