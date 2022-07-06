@@ -16,6 +16,8 @@
 #' @param .by_group sort by grouping variable? see[dplyr::arrange()]
 #' @param .cols Columns to rename; see[dplyr::rename_with()]
 #' @param .fn Function to transform selected `.cols`; see[dplyr::rename_with()]
+#' @param .before Destination of columns to move; see [dplyr::relocate()]
+#' @param .after Destination of columns to move; see [dplyr::relocate()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -221,6 +223,60 @@ collect.SubstraitCompiler <- function(x, ...) {
   }
 
   out
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr relocate
+#' @export
+relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL) {
+
+  to_move <- tidyselect::eval_select(expr(c(...)), simulate_data_frame(.data))
+
+  .before <- enquo(.before)
+  .after <- enquo(.after)
+  has_before <- !quo_is_null(.before)
+  has_after <- !quo_is_null(.after)
+
+  if (has_before && has_after) {
+    abort("Must supply only one of `.before` and `.after`.")
+  } else if (has_before) {
+    where <- min(unname(tidyselect::eval_select(.before, simulate_data_frame(.data))))
+    if (!where %in% to_move) {
+      to_move <- c(to_move, where)
+    }
+  } else if (has_after) {
+    where <- max(unname(tidyselect::eval_select(.after, simulate_data_frame(.data))))
+    if (!where %in% to_move) {
+      to_move <- c(where, to_move)
+    }
+  } else {
+    where <- 1L
+    if (!where %in% to_move) {
+      to_move <- c(to_move, where)
+    }
+  }
+
+  lhs <- setdiff(seq2(1, where - 1), to_move)
+  rhs <- setdiff(seq2(where + 1, ncol(simulate_data_frame(.data))), to_move)
+
+  pos <- unique(c(lhs, to_move, rhs))
+
+  column_indices <- tidyselect::eval_select(
+    rlang::expr(c(...)),
+    from_substrait(.data$schema, data.frame())
+  )
+
+  column_names <- names(.data$mask)
+  new_column_names <- column_names
+  new_column_names[column_indices] <- names(column_indices)
+
+  new_mask <- rlang::set_names(
+    rlang::syms(.data$schema$names[pos]),
+    new_column_names[pos]
+  )
+
+  substrait_project(.data, !!! new_mask)
+
 }
 
 # translate desc() call to the equivalent
