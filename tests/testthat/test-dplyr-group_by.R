@@ -2,8 +2,6 @@ library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 skip_if_not(has_arrow_with_substrait())
 
-tbl <- example_data
-
 example_with_logical_factors <- tibble::tibble(
   starting_a_fight = factor(c(FALSE, TRUE, TRUE, TRUE)),
   consoling_a_child = factor(c(TRUE, FALSE, TRUE, TRUE)),
@@ -25,7 +23,7 @@ test_that("group_by groupings are recorded", {
       # skip("comparison operators not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
       #filter(int > 5) %>%
       collect(),
-    tbl
+    example_data
   )
 })
 
@@ -35,20 +33,20 @@ test_that("group_by supports creating/renaming", {
     .input %>%
       group_by(chr, numbers = int) %>%
       collect(),
-    tbl
+    example_data
   )
 
   compare_dplyr_binding(
     .input %>%
       group_by(chr, numbers = int * 4) %>%
       collect(),
-    tbl
+    example_data
   )
   compare_dplyr_binding(
     .input %>%
       group_by(int > 4, lgl, foo = int > 5) %>%
       collect(),
-    tbl
+    example_data
   )
 })
 
@@ -61,7 +59,7 @@ test_that("ungroup", {
       # skip("comparison operators not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
       #filter(int > 5) %>%
       collect(),
-    tbl
+    example_data
   )
 
   # to confirm that the above expectation is actually testing what we think it's
@@ -75,7 +73,7 @@ test_that("ungroup", {
         (function(x) if (inherits(x, "tbl_df")) ungroup(x) else x) %>%
         #filter(int > 5) %>%
         collect(),
-      tbl
+      example_data
     )
   )
 })
@@ -87,7 +85,7 @@ test_that("group_by then rename", {
       group_by(chr) %>%
       select(string = chr, int) %>%
       collect(),
-    tbl
+    example_data
   )
 })
 
