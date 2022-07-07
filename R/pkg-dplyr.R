@@ -262,7 +262,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
 
   column_indices <- tidyselect::eval_select(
     rlang::expr(c(...)),
-    from_substrait(.data$schema, data.frame())
+    simulate_data_frame(.data)
   )
 
   column_names <- names(.data$mask)
