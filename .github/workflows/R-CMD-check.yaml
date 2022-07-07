@@ -79,7 +79,7 @@ jobs:
           repository: apache/arrow
           path: arrow
           # Last commit before Arrow updated to Substrait v 0.6.0
-          ref: '3d6240c1ee78'
+          ref: '3d6240c1ee7802829d2ed209f4135906e9413915'
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
         run: |
