@@ -65,7 +65,7 @@ select.SubstraitCompiler <- function(.data, ...) {
   new_mask <- rlang::set_names(
     rlang::syms(.data$schema$names[column_indices]),
     names(column_indices)
-  )
+  ) 
 
   substrait_project(.data, !!!new_mask)
 }
