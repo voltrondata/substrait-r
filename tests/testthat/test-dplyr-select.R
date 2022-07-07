@@ -112,7 +112,6 @@ test_that("filtering with rename", {
 })
 
 test_that("relocate", {
-  skip("Relocate not yet implemented: https://github.com/voltrondata/substrait-r/issues/53")
 
   compare_dplyr_binding(
     .input %>% relocate(int) %>% collect(),
@@ -141,7 +140,7 @@ test_that("relocate", {
 })
 
 test_that("relocate with selection helpers", {
-  skip("relocate not yet implemented: https://github.com/voltrondata/substrait-r/issues/53")
+
   df <- tibble(a = 1, b = 1, c = 1, d = "a", e = "a", f = "a")
   compare_dplyr_binding(
     .input %>% relocate(any_of(c("dbl", "dbl2"))) %>% collect(),
@@ -159,7 +158,22 @@ test_that("relocate with selection helpers", {
     .input %>% relocate(int, lgl, .before = where(is.numeric)) %>% collect(),
     example_data
   )
+
+  compare_dplyr_error(
+    .input %>% relocate(int, lgl, .before = where(is.numeric), .after = dbl) %>% collect(),
+    example_data,
+    fixed = TRUE
+  )
+
   # works after other dplyr verbs
+  compare_dplyr_binding(
+    .input %>%
+      mutate(int2 = int) %>%
+      relocate(dbl, lgl, .after = int2) %>%
+      collect(),
+    example_data
+  )
+  skip("Casting functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/152")
   compare_dplyr_binding(
     .input %>%
       mutate(false = as.numeric(false)) %>%

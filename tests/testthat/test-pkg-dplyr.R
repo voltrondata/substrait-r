@@ -210,3 +210,16 @@ test_that("summarise() for substrait_compiler wraps substrait_aggregate()", {
       substrait_group_by(a, b)
   )
 })
+
+test_that("relocate() for substrait_compiler reorders columns", {
+  skip_if_not_installed("dplyr")
+
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  compiler <- substrait_compiler(tbl)
+
+  expect_identical(
+    dplyr::relocate(compiler, col1, .after = col2),
+    substrait_project(compiler, col2, col1)
+  )
+})
+

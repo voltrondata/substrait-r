@@ -13,6 +13,7 @@
 \alias{summarise.SubstraitCompiler}
 \alias{summarize.SubstraitCompiler}
 \alias{collect.SubstraitCompiler}
+\alias{relocate.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{SubstraitCompiler}(.data, ...)
@@ -38,6 +39,8 @@
 \method{summarize}{SubstraitCompiler}(.data, ..., .groups = NULL)
 
 \method{collect}{SubstraitCompiler}(x, ...)
+
+\method{relocate}{SubstraitCompiler}(.data, ..., .before = NULL, .after = NULL)
 }
 \arguments{
 \item{.data, x}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
@@ -65,6 +68,10 @@
 
 \item{.groups}{One of "drop_last", "drop", or "keep"
 (see \code{\link[dplyr:summarise]{dplyr::summarise()}}).}
+
+\item{.before}{Destination of columns to move; see \code{\link[dplyr:relocate]{dplyr::relocate()}}}
+
+\item{.after}{Destination of columns to move; see \code{\link[dplyr:relocate]{dplyr::relocate()}}}
 }
 \value{
 A modified \code{\link[=substrait_compiler]{substrait_compiler()}}
