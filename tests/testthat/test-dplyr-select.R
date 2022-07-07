@@ -158,6 +158,13 @@ test_that("relocate with selection helpers", {
     .input %>% relocate(int, lgl, .before = where(is.numeric)) %>% collect(),
     example_data
   )
+
+  compare_dplyr_error(
+    .input %>% relocate(int, lgl, .before = where(is.numeric), .after = dbl) %>% collect(),
+    example_data,
+    fixed = TRUE
+  )
+
   # works after other dplyr verbs
   compare_dplyr_binding(
     .input %>%

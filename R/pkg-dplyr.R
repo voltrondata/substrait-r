@@ -229,7 +229,7 @@ collect.SubstraitCompiler <- function(x, ...) {
 #' @importFrom dplyr relocate
 #' @export
 relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL) {
-  to_move <- tidyselect::eval_select(expr(c(...)), simulate_data_frame(.data))
+  to_move <- tidyselect::eval_select(rlang::expr(c(...)), simulate_data_frame(.data))
 
   .before <- rlang::enquo(.before)
   .after <- rlang::enquo(.after)
@@ -237,7 +237,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
   has_after <- !rlang::quo_is_null(.after)
 
   if (has_before && has_after) {
-    abort("Must supply only one of `.before` and `.after`.")
+    rlang::abort("Must supply only one of `.before` and `.after`.")
   } else if (has_before) {
     where <- min(unname(tidyselect::eval_select(.before, simulate_data_frame(.data))))
     if (!where %in% to_move) {
