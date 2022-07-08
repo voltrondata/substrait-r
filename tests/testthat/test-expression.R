@@ -37,6 +37,19 @@ test_that("quosures with field references can be translated to Expressions", {
   expect_identical(as_substrait(rlang::quo(.data[["b"]]), compiler = compiler), ref_b)
 })
 
+test_that("quosures with the .env pronoun can be translated to Expressions", {
+  some_variable_in_env <- 5
+  expect_identical(
+    as_substrait(rlang::quo(.env$some_variable_in_env)),
+    as_substrait(5, "substrait.Expression")
+  )
+
+  expect_identical(
+    as_substrait(rlang::quo(.env[["some_variable_in_env"]])),
+    as_substrait(5, "substrait.Expression")
+  )
+})
+
 test_that("quosures with calls can be translated to Expressions", {
   compiler <- substrait_compiler(data.frame(a = double(), b = character()))
 

@@ -68,8 +68,13 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
 }
 
 substrait_eval_expr <- function(x, compiler, env, template) {
+  # Handle .data and .env pronouns that are also supported in dplyr's
+  # tidy evaluation.
   if (rlang::is_call(x, c("$", "[["))) {
     if (rlang::is_symbol(x[[2]], ".data") && rlang::is_symbol(x[[1]], c("$", "[["))) {
+      return(rlang::eval_tidy(x, compiler$mask, env))
+    } else if (rlang::is_symbol(x[[2]], ".env") && rlang::is_symbol(x[[1]], c("$", "[["))) {
+      x[[2]] <- env
       return(rlang::eval_tidy(x, compiler$mask, env))
     }
   }

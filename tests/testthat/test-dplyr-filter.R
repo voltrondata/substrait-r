@@ -425,7 +425,7 @@ test_that("filter() with .data pronoun", {
     #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
-      filter(.data$dbl < !!chr) %>%
+      filter(.data$dbl < .env$chr) %>%
       select(.data$chr, .data$int, .data$lgl) %>%
       collect(),
     example_data
