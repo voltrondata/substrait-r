@@ -48,6 +48,12 @@ test_that("quosures with the .env pronoun can be translated to Expressions", {
     as_substrait(rlang::quo(.env[["some_variable_in_env"]])),
     as_substrait(5, "substrait.Expression")
   )
+
+  key <- "some_variable_in_env"
+  expect_identical(
+    as_substrait(rlang::quo(.env[[key]])),
+    as_substrait(5, "substrait.Expression")
+  )
 })
 
 test_that("quosures with calls can be translated to Expressions", {

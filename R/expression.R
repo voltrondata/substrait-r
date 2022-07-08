@@ -73,9 +73,12 @@ substrait_eval_expr <- function(x, compiler, env, template) {
   if (rlang::is_call(x, c("$", "[["))) {
     if (rlang::is_symbol(x[[2]], ".data") && rlang::is_symbol(x[[1]], c("$", "[["))) {
       return(rlang::eval_tidy(x, compiler$mask, env))
-    } else if (rlang::is_symbol(x[[2]], ".env") && rlang::is_symbol(x[[1]], c("$", "[["))) {
-      x[[2]] <- env
-      return(rlang::eval_tidy(x, compiler$mask, env))
+    } else if (rlang::is_symbol(x[[2]], ".env") && rlang::is_symbol(x[[1]], "$")) {
+      key <- as.character(x[[3]])
+      return(get(key, envir = env, inherits = TRUE))
+    } else if (rlang::is_symbol(x[[2]], ".env") && rlang::is_symbol(x[[1]], "[[")) {
+      key <- as.character(rlang::eval_tidy(x[[3]], env = env))
+      return(get(key, envir = env, inherits = TRUE))
     }
   }
 
