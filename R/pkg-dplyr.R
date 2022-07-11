@@ -18,6 +18,7 @@
 #' @param .fn Function to transform selected `.cols`; see[dplyr::rename_with()]
 #' @param .before Destination of columns to move; see [dplyr::relocate()]
 #' @param .after Destination of columns to move; see [dplyr::relocate()]
+#' @param .keep Which columns are retained in output; see [dplyr::mutate()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -113,9 +114,34 @@ filter.SubstraitCompiler <- function(.data, ...) {
 #' @rdname select.SubstraitCompiler
 #' @importFrom dplyr mutate
 #' @export
-mutate.SubstraitCompiler <- function(.data, ...) {
+mutate.SubstraitCompiler <- function(.data, ...,
+                                     .keep = c("all", "used", "unused", "none")) {
   mask <- .data$mask
-  substrait_project(.data, !!!mask, ...)
+  out <- substrait_project(.data, !!!mask, ...)
+
+  if (.keep == "all") {
+    return(out)
+  }
+
+  all_cols <- names(out$mask)
+
+  # extract symbols used in ...
+  expressions <- rlang::exprs(..., .named = TRUE)
+  symbols_in_expressions <- unlist(lapply(expressions, get_symbols), use.names = FALSE)
+
+  new_cols <- names(expressions)
+
+  used_cols <- unique(c(as.character(symbols_in_expressions), names(expressions)))
+  unused_cols <- setdiff(all_cols, used_cols)
+
+   if (.keep == "used") {
+    return(substrait_project(out, !!!syms(all_cols[all_cols %in% used_cols])))
+  } else if (.keep == "unused") {
+    return(substrait_project(out, !!!syms(all_cols[all_cols %in% c(unused_cols, new_cols)])))
+  } else if (.keep == "none") {
+    return(substrait_project(out, !!!syms(all_cols[all_cols %in% names(expressions)])))
+  }
+
 }
 
 #' @rdname select.SubstraitCompiler
@@ -325,4 +351,31 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
   if (!missing(.after)) {
     abort("The `.after` argument is not supported.", call = error_call)
   }
+}
+
+get_symbols <- function(x){
+
+  symbols <- list()
+
+  if (rlang::is_syntactic_literal(x)) {
+    return(NULL)
+  }
+
+  if (is_symbol(x)) {
+    return(x)
+  }
+
+  if (is_symbol(x[[2]])) {
+    symbols <- c(symbols, x[[2]])
+  } else {
+    symbols <- c(symbols, get_symbols(x[[2]]))
+  }
+
+  if (is_symbol(x[[3]])) {
+    symbols <- c(symbols, x[[3]])
+  } else {
+    symbols <- c(symbols, get_symbols(x[[3]]))
+  }
+
+  symbols
 }

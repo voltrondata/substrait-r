@@ -270,7 +270,6 @@ test_that("window functions", {
 })
 
 test_that("mutate() with keep argument", {
-  skip("https://github.com/voltrondata/substrait-r/issues/66")
 
   # Experimental: You can override with `.keep`
   df <- tibble(x = 1, y = 2, a = "a", b = "b")
