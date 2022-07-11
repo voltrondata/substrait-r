@@ -124,25 +124,29 @@ mutate.SubstraitCompiler <- function(.data, ...,
     return(out)
   }
 
-  all_cols <- names(out$mask)
-
   # extract symbols used in ...
   expressions <- rlang::exprs(..., .named = TRUE)
   symbols_in_expressions <- unlist(lapply(expressions, get_symbols), use.names = FALSE)
 
+  all_cols <- names(out$mask)
   new_cols <- names(expressions)
 
-  used_cols <- unique(c(as.character(symbols_in_expressions), names(expressions)))
+  used_cols <- as.character(symbols_in_expressions)
   unused_cols <- setdiff(all_cols, used_cols)
 
-   if (.keep == "used") {
-    return(substrait_project(out, !!!syms(all_cols[all_cols %in% used_cols])))
-  } else if (.keep == "unused") {
-    return(substrait_project(out, !!!syms(all_cols[all_cols %in% c(unused_cols, new_cols)])))
-  } else if (.keep == "none") {
-    return(substrait_project(out, !!!syms(all_cols[all_cols %in% names(expressions)])))
-  }
+  if (.keep == "used") {
+    keep_used <- all_cols[all_cols %in% c(used_cols, new_cols)]
+    return(substrait_project(out, !!!syms(keep_used)))
 
+  } else if (.keep == "unused") {
+    keep_unused <- all_cols[all_cols %in% c(unused_cols, new_cols)]
+    return(substrait_project(out, !!!syms(keep_unused)))
+
+  } else if (.keep == "none") {
+    keep_none <- all_cols[all_cols %in% new_cols]
+    return(substrait_project(out, !!!syms(keep_none)))
+
+  }
 }
 
 #' @rdname select.SubstraitCompiler
