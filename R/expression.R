@@ -69,14 +69,24 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
 
 substrait_eval_expr <- function(x, compiler, env, template) {
   # Handle .data and .env pronouns that are also supported in dplyr's
-  # tidy evaluation.
+  # tidy evaluation. .data$some_var must match columns by name;
+  # .env$var_name looks explicitly in the calling environment
+  # (i.e., explicitly does not match a column named var_name).
   if (rlang::is_call(x, c("$", "[["))) {
     if (rlang::is_symbol(x[[2]], ".data") && rlang::is_symbol(x[[1]], c("$", "[["))) {
+      # rlang already has support for the .data pronoun built in, so we can
+      # continue with eval_tidy() and let rlang interpret .data$some_var
       return(rlang::eval_tidy(x, compiler$mask, env))
     } else if (rlang::is_symbol(x[[2]], ".env") && rlang::is_symbol(x[[1]], "$")) {
+      # If we have .env$some_var, the righthand side is passed as a symbol,
+      # so look up the variable in env based on that. We include inheriting
+      # environments in the lookup because dplyr does this, too. This could
+      # or maybe should be implemented using native rlang data pronoun
+      # behaviour (I believe dplyr does it this way).
       key <- as.character(x[[3]])
       return(get(key, envir = env, inherits = TRUE))
     } else if (rlang::is_symbol(x[[2]], ".env") && rlang::is_symbol(x[[1]], "[[")) {
+      # If we have .env[[some_expr]], evaluate some_expr without the data mask.
       key <- as.character(rlang::eval_tidy(x[[3]], env = env))
       return(get(key, envir = env, inherits = TRUE))
     }
