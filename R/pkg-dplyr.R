@@ -354,8 +354,7 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
   }
 }
 
-get_symbols <- function(expression){
-
+get_symbols <- function(expression) {
   symbols <- list()
 
   if (rlang::is_syntactic_literal(expression)) {
