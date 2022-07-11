@@ -354,28 +354,28 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
   }
 }
 
-get_symbols <- function(x){
+get_symbols <- function(expression){
 
   symbols <- list()
 
-  if (rlang::is_syntactic_literal(x)) {
+  if (rlang::is_syntactic_literal(expression)) {
     return(NULL)
   }
 
-  if (is_symbol(x)) {
-    return(x)
+  if (rlang::is_symbol(expression)) {
+    return(expression)
   }
 
-  if (is_symbol(x[[2]])) {
-    symbols <- c(symbols, x[[2]])
+  if (rlang::is_symbol(expression[[2]])) {
+    symbols <- c(symbols, expression[[2]])
   } else {
-    symbols <- c(symbols, get_symbols(x[[2]]))
+    symbols <- c(symbols, get_symbols(expression[[2]]))
   }
 
-  if (is_symbol(x[[3]])) {
-    symbols <- c(symbols, x[[3]])
+  if (rlang::is_symbol(expression[[3]])) {
+    symbols <- c(symbols, expression[[3]])
   } else {
-    symbols <- c(symbols, get_symbols(x[[3]]))
+    symbols <- c(symbols, get_symbols(expression[[3]]))
   }
 
   symbols
