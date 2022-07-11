@@ -116,6 +116,7 @@ filter.SubstraitCompiler <- function(.data, ...) {
 #' @export
 mutate.SubstraitCompiler <- function(.data, ...,
                                      .keep = c("all", "used", "unused", "none")) {
+  .keep <- match.arg(.keep)
   mask <- .data$mask
   out <- substrait_project(.data, !!!mask, ...)
 
