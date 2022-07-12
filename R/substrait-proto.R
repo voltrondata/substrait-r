@@ -172,7 +172,7 @@ create_substrait_message <- function(..., .qualified_name) {
   lst <- lst[!vapply(lst, inherits, logical(1), "substrait_proto_unspecified")]
 
   descriptor <- RProtoBuf::P(.qualified_name)
-  message <- rlang::exec(descriptor$new, !!! lst)
+  message <- rlang::exec(descriptor$new, !!!lst)
 
   structure(
     list(content = message$serialize(NULL)),
@@ -239,8 +239,7 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
     return(value)
   }
 
-  switch(
-    type,
+  switch(type,
     TYPE_ENUM = create_substrait_enum(value, .qualified_name),
     TYPE_MESSAGE = {
       if (repeated && !rlang::is_bare_list(value)) {
@@ -262,7 +261,7 @@ clean_value <- function(value, type, .qualified_name, repeated = FALSE) {
         return(descriptor$read(as.raw(value)))
       } else if (inherits(value, "substrait_proto_auto")) {
         clean_value(
-          substrait_create(.qualified_name, !!! unclass(value)),
+          substrait_create(.qualified_name, !!!unclass(value)),
           type,
           .qualified_name
         )
@@ -364,7 +363,7 @@ length.substrait_proto_message <- function(x) {
 `[[<-.substrait_proto_message` <- function(x, i, value) {
   lst <- as.list(x)
   lst[[i]] <- value
-  substrait_create(gsub("_", ".", class(x)[1]), !!! lst)
+  substrait_create(gsub("_", ".", class(x)[1]), !!!lst)
 }
 
 #' @export
@@ -376,7 +375,7 @@ length.substrait_proto_message <- function(x) {
 `$<-.substrait_proto_message` <- function(x, name, value) {
   lst <- as.list(x)
   lst[[name]] <- value
-  substrait_create(gsub("_", ".", class(x)[1]), !!! lst)
+  substrait_create(gsub("_", ".", class(x)[1]), !!!lst)
 }
 
 #' @export

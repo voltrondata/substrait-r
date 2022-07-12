@@ -9,7 +9,7 @@ test_that("basic mutate", {
     #   skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
-      mutate(newcol = some_negative -  2L) %>%
+      mutate(newcol = some_negative - 2L) %>%
       collect(),
     example_data
   )
@@ -44,7 +44,6 @@ test_that("mutate after select", {
 })
 
 test_that("mutate() with NULL inputs", {
-
   compare_dplyr_binding(
     .input %>%
       mutate(int2 = NULL) %>%
@@ -58,7 +57,6 @@ test_that("mutate() with NULL inputs", {
       collect(),
     example_data
   )
-
 })
 
 test_that("empty mutate()", {
@@ -75,7 +73,7 @@ test_that("transmute", {
     # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
-      transmute(new_col = some_negative -  2L) %>%
+      transmute(new_col = some_negative - 2L) %>%
       collect(),
     example_data
   )
@@ -92,7 +90,6 @@ test_that("transmute respect bespoke dplyr implementation", {
 })
 
 test_that("transmute() with NULL inputs", {
-
   compare_dplyr_binding(
     .input %>%
       transmute(int = NULL, new_col = dbl) %>%
@@ -141,7 +138,6 @@ test_that("transmute with unnamed expressions", {
 })
 
 test_that("transmute() with unsupported arguments", {
-
   compare_dplyr_error(
     .input %>%
       transmute(int = int + 42L, .keep = "all"),
@@ -365,7 +361,6 @@ test_that("group_by() followed by mutate()", {
 })
 
 test_that("Can mutate after group_by as long as there are no aggregations", {
-
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%

@@ -4,7 +4,8 @@ library(RProtoBuf)
 
 proto_files <- list.files(
   "inst/substrait/proto",
-  "\\.proto$", recursive = TRUE
+  "\\.proto$",
+  recursive = TRUE
 )
 
 readProtoFiles2(
@@ -22,7 +23,7 @@ qualified_type_from_descriptor <- function(descriptor) {
 rprotobuf_descriptor_to_class <- function(descriptor, child = c()) {
   # special case the extensions namespace because RProtoBuf doesn't have
   # a good way to extract this from the descriptor
-  extensions_types <- c("AdvancedExtension", "SimpleExtensionDeclaration","SimpleExtensionURI")
+  extensions_types <- c("AdvancedExtension", "SimpleExtensionDeclaration", "SimpleExtensionURI")
   if (descriptor$name() %in% extensions_types) {
     return(c("extensions", descriptor$name(), child))
   }
@@ -48,14 +49,14 @@ proto_types_with_nesting <- list.files(
   str_split("_")
 
 proto_types <- tibble(
-  name = map_chr(proto_types_with_nesting, ~.x[length(.x)]),
+  name = map_chr(proto_types_with_nesting, ~ .x[length(.x)]),
   name_qualified = map_chr(proto_types_with_nesting, paste, collapse = "."),
   name_nesting = proto_types_with_nesting,
   descriptor = map(name_qualified, RProtoBuf::P),
-  is_enum = map_lgl(descriptor, ~is.function(.x$value)),
+  is_enum = map_lgl(descriptor, ~ is.function(.x$value)),
   parent_name_qualified = map_chr(
     name_nesting,
-    ~paste(.x[1:(length(.x) - 1)], collapse = ".")
+    ~ paste(.x[1:(length(.x) - 1)], collapse = ".")
   )
 )
 
@@ -65,7 +66,7 @@ enum_types <- proto_types %>%
   mutate(
     values = map(
       descriptor,
-      ~tibble(name = names(.x), value = map_int(name, function(n) .x[[n]]))
+      ~ tibble(name = names(.x), value = map_int(name, function(n) .x[[n]]))
     )
   ) %>%
   select(-descriptor)
@@ -73,7 +74,7 @@ enum_types <- proto_types %>%
 
 rprotobuf_types <- tibble(
   rprotobuf_name = str_subset(names(asNamespace("RProtoBuf")), "^TYPE_"),
-  rprotobuf_value = map_int(rprotobuf_name, ~asNamespace("RProtoBuf")[[.x]]),
+  rprotobuf_value = map_int(rprotobuf_name, ~ asNamespace("RProtoBuf")[[.x]]),
   name = rprotobuf_name %>% str_to_lower() %>% str_remove("^type_")
 ) %>%
   arrange(rprotobuf_value)
@@ -85,21 +86,25 @@ message_types <- proto_types %>%
     fields = map(descriptor, function(d) {
       field_count <- d$field_count()
       fields <- map(seq_len(field_count), d$field)
-      field_type <- map_chr(fields, ~.x$type(as.string = TRUE))
+      field_type <- map_chr(fields, ~ .x$type(as.string = TRUE))
       field_type_name <- map_chr(fields, function(f) {
         tryCatch(
           qualified_type_from_descriptor(f$message_type()),
-          error = function(e) tryCatch(
-            f$enum_type()$name(),
-            error = function(e) tryCatch(
-              f$type(as.string = TRUE)
+          error = function(e) {
+            tryCatch(
+              f$enum_type()$name(),
+              error = function(e) {
+                tryCatch(
+                  f$type(as.string = TRUE)
+                )
+              }
             )
-          )
+          }
         )
       })
 
       tibble(
-        field_name = map_chr(fields, ~.$name()),
+        field_name = map_chr(fields, ~ .$name()),
         field_type = field_type,
         field_type_name_qualified = dplyr::coalesce(
           proto_types$name_qualified[
@@ -107,8 +112,8 @@ message_types <- proto_types %>%
           ],
           field_type_name
         ),
-        has_default_value = map_lgl(fields, ~.x$has_default_value()),
-        is_repeated = map_lgl(fields, ~.x$is_repeated())
+        has_default_value = map_lgl(fields, ~ .x$has_default_value()),
+        is_repeated = map_lgl(fields, ~ .x$is_repeated())
       )
     })
   ) %>%
@@ -120,7 +125,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
   name <- strsplit(qualified_name, "\\.")[[1]]
   name <- name[length(name)]
 
-  enums <- enum_types %>% filter(parent_name_qualified == !! qualified_name)
+  enums <- enum_types %>% filter(parent_name_qualified == !!qualified_name)
   enum_text <- map_chr(
     enums$name_qualified,
     generate_tree_enum,
@@ -129,7 +134,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
   enum_text_flat <- paste(enum_text, collapse = ",\n")
 
   type <- message_types %>%
-    filter(name_qualified == !! qualified_name)
+    filter(name_qualified == !!qualified_name)
 
   if (nrow(type) > 0) {
     type <- lapply(type, "[[", 1)
@@ -148,7 +153,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
       }}')
     } else {
       constructor <- glue::glue(
-'\n{ indent }  create = function(..., { formals_flat }) {{
+        '\n{ indent }  create = function(..., { formals_flat }) {{
   rlang::check_dots_empty()
   create_substrait_message(
 { sanitizers_flat },
@@ -156,7 +161,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
 )
 }}
 '
-)
+      )
     }
 
     constructor <- glue::as_glue(str_replace_all(constructor, "\n", paste0("\n", indent, "  ")))
@@ -164,7 +169,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
     constructor <- ""
   }
 
-  sub_types <- message_types %>% filter(parent_name_qualified == !! qualified_name)
+  sub_types <- message_types %>% filter(parent_name_qualified == !!qualified_name)
 
   # special case "substrait.extensions" because it's a namespace that isn't a type
   if (identical(qualified_name, "substrait")) {
@@ -174,17 +179,17 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
   }
 
   sub_types_chr <- map(sub_types_name, generate_tree, indent = paste0(indent, "  "))
-  sub_types_flat <-  paste(sub_types_chr, collapse = ",\n")
+  sub_types_flat <- paste(sub_types_chr, collapse = ",\n")
 
   components <- c(enum_text_flat, sub_types_flat, constructor)
   components_flat <- paste(components[components != ""], collapse = ",\n")
 
   text <- glue::glue(
-'
+    "
 { indent }{ name } = list(
 { components_flat }
 )
-'
+"
   )
 
   glue::as_glue(str_replace_all(text, "\n", paste0("\n", indent)))
@@ -194,7 +199,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
 
 generate_tree_enum <- function(qualified_name, indent = "") {
   enum <- enum_types %>%
-    filter(name_qualified == !! qualified_name) %>%
+    filter(name_qualified == !!qualified_name) %>%
     lapply("[[", 1)
 
   cls <- gsub("\\.", "_", enum$name_qualified)
@@ -229,4 +234,3 @@ write_file(glue::glue("
 "), "R/types-generated.R")
 
 styler::style_file("R/types-generated.R")
-

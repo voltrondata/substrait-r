@@ -280,8 +280,8 @@ test_that("as_substrait() works for integer()", {
 
   expect_identical(
     as_substrait(c(3L, 4L), substrait$Expression$Literal$create(
-      list = substrait_proto_auto())
-    ),
+      list = substrait_proto_auto()
+    )),
     substrait$Expression$Literal$create(
       list = substrait$Expression$Literal$List$create(
         values = list(
@@ -323,8 +323,8 @@ test_that("as_substrait() works for logical()", {
 
   expect_identical(
     as_substrait(c(TRUE, FALSE), substrait$Expression$Literal$create(
-      list = substrait_proto_auto())
-    ),
+      list = substrait_proto_auto()
+    )),
     substrait$Expression$Literal$create(
       list = substrait$Expression$Literal$List$create(
         values = list(
@@ -562,4 +562,3 @@ test_that("from_substrait() works for character()", {
     c("a string", "another string")
   )
 })
-

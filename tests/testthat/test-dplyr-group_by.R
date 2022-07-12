@@ -15,13 +15,12 @@ example_with_logical_factors <- tibble::tibble(
 )
 
 test_that("group_by groupings are recorded", {
-
   compare_dplyr_binding(
     .input %>%
       group_by(chr) %>%
       select(int, chr) %>%
       # skip("comparison operators not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
-      #filter(int > 5) %>%
+      # filter(int > 5) %>%
       collect(),
     example_data
   )
@@ -57,7 +56,7 @@ test_that("ungroup", {
       select(int, chr) %>%
       ungroup() %>%
       # skip("comparison operators not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
-      #filter(int > 5) %>%
+      # filter(int > 5) %>%
       collect(),
     example_data
   )
@@ -71,7 +70,7 @@ test_that("ungroup", {
         group_by(chr) %>%
         select(int, chr) %>%
         (function(x) if (inherits(x, "tbl_df")) ungroup(x) else x) %>%
-        #filter(int > 5) %>%
+        # filter(int > 5) %>%
         collect(),
       example_data
     )
@@ -155,4 +154,3 @@ test_that("group_by with .drop", {
     example_with_logical_factors
   )
 })
-

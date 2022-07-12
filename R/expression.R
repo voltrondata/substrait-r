@@ -8,8 +8,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
   }
 
   .qualified_name <- make_qualified_name(.ptype)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.AggregateRel.Measure" = {
       # evaluate the result using special rules for function calls
       result <- substrait_eval_expr(
@@ -146,16 +145,14 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., compiler = 
     .ptype <- x
   }
 
-  switch(
-    make_qualified_name(.ptype),
+  switch(make_qualified_name(.ptype),
     "substrait.Type" = {
       which_expr_type <- names(x)
       if (length(which_expr_type) == 0) {
         return(substrait$Type$create())
       }
 
-      guessed_type <- switch(
-        which_expr_type,
+      guessed_type <- switch(which_expr_type,
         "literal" = as_substrait(x[[which_expr_type]], .ptype),
         "selection" = {
           struct_field <- x$selection$direct_reference$struct_field
@@ -198,8 +195,7 @@ as_substrait.substrait_AggregateRel_Measure <- function(x, .ptype = NULL, ..., c
     .ptype <- x
   }
 
-  switch(
-    make_qualified_name(.ptype),
+  switch(make_qualified_name(.ptype),
     "substrait.Type" = x$measure$output_type %||% substrait$Type$create(),
     NextMethod()
   )
@@ -211,8 +207,7 @@ as_substrait.substrait_Expression_ScalarFunction <- function(x, .ptype = NULL, .
     return(x)
   }
 
-  switch(
-    make_qualified_name(.ptype),
+  switch(make_qualified_name(.ptype),
     "substrait.Expression" = substrait$Expression$create(scalar_function = x),
     NextMethod()
   )

@@ -12,7 +12,6 @@ library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 
 test_that("Can aggregate", {
-
   skip("na.rm argument causes error: https://github.com/voltrondata/substrait-r/issues/141")
 
   compare_dplyr_binding(
@@ -32,11 +31,9 @@ test_that("Can aggregate", {
       collect(),
     example_data
   )
-
 })
 
 test_that("Group by sum on dataset", {
-
   skip("na.rm argument causes error: https://github.com/voltrondata/substrait-r/issues/141")
 
   compare_dplyr_binding(
@@ -68,7 +65,6 @@ test_that("Group by sum on dataset", {
 })
 
 test_that("Group by mean on dataset", {
-
   skip("na.rm argument causes error: https://github.com/voltrondata/substrait-r/issues/141")
   compare_dplyr_binding(
     engine = "duckdb",
@@ -90,7 +86,7 @@ test_that("Group by mean on dataset", {
 })
 
 test_that("Group by sd on dataset", {
-skip("na.rm argument causes error: https://github.com/voltrondata/substrait-r/issues/141")
+  skip("na.rm argument causes error: https://github.com/voltrondata/substrait-r/issues/141")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -217,7 +213,6 @@ test_that("Group by any/all", {
 })
 
 test_that("n_distinct() on dataset", {
-
   skip("n_distinct() not implemented: https://github.com/voltrondata/substrait-r/issues/145")
 
   # With groupby
@@ -273,7 +268,6 @@ test_that("n_distinct() on dataset", {
 })
 
 test_that("median()", {
-
   skip("median not yet implemented: https://github.com/voltrondata/substrait-r/issues/146")
 
   # When medians are integer-valued, stats::median() sometimes returns output of
@@ -440,7 +434,6 @@ test_that("quantile()", {
 })
 
 test_that("summarize() with min() and max()", {
-
   skip("min and max not implemented yet: https://github.com/voltrondata/substrait-r/issues/148")
 
   compare_dplyr_binding(
@@ -564,7 +557,6 @@ test_that("min() and max() on character strings", {
 })
 
 test_that("summarise() with !!sym()", {
-
   skip("any/all not implemented: https://github.com/voltrondata/substrait-r/issues/144")
 
   test_chr_col <- "int"
@@ -591,7 +583,6 @@ test_that("summarise() with !!sym()", {
 })
 
 test_that("Filter and aggregate", {
-
   skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
 
   compare_dplyr_binding(
@@ -631,8 +622,7 @@ test_that("Filter and aggregate", {
 })
 
 test_that("Group by edge cases", {
-
-    skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
+  skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
 
   compare_dplyr_binding(
     .input %>%
@@ -652,8 +642,7 @@ test_that("Group by edge cases", {
 })
 
 test_that("Do things after summarize", {
-
-    skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
+  skip("sum() doesn't work with na.rm = TRUE: https://github.com/voltrondata/substrait-r/issues/141")
 
   group2_sum <- example_data %>%
     group_by(lgl) %>%
@@ -690,7 +679,6 @@ test_that("Do things after summarize", {
 })
 
 test_that("Expressions on aggregations", {
-
   skip("any not implemented: https://github.com/voltrondata/substrait-r/issues/144")
   # This is what it effectively is
   compare_dplyr_binding(
@@ -768,7 +756,6 @@ test_that("Expressions on aggregations", {
 })
 
 test_that("Summarize with 0 arguments", {
-
   skip("different order: https://github.com/voltrondata/substrait-r/issues/154")
   compare_dplyr_binding(
     engine = "duckdb",
@@ -990,7 +977,6 @@ test_that("summarise() passes through type information for temporary columns", {
 })
 
 test_that("summarise() can handle scalars and literal values", {
-
   skip("https://github.com/voltrondata/substrait-r/issues/153")
 
   some_scalar_value <- 2L

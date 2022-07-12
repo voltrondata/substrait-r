@@ -168,9 +168,11 @@ SubstraitCompiler <- R6::R6Class(
         extensions = c(
           lapply(
             unname(private$function_extensions),
-            function(x) substrait$extensions$SimpleExtensionDeclaration$create(
-              extension_function = x
-            )
+            function(x) {
+              substrait$extensions$SimpleExtensionDeclaration$create(
+                extension_function = x
+              )
+            }
           )
         )
       )
@@ -237,10 +239,10 @@ SubstraitCompiler <- R6::R6Class(
           extensions$
           SimpleExtensionDeclaration$
           ExtensionFunction$create(
-            extension_uri_reference = private$extension_uri$extension_uri_anchor,
-            function_anchor = self$next_id(),
-            name = name
-          )
+          extension_uri_reference = private$extension_uri$extension_uri_anchor,
+          function_anchor = self$next_id(),
+          name = name
+        )
 
         id_chr <- as.character(extension_function$function_anchor)
         private$function_extensions_key[[id_chr]] <- key
@@ -271,7 +273,6 @@ SubstraitCompiler <- R6::R6Class(
       id
     }
   ),
-
   private = list(
     extension_uri = NULL,
     function_extensions = NULL,
@@ -295,7 +296,7 @@ SubstraitCompiler <- R6::R6Class(
 #' @export
 #'
 #' @examples
-#' substrait_compiler(data.frame(col1 = 1 , col2 = "one"))
+#' substrait_compiler(data.frame(col1 = 1, col2 = "one"))
 #'
 substrait_compiler <- function(object, ...) {
   UseMethod("substrait_compiler")

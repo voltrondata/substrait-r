@@ -40,7 +40,6 @@ test_that("group_by() adds missing groups back in", {
       select(col2),
     "Adding missing grouping variables: `col1`"
   )
-
 })
 
 test_that("rename() for substrait_compiler renames columns", {
@@ -222,4 +221,3 @@ test_that("relocate() for substrait_compiler reorders columns", {
     substrait_project(compiler, col2, col1)
   )
 })
-

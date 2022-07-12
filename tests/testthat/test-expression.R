@@ -12,7 +12,7 @@ test_that("quosures of atomics can be translated to Expression objects", {
   )
 
   expect_identical(
-    as_substrait(rlang::quo(!! some_value)),
+    as_substrait(rlang::quo(!!some_value)),
     as_substrait(5, "substrait.Expression")
   )
 
@@ -90,7 +90,7 @@ test_that("quosures with calls can be translated to Expressions", {
   )
 
   expect_identical(
-    as_substrait(rlang::quo((!! sqrt)(5L))),
+    as_substrait(rlang::quo((!!sqrt)(5L))),
     substrait$Expression$create(
       literal = substrait$Expression$Literal$create(
         fp64 = sqrt(5L)

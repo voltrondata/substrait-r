@@ -33,7 +33,6 @@
 #' dplyr::arrange(compiler, desc(mpg))
 #'
 select.SubstraitCompiler <- function(.data, ...) {
-
   sim_data <- simulate_data_frame(.data)
 
   column_indices <- tidyselect::eval_select(

@@ -36,10 +36,9 @@ test_that("Filter should be able to return an empty table", {
 })
 
 test_that("filtering with expression", {
-
   char_sym <- "b"
   compare_dplyr_binding(
-    #skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
+    # skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
     engine = "duckdb",
     .input %>%
       filter(chr == char_sym) %>%
@@ -50,7 +49,6 @@ test_that("filtering with expression", {
 })
 
 test_that("filtering with arithmetic", {
-
   compare_dplyr_binding(
     # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
@@ -118,7 +116,6 @@ test_that("filtering with arithmetic", {
 })
 
 test_that("filtering with expression + autocasting", {
-
   compare_dplyr_binding(
     # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
@@ -191,7 +188,7 @@ test_that("Negative scalar values", {
     example_data
   )
 
-   skip("error withn %in% and negative number - https://github.com/voltrondata/substrait-r/issues/112")
+  skip("error withn %in% and negative number - https://github.com/voltrondata/substrait-r/issues/112")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -203,7 +200,7 @@ test_that("Negative scalar values", {
 
 test_that("filter() with between()", {
 
-  #skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/94")
+  # skip("between not yet implemented: https://github.com/voltrondata/substrait-r/issues/94")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -352,7 +349,7 @@ test_that("Filtering with unsupported functions", {
     .input %>%
       filter(int > 2, pnorm(dbl) > .99) %>%
       collect(),
-    example_data#,
+    example_data # ,
     # this needs updating to refer to Substrait and not Arrow
     # warning = "Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow; pulling data into R"
   )
@@ -364,10 +361,10 @@ test_that("Filtering with unsupported functions", {
         pnorm(dbl) > .99 # bad, opaque
       ) %>%
       collect(),
-    example_data#,
-#     warning = '\\* In nchar\\(chr, type = "bytes", allowNA = TRUE\\) == 1, allowNA = TRUE not supported in Arrow
-# \\* Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow
-# pulling data into R'
+    example_data # ,
+    #     warning = '\\* In nchar\\(chr, type = "bytes", allowNA = TRUE\\) == 1, allowNA = TRUE not supported in Arrow
+    # \\* Expression pnorm\\(dbl\\) > 0.99 not supported in Arrow
+    # pulling data into R'
   )
 })
 
@@ -397,9 +394,8 @@ test_that("Calling Arrow compute functions 'directly'", {
 })
 
 test_that("filter() with .data pronoun", {
-
   compare_dplyr_binding(
-    #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
       filter(.data$dbl == 4) %>%
@@ -410,7 +406,7 @@ test_that("filter() with .data pronoun", {
 
 
   compare_dplyr_binding(
-    #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
       filter(is.na(.data$lgl)) %>%
@@ -422,7 +418,7 @@ test_that("filter() with .data pronoun", {
   # and the .env pronoun too!
   chr <- 4
   compare_dplyr_binding(
-    #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
       filter(.data$dbl < .env$chr) %>%
@@ -432,7 +428,7 @@ test_that("filter() with .data pronoun", {
   )
 
   compare_dplyr_binding(
-    #skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
+    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
     engine = "duckdb",
     .input %>%
       filter(.data$dbl < .env[["chr"]]) %>%

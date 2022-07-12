@@ -13,11 +13,9 @@ test_that("Empty select returns no columns", {
     example_data %>% duckdb_substrait_compiler() %>% select() %>% collect(),
     "Column list must not be empty"
   )
-
 })
 
 test_that("Empty select still includes the group_by columns", {
-
   expect_message(
     compare_dplyr_binding(
       .input %>% group_by(chr) %>% select() %>% collect(),
@@ -47,7 +45,6 @@ test_that("rename()", {
 })
 
 test_that("rename_with", {
-
   compare_dplyr_binding(
     .input %>%
       rename_with(
@@ -112,7 +109,6 @@ test_that("filtering with rename", {
 })
 
 test_that("relocate", {
-
   compare_dplyr_binding(
     .input %>% relocate(int) %>% collect(),
     example_data
@@ -140,7 +136,6 @@ test_that("relocate", {
 })
 
 test_that("relocate with selection helpers", {
-
   df <- tibble(a = 1, b = 1, c = 1, d = "a", e = "a", f = "a")
   compare_dplyr_binding(
     .input %>% relocate(any_of(c("dbl", "dbl2"))) %>% collect(),

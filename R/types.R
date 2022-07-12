@@ -18,37 +18,37 @@ substrait_boolean <- function() {
 #' @rdname substrait-type
 #' @export
 substrait_i8 <- function() {
-   substrait$Type$create(i8 = substrait_proto_auto())
+  substrait$Type$create(i8 = substrait_proto_auto())
 }
 
 #' @rdname substrait-type
 #' @export
 substrait_i16 <- function() {
-   substrait$Type$create(i16 = substrait_proto_auto())
+  substrait$Type$create(i16 = substrait_proto_auto())
 }
 
 #' @rdname substrait-type
 #' @export
 substrait_i32 <- function() {
-   substrait$Type$create(i32 = substrait_proto_auto())
+  substrait$Type$create(i32 = substrait_proto_auto())
 }
 
 #' @rdname substrait-type
 #' @export
 substrait_i64 <- function() {
-   substrait$Type$create(i64 = substrait_proto_auto())
+  substrait$Type$create(i64 = substrait_proto_auto())
 }
 
 #' @rdname substrait-type
 #' @export
 substrait_fp32 <- function() {
-   substrait$Type$create(fp32 = substrait_proto_auto())
+  substrait$Type$create(fp32 = substrait_proto_auto())
 }
 
 #' @rdname substrait-type
 #' @export
 substrait_fp64 <- function() {
-   substrait$Type$create(fp64 = substrait_proto_auto())
+  substrait$Type$create(fp64 = substrait_proto_auto())
 }
 
 #' @rdname substrait-type

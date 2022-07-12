@@ -15,7 +15,7 @@ test_that("duckdb translation for == and != works", {
   tbl <- tibble::tibble(col = c(1, 2, NA))
 
   expect_identical(
-     tbl %>%
+    tbl %>%
       duckdb_substrait_compiler() %>%
       dplyr::transmute(eq2 = col == 2, neq2 = col != 2) %>%
       dplyr::collect(),
@@ -121,7 +121,7 @@ test_that("duckdb translation for arithmetic functions works", {
         div2 = col / 2,
         add2 = col + 2,
         sub2 = col - 2,
-        pow2 = col ^ 2
+        pow2 = col^2
       ) %>%
       dplyr::collect(),
     tibble::tibble(
@@ -129,7 +129,7 @@ test_that("duckdb translation for arithmetic functions works", {
       div2 = c(1 / 2, 2 / 2, NA),
       add2 = c(1 + 2, 2 + 2, NA),
       sub2 = c(1 - 2, 2 - 2, NA),
-      pow2 = c(1 ^ 2, 2 ^ 2, NA)
+      pow2 = c(1^2, 2^2, NA)
     )
   )
 })
@@ -180,7 +180,7 @@ test_that("duckdb translation for %in% works", {
   expect_identical(
     tibble::tibble(col = letters) %>%
       duckdb_substrait_compiler() %>%
-      dplyr::filter(col %in% !! letters) %>%
+      dplyr::filter(col %in% !!letters) %>%
       dplyr::collect(),
     tibble::tibble(col = letters)
   )
@@ -189,7 +189,7 @@ test_that("duckdb translation for %in% works", {
   expect_identical(
     tibble::tibble(col = letters) %>%
       duckdb_substrait_compiler() %>%
-      dplyr::filter(col %in% !! c("d")) %>%
+      dplyr::filter(col %in% !!c("d")) %>%
       dplyr::collect(),
     tibble::tibble(col = "d")
   )
@@ -242,10 +242,9 @@ test_that("duckdb raises error for empty projection", {
   tbl <- tibble::tibble(col = c(1, 2, NA))
 
   expect_error(
-     tbl %>%
+    tbl %>%
       duckdb_substrait_compiler() %>%
       substrait_project(),
     "Column list must not be empty"
   )
 })
-
