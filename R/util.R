@@ -1,6 +1,5 @@
 
-compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...){
-
+compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
   expr <- rlang::enquo(expr)
   expected <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = tbl)))
 
@@ -13,7 +12,6 @@ compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...)
     out_duckdb <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = duckdb_substrait_compiler(tbl))))
     expect_identical(out_duckdb, expected, ...)
   }
-
 }
 
 compare_dplyr_error <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
@@ -69,10 +67,9 @@ compare_dplyr_error <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
         rlang::new_data_mask(rlang::env(.input = duckdb_substrait_compiler(tbl)))
       ),
       msg,
-    ...
+      ...
     )
   }
-
 }
 
 i18ize_error_messages <- function() {
@@ -100,4 +97,3 @@ with_language <- function(lang, expr) {
   }
   force(expr)
 }
-

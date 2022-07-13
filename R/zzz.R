@@ -3,7 +3,8 @@
 .onLoad <- function(...) {
   proto_files <- list.files(
     system.file("substrait/proto", package = "substrait"),
-    "\\.proto$", recursive = TRUE
+    "\\.proto$",
+    recursive = TRUE
   )
 
   RProtoBuf::readProtoFiles2(

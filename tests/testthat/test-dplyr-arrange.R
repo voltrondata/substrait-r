@@ -6,7 +6,6 @@ skip_if_not(has_arrow_with_substrait())
 tbl <- slice_sample(example_data, prop = 1L)
 
 test_that("arrange() on integer, double, and character columns", {
-
   compare_dplyr_binding(
     # skip("dplyr::arrange() doesn't currently work in Arrow via Substrait: https://github.com/voltrondata/substrait-r/issues/68")
     engine = "duckdb",
@@ -158,11 +157,9 @@ test_that("arrange() on integer, double, and character columns", {
       collect(),
     example_data
   )
-
 })
 
 test_that("arrange() on datetime columns", {
-
   skip("datetime types not yet supported: https://github.com/voltrondata/substrait-r/issues/124")
   compare_dplyr_binding(
     .input %>%
@@ -259,5 +256,4 @@ test_that("arrange() with bad inputs", {
     "not found",
     fixed = TRUE
   )
-
 })

@@ -5,8 +5,7 @@ as_substrait.substrait_Expression_Literal <- function(x, .ptype = NULL, ...) {
     .ptype <- x
   }
 
-  switch(
-    make_qualified_name(.ptype),
+  switch(make_qualified_name(.ptype),
     "substrait.Expression" = substrait$Expression$create(literal = x),
     "substrait.Type" = {
       which_literal <- names(x)
@@ -16,8 +15,7 @@ as_substrait.substrait_Expression_Literal <- function(x, .ptype = NULL, ...) {
 
       # a few of these have to be renamed because the field names are
       # inconsistent between substrait.Type and substrait.Expression.Literal
-      guessed_type <- switch(
-        which_literal,
+      guessed_type <- switch(which_literal,
         boolean = "bool_",
         which_literal
       )
@@ -27,7 +25,7 @@ as_substrait.substrait_Expression_Literal <- function(x, .ptype = NULL, ...) {
         stopifnot(identical(requested_type, guessed_type))
       }
 
-      rlang::exec(substrait$Type$create, !! guessed_type := substrait_proto_auto())
+      rlang::exec(substrait$Type$create, !!guessed_type := substrait_proto_auto())
     },
     NextMethod()
   )
@@ -40,8 +38,7 @@ as_substrait.data.frame <- function(x, .ptype = NULL, ...) {
   }
 
   .qualified_name <- make_qualified_name(.ptype)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.NamedStruct" = {
       types <- lapply(x, as_substrait, "substrait.Type")
       substrait$NamedStruct$create(
@@ -59,8 +56,7 @@ as_substrait.data.frame <- function(x, .ptype = NULL, ...) {
 from_substrait.data.frame <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
 
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.NamedStruct" = {
       if (length(x) == 0) {
         ptype <- rep_len(list(vctrs::unspecified()), length(msg$names))
@@ -84,16 +80,14 @@ from_substrait.data.frame <- function(msg, x, ...) {
 from_substrait.vctrs_unspecified <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
 
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.Type" = {
       type <- names(msg)
       if (length(type) == 0) {
         return(vctrs::unspecified())
       }
 
-      switch(
-        type,
+      switch(type,
         "bool_" = logical(),
         "i32" = integer(),
         "fp64" = double(),
@@ -124,8 +118,7 @@ as_substrait.double <- function(x, .ptype = NULL, ...) {
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
@@ -138,8 +131,7 @@ as_substrait.double <- function(x, .ptype = NULL, ...) {
       NextMethod()
     )
   } else {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
@@ -171,8 +163,7 @@ as_substrait.integer <- function(x, .ptype = NULL, ...) {
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
@@ -185,8 +176,7 @@ as_substrait.integer <- function(x, .ptype = NULL, ...) {
       NextMethod()
     )
   } else {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
@@ -218,8 +208,7 @@ as_substrait.logical <- function(x, .ptype = NULL, ...) {
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
@@ -232,8 +221,7 @@ as_substrait.logical <- function(x, .ptype = NULL, ...) {
       NextMethod()
     )
   } else {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
@@ -265,8 +253,7 @@ as_substrait.character <- function(x, .ptype = NULL, ...) {
   }
 
   if (length(x) == 1 && !("list" %in% names(.ptype))) {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         if (is.na(x) && !is.nan(x)) {
           substrait$Expression$Literal$create(
@@ -279,8 +266,7 @@ as_substrait.character <- function(x, .ptype = NULL, ...) {
       NextMethod()
     )
   } else {
-    switch(
-      .qualified_name,
+    switch(.qualified_name,
       "substrait.Expression.Literal" = {
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
@@ -296,8 +282,7 @@ as_substrait.character <- function(x, .ptype = NULL, ...) {
 #' @export
 from_substrait.double <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.Type" = {
       type <- names(msg)
       if (length(type) == 0) {
@@ -319,8 +304,7 @@ from_substrait.double <- function(msg, x, ...) {
     },
     "substrait.Expression.Literal" = {
       lst <- as.list(msg)
-      switch(
-        names(lst)[1],
+      switch(names(lst)[1],
         "null" = NA_real_,
         "list" = {
           vapply(lst$list$values, from_substrait, double(1), double())
@@ -335,8 +319,7 @@ from_substrait.double <- function(msg, x, ...) {
 #' @export
 from_substrait.integer <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.Type" = {
       type <- names(msg)
       if (length(type) == 0) {
@@ -358,8 +341,7 @@ from_substrait.integer <- function(msg, x, ...) {
     },
     "substrait.Expression.Literal" = {
       lst <- as.list(msg)
-      switch(
-        names(lst)[1],
+      switch(names(lst)[1],
         "null" = NA_integer_,
         "list" = {
           vapply(lst$list$values, from_substrait, integer(1), integer())
@@ -374,8 +356,7 @@ from_substrait.integer <- function(msg, x, ...) {
 #' @export
 from_substrait.logical <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.Type" = {
       type <- names(msg)
       if (length(type) == 0) {
@@ -397,8 +378,7 @@ from_substrait.logical <- function(msg, x, ...) {
     },
     "substrait.Expression.Literal" = {
       lst <- as.list(msg)
-      switch(
-        names(lst)[1],
+      switch(names(lst)[1],
         "null" = NA,
         "list" = {
           vapply(lst$list$values, from_substrait, logical(1), logical())
@@ -413,8 +393,7 @@ from_substrait.logical <- function(msg, x, ...) {
 #' @export
 from_substrait.character <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.Type" = {
       type <- names(msg)
       if (length(type) == 0) {
@@ -436,8 +415,7 @@ from_substrait.character <- function(msg, x, ...) {
     },
     "substrait.Expression.Literal" = {
       lst <- as.list(msg)
-      switch(
-        names(lst)[1],
+      switch(names(lst)[1],
         "null" = NA_character_,
         "list" = {
           vapply(lst$list$values, from_substrait, character(1), character())

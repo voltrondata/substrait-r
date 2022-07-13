@@ -75,35 +75,37 @@ has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
     return(FALSE)
   }
 
-  duckdb_works_cache$works <- tryCatch({
-    query_duckdb_with_substrait(
-      query_duckdb_with_substrait("CALL from_substrait()"),
-      lib = lib
-    )
-    TRUE
-  },
-  error = function(e) {
-    from_substrait_exists <- grepl(
-      "from_substrait\\(BLOB\\)",
-      conditionMessage(e)
-    )
-
-    error_is_from_us <- grepl(
-      "there is no package called 'duckdb'",
-      conditionMessage(e)
-    )
-
-    if (from_substrait_exists) {
-      TRUE
-    } else if (error_is_from_us) {
-      FALSE
-    } else {
-      rlang::abort(
-        "An unexpected error occured whilst querying Substrait-enabled duckdb",
-        parent = e
+  duckdb_works_cache$works <- tryCatch(
+    {
+      query_duckdb_with_substrait(
+        query_duckdb_with_substrait("CALL from_substrait()"),
+        lib = lib
       )
+      TRUE
+    },
+    error = function(e) {
+      from_substrait_exists <- grepl(
+        "from_substrait\\(BLOB\\)",
+        conditionMessage(e)
+      )
+
+      error_is_from_us <- grepl(
+        "there is no package called 'duckdb'",
+        conditionMessage(e)
+      )
+
+      if (from_substrait_exists) {
+        TRUE
+      } else if (error_is_from_us) {
+        FALSE
+      } else {
+        rlang::abort(
+          "An unexpected error occured whilst querying Substrait-enabled duckdb",
+          parent = e
+        )
+      }
     }
-  })
+  )
 
   duckdb_works_cache$works
 }
@@ -121,7 +123,7 @@ query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
   temp_parquet <- vapply(tables, function(i) tempfile(), character(1))
   on.exit(unlink(c(sink, temp_parquet)))
   for (i in seq_along(tables)) {
-    arrow::write_parquet(tables[[i]], temp_parquet[i]);
+    arrow::write_parquet(tables[[i]], temp_parquet[i])
   }
 
   fun <- function(sql, sink, dbdir, lib, temp_parquet) {
@@ -236,7 +238,8 @@ duckdb_substrait_compiler <- function(object, ...) {
 }
 
 DuckDBSubstraitCompiler <- R6::R6Class(
-  "DuckDBSubstraitCompiler", inherit = SubstraitCompiler,
+  "DuckDBSubstraitCompiler",
+  inherit = SubstraitCompiler,
   public = list(
     resolve_function = function(name, args, template) {
       # Note that this is a quick-and-dirty implementation designed to help
@@ -251,8 +254,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
       # Note: super$resolve_function() will skip any custom things we do here,
       # whereas self$resolve_function() will apply translations as we
       # implement them here.
-      switch(
-        name,
+      switch(name,
         "==" = super$resolve_function("equal", args, template),
         "!=" = super$resolve_function("not_equal", args, template),
         ">=" = super$resolve_function("gte", args, template),
@@ -377,11 +379,11 @@ DuckDBSubstraitCompiler <- R6::R6Class(
         "^" = ,
         "sum" = super$resolve_function(name, args, template),
         rlang::abort(
-          paste0('could not find function "',  name, '"')
+          paste0('could not find function "', name, '"')
         )
       )
     },
-    validate = function(){
+    validate = function() {
       super$validate()
       # DuckDB backend doesn't accept empty SELECT clause
       if (length(self$schema$names) == 0) {

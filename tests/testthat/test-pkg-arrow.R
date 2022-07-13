@@ -158,19 +158,19 @@ test_that("from_substrait() works for arrow DataType", {
   )
   expect_true(
     from_substrait(substrait_boolean(), arrow::null()) ==
-    arrow::bool()
+      arrow::bool()
   )
   expect_true(
     from_substrait(substrait_i32(), arrow::null()) ==
-    arrow::int32()
+      arrow::int32()
   )
   expect_true(
     from_substrait(substrait_fp64(), arrow::null()) ==
-    arrow::float64()
+      arrow::float64()
   )
   expect_true(
     from_substrait(substrait_string(), arrow::null()) ==
-    arrow::string()
+      arrow::string()
   )
 
   expect_error(

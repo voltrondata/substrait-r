@@ -1,6 +1,7 @@
 
 ArrowSubstraitCompiler <- R6::R6Class(
-  "ArrowSubstraitCompiler", inherit = SubstraitCompiler,
+  "ArrowSubstraitCompiler",
+  inherit = SubstraitCompiler,
   public = list(
     resolve_function = function(name, args, template) {
       # To get started, just replace the name of the function with the
@@ -40,13 +41,12 @@ ArrowSubstraitCompiler <- R6::R6Class(
         name <- unname(binary_map[[name]])
       } else {
         rlang::abort(
-          paste0('could not find function "',  name, '"')
+          paste0('could not find function "', name, '"')
         )
       }
 
       super$resolve_function(name, args, template)
     },
-
     evaluate = function(...) {
       plan <- self$plan()
 
@@ -88,12 +88,10 @@ as_substrait.DataType <- function(x, .ptype = NULL, ...) {
   }
 
   .qualified_name <- make_qualified_name(.ptype)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.Type" = {
       type_name <- names(arrow::Type)[x$id + 1L]
-      switch(
-        type_name,
+      switch(type_name,
         "BOOL" = substrait_boolean(),
         "INT32" = substrait_i32(),
         "DOUBLE" = substrait_fp64(),
@@ -109,16 +107,14 @@ as_substrait.DataType <- function(x, .ptype = NULL, ...) {
 from_substrait.DataType <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
 
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.Type" = {
       type <- names(msg)
       if (length(type) == 0) {
         return(arrow::null())
       }
 
-      arrow_type_guessed <- switch(
-        type,
+      arrow_type_guessed <- switch(type,
         "bool_" = arrow::bool(),
         "i32" = arrow::int32(),
         "fp64" = arrow::float64(),
@@ -148,8 +144,7 @@ as_substrait.Schema <- function(x, .ptype = NULL, ...) {
   }
 
   .qualified_name <- make_qualified_name(.ptype)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.NamedStruct" = {
       types <- lapply(
         x$names,
@@ -174,8 +169,7 @@ as_substrait.ArrowTabular <- function(x, .ptype = NULL, ...) {
   }
 
   .qualified_name <- make_qualified_name(.ptype)
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.NamedStruct" = as_substrait(x$schema, .ptype, ...),
     NextMethod()
   )
@@ -185,8 +179,7 @@ as_substrait.ArrowTabular <- function(x, .ptype = NULL, ...) {
 from_substrait.Schema <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
 
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.NamedStruct" = {
       if (length(x) == 0) {
         ptype <- rep_len(list(arrow::null()), length(msg$names))
@@ -199,7 +192,7 @@ from_substrait.Schema <- function(msg, x, ...) {
       stopifnot(identical(names(ptype), msg$names))
       ptype <- Map(from_substrait, msg$struct_$types, ptype)
       names(ptype) <- msg$names
-      arrow::schema(!!! ptype)
+      arrow::schema(!!!ptype)
     },
     NextMethod()
   )
@@ -209,8 +202,7 @@ from_substrait.Schema <- function(msg, x, ...) {
 from_substrait.RecordBatch <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
 
-  switch(
-    .qualified_name,
+  switch(.qualified_name,
     "substrait.NamedStruct" = {
       schema <- from_substrait(msg, arrow::schema())
       empty <- x[character()]$Take(integer())

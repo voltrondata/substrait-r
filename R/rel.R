@@ -1,7 +1,6 @@
 
 substrait_rel_schema <- function(x) {
-  switch(
-    class(x)[1],
+  switch(class(x)[1],
     "substrait_ReadRel" = x$base_schema,
     "substrait_FilterRel" = ,
     "substrait_SortRel" = substrait_rel_schema(x$input),
@@ -17,8 +16,7 @@ substrait_rel_schema <- function(x) {
 }
 
 substrait_rel_mask <- function(x) {
-  switch(
-    class(x)[1],
+  switch(class(x)[1],
     "substrait_ReadRel" = {
       schema <- substrait_rel_schema(x)
       mask <- lapply(
@@ -41,7 +39,7 @@ rel_tree_modify <- function(x, classes = character(), fun = identity) {
     fun(x)
   } else if (inherits(x, "substrait_proto_message")) {
     x_items <- lapply(x, rel_tree_modify, classes, fun)
-    substrait_create(make_qualified_name(x), !!! x_items)
+    substrait_create(make_qualified_name(x), !!!x_items)
   } else if (rlang::is_bare_list(x)) {
     lapply(x, rel_tree_modify, classes, fun)
   } else {
