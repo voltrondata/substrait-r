@@ -118,35 +118,11 @@ mutate.SubstraitCompiler <- function(.data, ...,
                                      .keep = c("all", "used", "unused", "none")) {
   .keep <- match.arg(.keep)
   mask <- .data$mask
+
+  cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
+
   out <- substrait_project(.data, !!!mask, ...)
-
-  if (.keep == "all") {
-    return(out)
-  }
-
-  # extract symbols used in ...
-  expressions <- rlang::exprs(..., .named = TRUE)
-  symbols_in_expressions <- unlist(lapply(expressions, get_symbols), use.names = FALSE)
-
-  all_cols <- names(out$mask)
-  new_cols <- names(expressions)
-
-  used_cols <- as.character(symbols_in_expressions)
-  unused_cols <- setdiff(all_cols, used_cols)
-
-  if (.keep == "used") {
-    keep_used <- all_cols[all_cols %in% c(used_cols, new_cols)]
-    return(substrait_project(out, !!!syms(keep_used)))
-
-  } else if (.keep == "unused") {
-    keep_unused <- all_cols[all_cols %in% c(unused_cols, new_cols)]
-    return(substrait_project(out, !!!syms(keep_unused)))
-
-  } else if (.keep == "none") {
-    keep_none <- all_cols[all_cols %in% new_cols]
-    return(substrait_project(out, !!!syms(keep_none)))
-
-  }
+  substrait_project(out, !!!syms(cols), ...)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -356,30 +332,4 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
   if (!missing(.after)) {
     abort("The `.after` argument is not supported.", call = error_call)
   }
-}
-
-get_symbols <- function(expression) {
-  symbols <- list()
-
-  if (rlang::is_syntactic_literal(expression)) {
-    return(NULL)
-  }
-
-  if (rlang::is_symbol(expression)) {
-    return(expression)
-  }
-
-  if (rlang::is_symbol(expression[[2]])) {
-    symbols <- c(symbols, expression[[2]])
-  } else {
-    symbols <- c(symbols, get_symbols(expression[[2]]))
-  }
-
-  if (rlang::is_symbol(expression[[3]])) {
-    symbols <- c(symbols, expression[[3]])
-  } else {
-    symbols <- c(symbols, get_symbols(expression[[3]]))
-  }
-
-  symbols
 }
