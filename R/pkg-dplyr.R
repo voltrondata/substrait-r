@@ -119,9 +119,13 @@ mutate.SubstraitCompiler <- function(.data, ...,
   .keep <- match.arg(.keep)
   mask <- .data$mask
 
-  cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
-
   out <- substrait_project(.data, !!!mask, ...)
+  if (.keep == "all") {
+    return(out)
+  }
+
+  # if only keeping a subset of columns, work out which and project again
+  cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
   substrait_project(out, !!!syms(cols), ...)
 }
 
