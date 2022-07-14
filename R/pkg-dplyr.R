@@ -126,7 +126,7 @@ mutate.SubstraitCompiler <- function(.data, ...,
 
   # if only keeping a subset of columns, work out which and project again
   cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
-  substrait_project(out, !!!syms(cols), ...)
+  substrait_project(out, !!!exprs(cols), ...)
 }
 
 #' @rdname select.SubstraitCompiler
