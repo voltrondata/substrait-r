@@ -18,6 +18,7 @@
 #' @param .fn Function to transform selected `.cols`; see[dplyr::rename_with()]
 #' @param .before Destination of columns to move; see [dplyr::relocate()]
 #' @param .after Destination of columns to move; see [dplyr::relocate()]
+#' @param .keep Which columns are retained in output; see [dplyr::mutate()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -112,9 +113,19 @@ filter.SubstraitCompiler <- function(.data, ...) {
 #' @rdname select.SubstraitCompiler
 #' @importFrom dplyr mutate
 #' @export
-mutate.SubstraitCompiler <- function(.data, ...) {
+mutate.SubstraitCompiler <- function(.data, ...,
+                                     .keep = c("all", "used", "unused", "none")) {
+  .keep <- match.arg(.keep)
   mask <- .data$mask
-  substrait_project(.data, !!!mask, ...)
+
+  out <- substrait_project(.data, !!!mask, ...)
+  if (.keep == "all") {
+    return(out)
+  }
+
+  # if only keeping a subset of columns, work out which and project again
+  cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
+  substrait_project(out, !!!out$mask[cols], !!!rlang::syms(cols))
 }
 
 #' @rdname select.SubstraitCompiler

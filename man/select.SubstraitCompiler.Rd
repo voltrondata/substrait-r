@@ -24,7 +24,7 @@
 
 \method{filter}{SubstraitCompiler}(.data, ...)
 
-\method{mutate}{SubstraitCompiler}(.data, ...)
+\method{mutate}{SubstraitCompiler}(.data, ..., .keep = c("all", "used", "unused", "none"))
 
 \method{transmute}{SubstraitCompiler}(.data, ...)
 
@@ -58,6 +58,8 @@
 \item{.fn}{Function to transform selected \code{.cols}; see\code{\link[dplyr:rename]{dplyr::rename_with()}}}
 
 \item{.cols}{Columns to rename; see\code{\link[dplyr:rename]{dplyr::rename_with()}}}
+
+\item{.keep}{Which columns are retained in output; see \code{\link[dplyr:mutate]{dplyr::mutate()}}}
 
 \item{.by_group}{sort by grouping variable? see\code{\link[dplyr:arrange]{dplyr::arrange()}}}
 
