@@ -12,7 +12,7 @@ option java_package = "io.substrait.proto";
 
 message DerivationExpression {
   oneof kind {
-    Type.Boolean bool = 1;
+    Type.Boolean bool_ = 1;
     Type.I8 i8 = 2;
     Type.I16 i16 = 3;
     Type.I32 i32 = 5;
@@ -34,7 +34,7 @@ message DerivationExpression {
     ExpressionFixedBinary fixed_binary = 23;
     ExpressionDecimal decimal = 24;
 
-    ExpressionStruct struct = 25;
+    ExpressionStruct struct_ = 25;
     ExpressionList list = 27;
     ExpressionMap map = 28;
 
@@ -51,7 +51,7 @@ message DerivationExpression {
     int32 integer_literal = 35;
     UnaryOp unary_op = 36;
     BinaryOp binary_op = 37;
-    IfElse if_else = 38;
+    IfElse if_else_ = 38;
     ReturnProgram return_program = 39;
   }
 
@@ -88,7 +88,7 @@ message DerivationExpression {
 
   message ExpressionNamedStruct {
     repeated string names = 1;
-    ExpressionStruct struct = 2;
+    ExpressionStruct struct_ = 2;
   }
 
   message ExpressionList {

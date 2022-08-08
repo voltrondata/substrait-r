@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package substrait;
 
-import "google/protobuf/any.proto";
+import "substrait/any.proto";
 import "google/protobuf/empty.proto";
 import "substrait/extensions/extensions.proto";
 import "substrait/type.proto";
@@ -86,7 +86,7 @@ message ReadRel {
   // A stub type that can be used to extend/introduce new table types outside
   // the specification.
   message ExtensionTable {
-    google.protobuf.Any detail = 1;
+    Any detail = 1;
   }
 
   // Represents a list of files in input of a scan operation
@@ -136,7 +136,7 @@ message ReadRel {
         ParquetReadOptions parquet = 9;
         ArrowReadOptions arrow = 10;
         OrcReadOptions orc = 11;
-        google.protobuf.Any extension = 12;
+        Any extension = 12;
       }
     }
   }
@@ -264,20 +264,20 @@ message SetRel {
 message ExtensionSingleRel {
   RelCommon common = 1;
   Rel input = 2;
-  google.protobuf.Any detail = 3;
+  Any detail = 3;
 }
 
 // Stub to support extension with a zero inputs
 message ExtensionLeafRel {
   RelCommon common = 1;
-  google.protobuf.Any detail = 2;
+  Any detail = 2;
 }
 
 // Stub to support extension with multiple inputs
 message ExtensionMultiRel {
   RelCommon common = 1;
   repeated Rel inputs = 2;
-  google.protobuf.Any detail = 3;
+  Any detail = 3;
 }
 
 // A redistribution operation
@@ -331,7 +331,7 @@ message ExchangeRel {
 
     oneof target_type {
       string uri = 2;
-      google.protobuf.Any extended = 3;
+      Any extended = 3;
     }
   }
 }
@@ -367,7 +367,7 @@ message Rel {
 // The argument of a function
 message FunctionArgument {
   oneof arg_type {
-    Enum enum = 1;
+    Enum enum_ = 1;
     Type type = 2;
     Expression value = 3;
   }
@@ -384,8 +384,8 @@ message Expression {
   oneof rex_type {
     Literal literal = 1;
     FieldReference selection = 2;
-    ScalarFunction scalar_function = 3;
-    WindowFunction window_function = 5;
+    ScalarFunction scalar_function_ = 3;
+    WindowFunction window_function_ = 5;
     IfThen if_then = 6;
     SwitchExpression switch_expression = 7;
     SingularOrList singular_or_list = 8;
@@ -435,7 +435,7 @@ message Expression {
       VarChar var_char = 22;
       bytes fixed_binary = 23;
       Decimal decimal = 24;
-      Struct struct = 25;
+      Struct struct_ = 25;
       Map map = 26;
       // Timestamp in units of microseconds since the UNIX epoch.
       int64 timestamp_tz = 27;
@@ -509,7 +509,7 @@ message Expression {
 
       // the value of the literal, serialized using some type-specific
       // protobuf message
-      google.protobuf.Any value = 2;
+      Any value = 2;
     }
   }
 
@@ -561,10 +561,10 @@ message Expression {
 
   message IfThen {
     repeated IfClause ifs = 1;
-    Expression else = 2;
+    Expression else_ = 2;
 
     message IfClause {
-      Expression if = 1;
+      Expression if_ = 1;
       Expression then = 2;
     }
   }
@@ -584,10 +584,10 @@ message Expression {
   message SwitchExpression {
     Expression match = 3;
     repeated IfValue ifs = 1;
-    Expression else = 2;
+    Expression else_ = 2;
 
     message IfValue {
-      Literal if = 1;
+      Literal if_ = 1;
       Expression then = 2;
     }
   }
@@ -610,12 +610,12 @@ message Expression {
     repeated Expression arguments = 1;
     Type output_type = 2;
     oneof kind {
-      PythonPickleFunction python_pickle_function = 3;
-      WebAssemblyFunction web_assembly_function = 4;
+      PythonPickleFunction python_pickle_function_ = 3;
+      WebAssemblyFunction web_assembly_function_ = 4;
     }
 
     message PythonPickleFunction {
-      bytes function = 1;
+      bytes function_ = 1;
       repeated string prerequisite = 2;
     }
 
@@ -675,11 +675,11 @@ message Expression {
   // the elimination of unecessary elements.
   message MaskExpression {
     StructSelect select = 1;
-    bool maintain_singular_struct = 2;
+    bool maintain_singular_struct_ = 2;
 
     message Select {
       oneof type {
-        StructSelect struct = 1;
+        StructSelect struct_ = 1;
         ListSelect list = 2;
         MapSelect map = 3;
       }

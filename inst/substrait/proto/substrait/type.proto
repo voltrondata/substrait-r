@@ -10,7 +10,7 @@ option java_package = "io.substrait.proto";
 
 message Type {
   oneof kind {
-    Boolean bool = 1;
+    Boolean bool_ = 1;
     I8 i8 = 2;
     I16 i16 = 3;
     I32 i32 = 5;
@@ -32,7 +32,7 @@ message Type {
     FixedBinary fixed_binary = 23;
     Decimal decimal = 24;
 
-    Struct struct = 25;
+    Struct struct_ = 25;
     List list = 27;
     Map map = 28;
 
@@ -205,5 +205,5 @@ message Type {
 message NamedStruct {
   // list of names in dfs order
   repeated string names = 1;
-  Type.Struct struct = 2;
+  Type.Struct struct_ = 2;
 }
