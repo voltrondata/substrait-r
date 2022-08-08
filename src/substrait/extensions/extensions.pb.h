@@ -23,7 +23,7 @@ typedef struct _substrait_extensions_SimpleExtensionDeclaration {
     union {
         struct _substrait_extensions_SimpleExtensionDeclaration_ExtensionType *extension_type;
         struct _substrait_extensions_SimpleExtensionDeclaration_ExtensionTypeVariation *extension_type_variation;
-        struct _substrait_extensions_SimpleExtensionDeclaration_ExtensionFunction *extension_function_;
+        struct _substrait_extensions_SimpleExtensionDeclaration_ExtensionFunction *extension_function;
     } mapping_type;
 } substrait_extensions_SimpleExtensionDeclaration;
 
@@ -83,7 +83,7 @@ extern "C" {
 #define substrait_extensions_AdvancedExtension_enhancement_tag 2
 #define substrait_extensions_SimpleExtensionDeclaration_extension_type_tag 1
 #define substrait_extensions_SimpleExtensionDeclaration_extension_type_variation_tag 2
-#define substrait_extensions_SimpleExtensionDeclaration_extension_function__tag 3
+#define substrait_extensions_SimpleExtensionDeclaration_extension_function_tag 3
 #define substrait_extensions_SimpleExtensionDeclaration_ExtensionFunction_extension_uri_reference_tag 1
 #define substrait_extensions_SimpleExtensionDeclaration_ExtensionFunction_function_anchor_tag 2
 #define substrait_extensions_SimpleExtensionDeclaration_ExtensionFunction_name_tag 3
@@ -106,12 +106,12 @@ X(a, POINTER,  SINGULAR, STRING,   uri,               2)
 #define substrait_extensions_SimpleExtensionDeclaration_FIELDLIST(X, a) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (mapping_type,extension_type,mapping_type.extension_type),   1) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (mapping_type,extension_type_variation,mapping_type.extension_type_variation),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (mapping_type,extension_function_,mapping_type.extension_function_),   3)
+X(a, POINTER,  ONEOF,    MESSAGE,  (mapping_type,extension_function,mapping_type.extension_function),   3)
 #define substrait_extensions_SimpleExtensionDeclaration_CALLBACK NULL
 #define substrait_extensions_SimpleExtensionDeclaration_DEFAULT NULL
 #define substrait_extensions_SimpleExtensionDeclaration_mapping_type_extension_type_MSGTYPE substrait_extensions_SimpleExtensionDeclaration_ExtensionType
 #define substrait_extensions_SimpleExtensionDeclaration_mapping_type_extension_type_variation_MSGTYPE substrait_extensions_SimpleExtensionDeclaration_ExtensionTypeVariation
-#define substrait_extensions_SimpleExtensionDeclaration_mapping_type_extension_function__MSGTYPE substrait_extensions_SimpleExtensionDeclaration_ExtensionFunction
+#define substrait_extensions_SimpleExtensionDeclaration_mapping_type_extension_function_MSGTYPE substrait_extensions_SimpleExtensionDeclaration_ExtensionFunction
 
 #define substrait_extensions_SimpleExtensionDeclaration_ExtensionType_FIELDLIST(X, a) \
 X(a, POINTER,  SINGULAR, UINT32,   extension_uri_reference,   1) \

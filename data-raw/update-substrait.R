@@ -78,8 +78,8 @@ for (f in file.path("inst/substrait/proto", proto_files)) {
       "substrait/any.proto"
     ) |>
     stringr::str_replace_all(
-      "(enum|struct|if|else|bool|function)(\\s*=\\s*[0-9]+;)",
-      "\\1_\\2"
+      "(\\s+)(enum|struct|if|else|bool|function)(\\s*=\\s*[0-9]+;)",
+      "\\1\\2_\\3"
     ) |>
     readr::write_file(f)
 }

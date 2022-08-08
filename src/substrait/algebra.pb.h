@@ -181,8 +181,8 @@ typedef struct _substrait_Expression {
     union {
         struct _substrait_Expression_Literal *literal;
         struct _substrait_Expression_FieldReference *selection;
-        struct _substrait_Expression_ScalarFunction *scalar_function_;
-        struct _substrait_Expression_WindowFunction *window_function_;
+        struct _substrait_Expression_ScalarFunction *scalar_function;
+        struct _substrait_Expression_WindowFunction *window_function;
         struct _substrait_Expression_IfThen *if_then;
         struct _substrait_Expression_SwitchExpression *switch_expression;
         struct _substrait_Expression_SingularOrList *singular_or_list;
@@ -205,8 +205,8 @@ typedef struct _substrait_Expression_EmbeddedFunction {
     struct _substrait_Type *output_type;
     pb_size_t which_kind;
     union {
-        struct _substrait_Expression_EmbeddedFunction_PythonPickleFunction *python_pickle_function_;
-        struct _substrait_Expression_EmbeddedFunction_WebAssemblyFunction *web_assembly_function_;
+        struct _substrait_Expression_EmbeddedFunction_PythonPickleFunction *python_pickle_function;
+        struct _substrait_Expression_EmbeddedFunction_WebAssemblyFunction *web_assembly_function;
     } kind;
 } substrait_Expression_EmbeddedFunction;
 
@@ -1070,8 +1070,8 @@ extern "C" {
 #define substrait_ExchangeRel_SingleBucketExpression_expression_tag 1
 #define substrait_Expression_literal_tag         1
 #define substrait_Expression_selection_tag       2
-#define substrait_Expression_scalar_function__tag 3
-#define substrait_Expression_window_function__tag 5
+#define substrait_Expression_scalar_function_tag 3
+#define substrait_Expression_window_function_tag 5
 #define substrait_Expression_if_then_tag         6
 #define substrait_Expression_switch_expression_tag 7
 #define substrait_Expression_singular_or_list_tag 8
@@ -1084,8 +1084,8 @@ extern "C" {
 #define substrait_Expression_Cast_failure_behavior_tag 3
 #define substrait_Expression_EmbeddedFunction_arguments_tag 1
 #define substrait_Expression_EmbeddedFunction_output_type_tag 2
-#define substrait_Expression_EmbeddedFunction_python_pickle_function__tag 3
-#define substrait_Expression_EmbeddedFunction_web_assembly_function__tag 4
+#define substrait_Expression_EmbeddedFunction_python_pickle_function_tag 3
+#define substrait_Expression_EmbeddedFunction_web_assembly_function_tag 4
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_function__tag 1
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_prerequisite_tag 2
 #define substrait_Expression_EmbeddedFunction_WebAssemblyFunction_script_tag 1
@@ -1705,8 +1705,8 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (enum_kind,unspecified,enum_kind.unspecified)
 #define substrait_Expression_FIELDLIST(X, a) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,literal,rex_type.literal),   1) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,selection,rex_type.selection),   2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,scalar_function_,rex_type.scalar_function_),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,window_function_,rex_type.window_function_),   5) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,scalar_function,rex_type.scalar_function),   3) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,window_function,rex_type.window_function),   5) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,if_then,rex_type.if_then),   6) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,switch_expression,rex_type.switch_expression),   7) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,singular_or_list,rex_type.singular_or_list),   8) \
@@ -1718,8 +1718,8 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,subquery,rex_type.subquery),  12)
 #define substrait_Expression_DEFAULT NULL
 #define substrait_Expression_rex_type_literal_MSGTYPE substrait_Expression_Literal
 #define substrait_Expression_rex_type_selection_MSGTYPE substrait_Expression_FieldReference
-#define substrait_Expression_rex_type_scalar_function__MSGTYPE substrait_Expression_ScalarFunction
-#define substrait_Expression_rex_type_window_function__MSGTYPE substrait_Expression_WindowFunction
+#define substrait_Expression_rex_type_scalar_function_MSGTYPE substrait_Expression_ScalarFunction
+#define substrait_Expression_rex_type_window_function_MSGTYPE substrait_Expression_WindowFunction
 #define substrait_Expression_rex_type_if_then_MSGTYPE substrait_Expression_IfThen
 #define substrait_Expression_rex_type_switch_expression_MSGTYPE substrait_Expression_SwitchExpression
 #define substrait_Expression_rex_type_singular_or_list_MSGTYPE substrait_Expression_SingularOrList
@@ -1974,14 +1974,14 @@ X(a, POINTER,  REPEATED, MESSAGE,  fields,            1)
 #define substrait_Expression_EmbeddedFunction_FIELDLIST(X, a) \
 X(a, POINTER,  REPEATED, MESSAGE,  arguments,         1) \
 X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       2) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,python_pickle_function_,kind.python_pickle_function_),   3) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,web_assembly_function_,kind.web_assembly_function_),   4)
+X(a, POINTER,  ONEOF,    MESSAGE,  (kind,python_pickle_function,kind.python_pickle_function),   3) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (kind,web_assembly_function,kind.web_assembly_function),   4)
 #define substrait_Expression_EmbeddedFunction_CALLBACK NULL
 #define substrait_Expression_EmbeddedFunction_DEFAULT NULL
 #define substrait_Expression_EmbeddedFunction_arguments_MSGTYPE substrait_Expression
 #define substrait_Expression_EmbeddedFunction_output_type_MSGTYPE substrait_Type
-#define substrait_Expression_EmbeddedFunction_kind_python_pickle_function__MSGTYPE substrait_Expression_EmbeddedFunction_PythonPickleFunction
-#define substrait_Expression_EmbeddedFunction_kind_web_assembly_function__MSGTYPE substrait_Expression_EmbeddedFunction_WebAssemblyFunction
+#define substrait_Expression_EmbeddedFunction_kind_python_pickle_function_MSGTYPE substrait_Expression_EmbeddedFunction_PythonPickleFunction
+#define substrait_Expression_EmbeddedFunction_kind_web_assembly_function_MSGTYPE substrait_Expression_EmbeddedFunction_WebAssemblyFunction
 
 #define substrait_Expression_EmbeddedFunction_PythonPickleFunction_FIELDLIST(X, a) \
 X(a, POINTER,  SINGULAR, BYTES,    function_,         1) \

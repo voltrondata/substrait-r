@@ -383,8 +383,8 @@ message Expression {
   oneof rex_type {
     Literal literal = 1;
     FieldReference selection = 2;
-    ScalarFunction scalar_function_ = 3;
-    WindowFunction window_function_ = 5;
+    ScalarFunction scalar_function = 3;
+    WindowFunction window_function = 5;
     IfThen if_then = 6;
     SwitchExpression switch_expression = 7;
     SingularOrList singular_or_list = 8;
@@ -609,8 +609,8 @@ message Expression {
     repeated Expression arguments = 1;
     Type output_type = 2;
     oneof kind {
-      PythonPickleFunction python_pickle_function_ = 3;
-      WebAssemblyFunction web_assembly_function_ = 4;
+      PythonPickleFunction python_pickle_function = 3;
+      WebAssemblyFunction web_assembly_function = 4;
     }
 
     message PythonPickleFunction {

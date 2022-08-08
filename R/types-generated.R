@@ -201,13 +201,13 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., arguments = unspecified(), output_type = unspecified(), python_pickle_function_ = unspecified(), web_assembly_function_ = unspecified()) {
+      create = function(..., arguments = unspecified(), output_type = unspecified(), python_pickle_function = unspecified(), web_assembly_function = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
-          python_pickle_function_ = clean_value(python_pickle_function_, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.PythonPickleFunction", repeated = FALSE),
-          web_assembly_function_ = clean_value(web_assembly_function_, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.WebAssemblyFunction", repeated = FALSE),
+          python_pickle_function = clean_value(python_pickle_function, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.PythonPickleFunction", repeated = FALSE),
+          web_assembly_function = clean_value(web_assembly_function, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.WebAssemblyFunction", repeated = FALSE),
           .qualified_name = "substrait.Expression.EmbeddedFunction"
         )
       }
@@ -762,13 +762,13 @@ substrait <- list(
         )
       }
     ),
-    create = function(..., literal = unspecified(), selection = unspecified(), scalar_function_ = unspecified(), window_function_ = unspecified(), if_then = unspecified(), switch_expression = unspecified(), singular_or_list = unspecified(), multi_or_list = unspecified(), cast = unspecified(), subquery = unspecified(), enum_ = unspecified()) {
+    create = function(..., literal = unspecified(), selection = unspecified(), scalar_function = unspecified(), window_function = unspecified(), if_then = unspecified(), switch_expression = unspecified(), singular_or_list = unspecified(), multi_or_list = unspecified(), cast = unspecified(), subquery = unspecified(), enum_ = unspecified()) {
       rlang::check_dots_empty()
       create_substrait_message(
         literal = clean_value(literal, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = FALSE),
         selection = clean_value(selection, "TYPE_MESSAGE", "substrait.Expression.FieldReference", repeated = FALSE),
-        scalar_function_ = clean_value(scalar_function_, "TYPE_MESSAGE", "substrait.Expression.ScalarFunction", repeated = FALSE),
-        window_function_ = clean_value(window_function_, "TYPE_MESSAGE", "substrait.Expression.WindowFunction", repeated = FALSE),
+        scalar_function = clean_value(scalar_function, "TYPE_MESSAGE", "substrait.Expression.ScalarFunction", repeated = FALSE),
+        window_function = clean_value(window_function, "TYPE_MESSAGE", "substrait.Expression.WindowFunction", repeated = FALSE),
         if_then = clean_value(if_then, "TYPE_MESSAGE", "substrait.Expression.IfThen", repeated = FALSE),
         switch_expression = clean_value(switch_expression, "TYPE_MESSAGE", "substrait.Expression.SwitchExpression", repeated = FALSE),
         singular_or_list = clean_value(singular_or_list, "TYPE_MESSAGE", "substrait.Expression.SingularOrList", repeated = FALSE),
@@ -2128,12 +2128,12 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., extension_type = unspecified(), extension_type_variation = unspecified(), extension_function_ = unspecified()) {
+      create = function(..., extension_type = unspecified(), extension_type_variation = unspecified(), extension_function = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           extension_type = clean_value(extension_type, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionType", repeated = FALSE),
           extension_type_variation = clean_value(extension_type_variation, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionTypeVariation", repeated = FALSE),
-          extension_function_ = clean_value(extension_function_, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction", repeated = FALSE),
+          extension_function = clean_value(extension_function, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction", repeated = FALSE),
           .qualified_name = "substrait.extensions.SimpleExtensionDeclaration"
         )
       }
