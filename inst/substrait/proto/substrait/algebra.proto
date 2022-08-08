@@ -4,7 +4,6 @@ syntax = "proto3";
 package substrait;
 
 import "substrait/any.proto";
-import "google/protobuf/empty.proto";
 import "substrait/extensions/extensions.proto";
 import "substrait/type.proto";
 
@@ -375,7 +374,7 @@ message FunctionArgument {
   message Enum {
     oneof enum_kind {
       string specified = 1;
-      google.protobuf.Empty unspecified = 2;
+      Any unspecified = 2;
     }
   }
 }
@@ -396,7 +395,7 @@ message Expression {
     // deprecated: enum literals are only sensible in the context of
     // function arguments, for which FunctionArgument should now be
     // used
-    Enum enum = 10 [deprecated = true];
+    Enum enum_ = 10 [deprecated = true];
   }
 
   message Enum {
