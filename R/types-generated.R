@@ -15,59 +15,167 @@ substrait <- list(
       )
     }
   ),
-  Any = list(
-    create = function(..., type_url = unspecified(), value = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        type_url = clean_value(type_url, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
-        value = clean_value(value, "TYPE_BYTES", "TYPE_BYTES", repeated = FALSE),
-        .qualified_name = "substrait.Any"
-      )
-    }
-  ),
-  Capabilities = list(
-    SimpleExtension = list(
-      create = function(..., uri = unspecified(), function_keys = unspecified(), type_keys = unspecified(), type_variation_keys = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          uri = clean_value(uri, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
-          function_keys = clean_value(function_keys, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-          type_keys = clean_value(type_keys, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-          type_variation_keys = clean_value(type_variation_keys, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-          .qualified_name = "substrait.Capabilities.SimpleExtension"
+  AggregateFunction = list(
+    AggregationInvocation = list(
+      AGGREGATION_INVOCATION_UNSPECIFIED = structure(0L, class = c("substrait_AggregateFunction_AggregationInvocation", "substrait_proto_enum", "substrait_proto")),
+      AGGREGATION_INVOCATION_ALL = structure(1L, class = c("substrait_AggregateFunction_AggregationInvocation", "substrait_proto_enum", "substrait_proto")),
+      AGGREGATION_INVOCATION_DISTINCT = structure(2L, class = c("substrait_AggregateFunction_AggregationInvocation", "substrait_proto_enum", "substrait_proto")),
+      create = function(value) {
+        create_substrait_enum(
+          value,
+          .qualified_name = "substrait.AggregateFunction.AggregationInvocation"
         )
       }
     ),
-    create = function(..., substrait_versions = unspecified(), advanced_extension_type_urls = unspecified(), simple_extensions = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        substrait_versions = clean_value(substrait_versions, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-        advanced_extension_type_urls = clean_value(advanced_extension_type_urls, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-        simple_extensions = clean_value(simple_extensions, "TYPE_MESSAGE", "substrait.Capabilities.SimpleExtension", repeated = TRUE),
-        .qualified_name = "substrait.Capabilities"
-      )
-    }
-  ),
-  AggregateFunction = list(
-    create = function(..., function_reference = unspecified(), args = unspecified(), sorts = unspecified(), phase = unspecified(), output_type = unspecified()) {
+    create = function(..., function_reference = unspecified(), arguments = unspecified(), sorts = unspecified(), phase = unspecified(), output_type = unspecified(), invocation = unspecified(), args = unspecified()) {
       rlang::check_dots_empty()
       create_substrait_message(
         function_reference = clean_value(function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
-        args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
+        arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.FunctionArgument", repeated = TRUE),
         sorts = clean_value(sorts, "TYPE_MESSAGE", "substrait.SortField", repeated = TRUE),
         phase = clean_value(phase, "TYPE_ENUM", "substrait.AggregationPhase", repeated = FALSE),
         output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
+        invocation = clean_value(invocation, "TYPE_ENUM", "substrait.AggregateFunction.AggregationInvocation", repeated = FALSE),
+        args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
         .qualified_name = "substrait.AggregateFunction"
+      )
+    }
+  ),
+  AggregateRel = list(
+    Grouping = list(
+      create = function(..., grouping_expressions = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          grouping_expressions = clean_value(grouping_expressions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
+          .qualified_name = "substrait.AggregateRel.Grouping"
+        )
+      }
+    ),
+    Measure = list(
+      create = function(..., measure = unspecified(), filter = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          measure = clean_value(measure, "TYPE_MESSAGE", "substrait.AggregateFunction", repeated = FALSE),
+          filter = clean_value(filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+          .qualified_name = "substrait.AggregateRel.Measure"
+        )
+      }
+    ),
+    create = function(..., common = unspecified(), input = unspecified(), groupings = unspecified(), measures = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        groupings = clean_value(groupings, "TYPE_MESSAGE", "substrait.AggregateRel.Grouping", repeated = TRUE),
+        measures = clean_value(measures, "TYPE_MESSAGE", "substrait.AggregateRel.Measure", repeated = TRUE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.AggregateRel"
+      )
+    }
+  ),
+  CrossRel = list(
+    create = function(..., common = unspecified(), left = unspecified(), right = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        left = clean_value(left, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        right = clean_value(right, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.CrossRel"
+      )
+    }
+  ),
+  ExchangeRel = list(
+    Broadcast = list(
+      create = function(...) {
+        rlang::check_dots_empty()
+        create_substrait_message(.qualified_name = "substrait.ExchangeRel.Broadcast")
+      }
+    ),
+    ExchangeTarget = list(
+      create = function(..., partition_id = unspecified(), uri = unspecified(), extended = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          partition_id = clean_value(partition_id, "TYPE_INT32", "TYPE_INT32", repeated = TRUE),
+          uri = clean_value(uri, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+          extended = clean_value(extended, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+          .qualified_name = "substrait.ExchangeRel.ExchangeTarget"
+        )
+      }
+    ),
+    MultiBucketExpression = list(
+      create = function(..., expression = unspecified(), constrained_to_count = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+          constrained_to_count = clean_value(constrained_to_count, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
+          .qualified_name = "substrait.ExchangeRel.MultiBucketExpression"
+        )
+      }
+    ),
+    RoundRobin = list(
+      create = function(..., exact = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          exact = clean_value(exact, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
+          .qualified_name = "substrait.ExchangeRel.RoundRobin"
+        )
+      }
+    ),
+    ScatterFields = list(
+      create = function(..., fields = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          fields = clean_value(fields, "TYPE_MESSAGE", "substrait.Expression.FieldReference", repeated = TRUE),
+          .qualified_name = "substrait.ExchangeRel.ScatterFields"
+        )
+      }
+    ),
+    SingleBucketExpression = list(
+      create = function(..., expression = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+          .qualified_name = "substrait.ExchangeRel.SingleBucketExpression"
+        )
+      }
+    ),
+    create = function(..., common = unspecified(), input = unspecified(), partition_count = unspecified(), targets = unspecified(), scatter_by_fields = unspecified(), single_target = unspecified(), multi_target = unspecified(), round_robin = unspecified(), broadcast = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        partition_count = clean_value(partition_count, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
+        targets = clean_value(targets, "TYPE_MESSAGE", "substrait.ExchangeRel.ExchangeTarget", repeated = TRUE),
+        scatter_by_fields = clean_value(scatter_by_fields, "TYPE_MESSAGE", "substrait.ExchangeRel.ScatterFields", repeated = FALSE),
+        single_target = clean_value(single_target, "TYPE_MESSAGE", "substrait.ExchangeRel.SingleBucketExpression", repeated = FALSE),
+        multi_target = clean_value(multi_target, "TYPE_MESSAGE", "substrait.ExchangeRel.MultiBucketExpression", repeated = FALSE),
+        round_robin = clean_value(round_robin, "TYPE_MESSAGE", "substrait.ExchangeRel.RoundRobin", repeated = FALSE),
+        broadcast = clean_value(broadcast, "TYPE_MESSAGE", "substrait.ExchangeRel.Broadcast", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.ExchangeRel"
       )
     }
   ),
   Expression = list(
     Cast = list(
-      create = function(..., type = unspecified(), input = unspecified()) {
+      FailureBehavior = list(
+        FAILURE_BEHAVIOR_UNSPECIFIED = structure(0L, class = c("substrait_Expression_Cast_FailureBehavior", "substrait_proto_enum", "substrait_proto")),
+        FAILURE_BEHAVIOR_RETURN_NULL = structure(1L, class = c("substrait_Expression_Cast_FailureBehavior", "substrait_proto_enum", "substrait_proto")),
+        FAILURE_BEHAVIOR_THROW_EXCEPTION = structure(2L, class = c("substrait_Expression_Cast_FailureBehavior", "substrait_proto_enum", "substrait_proto")),
+        create = function(value) {
+          create_substrait_enum(
+            value,
+            .qualified_name = "substrait.Expression.Cast.FailureBehavior"
+          )
+        }
+      ),
+      create = function(..., type = unspecified(), input = unspecified(), failure_behavior = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           type = clean_value(type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
           input = clean_value(input, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+          failure_behavior = clean_value(failure_behavior, "TYPE_ENUM", "substrait.Expression.Cast.FailureBehavior", repeated = FALSE),
           .qualified_name = "substrait.Expression.Cast"
         )
       }
@@ -93,13 +201,13 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., arguments = unspecified(), output_type = unspecified(), python_pickle_function = unspecified(), web_assembly_function = unspecified()) {
+      create = function(..., arguments = unspecified(), output_type = unspecified(), python_pickle_function_ = unspecified(), web_assembly_function_ = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
-          python_pickle_function = clean_value(python_pickle_function, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.PythonPickleFunction", repeated = FALSE),
-          web_assembly_function = clean_value(web_assembly_function, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.WebAssemblyFunction", repeated = FALSE),
+          python_pickle_function_ = clean_value(python_pickle_function_, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.PythonPickleFunction", repeated = FALSE),
+          web_assembly_function_ = clean_value(web_assembly_function_, "TYPE_MESSAGE", "substrait.Expression.EmbeddedFunction.WebAssemblyFunction", repeated = FALSE),
           .qualified_name = "substrait.Expression.EmbeddedFunction"
         )
       }
@@ -121,19 +229,29 @@ substrait <- list(
       }
     ),
     FieldReference = list(
+      OuterReference = list(
+        create = function(..., steps_out = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            steps_out = clean_value(steps_out, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            .qualified_name = "substrait.Expression.FieldReference.OuterReference"
+          )
+        }
+      ),
       RootReference = list(
         create = function(...) {
           rlang::check_dots_empty()
           create_substrait_message(.qualified_name = "substrait.Expression.FieldReference.RootReference")
         }
       ),
-      create = function(..., direct_reference = unspecified(), masked_reference = unspecified(), expression = unspecified(), root_reference = unspecified()) {
+      create = function(..., direct_reference = unspecified(), masked_reference = unspecified(), expression = unspecified(), root_reference = unspecified(), outer_reference = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           direct_reference = clean_value(direct_reference, "TYPE_MESSAGE", "substrait.Expression.ReferenceSegment", repeated = FALSE),
           masked_reference = clean_value(masked_reference, "TYPE_MESSAGE", "substrait.Expression.MaskExpression", repeated = FALSE),
           expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
           root_reference = clean_value(root_reference, "TYPE_MESSAGE", "substrait.Expression.FieldReference.RootReference", repeated = FALSE),
+          outer_reference = clean_value(outer_reference, "TYPE_MESSAGE", "substrait.Expression.FieldReference.OuterReference", repeated = FALSE),
           .qualified_name = "substrait.Expression.FieldReference"
         )
       }
@@ -171,11 +289,12 @@ substrait <- list(
         }
       ),
       IntervalDayToSecond = list(
-        create = function(..., days = unspecified(), seconds = unspecified()) {
+        create = function(..., days = unspecified(), seconds = unspecified(), microseconds = unspecified()) {
           rlang::check_dots_empty()
           create_substrait_message(
             days = clean_value(days, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
             seconds = clean_value(seconds, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
+            microseconds = clean_value(microseconds, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
             .qualified_name = "substrait.Expression.Literal.IntervalDayToSecond"
           )
         }
@@ -227,6 +346,16 @@ substrait <- list(
           )
         }
       ),
+      UserDefined = list(
+        create = function(..., type_reference = unspecified(), value = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            type_reference = clean_value(type_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+            value = clean_value(value, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+            .qualified_name = "substrait.Expression.Literal.UserDefined"
+          )
+        }
+      ),
       VarChar = list(
         create = function(..., value = unspecified(), length = unspecified()) {
           rlang::check_dots_empty()
@@ -237,7 +366,7 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., boolean = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year_to_month = unspecified(), interval_day_to_second = unspecified(), fixed_char = unspecified(), var_char = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), map = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), null = unspecified(), list = unspecified(), empty_list = unspecified(), empty_map = unspecified(), nullable = unspecified()) {
+      create = function(..., boolean = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year_to_month = unspecified(), interval_day_to_second = unspecified(), fixed_char = unspecified(), var_char = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), map = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), null = unspecified(), list = unspecified(), empty_list = unspecified(), empty_map = unspecified(), user_defined = unspecified(), nullable = unspecified(), type_variation_reference = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           boolean = clean_value(boolean, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
@@ -266,7 +395,9 @@ substrait <- list(
           list = clean_value(list, "TYPE_MESSAGE", "substrait.Expression.Literal.List", repeated = FALSE),
           empty_list = clean_value(empty_list, "TYPE_MESSAGE", "substrait.Type.List", repeated = FALSE),
           empty_map = clean_value(empty_map, "TYPE_MESSAGE", "substrait.Type.Map", repeated = FALSE),
+          user_defined = clean_value(user_defined, "TYPE_MESSAGE", "substrait.Expression.Literal.UserDefined", repeated = FALSE),
           nullable = clean_value(nullable, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
+          type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
           .qualified_name = "substrait.Expression.Literal"
         )
       }
@@ -370,11 +501,11 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., select = unspecified(), maintain_singular_struct = unspecified()) {
+      create = function(..., select = unspecified(), maintain_singular_struct_ = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           select = clean_value(select, "TYPE_MESSAGE", "substrait.Expression.MaskExpression.StructSelect", repeated = FALSE),
-          maintain_singular_struct = clean_value(maintain_singular_struct, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
+          maintain_singular_struct_ = clean_value(maintain_singular_struct_, "TYPE_BOOL", "TYPE_BOOL", repeated = FALSE),
           .qualified_name = "substrait.Expression.MaskExpression"
         )
       }
@@ -440,12 +571,13 @@ substrait <- list(
       }
     ),
     ScalarFunction = list(
-      create = function(..., function_reference = unspecified(), args = unspecified(), output_type = unspecified()) {
+      create = function(..., function_reference = unspecified(), arguments = unspecified(), output_type = unspecified(), args = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           function_reference = clean_value(function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
-          args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
+          arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.FunctionArgument", repeated = TRUE),
           output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
+          args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           .qualified_name = "substrait.Expression.ScalarFunction"
         )
       }
@@ -460,6 +592,96 @@ substrait <- list(
         )
       }
     ),
+    Subquery = list(
+      InPredicate = list(
+        create = function(..., needles = unspecified(), haystack = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            needles = clean_value(needles, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
+            haystack = clean_value(haystack, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+            .qualified_name = "substrait.Expression.Subquery.InPredicate"
+          )
+        }
+      ),
+      Scalar = list(
+        create = function(..., input = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+            .qualified_name = "substrait.Expression.Subquery.Scalar"
+          )
+        }
+      ),
+      SetComparison = list(
+        ComparisonOp = list(
+          COMPARISON_OP_UNSPECIFIED = structure(0L, class = c("substrait_Expression_Subquery_SetComparison_ComparisonOp", "substrait_proto_enum", "substrait_proto")),
+          COMPARISON_OP_EQ = structure(1L, class = c("substrait_Expression_Subquery_SetComparison_ComparisonOp", "substrait_proto_enum", "substrait_proto")),
+          COMPARISON_OP_NE = structure(2L, class = c("substrait_Expression_Subquery_SetComparison_ComparisonOp", "substrait_proto_enum", "substrait_proto")),
+          COMPARISON_OP_LT = structure(3L, class = c("substrait_Expression_Subquery_SetComparison_ComparisonOp", "substrait_proto_enum", "substrait_proto")),
+          COMPARISON_OP_GT = structure(4L, class = c("substrait_Expression_Subquery_SetComparison_ComparisonOp", "substrait_proto_enum", "substrait_proto")),
+          COMPARISON_OP_LE = structure(5L, class = c("substrait_Expression_Subquery_SetComparison_ComparisonOp", "substrait_proto_enum", "substrait_proto")),
+          COMPARISON_OP_GE = structure(6L, class = c("substrait_Expression_Subquery_SetComparison_ComparisonOp", "substrait_proto_enum", "substrait_proto")),
+          create = function(value) {
+            create_substrait_enum(
+              value,
+              .qualified_name = "substrait.Expression.Subquery.SetComparison.ComparisonOp"
+            )
+          }
+        ),
+        ReductionOp = list(
+          REDUCTION_OP_UNSPECIFIED = structure(0L, class = c("substrait_Expression_Subquery_SetComparison_ReductionOp", "substrait_proto_enum", "substrait_proto")),
+          REDUCTION_OP_ANY = structure(1L, class = c("substrait_Expression_Subquery_SetComparison_ReductionOp", "substrait_proto_enum", "substrait_proto")),
+          REDUCTION_OP_ALL = structure(2L, class = c("substrait_Expression_Subquery_SetComparison_ReductionOp", "substrait_proto_enum", "substrait_proto")),
+          create = function(value) {
+            create_substrait_enum(
+              value,
+              .qualified_name = "substrait.Expression.Subquery.SetComparison.ReductionOp"
+            )
+          }
+        ),
+        create = function(..., reduction_op = unspecified(), comparison_op = unspecified(), left = unspecified(), right = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            reduction_op = clean_value(reduction_op, "TYPE_ENUM", "substrait.Expression.Subquery.SetComparison.ReductionOp", repeated = FALSE),
+            comparison_op = clean_value(comparison_op, "TYPE_ENUM", "substrait.Expression.Subquery.SetComparison.ComparisonOp", repeated = FALSE),
+            left = clean_value(left, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+            right = clean_value(right, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+            .qualified_name = "substrait.Expression.Subquery.SetComparison"
+          )
+        }
+      ),
+      SetPredicate = list(
+        PredicateOp = list(
+          PREDICATE_OP_UNSPECIFIED = structure(0L, class = c("substrait_Expression_Subquery_SetPredicate_PredicateOp", "substrait_proto_enum", "substrait_proto")),
+          PREDICATE_OP_EXISTS = structure(1L, class = c("substrait_Expression_Subquery_SetPredicate_PredicateOp", "substrait_proto_enum", "substrait_proto")),
+          PREDICATE_OP_UNIQUE = structure(2L, class = c("substrait_Expression_Subquery_SetPredicate_PredicateOp", "substrait_proto_enum", "substrait_proto")),
+          create = function(value) {
+            create_substrait_enum(
+              value,
+              .qualified_name = "substrait.Expression.Subquery.SetPredicate.PredicateOp"
+            )
+          }
+        ),
+        create = function(..., predicate_op = unspecified(), tuples = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            predicate_op = clean_value(predicate_op, "TYPE_ENUM", "substrait.Expression.Subquery.SetPredicate.PredicateOp", repeated = FALSE),
+            tuples = clean_value(tuples, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+            .qualified_name = "substrait.Expression.Subquery.SetPredicate"
+          )
+        }
+      ),
+      create = function(..., scalar = unspecified(), in_predicate = unspecified(), set_predicate = unspecified(), set_comparison = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          scalar = clean_value(scalar, "TYPE_MESSAGE", "substrait.Expression.Subquery.Scalar", repeated = FALSE),
+          in_predicate = clean_value(in_predicate, "TYPE_MESSAGE", "substrait.Expression.Subquery.InPredicate", repeated = FALSE),
+          set_predicate = clean_value(set_predicate, "TYPE_MESSAGE", "substrait.Expression.Subquery.SetPredicate", repeated = FALSE),
+          set_comparison = clean_value(set_comparison, "TYPE_MESSAGE", "substrait.Expression.Subquery.SetComparison", repeated = FALSE),
+          .qualified_name = "substrait.Expression.Subquery"
+        )
+      }
+    ),
     SwitchExpression = list(
       IfValue = list(
         create = function(..., if_ = unspecified(), then = unspecified()) {
@@ -471,9 +693,10 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., ifs = unspecified(), else_ = unspecified()) {
+      create = function(..., match = unspecified(), ifs = unspecified(), else_ = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
+          match = clean_value(match, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
           ifs = clean_value(ifs, "TYPE_MESSAGE", "substrait.Expression.SwitchExpression.IfValue", repeated = TRUE),
           else_ = clean_value(else_, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
           .qualified_name = "substrait.Expression.SwitchExpression"
@@ -523,7 +746,7 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., function_reference = unspecified(), partitions = unspecified(), sorts = unspecified(), upper_bound = unspecified(), lower_bound = unspecified(), phase = unspecified(), output_type = unspecified(), args = unspecified()) {
+      create = function(..., function_reference = unspecified(), partitions = unspecified(), sorts = unspecified(), upper_bound = unspecified(), lower_bound = unspecified(), phase = unspecified(), output_type = unspecified(), arguments = unspecified(), args = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           function_reference = clean_value(function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
@@ -533,25 +756,355 @@ substrait <- list(
           lower_bound = clean_value(lower_bound, "TYPE_MESSAGE", "substrait.Expression.WindowFunction.Bound", repeated = FALSE),
           phase = clean_value(phase, "TYPE_ENUM", "substrait.AggregationPhase", repeated = FALSE),
           output_type = clean_value(output_type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
+          arguments = clean_value(arguments, "TYPE_MESSAGE", "substrait.FunctionArgument", repeated = TRUE),
           args = clean_value(args, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
           .qualified_name = "substrait.Expression.WindowFunction"
         )
       }
     ),
-    create = function(..., literal = unspecified(), selection = unspecified(), scalar_function = unspecified(), window_function = unspecified(), if_then = unspecified(), switch_expression = unspecified(), singular_or_list = unspecified(), multi_or_list = unspecified(), enum_ = unspecified(), cast = unspecified()) {
+    create = function(..., literal = unspecified(), selection = unspecified(), scalar_function_ = unspecified(), window_function_ = unspecified(), if_then = unspecified(), switch_expression = unspecified(), singular_or_list = unspecified(), multi_or_list = unspecified(), cast = unspecified(), subquery = unspecified(), enum_ = unspecified()) {
       rlang::check_dots_empty()
       create_substrait_message(
         literal = clean_value(literal, "TYPE_MESSAGE", "substrait.Expression.Literal", repeated = FALSE),
         selection = clean_value(selection, "TYPE_MESSAGE", "substrait.Expression.FieldReference", repeated = FALSE),
-        scalar_function = clean_value(scalar_function, "TYPE_MESSAGE", "substrait.Expression.ScalarFunction", repeated = FALSE),
-        window_function = clean_value(window_function, "TYPE_MESSAGE", "substrait.Expression.WindowFunction", repeated = FALSE),
+        scalar_function_ = clean_value(scalar_function_, "TYPE_MESSAGE", "substrait.Expression.ScalarFunction", repeated = FALSE),
+        window_function_ = clean_value(window_function_, "TYPE_MESSAGE", "substrait.Expression.WindowFunction", repeated = FALSE),
         if_then = clean_value(if_then, "TYPE_MESSAGE", "substrait.Expression.IfThen", repeated = FALSE),
         switch_expression = clean_value(switch_expression, "TYPE_MESSAGE", "substrait.Expression.SwitchExpression", repeated = FALSE),
         singular_or_list = clean_value(singular_or_list, "TYPE_MESSAGE", "substrait.Expression.SingularOrList", repeated = FALSE),
         multi_or_list = clean_value(multi_or_list, "TYPE_MESSAGE", "substrait.Expression.MultiOrList", repeated = FALSE),
-        enum_ = clean_value(enum_, "TYPE_MESSAGE", "substrait.Expression.Enum", repeated = FALSE),
         cast = clean_value(cast, "TYPE_MESSAGE", "substrait.Expression.Cast", repeated = FALSE),
+        subquery = clean_value(subquery, "TYPE_MESSAGE", "substrait.Expression.Subquery", repeated = FALSE),
+        enum_ = clean_value(enum_, "TYPE_MESSAGE", "substrait.Expression.Enum", repeated = FALSE),
         .qualified_name = "substrait.Expression"
+      )
+    }
+  ),
+  ExtensionLeafRel = list(
+    create = function(..., common = unspecified(), detail = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+        .qualified_name = "substrait.ExtensionLeafRel"
+      )
+    }
+  ),
+  ExtensionMultiRel = list(
+    create = function(..., common = unspecified(), inputs = unspecified(), detail = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
+        detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+        .qualified_name = "substrait.ExtensionMultiRel"
+      )
+    }
+  ),
+  ExtensionSingleRel = list(
+    create = function(..., common = unspecified(), input = unspecified(), detail = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+        .qualified_name = "substrait.ExtensionSingleRel"
+      )
+    }
+  ),
+  FetchRel = list(
+    create = function(..., common = unspecified(), input = unspecified(), offset = unspecified(), count = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        offset = clean_value(offset, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
+        count = clean_value(count, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.FetchRel"
+      )
+    }
+  ),
+  FilterRel = list(
+    create = function(..., common = unspecified(), input = unspecified(), condition = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        condition = clean_value(condition, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.FilterRel"
+      )
+    }
+  ),
+  FunctionArgument = list(
+    Enum = list(
+      create = function(..., specified = unspecified(), unspecified = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          specified = clean_value(specified, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+          unspecified = clean_value(unspecified, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+          .qualified_name = "substrait.FunctionArgument.Enum"
+        )
+      }
+    ),
+    create = function(..., enum_ = unspecified(), type = unspecified(), value = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        enum_ = clean_value(enum_, "TYPE_MESSAGE", "substrait.FunctionArgument.Enum", repeated = FALSE),
+        type = clean_value(type, "TYPE_MESSAGE", "substrait.Type", repeated = FALSE),
+        value = clean_value(value, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+        .qualified_name = "substrait.FunctionArgument"
+      )
+    }
+  ),
+  JoinRel = list(
+    JoinType = list(
+      JOIN_TYPE_UNSPECIFIED = structure(0L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      JOIN_TYPE_INNER = structure(1L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      JOIN_TYPE_OUTER = structure(2L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      JOIN_TYPE_LEFT = structure(3L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      JOIN_TYPE_RIGHT = structure(4L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      JOIN_TYPE_SEMI = structure(5L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      JOIN_TYPE_ANTI = structure(6L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      JOIN_TYPE_SINGLE = structure(7L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
+      create = function(value) {
+        create_substrait_enum(
+          value,
+          .qualified_name = "substrait.JoinRel.JoinType"
+        )
+      }
+    ),
+    create = function(..., common = unspecified(), left = unspecified(), right = unspecified(), expression = unspecified(), post_join_filter = unspecified(), type = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        left = clean_value(left, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        right = clean_value(right, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+        post_join_filter = clean_value(post_join_filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+        type = clean_value(type, "TYPE_ENUM", "substrait.JoinRel.JoinType", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.JoinRel"
+      )
+    }
+  ),
+  ProjectRel = list(
+    create = function(..., common = unspecified(), input = unspecified(), expressions = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        expressions = clean_value(expressions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.ProjectRel"
+      )
+    }
+  ),
+  ReadRel = list(
+    ExtensionTable = list(
+      create = function(..., detail = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+          .qualified_name = "substrait.ReadRel.ExtensionTable"
+        )
+      }
+    ),
+    LocalFiles = list(
+      FileOrFiles = list(
+        ArrowReadOptions = list(
+          create = function(...) {
+            rlang::check_dots_empty()
+            create_substrait_message(.qualified_name = "substrait.ReadRel.LocalFiles.FileOrFiles.ArrowReadOptions")
+          }
+        ),
+        OrcReadOptions = list(
+          create = function(...) {
+            rlang::check_dots_empty()
+            create_substrait_message(.qualified_name = "substrait.ReadRel.LocalFiles.FileOrFiles.OrcReadOptions")
+          }
+        ),
+        ParquetReadOptions = list(
+          create = function(...) {
+            rlang::check_dots_empty()
+            create_substrait_message(.qualified_name = "substrait.ReadRel.LocalFiles.FileOrFiles.ParquetReadOptions")
+          }
+        ),
+        create = function(..., uri_path = unspecified(), uri_path_glob = unspecified(), uri_file = unspecified(), uri_folder = unspecified(), partition_index = unspecified(), start = unspecified(), length = unspecified(), parquet = unspecified(), arrow = unspecified(), orc = unspecified(), extension = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            uri_path = clean_value(uri_path, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+            uri_path_glob = clean_value(uri_path_glob, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+            uri_file = clean_value(uri_file, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+            uri_folder = clean_value(uri_folder, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+            partition_index = clean_value(partition_index, "TYPE_UINT64", "TYPE_UINT64", repeated = FALSE),
+            start = clean_value(start, "TYPE_UINT64", "TYPE_UINT64", repeated = FALSE),
+            length = clean_value(length, "TYPE_UINT64", "TYPE_UINT64", repeated = FALSE),
+            parquet = clean_value(parquet, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles.ParquetReadOptions", repeated = FALSE),
+            arrow = clean_value(arrow, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles.ArrowReadOptions", repeated = FALSE),
+            orc = clean_value(orc, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles.OrcReadOptions", repeated = FALSE),
+            extension = clean_value(extension, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
+            .qualified_name = "substrait.ReadRel.LocalFiles.FileOrFiles"
+          )
+        }
+      ),
+      create = function(..., items = unspecified(), advanced_extension = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          items = clean_value(items, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles", repeated = TRUE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+          .qualified_name = "substrait.ReadRel.LocalFiles"
+        )
+      }
+    ),
+    NamedTable = list(
+      create = function(..., names = unspecified(), advanced_extension = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+          .qualified_name = "substrait.ReadRel.NamedTable"
+        )
+      }
+    ),
+    VirtualTable = list(
+      create = function(..., values = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          values = clean_value(values, "TYPE_MESSAGE", "substrait.Expression.Literal.Struct", repeated = TRUE),
+          .qualified_name = "substrait.ReadRel.VirtualTable"
+        )
+      }
+    ),
+    create = function(..., common = unspecified(), base_schema = unspecified(), filter = unspecified(), projection = unspecified(), advanced_extension = unspecified(), virtual_table = unspecified(), local_files = unspecified(), named_table = unspecified(), extension_table = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        base_schema = clean_value(base_schema, "TYPE_MESSAGE", "substrait.NamedStruct", repeated = FALSE),
+        filter = clean_value(filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
+        projection = clean_value(projection, "TYPE_MESSAGE", "substrait.Expression.MaskExpression", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        virtual_table = clean_value(virtual_table, "TYPE_MESSAGE", "substrait.ReadRel.VirtualTable", repeated = FALSE),
+        local_files = clean_value(local_files, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles", repeated = FALSE),
+        named_table = clean_value(named_table, "TYPE_MESSAGE", "substrait.ReadRel.NamedTable", repeated = FALSE),
+        extension_table = clean_value(extension_table, "TYPE_MESSAGE", "substrait.ReadRel.ExtensionTable", repeated = FALSE),
+        .qualified_name = "substrait.ReadRel"
+      )
+    }
+  ),
+  Rel = list(
+    create = function(..., read = unspecified(), filter = unspecified(), fetch = unspecified(), aggregate = unspecified(), sort = unspecified(), join = unspecified(), project = unspecified(), set = unspecified(), extension_single = unspecified(), extension_multi = unspecified(), extension_leaf = unspecified(), cross = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        read = clean_value(read, "TYPE_MESSAGE", "substrait.ReadRel", repeated = FALSE),
+        filter = clean_value(filter, "TYPE_MESSAGE", "substrait.FilterRel", repeated = FALSE),
+        fetch = clean_value(fetch, "TYPE_MESSAGE", "substrait.FetchRel", repeated = FALSE),
+        aggregate = clean_value(aggregate, "TYPE_MESSAGE", "substrait.AggregateRel", repeated = FALSE),
+        sort = clean_value(sort, "TYPE_MESSAGE", "substrait.SortRel", repeated = FALSE),
+        join = clean_value(join, "TYPE_MESSAGE", "substrait.JoinRel", repeated = FALSE),
+        project = clean_value(project, "TYPE_MESSAGE", "substrait.ProjectRel", repeated = FALSE),
+        set = clean_value(set, "TYPE_MESSAGE", "substrait.SetRel", repeated = FALSE),
+        extension_single = clean_value(extension_single, "TYPE_MESSAGE", "substrait.ExtensionSingleRel", repeated = FALSE),
+        extension_multi = clean_value(extension_multi, "TYPE_MESSAGE", "substrait.ExtensionMultiRel", repeated = FALSE),
+        extension_leaf = clean_value(extension_leaf, "TYPE_MESSAGE", "substrait.ExtensionLeafRel", repeated = FALSE),
+        cross = clean_value(cross, "TYPE_MESSAGE", "substrait.CrossRel", repeated = FALSE),
+        .qualified_name = "substrait.Rel"
+      )
+    }
+  ),
+  RelCommon = list(
+    Direct = list(
+      create = function(...) {
+        rlang::check_dots_empty()
+        create_substrait_message(.qualified_name = "substrait.RelCommon.Direct")
+      }
+    ),
+    Emit = list(
+      create = function(..., output_mapping = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          output_mapping = clean_value(output_mapping, "TYPE_INT32", "TYPE_INT32", repeated = TRUE),
+          .qualified_name = "substrait.RelCommon.Emit"
+        )
+      }
+    ),
+    Hint = list(
+      RuntimeConstraint = list(
+        create = function(..., advanced_extension = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+            .qualified_name = "substrait.RelCommon.Hint.RuntimeConstraint"
+          )
+        }
+      ),
+      Stats = list(
+        create = function(..., row_count = unspecified(), record_size = unspecified(), advanced_extension = unspecified()) {
+          rlang::check_dots_empty()
+          create_substrait_message(
+            row_count = clean_value(row_count, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
+            record_size = clean_value(record_size, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
+            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+            .qualified_name = "substrait.RelCommon.Hint.Stats"
+          )
+        }
+      ),
+      create = function(..., stats = unspecified(), constraint = unspecified(), advanced_extension = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          stats = clean_value(stats, "TYPE_MESSAGE", "substrait.RelCommon.Hint.Stats", repeated = FALSE),
+          constraint = clean_value(constraint, "TYPE_MESSAGE", "substrait.RelCommon.Hint.RuntimeConstraint", repeated = FALSE),
+          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+          .qualified_name = "substrait.RelCommon.Hint"
+        )
+      }
+    ),
+    create = function(..., direct = unspecified(), emit = unspecified(), hint = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        direct = clean_value(direct, "TYPE_MESSAGE", "substrait.RelCommon.Direct", repeated = FALSE),
+        emit = clean_value(emit, "TYPE_MESSAGE", "substrait.RelCommon.Emit", repeated = FALSE),
+        hint = clean_value(hint, "TYPE_MESSAGE", "substrait.RelCommon.Hint", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.RelCommon"
+      )
+    }
+  ),
+  RelRoot = list(
+    create = function(..., input = unspecified(), names = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
+        .qualified_name = "substrait.RelRoot"
+      )
+    }
+  ),
+  SetRel = list(
+    SetOp = list(
+      SET_OP_UNSPECIFIED = structure(0L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
+      SET_OP_MINUS_PRIMARY = structure(1L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
+      SET_OP_MINUS_MULTISET = structure(2L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
+      SET_OP_INTERSECTION_PRIMARY = structure(3L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
+      SET_OP_INTERSECTION_MULTISET = structure(4L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
+      SET_OP_UNION_DISTINCT = structure(5L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
+      SET_OP_UNION_ALL = structure(6L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
+      create = function(value) {
+        create_substrait_enum(
+          value,
+          .qualified_name = "substrait.SetRel.SetOp"
+        )
+      }
+    ),
+    create = function(..., common = unspecified(), inputs = unspecified(), op = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
+        op = clean_value(op, "TYPE_ENUM", "substrait.SetRel.SetOp", repeated = FALSE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.SetRel"
       )
     }
   ),
@@ -577,6 +1130,57 @@ substrait <- list(
         direction = clean_value(direction, "TYPE_ENUM", "substrait.SortField.SortDirection", repeated = FALSE),
         comparison_function_reference = clean_value(comparison_function_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
         .qualified_name = "substrait.SortField"
+      )
+    }
+  ),
+  SortRel = list(
+    create = function(..., common = unspecified(), input = unspecified(), sorts = unspecified(), advanced_extension = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
+        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
+        sorts = clean_value(sorts, "TYPE_MESSAGE", "substrait.SortField", repeated = TRUE),
+        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
+        .qualified_name = "substrait.SortRel"
+      )
+    }
+  ),
+  Any = list(
+    create = function(..., type_url = unspecified(), value = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        type_url = clean_value(type_url, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+        value = clean_value(value, "TYPE_BYTES", "TYPE_BYTES", repeated = FALSE),
+        .qualified_name = "substrait.Any"
+      )
+    }
+  ),
+  Empty = list(
+    create = function(...) {
+      rlang::check_dots_empty()
+      create_substrait_message(.qualified_name = "substrait.Empty")
+    }
+  ),
+  Capabilities = list(
+    SimpleExtension = list(
+      create = function(..., uri = unspecified(), function_keys = unspecified(), type_keys = unspecified(), type_variation_keys = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          uri = clean_value(uri, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
+          function_keys = clean_value(function_keys, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
+          type_keys = clean_value(type_keys, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
+          type_variation_keys = clean_value(type_variation_keys, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
+          .qualified_name = "substrait.Capabilities.SimpleExtension"
+        )
+      }
+    ),
+    create = function(..., substrait_versions = unspecified(), advanced_extension_type_urls = unspecified(), simple_extensions = unspecified()) {
+      rlang::check_dots_empty()
+      create_substrait_message(
+        substrait_versions = clean_value(substrait_versions, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
+        advanced_extension_type_urls = clean_value(advanced_extension_type_urls, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
+        simple_extensions = clean_value(simple_extensions, "TYPE_MESSAGE", "substrait.Capabilities.SimpleExtension", repeated = TRUE),
+        .qualified_name = "substrait.Capabilities"
       )
     }
   ),
@@ -864,6 +1468,17 @@ substrait <- list(
         )
       }
     ),
+    ParameterizedUserDefined = list(
+      create = function(..., type_pointer = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          type_pointer = clean_value(type_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+          variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+          nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
+          .qualified_name = "substrait.ParameterizedType.ParameterizedUserDefined"
+        )
+      }
+    ),
     ParameterizedVarChar = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
         rlang::check_dots_empty()
@@ -885,7 +1500,7 @@ substrait <- list(
         )
       }
     ),
-    create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined_pointer = unspecified(), type_parameter = unspecified()) {
+    create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined = unspecified(), user_defined_pointer = unspecified(), type_parameter = unspecified()) {
       rlang::check_dots_empty()
       create_substrait_message(
         bool_ = clean_value(bool_, "TYPE_MESSAGE", "substrait.Type.Boolean", repeated = FALSE),
@@ -911,6 +1526,7 @@ substrait <- list(
         struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.ParameterizedType.ParameterizedStruct", repeated = FALSE),
         list = clean_value(list, "TYPE_MESSAGE", "substrait.ParameterizedType.ParameterizedList", repeated = FALSE),
         map = clean_value(map, "TYPE_MESSAGE", "substrait.ParameterizedType.ParameterizedMap", repeated = FALSE),
+        user_defined = clean_value(user_defined, "TYPE_MESSAGE", "substrait.ParameterizedType.ParameterizedUserDefined", repeated = FALSE),
         user_defined_pointer = clean_value(user_defined_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
         type_parameter = clean_value(type_parameter, "TYPE_MESSAGE", "substrait.ParameterizedType.TypeParameter", repeated = FALSE),
         .qualified_name = "substrait.ParameterizedType"
@@ -937,344 +1553,6 @@ substrait <- list(
         rel = clean_value(rel, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
         root = clean_value(root, "TYPE_MESSAGE", "substrait.RelRoot", repeated = FALSE),
         .qualified_name = "substrait.PlanRel"
-      )
-    }
-  ),
-  AggregateRel = list(
-    Grouping = list(
-      create = function(..., grouping_expressions = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          grouping_expressions = clean_value(grouping_expressions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
-          .qualified_name = "substrait.AggregateRel.Grouping"
-        )
-      }
-    ),
-    Measure = list(
-      create = function(..., measure = unspecified(), filter = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          measure = clean_value(measure, "TYPE_MESSAGE", "substrait.AggregateFunction", repeated = FALSE),
-          filter = clean_value(filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
-          .qualified_name = "substrait.AggregateRel.Measure"
-        )
-      }
-    ),
-    create = function(..., common = unspecified(), input = unspecified(), groupings = unspecified(), measures = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        groupings = clean_value(groupings, "TYPE_MESSAGE", "substrait.AggregateRel.Grouping", repeated = TRUE),
-        measures = clean_value(measures, "TYPE_MESSAGE", "substrait.AggregateRel.Measure", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.AggregateRel"
-      )
-    }
-  ),
-  ExtensionLeafRel = list(
-    create = function(..., common = unspecified(), detail = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
-        .qualified_name = "substrait.ExtensionLeafRel"
-      )
-    }
-  ),
-  ExtensionMultiRel = list(
-    create = function(..., common = unspecified(), inputs = unspecified(), detail = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
-        detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
-        .qualified_name = "substrait.ExtensionMultiRel"
-      )
-    }
-  ),
-  ExtensionSingleRel = list(
-    create = function(..., common = unspecified(), input = unspecified(), detail = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
-        .qualified_name = "substrait.ExtensionSingleRel"
-      )
-    }
-  ),
-  FetchRel = list(
-    create = function(..., common = unspecified(), input = unspecified(), offset = unspecified(), count = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        offset = clean_value(offset, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
-        count = clean_value(count, "TYPE_INT64", "TYPE_INT64", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.FetchRel"
-      )
-    }
-  ),
-  FilterRel = list(
-    create = function(..., common = unspecified(), input = unspecified(), condition = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        condition = clean_value(condition, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.FilterRel"
-      )
-    }
-  ),
-  JoinRel = list(
-    JoinType = list(
-      JOIN_TYPE_UNSPECIFIED = structure(0L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
-      JOIN_TYPE_INNER = structure(1L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
-      JOIN_TYPE_OUTER = structure(2L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
-      JOIN_TYPE_LEFT = structure(3L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
-      JOIN_TYPE_RIGHT = structure(4L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
-      JOIN_TYPE_SEMI = structure(5L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
-      JOIN_TYPE_ANTI = structure(6L, class = c("substrait_JoinRel_JoinType", "substrait_proto_enum", "substrait_proto")),
-      create = function(value) {
-        create_substrait_enum(
-          value,
-          .qualified_name = "substrait.JoinRel.JoinType"
-        )
-      }
-    ),
-    create = function(..., common = unspecified(), left = unspecified(), right = unspecified(), expression = unspecified(), post_join_filter = unspecified(), type = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        left = clean_value(left, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        right = clean_value(right, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        expression = clean_value(expression, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
-        post_join_filter = clean_value(post_join_filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
-        type = clean_value(type, "TYPE_ENUM", "substrait.JoinRel.JoinType", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.JoinRel"
-      )
-    }
-  ),
-  ProjectRel = list(
-    create = function(..., common = unspecified(), input = unspecified(), expressions = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        expressions = clean_value(expressions, "TYPE_MESSAGE", "substrait.Expression", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.ProjectRel"
-      )
-    }
-  ),
-  ReadRel = list(
-    ExtensionTable = list(
-      create = function(..., detail = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          detail = clean_value(detail, "TYPE_MESSAGE", "substrait.Any", repeated = FALSE),
-          .qualified_name = "substrait.ReadRel.ExtensionTable"
-        )
-      }
-    ),
-    LocalFiles = list(
-      FileOrFiles = list(
-        FileFormat = list(
-          FILE_FORMAT_UNSPECIFIED = structure(0L, class = c("substrait_ReadRel_LocalFiles_FileOrFiles_FileFormat", "substrait_proto_enum", "substrait_proto")),
-          FILE_FORMAT_PARQUET = structure(1L, class = c("substrait_ReadRel_LocalFiles_FileOrFiles_FileFormat", "substrait_proto_enum", "substrait_proto")),
-          create = function(value) {
-            create_substrait_enum(
-              value,
-              .qualified_name = "substrait.ReadRel.LocalFiles.FileOrFiles.FileFormat"
-            )
-          }
-        ),
-        create = function(..., uri_path = unspecified(), uri_path_glob = unspecified(), uri_file = unspecified(), uri_folder = unspecified(), format = unspecified(), partition_index = unspecified(), start = unspecified(), length = unspecified()) {
-          rlang::check_dots_empty()
-          create_substrait_message(
-            uri_path = clean_value(uri_path, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
-            uri_path_glob = clean_value(uri_path_glob, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
-            uri_file = clean_value(uri_file, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
-            uri_folder = clean_value(uri_folder, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
-            format = clean_value(format, "TYPE_ENUM", "substrait.ReadRel.LocalFiles.FileOrFiles.FileFormat", repeated = FALSE),
-            partition_index = clean_value(partition_index, "TYPE_UINT64", "TYPE_UINT64", repeated = FALSE),
-            start = clean_value(start, "TYPE_UINT64", "TYPE_UINT64", repeated = FALSE),
-            length = clean_value(length, "TYPE_UINT64", "TYPE_UINT64", repeated = FALSE),
-            .qualified_name = "substrait.ReadRel.LocalFiles.FileOrFiles"
-          )
-        }
-      ),
-      create = function(..., items = unspecified(), advanced_extension = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          items = clean_value(items, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles.FileOrFiles", repeated = TRUE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-          .qualified_name = "substrait.ReadRel.LocalFiles"
-        )
-      }
-    ),
-    NamedTable = list(
-      create = function(..., names = unspecified(), advanced_extension = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-          .qualified_name = "substrait.ReadRel.NamedTable"
-        )
-      }
-    ),
-    VirtualTable = list(
-      create = function(..., values = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          values = clean_value(values, "TYPE_MESSAGE", "substrait.Expression.Literal.Struct", repeated = TRUE),
-          .qualified_name = "substrait.ReadRel.VirtualTable"
-        )
-      }
-    ),
-    create = function(..., common = unspecified(), base_schema = unspecified(), filter = unspecified(), projection = unspecified(), advanced_extension = unspecified(), virtual_table = unspecified(), local_files = unspecified(), named_table = unspecified(), extension_table = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        base_schema = clean_value(base_schema, "TYPE_MESSAGE", "substrait.NamedStruct", repeated = FALSE),
-        filter = clean_value(filter, "TYPE_MESSAGE", "substrait.Expression", repeated = FALSE),
-        projection = clean_value(projection, "TYPE_MESSAGE", "substrait.Expression.MaskExpression", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        virtual_table = clean_value(virtual_table, "TYPE_MESSAGE", "substrait.ReadRel.VirtualTable", repeated = FALSE),
-        local_files = clean_value(local_files, "TYPE_MESSAGE", "substrait.ReadRel.LocalFiles", repeated = FALSE),
-        named_table = clean_value(named_table, "TYPE_MESSAGE", "substrait.ReadRel.NamedTable", repeated = FALSE),
-        extension_table = clean_value(extension_table, "TYPE_MESSAGE", "substrait.ReadRel.ExtensionTable", repeated = FALSE),
-        .qualified_name = "substrait.ReadRel"
-      )
-    }
-  ),
-  Rel = list(
-    create = function(..., read = unspecified(), filter = unspecified(), fetch = unspecified(), aggregate = unspecified(), sort = unspecified(), join = unspecified(), project = unspecified(), set = unspecified(), extension_single = unspecified(), extension_multi = unspecified(), extension_leaf = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        read = clean_value(read, "TYPE_MESSAGE", "substrait.ReadRel", repeated = FALSE),
-        filter = clean_value(filter, "TYPE_MESSAGE", "substrait.FilterRel", repeated = FALSE),
-        fetch = clean_value(fetch, "TYPE_MESSAGE", "substrait.FetchRel", repeated = FALSE),
-        aggregate = clean_value(aggregate, "TYPE_MESSAGE", "substrait.AggregateRel", repeated = FALSE),
-        sort = clean_value(sort, "TYPE_MESSAGE", "substrait.SortRel", repeated = FALSE),
-        join = clean_value(join, "TYPE_MESSAGE", "substrait.JoinRel", repeated = FALSE),
-        project = clean_value(project, "TYPE_MESSAGE", "substrait.ProjectRel", repeated = FALSE),
-        set = clean_value(set, "TYPE_MESSAGE", "substrait.SetRel", repeated = FALSE),
-        extension_single = clean_value(extension_single, "TYPE_MESSAGE", "substrait.ExtensionSingleRel", repeated = FALSE),
-        extension_multi = clean_value(extension_multi, "TYPE_MESSAGE", "substrait.ExtensionMultiRel", repeated = FALSE),
-        extension_leaf = clean_value(extension_leaf, "TYPE_MESSAGE", "substrait.ExtensionLeafRel", repeated = FALSE),
-        .qualified_name = "substrait.Rel"
-      )
-    }
-  ),
-  RelCommon = list(
-    Direct = list(
-      create = function(...) {
-        rlang::check_dots_empty()
-        create_substrait_message(.qualified_name = "substrait.RelCommon.Direct")
-      }
-    ),
-    Emit = list(
-      create = function(..., output_mapping = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          output_mapping = clean_value(output_mapping, "TYPE_INT32", "TYPE_INT32", repeated = TRUE),
-          .qualified_name = "substrait.RelCommon.Emit"
-        )
-      }
-    ),
-    Hint = list(
-      RuntimeConstraint = list(
-        create = function(..., advanced_extension = unspecified()) {
-          rlang::check_dots_empty()
-          create_substrait_message(
-            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-            .qualified_name = "substrait.RelCommon.Hint.RuntimeConstraint"
-          )
-        }
-      ),
-      Stats = list(
-        create = function(..., row_count = unspecified(), record_size = unspecified(), advanced_extension = unspecified()) {
-          rlang::check_dots_empty()
-          create_substrait_message(
-            row_count = clean_value(row_count, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
-            record_size = clean_value(record_size, "TYPE_DOUBLE", "TYPE_DOUBLE", repeated = FALSE),
-            advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-            .qualified_name = "substrait.RelCommon.Hint.Stats"
-          )
-        }
-      ),
-      create = function(..., stats = unspecified(), constraint = unspecified(), advanced_extension = unspecified()) {
-        rlang::check_dots_empty()
-        create_substrait_message(
-          stats = clean_value(stats, "TYPE_MESSAGE", "substrait.RelCommon.Hint.Stats", repeated = FALSE),
-          constraint = clean_value(constraint, "TYPE_MESSAGE", "substrait.RelCommon.Hint.RuntimeConstraint", repeated = FALSE),
-          advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-          .qualified_name = "substrait.RelCommon.Hint"
-        )
-      }
-    ),
-    create = function(..., direct = unspecified(), emit = unspecified(), hint = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        direct = clean_value(direct, "TYPE_MESSAGE", "substrait.RelCommon.Direct", repeated = FALSE),
-        emit = clean_value(emit, "TYPE_MESSAGE", "substrait.RelCommon.Emit", repeated = FALSE),
-        hint = clean_value(hint, "TYPE_MESSAGE", "substrait.RelCommon.Hint", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.RelCommon"
-      )
-    }
-  ),
-  RelRoot = list(
-    create = function(..., input = unspecified(), names = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        names = clean_value(names, "TYPE_STRING", "TYPE_STRING", repeated = TRUE),
-        .qualified_name = "substrait.RelRoot"
-      )
-    }
-  ),
-  SetRel = list(
-    SetOp = list(
-      SET_OP_UNSPECIFIED = structure(0L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
-      SET_OP_MINUS_PRIMARY = structure(1L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
-      SET_OP_MINUS_MULTISET = structure(2L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
-      SET_OP_INTERSECTION_PRIMARY = structure(3L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
-      SET_OP_INTERSECTION_MULTISET = structure(4L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
-      SET_OP_UNION_DISTINCT = structure(5L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
-      SET_OP_UNION_ALL = structure(6L, class = c("substrait_SetRel_SetOp", "substrait_proto_enum", "substrait_proto")),
-      create = function(value) {
-        create_substrait_enum(
-          value,
-          .qualified_name = "substrait.SetRel.SetOp"
-        )
-      }
-    ),
-    create = function(..., common = unspecified(), inputs = unspecified(), op = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        inputs = clean_value(inputs, "TYPE_MESSAGE", "substrait.Rel", repeated = TRUE),
-        op = clean_value(op, "TYPE_ENUM", "substrait.SetRel.SetOp", repeated = FALSE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.SetRel"
-      )
-    }
-  ),
-  SortRel = list(
-    create = function(..., common = unspecified(), input = unspecified(), sorts = unspecified(), advanced_extension = unspecified()) {
-      rlang::check_dots_empty()
-      create_substrait_message(
-        common = clean_value(common, "TYPE_MESSAGE", "substrait.RelCommon", repeated = FALSE),
-        input = clean_value(input, "TYPE_MESSAGE", "substrait.Rel", repeated = FALSE),
-        sorts = clean_value(sorts, "TYPE_MESSAGE", "substrait.SortField", repeated = TRUE),
-        advanced_extension = clean_value(advanced_extension, "TYPE_MESSAGE", "substrait.extensions.AdvancedExtension", repeated = FALSE),
-        .qualified_name = "substrait.SortRel"
       )
     }
   ),
@@ -1389,6 +1667,17 @@ substrait <- list(
         )
       }
     ),
+    ExpressionUserDefined = list(
+      create = function(..., type_pointer = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          type_pointer = clean_value(type_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+          variation_pointer = clean_value(variation_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+          nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
+          .qualified_name = "substrait.DerivationExpression.ExpressionUserDefined"
+        )
+      }
+    ),
     ExpressionVarChar = list(
       create = function(..., length = unspecified(), variation_pointer = unspecified(), nullability = unspecified()) {
         rlang::check_dots_empty()
@@ -1451,7 +1740,7 @@ substrait <- list(
         )
       }
     ),
-    create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined_pointer = unspecified(), type_parameter_name = unspecified(), integer_parameter_name = unspecified(), integer_literal = unspecified(), unary_op = unspecified(), binary_op = unspecified(), if_else = unspecified(), return_program = unspecified()) {
+    create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined = unspecified(), user_defined_pointer = unspecified(), type_parameter_name = unspecified(), integer_parameter_name = unspecified(), integer_literal = unspecified(), unary_op = unspecified(), binary_op = unspecified(), if_else_ = unspecified(), return_program = unspecified()) {
       rlang::check_dots_empty()
       create_substrait_message(
         bool_ = clean_value(bool_, "TYPE_MESSAGE", "substrait.Type.Boolean", repeated = FALSE),
@@ -1477,13 +1766,14 @@ substrait <- list(
         struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.DerivationExpression.ExpressionStruct", repeated = FALSE),
         list = clean_value(list, "TYPE_MESSAGE", "substrait.DerivationExpression.ExpressionList", repeated = FALSE),
         map = clean_value(map, "TYPE_MESSAGE", "substrait.DerivationExpression.ExpressionMap", repeated = FALSE),
+        user_defined = clean_value(user_defined, "TYPE_MESSAGE", "substrait.DerivationExpression.ExpressionUserDefined", repeated = FALSE),
         user_defined_pointer = clean_value(user_defined_pointer, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
         type_parameter_name = clean_value(type_parameter_name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
         integer_parameter_name = clean_value(integer_parameter_name, "TYPE_STRING", "TYPE_STRING", repeated = FALSE),
         integer_literal = clean_value(integer_literal, "TYPE_INT32", "TYPE_INT32", repeated = FALSE),
         unary_op = clean_value(unary_op, "TYPE_MESSAGE", "substrait.DerivationExpression.UnaryOp", repeated = FALSE),
         binary_op = clean_value(binary_op, "TYPE_MESSAGE", "substrait.DerivationExpression.BinaryOp", repeated = FALSE),
-        if_else = clean_value(if_else, "TYPE_MESSAGE", "substrait.DerivationExpression.IfElse", repeated = FALSE),
+        if_else_ = clean_value(if_else_, "TYPE_MESSAGE", "substrait.DerivationExpression.IfElse", repeated = FALSE),
         return_program = clean_value(return_program, "TYPE_MESSAGE", "substrait.DerivationExpression.ReturnProgram", repeated = FALSE),
         .qualified_name = "substrait.DerivationExpression"
       )
@@ -1739,6 +2029,17 @@ substrait <- list(
         )
       }
     ),
+    UserDefined = list(
+      create = function(..., type_reference = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
+        rlang::check_dots_empty()
+        create_substrait_message(
+          type_reference = clean_value(type_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+          type_variation_reference = clean_value(type_variation_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
+          nullability = clean_value(nullability, "TYPE_ENUM", "substrait.Type.Nullability", repeated = FALSE),
+          .qualified_name = "substrait.Type.UserDefined"
+        )
+      }
+    ),
     VarChar = list(
       create = function(..., length = unspecified(), type_variation_reference = unspecified(), nullability = unspecified()) {
         rlang::check_dots_empty()
@@ -1750,7 +2051,7 @@ substrait <- list(
         )
       }
     ),
-    create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined_type_reference = unspecified()) {
+    create = function(..., bool_ = unspecified(), i8 = unspecified(), i16 = unspecified(), i32 = unspecified(), i64 = unspecified(), fp32 = unspecified(), fp64 = unspecified(), string = unspecified(), binary = unspecified(), timestamp = unspecified(), date = unspecified(), time = unspecified(), interval_year = unspecified(), interval_day = unspecified(), timestamp_tz = unspecified(), uuid = unspecified(), fixed_char = unspecified(), varchar = unspecified(), fixed_binary = unspecified(), decimal = unspecified(), struct_ = unspecified(), list = unspecified(), map = unspecified(), user_defined = unspecified(), user_defined_type_reference = unspecified()) {
       rlang::check_dots_empty()
       create_substrait_message(
         bool_ = clean_value(bool_, "TYPE_MESSAGE", "substrait.Type.Boolean", repeated = FALSE),
@@ -1776,6 +2077,7 @@ substrait <- list(
         struct_ = clean_value(struct_, "TYPE_MESSAGE", "substrait.Type.Struct", repeated = FALSE),
         list = clean_value(list, "TYPE_MESSAGE", "substrait.Type.List", repeated = FALSE),
         map = clean_value(map, "TYPE_MESSAGE", "substrait.Type.Map", repeated = FALSE),
+        user_defined = clean_value(user_defined, "TYPE_MESSAGE", "substrait.Type.UserDefined", repeated = FALSE),
         user_defined_type_reference = clean_value(user_defined_type_reference, "TYPE_UINT32", "TYPE_UINT32", repeated = FALSE),
         .qualified_name = "substrait.Type"
       )
@@ -1826,12 +2128,12 @@ substrait <- list(
           )
         }
       ),
-      create = function(..., extension_type = unspecified(), extension_type_variation = unspecified(), extension_function = unspecified()) {
+      create = function(..., extension_type = unspecified(), extension_type_variation = unspecified(), extension_function_ = unspecified()) {
         rlang::check_dots_empty()
         create_substrait_message(
           extension_type = clean_value(extension_type, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionType", repeated = FALSE),
           extension_type_variation = clean_value(extension_type_variation, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionTypeVariation", repeated = FALSE),
-          extension_function = clean_value(extension_function, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction", repeated = FALSE),
+          extension_function_ = clean_value(extension_function_, "TYPE_MESSAGE", "substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction", repeated = FALSE),
           .qualified_name = "substrait.extensions.SimpleExtensionDeclaration"
         )
       }
