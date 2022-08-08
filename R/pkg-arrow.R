@@ -245,8 +245,7 @@ substrait_eval_arrow <- function(plan, tables, col_names) {
       items = list(
         substrait$ReadRel$LocalFiles$FileOrFiles$create(
           uri_file = sprintf("file://%s", temp_parquet[i]),
-          format = substrait$ReadRel$LocalFiles$FileOrFiles$FileFormat$
-            FILE_FORMAT_PARQUET
+          parquet = substrait$ReadRel$LocalFiles$FileOrFiles$ParquetReadOptions$create()
         )
       )
     )
