@@ -123,41 +123,37 @@ query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
     arrow::write_parquet(tables[[i]], temp_parquet[i])
   }
 
-  fun <- function(sql, sink, dbdir, temp_parquet) {
-    if (!requireNamespace("duckdb", quietly = TRUE)) {
-      stop(
-        sprintf("there is no package called 'duckdb'"),
-        call. = FALSE
-      )
-    }
-
-    con <- DBI::dbConnect(duckdb::duckdb(dbdir = dbdir))
-    on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
-    DBI::dbExecute(con, "INSTALL substrait; LOAD substrait;")
-
-    # register all the temporary parquet files as named tables
-    for (i in seq_along(temp_parquet)) {
-      DBI::dbExecute(
-        con,
-        sprintf(
-          "CREATE TABLE %s AS SELECT * FROM parquet_scan(%s);",
-          DBI::dbQuoteIdentifier(con, names(temp_parquet)[i]),
-          DBI::dbQuoteLiteral(con, temp_parquet[i])
-        )
-      )
-    }
-
-    res <- DBI::dbSendQuery(con, sql, arrow = TRUE)
-
-    # this could be streamed in the future when the parquet writer
-    # in R supports streaming
-    reader <- duckdb::duckdb_fetch_record_batch(res)
-    table <- reader$read_table()
-    arrow::write_parquet(table, sink)
-    sink
+  if (!requireNamespace("duckdb", quietly = TRUE)) {
+    stop(
+      sprintf("there is no package called 'duckdb'"),
+      call. = FALSE
+    )
   }
 
-  fun(sql, sink, dbdir, temp_parquet)
+  con <- DBI::dbConnect(duckdb::duckdb(dbdir = dbdir))
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+  DBI::dbExecute(con, "INSTALL substrait; LOAD substrait;")
+
+  # register all the temporary parquet files as named tables
+  for (i in seq_along(temp_parquet)) {
+    DBI::dbExecute(
+      con,
+      sprintf(
+        "CREATE TABLE %s AS SELECT * FROM parquet_scan(%s);",
+        DBI::dbQuoteIdentifier(con, names(temp_parquet)[i]),
+        DBI::dbQuoteLiteral(con, temp_parquet[i])
+      )
+    )
+  }
+
+  res <- DBI::dbSendQuery(con, sql, arrow = TRUE)
+
+  # this could be streamed in the future when the parquet writer
+  # in R supports streaming
+  reader <- duckdb::duckdb_fetch_record_batch(res)
+  table <- reader$read_table()
+  arrow::write_parquet(table, sink)
+
   arrow::read_parquet(sink, as_data_frame = as_data_frame)
 }
 
