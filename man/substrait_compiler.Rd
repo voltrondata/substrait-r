@@ -25,6 +25,6 @@ Creates a \link{SubstraitCompiler} instance initialized with \code{object}
 (e.g., a \code{data.frame()}).
 }
 \examples{
-substrait_compiler(data.frame(col1 = 1 , col2 = "one"))
+substrait_compiler(data.frame(col1 = 1, col2 = "one"))
 
 }

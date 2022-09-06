@@ -4,8 +4,6 @@
 \alias{duckdb_get_substrait}
 \alias{duckdb_from_substrait}
 \alias{has_duckdb_with_substrait}
-\alias{install_duckdb_with_substrait}
-\alias{duckdb_with_substrait_lib_dir}
 \title{DuckDB Substrait Interface}
 \usage{
 duckdb_get_substrait(sql, tables = list())
@@ -17,15 +15,7 @@ duckdb_from_substrait(
   as_data_frame = TRUE
 )
 
-has_duckdb_with_substrait(lib = duckdb_with_substrait_lib_dir())
-
-install_duckdb_with_substrait(
-  lib = duckdb_with_substrait_lib_dir(),
-  force = TRUE,
-  quiet = FALSE
-)
-
-duckdb_with_substrait_lib_dir()
+has_duckdb_with_substrait()
 }
 \arguments{
 \item{sql}{An SQL expression from which to generate a Substrait plan}
@@ -38,8 +28,6 @@ duckdb_with_substrait_lib_dir()
 
 \item{as_data_frame}{Use \code{FALSE} to return an \link[arrow:Table]{arrow::Table} instead of a
 data.frame.}
-
-\item{lib}{A directry where the custom duckdb will be installed}
 
 \item{force, quiet}{Passed to the remotes installer}
 }

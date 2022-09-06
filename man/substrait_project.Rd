@@ -19,8 +19,8 @@ Append a Substrait Project Relation
 }
 \examples{
 substrait_project(
-   data.frame(a = 1, b = "one"),
-   c = a + 1
+  data.frame(a = 1, b = "one"),
+  c = a + 1
 )
 
 }

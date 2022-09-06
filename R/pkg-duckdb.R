@@ -7,7 +7,6 @@
 #'   data.frame.
 #' @param tables A named list of tables to populate the database
 #' @param col_names The final column names for the result
-#' @param lib A directry where the custom duckdb will be installed
 #' @param force,quiet Passed to the remotes installer
 #'
 #' @return
@@ -65,7 +64,7 @@ duckdb_from_substrait <- function(plan, tables = list(),
 
 #' @rdname duckdb_get_substrait
 #' @export
-has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
+has_duckdb_with_substrait <- function() {
   if (!identical(duckdb_works_cache$works, NA)) {
     return(duckdb_works_cache$works)
   }
@@ -78,8 +77,7 @@ has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
   duckdb_works_cache$works <- tryCatch(
     {
       query_duckdb_with_substrait(
-        query_duckdb_with_substrait("CALL from_substrait()"),
-        lib = lib
+        query_duckdb_with_substrait("CALL from_substrait()")
       )
       TRUE
     },
@@ -111,7 +109,6 @@ has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
 }
 
 query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
-                                        lib = duckdb_with_substrait_lib_dir(),
                                         tables = list(),
                                         as_data_frame = TRUE) {
   sink <- tempfile()
@@ -126,10 +123,8 @@ query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
     arrow::write_parquet(tables[[i]], temp_parquet[i])
   }
 
-  fun <- function(sql, sink, dbdir, lib, temp_parquet) {
-    # don't load duckdb from anything except `lib` and error otherwise
-    # because the subprocess may have duckdb in a default, site, or user lib
-    if (!requireNamespace("duckdb", lib.loc = lib, quietly = TRUE)) {
+  fun <- function(sql, sink, dbdir, temp_parquet) {
+    if (!requireNamespace("duckdb", quietly = TRUE)) {
       stop(
         sprintf("there is no package called 'duckdb'"),
         call. = FALSE
@@ -138,6 +133,7 @@ query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
 
     con <- DBI::dbConnect(duckdb::duckdb(dbdir = dbdir))
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+    DBI::dbExecute(con, "INSTALL substrait; LOAD substrait;")
 
     # register all the temporary parquet files as named tables
     for (i in seq_along(temp_parquet)) {
@@ -161,59 +157,8 @@ query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
     sink
   }
 
-  callr::r(
-    fun,
-    list(sql, sink, dbdir, lib, temp_parquet),
-    libpath = c(lib, .libPaths())
-  )
-
+  fun(sql, sink, dbdir, temp_parquet)
   arrow::read_parquet(sink, as_data_frame = as_data_frame)
-}
-
-#' @rdname duckdb_get_substrait
-#' @export
-install_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir(),
-                                          force = TRUE, quiet = FALSE) {
-  if (!quiet) {
-    message(
-      paste0(
-        "Installing duckdb with the ability to run substrait ",
-        "to custom library \n'", lib, "'"
-      )
-    )
-  }
-
-  # `build = FALSE` so that the duckdb cpp source is available when the R package
-  # is compiling itself
-  fun <- function(lib) {
-    if (!dir.exists(lib)) {
-      dir.create(lib, recursive = TRUE)
-    }
-
-    remotes::install_cran("DBI", lib = lib, force = force)
-    remotes::install_github(
-      "duckdb/duckdb/tools/rpkg",
-      build = FALSE,
-      force = force,
-      lib = lib
-    )
-  }
-
-  withr::with_envvar(
-    list(DUCKDB_R_EXTENSIONS = "substrait"),
-    callr::r(fun, list(lib), libpath = c(lib, .libPaths()), show = !quiet)
-  )
-
-  duckdb_works_cache$works <- NA
-}
-
-#' @rdname duckdb_get_substrait
-#' @export
-duckdb_with_substrait_lib_dir <- function() {
-  Sys.getenv(
-    "R_SUBSTRAIT_DUCKDB_LIB",
-    file.path(rappdirs::user_data_dir("R-substrait"), "duckdb_lib")
-  )
 }
 
 duckdb_encode_blob <- function(x) {
