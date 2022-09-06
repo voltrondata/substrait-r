@@ -80,21 +80,63 @@ substrait_select <- function(.compiler, ...) {
   .compiler$validate()
 }
 
-# Take selected columns and create the appropriate substrait message
-build_projections <- function(df, projections) {
-  # get numeric matches of column positions
-  locs <- match(
-    unname(vapply(projections, as.character, character(1))),
-    names(df)
+substrait_project <- function(.compiler, ...) {
+  .compiler <- substrait_compiler(.compiler)$clone()
+
+  # evaluate expressions sequentially, updating the compiler as we go so that
+  # fields created by earlier arguments are accessible from later arguments
+  quos <- rlang::enquos(..., .named = TRUE)
+  expressions <- list()
+  types <- list()
+
+  for (i in seq_along(quos)) {
+    name <- names(quos)[i]
+
+    if (rlang::quo_is_null(quos[[i]])) {
+      next
+    }
+
+    # do the evaluation and calculate the output type
+    value <- as_substrait(
+      quos[[i]],
+      .ptype = "substrait.Expression",
+      compiler = .compiler
+    )
+    type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
+
+    # Update the compiler mask (used for symbol lookup for subsequent expressions)
+    .compiler$mask[[name]] <- value
+
+    # Update the compiler schema
+    .compiler$schema$names <- c(.compiler$schema$names, name)
+    .compiler$schema$struct_$types <- c(.compiler$schema$struct_$types, list(type))
+
+    # keep track of the new expressions and types
+    expressions[[name]] <- value
+    types[[name]] <- type
+  }
+
+  # create the relation with the new expressions and types
+  rel <- substrait$Rel$create(
+    project = substrait$ProjectRel$create(
+      input = .compiler$rel,
+      expressions = expressions
+    )
   )
 
-  # -1 as it's 0-indexed but tidyselect is 1-indexed
-  expressions <- lapply(
-    locs - 1,
+  # update the compiler
+  .compiler$rel <- rel
+  .compiler$schema$names <- names(expressions)
+  .compiler$schema$struct_$types <- types
+
+  # reset the mask
+  .compiler$mask <- lapply(
+    seq_along(types) - 1L,
     simple_integer_field_reference
   )
+  names(.compiler$mask) <- names(types)
 
-  expressions
+  .compiler$validate()
 }
 
 # Simplify the verbose definition of a field reference
