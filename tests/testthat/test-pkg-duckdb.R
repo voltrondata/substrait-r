@@ -244,7 +244,7 @@ test_that("duckdb raises error for empty projection", {
   expect_error(
     tbl %>%
       duckdb_substrait_compiler() %>%
-      substrait_project(),
+      substrait_select(),
     "Column list must not be empty"
   )
 })

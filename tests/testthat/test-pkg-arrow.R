@@ -73,7 +73,7 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
   )
 
   compiler <- arrow_substrait_compiler(df)
-  result <- substrait_project(compiler, number)
+  result <- substrait_select(compiler, number)
 
   expect_identical(
     as.data.frame(as.data.frame(result$evaluate())),
@@ -90,7 +90,7 @@ test_that("ArrowSubstraitCompiler can evaluate a project with a function call", 
   )
 
   compiler <- arrow_substrait_compiler(df)
-  result <- substrait_project(compiler, added = number + 1L)
+  result <- substrait_select(compiler, added = number + 1L)
 
   expect_identical(
     as.data.frame(as.data.frame(result$evaluate())),

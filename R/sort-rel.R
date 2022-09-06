@@ -1,7 +1,7 @@
 
 #' Append a Substrait Project Relation
 #'
-#' @inheritParams substrait_project
+#' @inheritParams substrait_select
 #' @param ... Expressions that evaluate to an Expression or SortField
 #' @param expr An expression that evaluates to an Expression
 #' @param direction A SortField.SortDirection

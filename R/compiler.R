@@ -9,7 +9,7 @@
 #' will need to subclass the [SubstraitCompiler] and implement the `$evaluate()`
 #' and/or `$resolve_function()` methods. Typically users will not interact
 #' with R6 methods but will use the pipeable interface
-#' (e.g. [substrait_project()]). The pipeable interface clones the compiler
+#' (e.g. [substrait_select()]). The pipeable interface clones the compiler
 #' before it is modified to minimize the user's interaction to R6 reference
 #' semantics.
 #'

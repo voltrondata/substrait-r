@@ -69,7 +69,7 @@ select.SubstraitCompiler <- function(.data, ...) {
     names(column_indices)
   )
 
-  substrait_project(.data, !!!new_mask)
+  substrait_select(.data, !!!new_mask)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -91,7 +91,7 @@ rename.SubstraitCompiler <- function(.data, ...) {
     new_column_names
   )
 
-  substrait_project(.data, !!!new_mask)
+  substrait_select(.data, !!!new_mask)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -118,14 +118,14 @@ mutate.SubstraitCompiler <- function(.data, ...,
   .keep <- match.arg(.keep)
   mask <- .data$mask
 
-  out <- substrait_project(.data, !!!mask, ...)
+  out <- substrait_select(.data, !!!mask, ...)
   if (.keep == "all") {
     return(out)
   }
 
   # if only keeping a subset of columns, work out which and project again
   cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
-  substrait_project(out, !!!out$mask[cols], !!!rlang::syms(cols))
+  substrait_select(out, !!!out$mask[cols], !!!rlang::syms(cols))
 }
 
 #' @rdname select.SubstraitCompiler
@@ -133,7 +133,7 @@ mutate.SubstraitCompiler <- function(.data, ...,
 #' @export
 transmute.SubstraitCompiler <- function(.data, ...) {
   check_transmute_args(...)
-  substrait_project(.data, ...)
+  substrait_select(.data, ...)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -284,7 +284,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
     new_column_names[pos]
   )
 
-  substrait_project(.data, !!!new_mask)
+  substrait_select(.data, !!!new_mask)
 }
 
 # translate desc() call to the equivalent

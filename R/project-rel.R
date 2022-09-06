@@ -8,12 +8,12 @@
 #' @export
 #'
 #' @examples
-#' substrait_project(
+#' substrait_select(
 #'   data.frame(a = 1, b = "one"),
 #'   c = a + 1
 #' )
 #'
-substrait_project <- function(.compiler, ...) {
+substrait_select <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
   # evaluate expressions sequentially, updating the compiler as we go so that

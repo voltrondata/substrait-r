@@ -1,9 +1,9 @@
 
-test_that("substrait_project() can select all columns unchanged", {
+test_that("substrait_select() can select all columns unchanged", {
   tbl <- data.frame(col1 = 1, col2 = "one")
   compiler <- substrait_compiler(tbl)
 
-  result <- substrait_project(compiler, col1, col2)
+  result <- substrait_select(compiler, col1, col2)
 
   expect_s3_class(result, "SubstraitCompiler")
 
@@ -26,8 +26,8 @@ test_that("simple_integer_field_reference() returns the correct structure", {
   )
 })
 
-test_that("substrait_project() resets the mask and schema after evaluation", {
-  projected <- substrait_project(
+test_that("substrait_select() resets the mask and schema after evaluation", {
+  projected <- substrait_select(
     data.frame(a = 1, b = 2L),
     b
   )
@@ -44,8 +44,8 @@ test_that("substrait_project() resets the mask and schema after evaluation", {
   )
 })
 
-test_that("substrait_project() evaluates arguments in order", {
-  projected <- substrait_project(
+test_that("substrait_select() evaluates arguments in order", {
+  projected <- substrait_select(
     data.frame(a = 1),
     b = a,
     c = b
