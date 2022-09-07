@@ -8,6 +8,7 @@ test_that("substrait_select() can select all columns unchanged", {
   expect_s3_class(result, "SubstraitCompiler")
 
   # check that we did append a ProjectRel
+  expect_s3_class(result$rel$project, "substrait_ProjectRel")
   expect_identical(
     result$rel$project$input,
     compiler$rel
@@ -16,6 +17,19 @@ test_that("substrait_select() can select all columns unchanged", {
   # check that nothing else about the compiler changed
   expect_identical(result$schema, compiler$schema)
   expect_identical(result$mask, compiler$mask)
+})
+
+test_that("substrait_project() can add zero columns", {
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  compiler <- substrait_compiler(tbl)
+
+  result <- substrait_project(compiler)
+
+  # check that we did append a ProjectRel
+  expect_s3_class(result$rel$project, "substrait_ProjectRel")
+
+  # make sure we didn't include an Emit clause
+  expect_null(result$rel$project$common$emit)
 })
 
 test_that("simple_integer_field_reference() returns the correct structure", {

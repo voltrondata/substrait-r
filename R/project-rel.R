@@ -70,14 +70,22 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   output_mapping <- length(names_using_only_append_logic) +
     1L - match(final_columns, rev(names_using_only_append_logic))
 
+  # Don't include the Emit object if it isn't needed (in case the engine
+  # hasn't implemented it)
+  if (identical(output_mapping, seq_along(names_using_only_append_logic))) {
+    common <- substrait$RelCommon$create()
+  } else {
+    common <- substrait$RelCommon$create(
+      emit = substrait$RelCommon$Emit$create(
+        output_mapping = output_mapping
+      )
+    )
+  }
+
   # Create the relation with the new expressions and types
   rel <- substrait$Rel$create(
     project = substrait$ProjectRel$create(
-      common = substrait$RelCommon$create(
-        emit = substrait$RelCommon$Emit$create(
-          output_mapping = output_mapping
-        )
-      ),
+      common = common,
       input = .compiler$rel,
       expressions = expressions
     )
