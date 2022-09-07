@@ -93,15 +93,15 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
 
   # update the compiler
   .compiler$rel <- rel
-  .compiler$schema$names <- names(expressions)
-  .compiler$schema$struct_$types <- types
+  .compiler$schema$names <- final_columns
+  .compiler$schema$struct_$types <- c(.compiler$schema$struct_$types, types)[output_mapping]
 
   # reset the mask
   .compiler$mask <- lapply(
-    seq_along(types) - 1L,
+    seq_along(.compiler$schema$struct_$types) - 1L,
     simple_integer_field_reference
   )
-  names(.compiler$mask) <- names(types)
+  names(.compiler$mask) <- .compiler$schema$names
 
   .compiler$validate()
 }

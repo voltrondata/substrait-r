@@ -30,6 +30,35 @@ test_that("substrait_project() can add zero columns", {
 
   # make sure we didn't include an Emit clause
   expect_null(result$rel$project$common$emit)
+
+  # check that nothing else about the compiler changed
+  expect_identical(result$schema, compiler$schema)
+  expect_identical(result$mask, compiler$mask)
+})
+
+test_that("substrait_project() can add columns without an emit clause", {
+  tbl <- data.frame(col1 = 1, col2 = "one")
+  compiler <- substrait_compiler(tbl)
+
+  result <- substrait_project(compiler, col3 = 3L)
+
+  # check that we did append a ProjectRel
+  expect_s3_class(result$rel$project, "substrait_ProjectRel")
+
+  # make sure we didn't include an unnecessary Emit clause
+  expect_null(result$rel$project$common$emit)
+
+  # make sure we actually added a column
+  expect_identical(result$schema$names, c("col1", "col2", "col3"))
+  expect_identical(names(result$mask), c("col1", "col2", "col3"))
+  expect_identical(
+    result$schema$struct_$types,
+    list(
+      substrait_fp64(),
+      substrait_string(),
+      substrait_i32()
+    )
+  )
 })
 
 test_that("simple_integer_field_reference() returns the correct structure", {
