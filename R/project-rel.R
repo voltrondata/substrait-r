@@ -8,79 +8,9 @@
 #' @export
 #'
 #' @examples
-#' substrait_select(
-#'   data.frame(a = 1, b = "one"),
-#'   c = a + 1
-#' )
+#' substrait_select(data.frame(a = 1, b = "one"), c = a + 1)
 #'
-substrait_select <- function(.compiler, ...) {
-  .compiler <- substrait_compiler(.compiler)$clone()
-
-  # evaluate expressions sequentially, updating the compiler as we go so that
-  # fields created by earlier arguments are accessible from later arguments
-  quos <- rlang::enquos(..., .named = TRUE)
-  expressions <- list()
-  types <- list()
-
-  for (i in seq_along(quos)) {
-    name <- names(quos)[i]
-    if (!rlang::quo_is_null(quos[[i]])) {
-
-      # do the evaluation and calculate the output type
-      value <- as_substrait(
-        quos[[i]],
-        .ptype = "substrait.Expression",
-        compiler = .compiler
-      )
-      type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
-
-      # update the compiler
-      .compiler$mask[[name]] <- value
-      .compiler$schema$names <- union(.compiler$schema$names, name)
-      .compiler$schema$struct_$types[[match(name, .compiler$schema$names)]] <-
-        type
-
-      # keep track of the new expressions and types
-      expressions[[name]] <- value
-      types[[name]] <- type
-    } else {
-      expressions[[name]] <- NULL
-      types[[name]] <- NULL
-      # remove from compiler so that we can't use the NULL column later
-      # (as per dplyr behaviour)
-      .compiler$mask[[name]] <- NULL
-      index_match <- match(name, .compiler$schema$names)
-      if (!is.na(index_match)) {
-        .compiler$schema$struct_$types[[index_match]] <- NULL
-      }
-      .compiler$schema$names <- .compiler$schema$names[.compiler$schema$names != name]
-    }
-  }
-
-  # create the relation with the new expressions and types
-  rel <- substrait$Rel$create(
-    project = substrait$ProjectRel$create(
-      input = .compiler$rel,
-      expressions = expressions
-    )
-  )
-
-  # update the compiler
-  .compiler$rel <- rel
-  .compiler$schema$names <- names(expressions)
-  .compiler$schema$struct_$types <- types
-
-  # reset the mask
-  .compiler$mask <- lapply(
-    seq_along(types) - 1L,
-    simple_integer_field_reference
-  )
-  names(.compiler$mask) <- names(types)
-
-  .compiler$validate()
-}
-
-substrait_project <- function(.compiler, ...) {
+substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
   # Evaluate expressions sequentially, updating the compiler as we go so that
@@ -128,20 +58,30 @@ substrait_project <- function(.compiler, ...) {
     }
   }
 
-  # Calculate the fields we have to drop (i.e., they were NULL or were
-  # renamed and have a new value appended as part of this project).
-  renamed_columns <- intersect(names(expressions), .compiler$schema$names)
-  drop_columns <- union(drop_columns, renamed_columns)
+  # Apply explicitly dropped column names
+  drop_columns <- union(drop_columns, .drop_columns)
+
+  # Create the Emit.output_mapping we need to get our final columns
+  names_using_only_append_logic <- c(.compiler$schema$names, names(expressions))
+  final_columns <- unique(setdiff(names_using_only_append_logic, drop_columns))
+
+  # Match from last item (we want the value that we just calculated to replace
+  # the value that previously existed)
+  output_mapping <- length(names_using_only_append_logic) +
+    1L - match(final_columns, rev(names_using_only_append_logic))
 
   # Create the relation with the new expressions and types
   rel <- substrait$Rel$create(
     project = substrait$ProjectRel$create(
+      common = substrait$RelCommon$create(
+        emit = substrait$RelCommon$Emit$create(
+          output_mapping = output_mapping
+        )
+      ),
       input = .compiler$rel,
-      expressions = expressions,
+      expressions = expressions
     )
   )
-
-
 
   # update the compiler
   .compiler$rel <- rel
@@ -156,6 +96,18 @@ substrait_project <- function(.compiler, ...) {
   names(.compiler$mask) <- names(types)
 
   .compiler$validate()
+}
+
+#' @rdname substrait_project
+#' @export
+substrait_select <- function(.compiler, ...) {
+  .compiler <- substrait_compiler(.compiler)
+  quos <- rlang::enquos(..., .named = TRUE)
+
+  final_col_names <- names(quos)
+  drop_cols <- setdiff(.compiler$schema$names, final_col_names)
+
+  substrait_project(.compiler, !!! quos, .drop_columns = drop_cols)
 }
 
 # Simplify the verbose definition of a field reference
