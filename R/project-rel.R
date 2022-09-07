@@ -83,46 +83,65 @@ substrait_select <- function(.compiler, ...) {
 substrait_project <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
 
-  # evaluate expressions sequentially, updating the compiler as we go so that
+  # Evaluate expressions sequentially, updating the compiler as we go so that
   # fields created by earlier arguments are accessible from later arguments
   quos <- rlang::enquos(..., .named = TRUE)
   expressions <- list()
   types <- list()
 
+  # Keep a list of columns that we need to drop as part of this relation
+  drop_columns <- character()
+
   for (i in seq_along(quos)) {
     name <- names(quos)[i]
 
-    if (rlang::quo_is_null(quos[[i]])) {
-      next
+    if (!rlang::quo_is_null(quos[[i]])) {
+      # Do the evaluation and calculate the output type
+      value <- as_substrait(
+        quos[[i]],
+        .ptype = "substrait.Expression",
+        compiler = .compiler
+      )
+      type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
+
+      # Update the compiler mask (used for symbol lookup for subsequent expressions)
+      .compiler$mask[[name]] <- value
+
+      # keep track of the new expressions and types
+      expressions[[name]] <- value
+      types[[name]] <- type
+
+      # ...and make sure we don't drop this column if it was previously dropped
+      drop_columns <- setdiff(drop_columns, name)
+    } else {
+      # Remove from the compiler mask so that we can't use the NULL column in a
+      # subsequent argument (as per dplyr behaviour)
+      .compiler$mask[[name]] <- NULL
+
+      # Remove from our list of new expressions to append if it had been
+      # previously added
+      expressions[[name]] <- NULL
+      types[[name]] <- NULL
+
+      # ...and make sure we drop this column if it already existed
+      drop_columns <- union(drop_columns, name)
     }
-
-    # do the evaluation and calculate the output type
-    value <- as_substrait(
-      quos[[i]],
-      .ptype = "substrait.Expression",
-      compiler = .compiler
-    )
-    type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
-
-    # Update the compiler mask (used for symbol lookup for subsequent expressions)
-    .compiler$mask[[name]] <- value
-
-    # Update the compiler schema
-    .compiler$schema$names <- c(.compiler$schema$names, name)
-    .compiler$schema$struct_$types <- c(.compiler$schema$struct_$types, list(type))
-
-    # keep track of the new expressions and types
-    expressions[[name]] <- value
-    types[[name]] <- type
   }
 
-  # create the relation with the new expressions and types
+  # Calculate the fields we have to drop (i.e., they were NULL or were
+  # renamed and have a new value appended as part of this project).
+  renamed_columns <- intersect(names(expressions), .compiler$schema$names)
+  drop_columns <- union(drop_columns, renamed_columns)
+
+  # Create the relation with the new expressions and types
   rel <- substrait$Rel$create(
     project = substrait$ProjectRel$create(
       input = .compiler$rel,
-      expressions = expressions
+      expressions = expressions,
     )
   )
+
+
 
   # update the compiler
   .compiler$rel <- rel
