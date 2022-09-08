@@ -190,7 +190,7 @@ A table-like object whose structure is defined by the
 \subsection{Method \code{resolve_function()}}{
 Resolves an R function call as a Substrait function call.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template, output_type = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -207,6 +207,9 @@ objects created while evaluating the user-provided arguments
 \item{\code{template}}{A \code{substrait.Expression.ScalarFunction}, a
 \code{substrait.Expression.WindowFunction}, or a
 \code{substrait.AggregateFunction}.}
+
+\item{\code{output_type}}{An explicit output type to use or a function accepting
+one type per \code{args}.}
 }
 \if{html}{\out{</div>}}
 }

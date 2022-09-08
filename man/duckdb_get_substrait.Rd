@@ -28,8 +28,6 @@ has_duckdb_with_substrait()
 
 \item{as_data_frame}{Use \code{FALSE} to return an \link[arrow:Table]{arrow::Table} instead of a
 data.frame.}
-
-\item{force, quiet}{Passed to the remotes installer}
 }
 \value{
 \itemize{

@@ -97,7 +97,7 @@ rename.SubstraitCompiler <- function(.data, ...) {
 #' @rdname select.SubstraitCompiler
 #' @importFrom dplyr rename_with
 #' @export
-rename_with.SubstraitCompiler <- function(.data, .fn, .cols = everything(), ...) {
+rename_with.SubstraitCompiler <- function(.data, .fn, .cols = dplyr::everything(), ...) {
   .fn <- rlang::as_function(.fn)
   old_names <- dplyr::select(.data, {{ .cols }})$schema$names
   dplyr::rename(.data, !!rlang::set_names(old_names, .fn(old_names)))
@@ -327,12 +327,12 @@ simulate_data_frame <- function(compiler) {
 
 check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang::caller_env()) {
   if (!missing(.keep)) {
-    abort("The `.keep` argument is not supported.", call = error_call)
+    rlang::abort("The `.keep` argument is not supported.", call = error_call)
   }
   if (!missing(.before)) {
-    abort("The `.before` argument is not supported.", call = error_call)
+    rlang::abort("The `.before` argument is not supported.", call = error_call)
   }
   if (!missing(.after)) {
-    abort("The `.after` argument is not supported.", call = error_call)
+    rlang::abort("The `.after` argument is not supported.", call = error_call)
   }
 }

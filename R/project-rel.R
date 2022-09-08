@@ -3,6 +3,8 @@
 #'
 #' @param .compiler A [substrait_compiler()] or object that can be coerced to one
 #' @param ... Expressions
+#' @param .drop_columns A character vector of columns to explicitly drop before
+#'   adding expressions specified in `...`.
 #'
 #' @return A modified `.compiler`
 #' @export

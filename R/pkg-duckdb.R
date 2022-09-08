@@ -7,7 +7,6 @@
 #'   data.frame.
 #' @param tables A named list of tables to populate the database
 #' @param col_names The final column names for the result
-#' @param force,quiet Passed to the remotes installer
 #'
 #' @return
 #'   - `duckdb_get_substrait()`: a substrait.Plan protobuf object

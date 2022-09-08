@@ -24,6 +24,8 @@
 #' @param template A `substrait.Expression.ScalarFunction`, a
 #'   `substrait.Expression.WindowFunction`, or a
 #'   `substrait.AggregateFunction`.
+#' @param output_type An explicit output type to use or a function accepting
+#'   one type per `args`.
 #'
 #' @export
 SubstraitCompiler <- R6::R6Class(

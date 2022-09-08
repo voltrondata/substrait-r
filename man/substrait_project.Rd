@@ -5,7 +5,7 @@
 \alias{substrait_select}
 \title{Append a Substrait Project Relation}
 \usage{
-substrait_project(.compiler, ...)
+substrait_project(.compiler, ..., .drop_columns = character())
 
 substrait_select(.compiler, ...)
 }
@@ -13,6 +13,9 @@ substrait_select(.compiler, ...)
 \item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
 
 \item{...}{Expressions}
+
+\item{.drop_columns}{A character vector of columns to explicitly drop before
+adding expressions specified in \code{...}.}
 }
 \value{
 A modified \code{.compiler}
