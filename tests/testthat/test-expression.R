@@ -64,9 +64,11 @@ test_that("quosures with calls can be translated to Expressions", {
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
         function_reference = 2,
-        args = list(
-          substrait$Expression$create(
-            literal = substrait$Expression$Literal$create(i32 = 5L)
+        arguments = list(
+          substrait$FunctionArgument$create(
+            value = substrait$Expression$create(
+              literal = substrait$Expression$Literal$create(i32 = 5L)
+            )
           )
         ),
         output_type = substrait$Type$create()
@@ -79,9 +81,11 @@ test_that("quosures with calls can be translated to Expressions", {
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
         function_reference = 3,
-        args = list(
-          substrait$Expression$create(
-            literal = substrait$Expression$Literal$create(i32 = 5L)
+        arguments = list(
+          substrait$FunctionArgument$create(
+            value = substrait$Expression$create(
+              literal = substrait$Expression$Literal$create(i32 = 5L)
+            )
           )
         ),
         output_type = substrait$Type$create()

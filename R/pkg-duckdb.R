@@ -78,6 +78,10 @@ has_duckdb_with_substrait <- function() {
   duckdb_works_cache$works
 }
 
+# The check takes enough time that we cache the result after the first check.
+duckdb_works_cache <- new.env(parent = emptyenv())
+duckdb_works_cache$works <- NA
+
 with_duckdb_tables <- function(tables, fun) {
   # Write all tables to temporary parquet files so we can load them in to
   # duckdb (TODO: don't use files and/or use VIEW. A VIEW currently
@@ -112,9 +116,6 @@ with_duckdb_tables <- function(tables, fun) {
   fun(con)
 }
 
-duckdb_works_cache <- new.env(parent = emptyenv())
-duckdb_works_cache$works <- NA
-
 #' Create an DuckDB Substrait Compiler
 #'
 #' @inheritParams arrow_substrait_compiler
@@ -144,22 +145,22 @@ DuckDBSubstraitCompiler <- R6::R6Class(
       # whereas self$resolve_function() will apply translations as we
       # implement them here.
       switch(name,
-        "==" = super$resolve_function("equal", args, template),
-        "!=" = super$resolve_function("not_equal", args, template),
-        ">=" = super$resolve_function("gte", args, template),
-        "<=" = super$resolve_function("lte", args, template),
-        ">" = super$resolve_function("gt", args, template),
-        "<" = super$resolve_function("lt", args, template),
+        "==" = super$resolve_function("equal", args, template, output_type = substrait_boolean()),
+        "!=" = super$resolve_function("not_equal", args, template, output_type = substrait_boolean()),
+        ">=" = super$resolve_function("gte", args, template, output_type = substrait_boolean()),
+        "<=" = super$resolve_function("lte", args, template, output_type = substrait_boolean()),
+        ">" = super$resolve_function("gt", args, template, output_type = substrait_boolean()),
+        "<" = super$resolve_function("lt", args, template, output_type = substrait_boolean()),
         "between" = super$resolve_function(
           "and",
           list(
-            super$resolve_function("gte", args[-3], template),
-            super$resolve_function("lte", args[-2], template)
+            super$resolve_function("gte", args[-3], template, output_type = substrait_boolean()),
+            super$resolve_function("lte", args[-2], template, output_type = substrait_boolean())
           ),
-          template
+          output_type = substrait_boolean()
         ),
-        "&" = super$resolve_function("and", args, template),
-        "|" = super$resolve_function("or", args, template),
+        "&" = super$resolve_function("and", args, output_type = substrait_boolean()),
+        "|" = super$resolve_function("or", args, output_type = substrait_boolean()),
         # while I'm sure that "not" exists somehow, this is the only way
         # I can get it to work for now (NULLs are not handled properly here)
         "!" = {
@@ -191,7 +192,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
             "!",
             list(
               as_substrait(
-                super$resolve_function("is_not_null", args, template),
+                super$resolve_function("is_not_null", args, template, output_type = substrait_boolean()),
                 "substrait.Expression"
               )
             ),
@@ -237,21 +238,22 @@ DuckDBSubstraitCompiler <- R6::R6Class(
               super$resolve_function(
                 "equal",
                 list(lhs, rhs$literal$list$values[[1]]),
-                template
+                template,
+                output_type = substrait_boolean()
               )
             )
           }
 
           equal_expressions <- lapply(rhs$literal$list$values, function(value) {
             as_substrait(
-              super$resolve_function("equal", list(lhs, value), template),
+              super$resolve_function("equal", list(lhs, value), template, output_type = substrait_boolean()),
               "substrait.Expression"
             )
           })
 
           combine_or <- function(lhs, rhs) {
             as_substrait(
-              super$resolve_function("or", list(lhs, rhs), template),
+              super$resolve_function("or", list(lhs, rhs), template, output_type = substrait_boolean()),
               "substrait.Expression"
             )
           }
@@ -266,7 +268,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
         "*" = ,
         "/" = ,
         "^" = ,
-        "sum" = super$resolve_function(name, args, template),
+        "sum" = super$resolve_function(name, args, template, output_type = function(x, y) x),
         rlang::abort(
           paste0('could not find function "', name, '"')
         )

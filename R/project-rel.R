@@ -63,7 +63,7 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
 
   # Create the Emit.output_mapping we need to get our final columns
   names_using_only_append_logic <- c(.compiler$schema$names, names(expressions))
-  final_columns <- unique(setdiff(names_using_only_append_logic, drop_columns))
+  final_columns <- unique(rev(setdiff(rev(names_using_only_append_logic), drop_columns)))
 
   # Match from last item (we want the value that we just calculated to replace
   # the value that previously existed)
