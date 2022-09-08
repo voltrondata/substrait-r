@@ -25,20 +25,13 @@
 duckdb_get_substrait <- function(sql, tables = list()) {
   stopifnot(has_duckdb_with_substrait())
 
-  temp_con <- DBI::dbConnect(duckdb::duckdb())
-  on.exit(DBI::dbDisconnect(temp_con, shutdown = TRUE))
-  sql_quoted <- DBI::dbQuoteLiteral(temp_con, sql)
+  result <- with_duckdb_tables(tables, function(con) {
+    duckdb::duckdb_get_substrait(con, sql)
+  })
 
-  result <- query_duckdb_with_substrait(
-    sprintf("CALL get_substrait(%s)", sql_quoted),
-    tables = tables,
-    as_data_frame = TRUE
-  )
-  plan <- unclass(result[[1]])[[1]]
-  ptype <- make_ptype("substrait.Plan")
   structure(
-    list(content = plan),
-    class = class(ptype)
+    list(content = result),
+    class = class(make_ptype("substrait.Plan"))
   )
 }
 
@@ -51,12 +44,15 @@ duckdb_from_substrait <- function(plan, tables = list(),
   stopifnot(has_duckdb_with_substrait())
 
   plan <- as_substrait(plan, "substrait.Plan")
-
-  result <- query_duckdb_with_substrait(
-    sprintf("CALL from_substrait(%s)", duckdb_encode_blob(plan)),
-    as_data_frame = as_data_frame,
-    tables = tables
-  )
+  result <- with_duckdb_tables(tables, function(con) {
+    res <- duckdb::duckdb_prepare_substrait(con, unclass(plan)$content, arrow = TRUE)
+    reader <- duckdb::duckdb_fetch_record_batch(res)
+    if (as_data_frame) {
+      tibble::as_tibble(as.data.frame(reader$read_table()))
+    } else {
+      reader$read_table()
+    }
+  })
 
   names(result) <- col_names
   result
@@ -75,64 +71,31 @@ has_duckdb_with_substrait <- function() {
   }
 
   duckdb_works_cache$works <- tryCatch(
-    {
-      query_duckdb_with_substrait(
-        query_duckdb_with_substrait("CALL from_substrait()")
-      )
-      TRUE
-    },
-    error = function(e) {
-      from_substrait_exists <- grepl(
-        "from_substrait\\(BLOB\\)",
-        conditionMessage(e)
-      )
-
-      error_is_from_us <- grepl(
-        "there is no package called 'duckdb'",
-        conditionMessage(e)
-      )
-
-      if (from_substrait_exists) {
-        TRUE
-      } else if (error_is_from_us) {
-        FALSE
-      } else {
-        rlang::abort(
-          "An unexpected error occured whilst querying Substrait-enabled duckdb",
-          parent = e
-        )
-      }
-    }
+    with_duckdb_tables(list(), function(con) TRUE),
+    error = function(e) FALSE
   )
 
   duckdb_works_cache$works
 }
 
-query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
-                                        tables = list(),
-                                        as_data_frame = TRUE) {
-  sink <- tempfile()
-
-  # write all tables to temporary parquet files so we can load them in to
-  # duckdb from another process
+with_duckdb_tables <- function(tables, fun) {
+  # Write all tables to temporary parquet files so we can load them in to
+  # duckdb (TODO: don't use files and/or use VIEW. A VIEW currently
+  # does not work with duckdb's substrait preparation).
   stopifnot(rlang::is_named2(tables))
 
+  con <- DBI::dbConnect(duckdb::duckdb())
   temp_parquet <- vapply(tables, function(i) tempfile(), character(1))
-  on.exit(unlink(c(sink, temp_parquet)))
+  on.exit({
+    unlink(temp_parquet)
+    DBI::dbDisconnect(con, shutdown = TRUE)
+  })
+
+  DBI::dbExecute(con, "INSTALL substrait; LOAD substrait;")
+
   for (i in seq_along(tables)) {
     arrow::write_parquet(tables[[i]], temp_parquet[i])
   }
-
-  if (!requireNamespace("duckdb", quietly = TRUE)) {
-    stop(
-      sprintf("there is no package called 'duckdb'"),
-      call. = FALSE
-    )
-  }
-
-  con <- DBI::dbConnect(duckdb::duckdb(dbdir = dbdir))
-  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
-  DBI::dbExecute(con, "INSTALL substrait; LOAD substrait;")
 
   # register all the temporary parquet files as named tables
   for (i in seq_along(temp_parquet)) {
@@ -146,26 +109,11 @@ query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
     )
   }
 
-  res <- DBI::dbSendQuery(con, sql, arrow = TRUE)
-
-  # this could be streamed in the future when the parquet writer
-  # in R supports streaming
-  reader <- duckdb::duckdb_fetch_record_batch(res)
-  table <- reader$read_table()
-  arrow::write_parquet(table, sink)
-
-  arrow::read_parquet(sink, as_data_frame = as_data_frame)
-}
-
-duckdb_encode_blob <- function(x) {
-  data <- paste0("\\x", as.raw(x), collapse = "")
-  paste0("'", data, "'::BLOB")
+  fun(con)
 }
 
 duckdb_works_cache <- new.env(parent = emptyenv())
 duckdb_works_cache$works <- NA
-
-
 
 #' Create an DuckDB Substrait Compiler
 #'
