@@ -157,10 +157,11 @@ DuckDBSubstraitCompiler <- R6::R6Class(
             super$resolve_function("gte", args[-3], template, output_type = substrait_boolean()),
             super$resolve_function("lte", args[-2], template, output_type = substrait_boolean())
           ),
+          template,
           output_type = substrait_boolean()
         ),
-        "&" = super$resolve_function("and", args, output_type = substrait_boolean()),
-        "|" = super$resolve_function("or", args, output_type = substrait_boolean()),
+        "&" = super$resolve_function("and", args, template, output_type = substrait_boolean()),
+        "|" = super$resolve_function("or", args, template, output_type = substrait_boolean()),
         # while I'm sure that "not" exists somehow, this is the only way
         # I can get it to work for now (NULLs are not handled properly here)
         "!" = {
