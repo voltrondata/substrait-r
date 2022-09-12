@@ -69,7 +69,7 @@ select.SubstraitCompiler <- function(.data, ...) {
     names(column_indices)
   )
 
-  substrait_project(.data, !!!new_mask)
+  substrait_select(.data, !!!new_mask)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -91,13 +91,13 @@ rename.SubstraitCompiler <- function(.data, ...) {
     new_column_names
   )
 
-  substrait_project(.data, !!!new_mask)
+  substrait_select(.data, !!!new_mask)
 }
 
 #' @rdname select.SubstraitCompiler
 #' @importFrom dplyr rename_with
 #' @export
-rename_with.SubstraitCompiler <- function(.data, .fn, .cols = everything(), ...) {
+rename_with.SubstraitCompiler <- function(.data, .fn, .cols = dplyr::everything(), ...) {
   .fn <- rlang::as_function(.fn)
   old_names <- dplyr::select(.data, {{ .cols }})$schema$names
   dplyr::rename(.data, !!rlang::set_names(old_names, .fn(old_names)))
@@ -118,14 +118,14 @@ mutate.SubstraitCompiler <- function(.data, ...,
   .keep <- match.arg(.keep)
   mask <- .data$mask
 
-  out <- substrait_project(.data, !!!mask, ...)
+  out <- substrait_select(.data, !!!mask, ...)
   if (.keep == "all") {
     return(out)
   }
 
   # if only keeping a subset of columns, work out which and project again
   cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
-  substrait_project(out, !!!out$mask[cols], !!!rlang::syms(cols))
+  substrait_select(out, !!!out$mask[cols], !!!rlang::syms(cols))
 }
 
 #' @rdname select.SubstraitCompiler
@@ -133,7 +133,7 @@ mutate.SubstraitCompiler <- function(.data, ...,
 #' @export
 transmute.SubstraitCompiler <- function(.data, ...) {
   check_transmute_args(...)
-  substrait_project(.data, ...)
+  substrait_select(.data, ...)
 }
 
 #' @rdname select.SubstraitCompiler
@@ -284,7 +284,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
     new_column_names[pos]
   )
 
-  substrait_project(.data, !!!new_mask)
+  substrait_select(.data, !!!new_mask)
 }
 
 # translate desc() call to the equivalent
@@ -327,12 +327,12 @@ simulate_data_frame <- function(compiler) {
 
 check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang::caller_env()) {
   if (!missing(.keep)) {
-    abort("The `.keep` argument is not supported.", call = error_call)
+    rlang::abort("The `.keep` argument is not supported.", call = error_call)
   }
   if (!missing(.before)) {
-    abort("The `.before` argument is not supported.", call = error_call)
+    rlang::abort("The `.before` argument is not supported.", call = error_call)
   }
   if (!missing(.after)) {
-    abort("The `.after` argument is not supported.", call = error_call)
+    rlang::abort("The `.after` argument is not supported.", call = error_call)
   }
 }

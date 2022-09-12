@@ -12,7 +12,7 @@ reference:
   desc: Functions used to create substrait relations
   contents:
     - substrait_sort
-    - substrait_project
+    - substrait_select
     - substrait_filter
     - substrait_aggregate
 

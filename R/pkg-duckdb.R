@@ -7,8 +7,6 @@
 #'   data.frame.
 #' @param tables A named list of tables to populate the database
 #' @param col_names The final column names for the result
-#' @param lib A directry where the custom duckdb will be installed
-#' @param force,quiet Passed to the remotes installer
 #'
 #' @return
 #'   - `duckdb_get_substrait()`: a substrait.Plan protobuf object
@@ -26,20 +24,13 @@
 duckdb_get_substrait <- function(sql, tables = list()) {
   stopifnot(has_duckdb_with_substrait())
 
-  temp_con <- DBI::dbConnect(duckdb::duckdb())
-  on.exit(DBI::dbDisconnect(temp_con, shutdown = TRUE))
-  sql_quoted <- DBI::dbQuoteLiteral(temp_con, sql)
+  result <- with_duckdb_tables(tables, function(con) {
+    duckdb::duckdb_get_substrait(con, sql)
+  })
 
-  result <- query_duckdb_with_substrait(
-    sprintf("CALL get_substrait(%s)", sql_quoted),
-    tables = tables,
-    as_data_frame = TRUE
-  )
-  plan <- unclass(result[[1]])[[1]]
-  ptype <- make_ptype("substrait.Plan")
   structure(
-    list(content = plan),
-    class = class(ptype)
+    list(content = result),
+    class = class(make_ptype("substrait.Plan"))
   )
 }
 
@@ -52,12 +43,15 @@ duckdb_from_substrait <- function(plan, tables = list(),
   stopifnot(has_duckdb_with_substrait())
 
   plan <- as_substrait(plan, "substrait.Plan")
-
-  result <- query_duckdb_with_substrait(
-    sprintf("CALL from_substrait(%s)", duckdb_encode_blob(plan)),
-    as_data_frame = as_data_frame,
-    tables = tables
-  )
+  result <- with_duckdb_tables(tables, function(con) {
+    res <- duckdb::duckdb_prepare_substrait(con, unclass(plan)$content, arrow = TRUE)
+    reader <- duckdb::duckdb_fetch_record_batch(res)
+    if (as_data_frame) {
+      tibble::as_tibble(as.data.frame(reader$read_table()))
+    } else {
+      reader$read_table()
+    }
+  })
 
   names(result) <- col_names
   result
@@ -65,7 +59,7 @@ duckdb_from_substrait <- function(plan, tables = list(),
 
 #' @rdname duckdb_get_substrait
 #' @export
-has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
+has_duckdb_with_substrait <- function() {
   if (!identical(duckdb_works_cache$works, NA)) {
     return(duckdb_works_cache$works)
   }
@@ -76,155 +70,50 @@ has_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir()) {
   }
 
   duckdb_works_cache$works <- tryCatch(
-    {
-      query_duckdb_with_substrait(
-        query_duckdb_with_substrait("CALL from_substrait()"),
-        lib = lib
-      )
-      TRUE
-    },
-    error = function(e) {
-      from_substrait_exists <- grepl(
-        "from_substrait\\(BLOB\\)",
-        conditionMessage(e)
-      )
-
-      error_is_from_us <- grepl(
-        "there is no package called 'duckdb'",
-        conditionMessage(e)
-      )
-
-      if (from_substrait_exists) {
-        TRUE
-      } else if (error_is_from_us) {
-        FALSE
-      } else {
-        rlang::abort(
-          "An unexpected error occured whilst querying Substrait-enabled duckdb",
-          parent = e
-        )
-      }
-    }
+    with_duckdb_tables(list(), function(con) TRUE),
+    error = function(e) FALSE
   )
 
   duckdb_works_cache$works
 }
 
-query_duckdb_with_substrait <- function(sql, dbdir = ":memory:",
-                                        lib = duckdb_with_substrait_lib_dir(),
-                                        tables = list(),
-                                        as_data_frame = TRUE) {
-  sink <- tempfile()
+# The check takes enough time that we cache the result after the first check.
+duckdb_works_cache <- new.env(parent = emptyenv())
+duckdb_works_cache$works <- NA
 
-  # write all tables to temporary parquet files so we can load them in to
-  # duckdb from another process
+with_duckdb_tables <- function(tables, fun) {
+  # Write all tables to temporary parquet files so we can load them in to
+  # duckdb (TODO: don't use files and/or use VIEW. A VIEW currently
+  # does not work with duckdb's substrait preparation).
   stopifnot(rlang::is_named2(tables))
 
+  con <- DBI::dbConnect(duckdb::duckdb())
   temp_parquet <- vapply(tables, function(i) tempfile(), character(1))
-  on.exit(unlink(c(sink, temp_parquet)))
+  on.exit({
+    unlink(temp_parquet)
+    DBI::dbDisconnect(con, shutdown = TRUE)
+  })
+
+  DBI::dbExecute(con, "INSTALL substrait; LOAD substrait;")
+
   for (i in seq_along(tables)) {
     arrow::write_parquet(tables[[i]], temp_parquet[i])
   }
 
-  fun <- function(sql, sink, dbdir, lib, temp_parquet) {
-    # don't load duckdb from anything except `lib` and error otherwise
-    # because the subprocess may have duckdb in a default, site, or user lib
-    if (!requireNamespace("duckdb", lib.loc = lib, quietly = TRUE)) {
-      stop(
-        sprintf("there is no package called 'duckdb'"),
-        call. = FALSE
-      )
-    }
-
-    con <- DBI::dbConnect(duckdb::duckdb(dbdir = dbdir))
-    on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
-
-    # register all the temporary parquet files as named tables
-    for (i in seq_along(temp_parquet)) {
-      DBI::dbExecute(
-        con,
-        sprintf(
-          "CREATE TABLE %s AS SELECT * FROM parquet_scan(%s);",
-          DBI::dbQuoteIdentifier(con, names(temp_parquet)[i]),
-          DBI::dbQuoteLiteral(con, temp_parquet[i])
-        )
-      )
-    }
-
-    res <- DBI::dbSendQuery(con, sql, arrow = TRUE)
-
-    # this could be streamed in the future when the parquet writer
-    # in R supports streaming
-    reader <- duckdb::duckdb_fetch_record_batch(res)
-    table <- reader$read_table()
-    arrow::write_parquet(table, sink)
-    sink
-  }
-
-  callr::r(
-    fun,
-    list(sql, sink, dbdir, lib, temp_parquet),
-    libpath = c(lib, .libPaths())
-  )
-
-  arrow::read_parquet(sink, as_data_frame = as_data_frame)
-}
-
-#' @rdname duckdb_get_substrait
-#' @export
-install_duckdb_with_substrait <- function(lib = duckdb_with_substrait_lib_dir(),
-                                          force = TRUE, quiet = FALSE) {
-  if (!quiet) {
-    message(
-      paste0(
-        "Installing duckdb with the ability to run substrait ",
-        "to custom library \n'", lib, "'"
+  # register all the temporary parquet files as named tables
+  for (i in seq_along(temp_parquet)) {
+    DBI::dbExecute(
+      con,
+      sprintf(
+        "CREATE TABLE %s AS SELECT * FROM parquet_scan(%s);",
+        DBI::dbQuoteIdentifier(con, names(temp_parquet)[i]),
+        DBI::dbQuoteLiteral(con, temp_parquet[i])
       )
     )
   }
 
-  # `build = FALSE` so that the duckdb cpp source is available when the R package
-  # is compiling itself
-  fun <- function(lib) {
-    if (!dir.exists(lib)) {
-      dir.create(lib, recursive = TRUE)
-    }
-
-    remotes::install_cran("DBI", lib = lib, force = force)
-    remotes::install_github(
-      "duckdb/duckdb/tools/rpkg",
-      build = FALSE,
-      force = force,
-      lib = lib
-    )
-  }
-
-  withr::with_envvar(
-    list(DUCKDB_R_EXTENSIONS = "substrait"),
-    callr::r(fun, list(lib), libpath = c(lib, .libPaths()), show = !quiet)
-  )
-
-  duckdb_works_cache$works <- NA
+  fun(con)
 }
-
-#' @rdname duckdb_get_substrait
-#' @export
-duckdb_with_substrait_lib_dir <- function() {
-  Sys.getenv(
-    "R_SUBSTRAIT_DUCKDB_LIB",
-    file.path(rappdirs::user_data_dir("R-substrait"), "duckdb_lib")
-  )
-}
-
-duckdb_encode_blob <- function(x) {
-  data <- paste0("\\x", as.raw(x), collapse = "")
-  paste0("'", data, "'::BLOB")
-}
-
-duckdb_works_cache <- new.env(parent = emptyenv())
-duckdb_works_cache$works <- NA
-
-
 
 #' Create an DuckDB Substrait Compiler
 #'
@@ -255,22 +144,23 @@ DuckDBSubstraitCompiler <- R6::R6Class(
       # whereas self$resolve_function() will apply translations as we
       # implement them here.
       switch(name,
-        "==" = super$resolve_function("equal", args, template),
-        "!=" = super$resolve_function("not_equal", args, template),
-        ">=" = super$resolve_function("gte", args, template),
-        "<=" = super$resolve_function("lte", args, template),
-        ">" = super$resolve_function("gt", args, template),
-        "<" = super$resolve_function("lt", args, template),
+        "==" = super$resolve_function("equal", args, template, output_type = substrait_boolean()),
+        "!=" = super$resolve_function("not_equal", args, template, output_type = substrait_boolean()),
+        ">=" = super$resolve_function("gte", args, template, output_type = substrait_boolean()),
+        "<=" = super$resolve_function("lte", args, template, output_type = substrait_boolean()),
+        ">" = super$resolve_function("gt", args, template, output_type = substrait_boolean()),
+        "<" = super$resolve_function("lt", args, template, output_type = substrait_boolean()),
         "between" = super$resolve_function(
           "and",
           list(
-            super$resolve_function("gte", args[-3], template),
-            super$resolve_function("lte", args[-2], template)
+            super$resolve_function("gte", args[-3], template, output_type = substrait_boolean()),
+            super$resolve_function("lte", args[-2], template, output_type = substrait_boolean())
           ),
-          template
+          template,
+          output_type = substrait_boolean()
         ),
-        "&" = super$resolve_function("and", args, template),
-        "|" = super$resolve_function("or", args, template),
+        "&" = super$resolve_function("and", args, template, output_type = substrait_boolean()),
+        "|" = super$resolve_function("or", args, template, output_type = substrait_boolean()),
         # while I'm sure that "not" exists somehow, this is the only way
         # I can get it to work for now (NULLs are not handled properly here)
         "!" = {
@@ -302,7 +192,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
             "!",
             list(
               as_substrait(
-                super$resolve_function("is_not_null", args, template),
+                super$resolve_function("is_not_null", args, template, output_type = substrait_boolean()),
                 "substrait.Expression"
               )
             ),
@@ -348,21 +238,22 @@ DuckDBSubstraitCompiler <- R6::R6Class(
               super$resolve_function(
                 "equal",
                 list(lhs, rhs$literal$list$values[[1]]),
-                template
+                template,
+                output_type = substrait_boolean()
               )
             )
           }
 
           equal_expressions <- lapply(rhs$literal$list$values, function(value) {
             as_substrait(
-              super$resolve_function("equal", list(lhs, value), template),
+              super$resolve_function("equal", list(lhs, value), template, output_type = substrait_boolean()),
               "substrait.Expression"
             )
           })
 
           combine_or <- function(lhs, rhs) {
             as_substrait(
-              super$resolve_function("or", list(lhs, rhs), template),
+              super$resolve_function("or", list(lhs, rhs), template, output_type = substrait_boolean()),
               "substrait.Expression"
             )
           }
@@ -377,7 +268,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
         "*" = ,
         "/" = ,
         "^" = ,
-        "sum" = super$resolve_function(name, args, template),
+        "sum" = super$resolve_function(name, args, template, output_type = function(x, y) x),
         rlang::abort(
           paste0('could not find function "', name, '"')
         )

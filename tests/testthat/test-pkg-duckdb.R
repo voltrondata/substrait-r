@@ -224,19 +224,6 @@ test_that("duckdb can roundtrip a substrait plan", {
   )
 })
 
-test_that("blob encoder works", {
-  expect_identical(
-    duckdb_encode_blob(as.raw(1:5)),
-    "'\\x01\\x02\\x03\\x04\\x05'::BLOB"
-  )
-
-  skip_if_not(has_duckdb_with_substrait())
-  tbl <- query_duckdb_with_substrait(
-    paste0("SELECT ", duckdb_encode_blob(as.raw(1:5)), " as col")
-  )
-  expect_identical(tbl$col[[1]], as.raw(1:5))
-})
-
 test_that("duckdb raises error for empty projection", {
   skip_if_not(has_duckdb_with_substrait())
   tbl <- tibble::tibble(col = c(1, 2, NA))
@@ -244,7 +231,7 @@ test_that("duckdb raises error for empty projection", {
   expect_error(
     tbl %>%
       duckdb_substrait_compiler() %>%
-      substrait_project(),
+      substrait_select(),
     "Column list must not be empty"
   )
 })

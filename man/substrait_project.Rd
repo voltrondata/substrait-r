@@ -2,14 +2,20 @@
 % Please edit documentation in R/project-rel.R
 \name{substrait_project}
 \alias{substrait_project}
+\alias{substrait_select}
 \title{Append a Substrait Project Relation}
 \usage{
-substrait_project(.compiler, ...)
+substrait_project(.compiler, ..., .drop_columns = character())
+
+substrait_select(.compiler, ...)
 }
 \arguments{
 \item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
 
 \item{...}{Expressions}
+
+\item{.drop_columns}{A character vector of columns to explicitly drop before
+adding expressions specified in \code{...}.}
 }
 \value{
 A modified \code{.compiler}
@@ -18,9 +24,6 @@ A modified \code{.compiler}
 Append a Substrait Project Relation
 }
 \examples{
-substrait_project(
-   data.frame(a = 1, b = "one"),
-   c = a + 1
-)
+substrait_select(data.frame(a = 1, b = "one"), c = a + 1)
 
 }

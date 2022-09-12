@@ -1,5 +1,5 @@
 
-test_that("dplyr::select() for substrait_compiler wraps substrait_project()", {
+test_that("dplyr::select() for substrait_compiler wraps substrait_select()", {
   skip_if_not_installed("dplyr")
 
   tbl <- data.frame(col1 = 1, col2 = "one")
@@ -9,22 +9,22 @@ test_that("dplyr::select() for substrait_compiler wraps substrait_project()", {
 
   expect_identical(
     dplyr::select(compiler, col1, col2),
-    substrait_project(compiler, col1, col2)
+    substrait_select(compiler, col1, col2)
   )
 
   expect_identical(
     dplyr::select(compiler, col1, col2),
-    substrait_project(compiler, col1, col2)
+    substrait_select(compiler, col1, col2)
   )
 
   expect_identical(
     dplyr::select(compiler, everything()),
-    substrait_project(compiler, col1, col2)
+    substrait_select(compiler, col1, col2)
   )
 
   expect_identical(
     dplyr::select(compiler, where(is.numeric)),
-    substrait_project(compiler, col1)
+    substrait_select(compiler, col1)
   )
 })
 
@@ -50,7 +50,7 @@ test_that("rename() for substrait_compiler renames columns", {
 
   expect_identical(
     dplyr::rename(compiler, col1_renamed = col1),
-    substrait_project(compiler, col1_renamed = col1, col2)
+    substrait_select(compiler, col1_renamed = col1, col2)
   )
 })
 
@@ -62,7 +62,7 @@ test_that("rename_with() for substrait_compiler renames columns using a function
 
   expect_identical(
     dplyr::rename_with(compiler, toupper),
-    substrait_project(compiler, "COL1" = col1, "COL2" = col2)
+    substrait_select(compiler, "COL1" = col1, "COL2" = col2)
   )
 })
 
@@ -78,7 +78,7 @@ test_that("filter() for substrait_compiler wraps substrait_filter()", {
   )
 })
 
-test_that("mutate() for substrait_compiler wraps substrait_project()", {
+test_that("mutate() for substrait_compiler wraps substrait_select()", {
   skip_if_not_installed("dplyr")
 
   tbl <- data.frame(col1 = 1, col2 = "one")
@@ -86,11 +86,11 @@ test_that("mutate() for substrait_compiler wraps substrait_project()", {
 
   expect_identical(
     dplyr::mutate(compiler, col1 > 0),
-    substrait_project(compiler, col1, col2, col1 > 0)
+    substrait_select(compiler, col1, col2, col1 > 0)
   )
 })
 
-test_that("transmute() for substrait_compiler wraps substrait_project()", {
+test_that("transmute() for substrait_compiler wraps substrait_select()", {
   skip_if_not_installed("dplyr")
 
   tbl <- data.frame(col1 = 1, col2 = "one")
@@ -98,7 +98,7 @@ test_that("transmute() for substrait_compiler wraps substrait_project()", {
 
   expect_identical(
     dplyr::transmute(compiler, col1 > 0),
-    substrait_project(compiler, col1 > 0)
+    substrait_select(compiler, col1 > 0)
   )
 })
 
@@ -218,6 +218,6 @@ test_that("relocate() for substrait_compiler reorders columns", {
 
   expect_identical(
     dplyr::relocate(compiler, col1, .after = col2),
-    substrait_project(compiler, col2, col1)
+    substrait_select(compiler, col2, col1)
   )
 })

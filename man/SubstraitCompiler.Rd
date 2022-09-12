@@ -17,7 +17,7 @@ will be used as leaf nodes when the plan is evaluated. Specific consumers
 will need to subclass the \link{SubstraitCompiler} and implement the \verb{$evaluate()}
 and/or \verb{$resolve_function()} methods. Typically users will not interact
 with R6 methods but will use the pipeable interface
-(e.g. \code{\link[=substrait_project]{substrait_project()}}). The pipeable interface clones the compiler
+(e.g. \code{\link[=substrait_select]{substrait_select()}}). The pipeable interface clones the compiler
 before it is modified to minimize the user's interaction to R6 reference
 semantics.
 
@@ -190,7 +190,7 @@ A table-like object whose structure is defined by the
 \subsection{Method \code{resolve_function()}}{
 Resolves an R function call as a Substrait function call.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$resolve_function(name, args, template, output_type = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -207,6 +207,9 @@ objects created while evaluating the user-provided arguments
 \item{\code{template}}{A \code{substrait.Expression.ScalarFunction}, a
 \code{substrait.Expression.WindowFunction}, or a
 \code{substrait.AggregateFunction}.}
+
+\item{\code{output_type}}{An explicit output type to use or a function accepting
+one type per \code{args}.}
 }
 \if{html}{\out{</div>}}
 }

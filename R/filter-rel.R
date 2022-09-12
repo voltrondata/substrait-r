@@ -2,7 +2,7 @@
 #' Append a Substrait Project Relation
 #'
 #' @param ... Filter expressions
-#' @inheritParams substrait_project
+#' @inheritParams substrait_select
 #'
 #' @return A modified `.compiler`
 #' @export

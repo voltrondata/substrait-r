@@ -9,7 +9,7 @@
 #' will need to subclass the [SubstraitCompiler] and implement the `$evaluate()`
 #' and/or `$resolve_function()` methods. Typically users will not interact
 #' with R6 methods but will use the pipeable interface
-#' (e.g. [substrait_project()]). The pipeable interface clones the compiler
+#' (e.g. [substrait_select()]). The pipeable interface clones the compiler
 #' before it is modified to minimize the user's interaction to R6 reference
 #' semantics.
 #'
@@ -24,6 +24,8 @@
 #' @param template A `substrait.Expression.ScalarFunction`, a
 #'   `substrait.Expression.WindowFunction`, or a
 #'   `substrait.AggregateFunction`.
+#' @param output_type An explicit output type to use or a function accepting
+#'   one type per `args`.
 #'
 #' @export
 SubstraitCompiler <- R6::R6Class(
@@ -195,7 +197,7 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @return A modified `template` with `function_reference`,
     #'   `args`, and `output_type` set.
-    resolve_function = function(name, args, template) {
+    resolve_function = function(name, args, template, output_type = NULL) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)
       args <- lapply(
@@ -211,12 +213,16 @@ SubstraitCompiler <- R6::R6Class(
       # resolve the function identifier
       id <- self$function_id(name, arg_types)
 
-      # maybe there's a way to know this later on but for now,
-      # leave an unspecified type
-      output_type <- substrait$Type$create()
+      if (is.null(output_type)) {
+        output_type <- substrait$Type$create()
+      } else if (is.function(output_type)) {
+        output_type <- do.call(output_type, arg_types)
+      }
 
       template$function_reference <- id
-      template$args <- args
+      template$arguments <- lapply(args, function(arg) {
+        substrait$FunctionArgument$create(value = arg)
+      })
       template$output_type <- output_type
 
       template

@@ -1,7 +1,7 @@
 
 #' Aggregate
 #'
-#' @inheritParams substrait_project
+#' @inheritParams substrait_select
 #' @param ...
 #'   - `substrait_aggregate()`: A named list of expressions to be evaluated in the context
 #'     of the aggregation.
@@ -38,7 +38,7 @@ substrait_aggregate <- function(.compiler, ...) {
     )
   )
 
-  # reset mask and schema here (probably should do this in substrait_project
+  # reset mask and schema here (probably should do this in substrait_select
   # too)
   types <- c(
     lapply(

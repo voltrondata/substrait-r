@@ -36,7 +36,7 @@ test_that("substrait_aggregate() can evaluate a simple aggregation expression", 
     "sum"
   )
   expect_s3_class(
-    agg$rel$aggregate$measures[[1]]$measure$args[[1]]$scalar_function,
+    agg$rel$aggregate$measures[[1]]$measure$arguments[[1]]$value$scalar_function,
     "substrait_Expression_ScalarFunction"
   )
   expect_identical(agg$schema$names, c("a", "c"))

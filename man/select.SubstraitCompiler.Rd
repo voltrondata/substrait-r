@@ -20,7 +20,7 @@
 
 \method{rename}{SubstraitCompiler}(.data, ...)
 
-\method{rename_with}{SubstraitCompiler}(.data, .fn, .cols = everything(), ...)
+\method{rename_with}{SubstraitCompiler}(.data, .fn, .cols = dplyr::everything(), ...)
 
 \method{filter}{SubstraitCompiler}(.data, ...)
 

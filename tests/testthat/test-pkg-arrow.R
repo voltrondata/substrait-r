@@ -66,6 +66,7 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with one relation", {
 
 test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
   skip_if_not(has_arrow_with_substrait())
+  skip("Until https://github.com/apache/arrow/pull/13914 merges")
 
   df <- data.frame(
     letter = letters[1:5],
@@ -73,7 +74,7 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
   )
 
   compiler <- arrow_substrait_compiler(df)
-  result <- substrait_project(compiler, number)
+  result <- substrait_select(compiler, number)
 
   expect_identical(
     as.data.frame(as.data.frame(result$evaluate())),
@@ -83,6 +84,7 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
 
 test_that("ArrowSubstraitCompiler can evaluate a project with a function call", {
   skip_if_not(has_arrow_with_substrait())
+  skip("Until https://github.com/apache/arrow/pull/13914 merges")
 
   df <- data.frame(
     letter = letters[1:5],
@@ -90,7 +92,7 @@ test_that("ArrowSubstraitCompiler can evaluate a project with a function call", 
   )
 
   compiler <- arrow_substrait_compiler(df)
-  result <- substrait_project(compiler, added = number + 1L)
+  result <- substrait_select(compiler, added = number + 1L)
 
   expect_identical(
     as.data.frame(as.data.frame(result$evaluate())),

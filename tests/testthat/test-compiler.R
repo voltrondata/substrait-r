@@ -127,16 +127,59 @@ test_that("SubstraitCompiler$resolve_function() works", {
     compiler$resolve_function(
       "some_fun",
       list(1L),
-      substrait$Expression$ScalarFunction$create()
+      substrait$Expression$ScalarFunction$create(),
+      output_type = NULL
     ),
     substrait$Expression$ScalarFunction$create(
       function_reference = 1,
-      args = list(
-        substrait$Expression$create(
-          literal = substrait$Expression$Literal$create(i32 = 1L)
+      arguments = list(
+        substrait$FunctionArgument$create(
+          value = substrait$Expression$create(
+            literal = substrait$Expression$Literal$create(i32 = 1L)
+          )
         )
       ),
       output_type = substrait$Type$create()
+    )
+  )
+
+  expect_identical(
+    compiler$resolve_function(
+      "some_fun",
+      list(1L),
+      substrait$Expression$ScalarFunction$create(),
+      output_type = substrait_boolean()
+    ),
+    substrait$Expression$ScalarFunction$create(
+      function_reference = 1,
+      arguments = list(
+        substrait$FunctionArgument$create(
+          value = substrait$Expression$create(
+            literal = substrait$Expression$Literal$create(i32 = 1L)
+          )
+        )
+      ),
+      output_type = substrait_boolean()
+    )
+  )
+
+  expect_identical(
+    compiler$resolve_function(
+      "some_fun",
+      list(1L),
+      substrait$Expression$ScalarFunction$create(),
+      output_type = function(x) x
+    ),
+    substrait$Expression$ScalarFunction$create(
+      function_reference = 1,
+      arguments = list(
+        substrait$FunctionArgument$create(
+          value = substrait$Expression$create(
+            literal = substrait$Expression$Literal$create(i32 = 1L)
+          )
+        )
+      ),
+      output_type = substrait_i32()
     )
   )
 })

@@ -14,7 +14,8 @@
 /* #define PB_ENABLE_MALLOC 1 */
 
 /* Define this if your CPU / compiler combination does not support
- * unaligned memory access to packed structures. */
+ * unaligned memory access to packed structures. Note that packed
+ * structures are only used when requested in .proto options. */
 /* #define PB_NO_PACKED_STRUCTS 1 */
 
 /* Increase the number of required fields that are tracked.
@@ -47,6 +48,15 @@
  * the string processing slightly and slightly increases code size. */
 /* #define PB_VALIDATE_UTF8 1 */
 
+/* This can be defined if the platform is little-endian and has 8-bit bytes.
+ * Normally it is automatically detected based on __BYTE_ORDER__ macro. */
+/* #define PB_LITTLE_ENDIAN_8BIT 1 */
+
+/* Configure static assert mechanism. Instead of changing these, set your
+ * compiler to C11 standard mode if possible. */
+/* #define PB_C99_STATIC_ASSERT 1 */
+/* #define PB_NO_STATIC_ASSERT 1 */
+
 /******************************************************************
  * You usually don't need to change anything below this line.     *
  * Feel free to look around and use the defined macros, though.   *
@@ -55,7 +65,7 @@
 
 /* Version of the nanopb library. Just in case you want to check it in
  * your own program. */
-#define NANOPB_VERSION nanopb-0.4.5
+#define NANOPB_VERSION "nanopb-0.4.6"
 
 /* Include all the system headers needed by nanopb. You will need the
  * definitions of the following:
@@ -116,6 +126,18 @@ extern "C" {
 #   define pb_packed
 #endif
 
+/* Detect endianness */
+#ifndef PB_LITTLE_ENDIAN_8BIT
+#if ((defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || \
+     (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) || \
+      defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || \
+      defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || \
+      defined(_M_IX86) || defined(_M_X64) || defined(_M_ARM)) \
+     && CHAR_BIT == 8
+#define PB_LITTLE_ENDIAN_8BIT 1
+#endif
+#endif
+
 /* Handly macro for suppressing unreferenced-parameter compiler warnings. */
 #ifndef PB_UNUSED
 #define PB_UNUSED(x) (void)(x)
@@ -145,20 +167,34 @@ extern "C" {
  */
 #ifndef PB_NO_STATIC_ASSERT
 #  ifndef PB_STATIC_ASSERT
-#    if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
-       /* C11 standard _Static_assert mechanism */
-#      define PB_STATIC_ASSERT(COND,MSG) _Static_assert(COND,#MSG);
-#    else
+#    if defined(__ICCARM__)
+       /* IAR has static_assert keyword but no _Static_assert */
+#      define PB_STATIC_ASSERT(COND,MSG) static_assert(COND,#MSG);
+#    elif defined(PB_C99_STATIC_ASSERT)
        /* Classic negative-size-array static assert mechanism */
 #      define PB_STATIC_ASSERT(COND,MSG) typedef char PB_STATIC_ASSERT_MSG(MSG, __LINE__, __COUNTER__)[(COND)?1:-1];
 #      define PB_STATIC_ASSERT_MSG(MSG, LINE, COUNTER) PB_STATIC_ASSERT_MSG_(MSG, LINE, COUNTER)
 #      define PB_STATIC_ASSERT_MSG_(MSG, LINE, COUNTER) pb_static_assertion_##MSG##_##LINE##_##COUNTER
+#    elif defined(__cplusplus)
+       /* C++11 standard static_assert mechanism */
+#      define PB_STATIC_ASSERT(COND,MSG) static_assert(COND,#MSG);
+#    else
+       /* C11 standard _Static_assert mechanism */
+#      define PB_STATIC_ASSERT(COND,MSG) _Static_assert(COND,#MSG);
 #    endif
 #  endif
 #else
    /* Static asserts disabled by PB_NO_STATIC_ASSERT */
 #  define PB_STATIC_ASSERT(COND,MSG)
 #endif
+
+/* Test that PB_STATIC_ASSERT works
+ * If you get errors here, you may need to do one of these:
+ * - Enable C11 standard support in your compiler
+ * - Define PB_C99_STATIC_ASSERT to enable C99 standard support
+ * - Define PB_NO_STATIC_ASSERT to disable static asserts altogether
+ */
+PB_STATIC_ASSERT(1, STATIC_ASSERT_IS_NOT_WORKING)
 
 /* Number of required fields to keep track of. */
 #ifndef PB_MAX_REQUIRED_FIELDS
@@ -377,7 +413,8 @@ typedef enum {
     PB_WT_VARINT = 0,
     PB_WT_64BIT  = 1,
     PB_WT_STRING = 2,
-    PB_WT_32BIT  = 5
+    PB_WT_32BIT  = 5,
+    PB_WT_PACKED = 255 /* PB_WT_PACKED is internal marker for packed arrays. */
 } pb_wire_type_t;
 
 /* Structure for defining the handling of unknown/extension fields.
@@ -872,4 +909,3 @@ template <typename GenMessageT> struct MessageDescriptor;
 #endif  /* __cplusplus */
 
 #endif
-
