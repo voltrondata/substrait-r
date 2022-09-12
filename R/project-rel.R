@@ -21,8 +21,8 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   expressions <- list()
   types <- list()
 
-  # Keep a list of columns that we need to drop as part of this relation
-  drop_columns <- character()
+  # Keep a list of columns that were specified as explicit NULLs
+  quos_that_were_null <- character()
 
   for (i in seq_along(quos)) {
     name <- names(quos)[i]
@@ -43,8 +43,8 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
       expressions[[name]] <- value
       types[[name]] <- type
 
-      # ...and make sure we don't drop this column if it was previously dropped
-      drop_columns <- setdiff(drop_columns, name)
+      # ...and make sure we forget a previous explicit NULL for this name
+      quos_that_were_null <- setdiff(quos_that_were_null, name)
     } else {
       # Remove from the compiler mask so that we can't use the NULL column in a
       # subsequent argument (as per dplyr behaviour)
@@ -56,16 +56,18 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
       types[[name]] <- NULL
 
       # ...and make sure we drop this column if it already existed
-      drop_columns <- union(drop_columns, name)
+      quos_that_were_null <- union(quos_that_were_null, name)
     }
   }
 
-  # Apply explicitly dropped column names
-  drop_columns <- union(drop_columns, .drop_columns)
+  # Apply NULL quosure arguments to .drop_columns
+  .drop_columns <- union(quos_that_were_null, .drop_columns)
 
   # Create the Emit.output_mapping we need to get our final columns
   names_using_only_append_logic <- c(.compiler$schema$names, names(expressions))
-  final_columns <- unique(rev(setdiff(rev(names_using_only_append_logic), drop_columns)))
+  # The rev()s here are to make sure the column order comes out as expected
+  # since unique() keeps the first instance of a value it encounters.
+  final_columns <- unique(rev(setdiff(rev(names_using_only_append_logic), .drop_columns)))
 
   # Match from last item (we want the value that we just calculated to replace
   # the value that previously existed)
