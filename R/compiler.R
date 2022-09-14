@@ -319,3 +319,18 @@ substrait_compiler.SubstraitCompiler <- function(object, ...) {
 substrait_compiler.default <- function(object, ...) {
   SubstraitCompiler$new(object, ...)
 }
+
+
+current_compiler <- function() {
+  compiler_context_env$compiler
+}
+
+with_compiler <- function(compiler, expr) {
+  prev_compiler <- current_compiler()
+  on.exit(compiler_context_env$compiler <- prev_compiler)
+  compiler_context_env$compiler <- compiler
+  force(expr)
+}
+
+compiler_context_env <- new.env(parent = emptyenv())
+compiler_context_env$compiler <- NULL

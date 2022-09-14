@@ -206,3 +206,12 @@ test_that("SubstraitCompiler$plan() includes rel and extensions", {
     fun$function_reference
   )
 })
+
+test_that("global substrait compiler value can be set and accessed", {
+  expect_null(current_compiler())
+  with_compiler(
+    "some other value",
+    expect_identical(current_compiler(), "some other value")
+  )
+  expect_null(current_compiler())
+})
