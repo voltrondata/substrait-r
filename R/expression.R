@@ -1,7 +1,6 @@
 
 #' @export
 as_substrait.quosure <- function(x, .ptype = NULL, ...,
-                                 compiler = SubstraitCompiler$new(),
                                  template = substrait$Expression$ScalarFunction$create()) {
   if (is.null(.ptype)) {
     .ptype <- "substrait.Expression"
@@ -13,7 +12,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
       # evaluate the result using special rules for function calls
       result <- substrait_eval_expr(
         rlang::quo_get_expr(x),
-        compiler = compiler,
+        compiler = current_compiler(),
         env = rlang::quo_get_env(x),
         template = template
       )
@@ -34,7 +33,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
       # evaluate the result using special rules for function calls
       result <- substrait_eval_expr(
         rlang::quo_get_expr(x),
-        compiler = compiler,
+        compiler = current_compiler(),
         env = rlang::quo_get_env(x),
         template = template
       )
@@ -53,7 +52,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
       # evaluate the result using special rules for function calls
       result <- substrait_eval_expr(
         rlang::quo_get_expr(x),
-        compiler = compiler,
+        compiler = current_compiler(),
         env = rlang::quo_get_env(x),
         template = template
       )
@@ -140,7 +139,7 @@ substrait_eval_expr <- function(x, compiler, env, template) {
 }
 
 #' @export
-as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., compiler = NULL) {
+as_substrait.substrait_Expression <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
     .ptype <- x
   }
@@ -155,6 +154,7 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., compiler = 
       guessed_type <- switch(which_expr_type,
         "literal" = as_substrait(x[[which_expr_type]], .ptype),
         "selection" = {
+          compiler <- current_compiler()
           struct_field <- x$selection$direct_reference$struct_field
           schema <- compiler$schema
           if (is.null(schema)) {
@@ -190,7 +190,7 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ..., compiler = 
 }
 
 #' @export
-as_substrait.substrait_AggregateRel_Measure <- function(x, .ptype = NULL, ..., compiler = NULL) {
+as_substrait.substrait_AggregateRel_Measure <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
     .ptype <- x
   }

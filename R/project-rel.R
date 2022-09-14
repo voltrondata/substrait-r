@@ -14,6 +14,7 @@
 #'
 substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   .compiler <- substrait_compiler(.compiler)$clone()
+  local_compiler(.compiler)
 
   # Evaluate expressions sequentially, updating the compiler as we go so that
   # fields created by earlier arguments are accessible from later arguments
@@ -31,10 +32,9 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
       # Do the evaluation and calculate the output type
       value <- as_substrait(
         quos[[i]],
-        .ptype = "substrait.Expression",
-        compiler = .compiler
+        .ptype = "substrait.Expression"
       )
-      type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
+      type <- as_substrait(value, .ptype = "substrait.Type")
 
       # Update the compiler mask (used for symbol lookup for subsequent expressions)
       .compiler$mask[[name]] <- value

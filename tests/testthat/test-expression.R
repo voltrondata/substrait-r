@@ -23,18 +23,18 @@ test_that("quosures of atomics can be translated to Expression objects", {
 })
 
 test_that("quosures with field references can be translated to Expressions", {
-  compiler <- substrait_compiler(data.frame(a = double(), b = character()))
+  compiler <- local_compiler(data.frame(a = double(), b = character()))
 
   ref_a <- simple_integer_field_reference(0)
   ref_b <- simple_integer_field_reference(1)
 
-  expect_identical(as_substrait(rlang::quo(a), compiler = compiler), ref_a)
-  expect_identical(as_substrait(rlang::quo(.data$a), compiler = compiler), ref_a)
-  expect_identical(as_substrait(rlang::quo(.data[["a"]]), compiler = compiler), ref_a)
+  expect_identical(as_substrait(rlang::quo(a)), ref_a)
+  expect_identical(as_substrait(rlang::quo(.data$a)), ref_a)
+  expect_identical(as_substrait(rlang::quo(.data[["a"]])), ref_a)
 
-  expect_identical(as_substrait(rlang::quo(b), compiler = compiler), ref_b)
-  expect_identical(as_substrait(rlang::quo(.data$b), compiler = compiler), ref_b)
-  expect_identical(as_substrait(rlang::quo(.data[["b"]]), compiler = compiler), ref_b)
+  expect_identical(as_substrait(rlang::quo(b)), ref_b)
+  expect_identical(as_substrait(rlang::quo(.data$b)), ref_b)
+  expect_identical(as_substrait(rlang::quo(.data[["b"]])), ref_b)
 })
 
 test_that("quosures with the .env pronoun can be translated to Expressions", {
@@ -57,10 +57,10 @@ test_that("quosures with the .env pronoun can be translated to Expressions", {
 })
 
 test_that("quosures with calls can be translated to Expressions", {
-  compiler <- substrait_compiler(data.frame(a = double(), b = character()))
+  compiler <- local_compiler(data.frame(a = double(), b = character()))
 
   expect_identical(
-    as_substrait(rlang::quo(some_fun(5L)), compiler = compiler),
+    as_substrait(rlang::quo(some_fun(5L))),
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
         function_reference = 2,
@@ -77,7 +77,7 @@ test_that("quosures with calls can be translated to Expressions", {
   )
 
   expect_identical(
-    as_substrait(rlang::quo(some_pkg::some_fun(5L)), compiler = compiler),
+    as_substrait(rlang::quo(some_pkg::some_fun(5L))),
     substrait$Expression$create(
       scalar_function = substrait$Expression$ScalarFunction$create(
         function_reference = 3,
@@ -154,29 +154,30 @@ test_that("as_substrait() can convert Expression objects to Types", {
     substrait_i32()
   )
 
-  expect_identical(
-    as_substrait(
-      simple_integer_field_reference(0L),
-      "substrait.Type",
-      compiler = substrait_compiler(data.frame(a = 5L))
-    ),
-    substrait_i32()
-  )
+  with_compiler(substrait_compiler(data.frame(a = 5L)), {
+    expect_identical(
+      as_substrait(
+        simple_integer_field_reference(0L),
+        "substrait.Type"
+      ),
+      substrait_i32()
+    )
+  })
+
+  with_compiler(substrait_compiler(data.frame()), {
+    expect_error(
+      as_substrait(
+        simple_integer_field_reference(0L),
+        "substrait.Type"
+      ),
+      "Field reference out of bounds"
+    )
+  })
 
   expect_error(
     as_substrait(
       simple_integer_field_reference(0L),
-      "substrait.Type",
-      compiler = substrait_compiler(data.frame())
-    ),
-    "Field reference out of bounds"
-  )
-
-  expect_error(
-    as_substrait(
-      simple_integer_field_reference(0L),
-      "substrait.Type",
-      compiler = list()
+      "substrait.Type"
     ),
     "Can't guess field reference type without"
   )

@@ -15,6 +15,7 @@
 #'
 substrait_filter <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
+  local_compiler(.compiler)
 
   quos <- rlang::enquos(...)
   if (length(quos) == 0) {
@@ -24,8 +25,7 @@ substrait_filter <- function(.compiler, ...) {
   expressions <- lapply(
     quos,
     as_substrait,
-    .ptype = "substrait.Expression",
-    compiler = .compiler
+    .ptype = "substrait.Expression"
   )
 
   combined_expressions_quo <- Reduce("combine_expressions_and", expressions)

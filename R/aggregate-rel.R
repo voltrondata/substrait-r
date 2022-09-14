@@ -13,6 +13,7 @@
 #'
 substrait_aggregate <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
+  local_compiler(.compiler)
 
   quos <- rlang::enquos(..., .named = TRUE)
 
@@ -22,7 +23,6 @@ substrait_aggregate <- function(.compiler, ...) {
     quos,
     as_substrait,
     .ptype = "substrait.AggregateRel.Measure",
-    compiler = .compiler,
     template = substrait$AggregateFunction$create()
   )
 
@@ -44,14 +44,12 @@ substrait_aggregate <- function(.compiler, ...) {
     lapply(
       .compiler$groups,
       as_substrait,
-      .ptype = "substrait.Type",
-      compiler = .compiler
+      .ptype = "substrait.Type"
     ),
     lapply(
       measures,
       as_substrait,
-      .ptype = "substrait.Type",
-      compiler = .compiler
+      .ptype = "substrait.Type"
     )
   )
 
@@ -78,6 +76,7 @@ substrait_aggregate <- function(.compiler, ...) {
 #' @export
 substrait_group_by <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
+  local_compiler(.compiler)
 
   quos <- rlang::enquos(..., .named = TRUE)
   if (length(quos) == 0) {
@@ -88,8 +87,7 @@ substrait_group_by <- function(.compiler, ...) {
   .compiler$groups <- lapply(
     quos,
     as_substrait,
-    .ptype = "substrait.Expression",
-    compiler = .compiler
+    .ptype = "substrait.Expression"
   )
 
   .compiler
