@@ -210,16 +210,18 @@ test_that("SubstraitCompiler$plan() includes rel and extensions", {
 test_that("global substrait compiler value can be set and accessed", {
   expect_null(current_compiler())
 
+  compiler1 <- substrait_compiler(data.frame())
   with_compiler(
-    "some other value",
-    expect_identical(current_compiler(), "some other value")
+    compiler1,
+    expect_identical(current_compiler(), compiler1)
   )
 
   expect_null(current_compiler())
 
   local({
-    expect_identical(local_compiler("another value"), "another value")
-    expect_identical(current_compiler(), "another value")
+    compiler2 <- substrait_compiler(data.frame(a = 1))
+    expect_identical(local_compiler(compiler2), compiler2)
+    expect_identical(current_compiler(), compiler2)
   })
 
   expect_null(current_compiler())

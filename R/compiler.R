@@ -328,7 +328,7 @@ current_compiler <- function() {
 with_compiler <- function(compiler, expr) {
   prev_compiler <- current_compiler()
   on.exit(compiler_context_env$compiler <- prev_compiler)
-  compiler_context_env$compiler <- compiler
+  compiler_context_env$compiler <- substrait_compiler(compiler)
   force(expr)
 }
 
@@ -339,8 +339,7 @@ local_compiler <- function(compiler, .local_envir = parent.frame()) {
   }
   cleanup_call <- rlang::call2(cleanup)
   do.call(base::on.exit, list(cleanup_call, TRUE), envir = .local_envir)
-  compiler_context_env$compiler <- compiler
-  invisible(compiler)
+  compiler_context_env$compiler <- substrait_compiler(compiler)
 }
 
 compiler_context_env <- new.env(parent = emptyenv())
