@@ -332,5 +332,16 @@ with_compiler <- function(compiler, expr) {
   force(expr)
 }
 
+local_compiler <- function(compiler, .local_envir = parent.frame()) {
+  prev_compiler <- current_compiler()
+  cleanup <- function() {
+    compiler_context_env$compiler <- prev_compiler
+  }
+  cleanup_call <- rlang::call2(cleanup)
+  do.call(base::on.exit, list(cleanup_call, TRUE), envir = .local_envir)
+  compiler_context_env$compiler <- compiler
+  invisible(compiler)
+}
+
 compiler_context_env <- new.env(parent = emptyenv())
 compiler_context_env$compiler <- NULL

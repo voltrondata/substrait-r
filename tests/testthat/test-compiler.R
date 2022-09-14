@@ -209,9 +209,18 @@ test_that("SubstraitCompiler$plan() includes rel and extensions", {
 
 test_that("global substrait compiler value can be set and accessed", {
   expect_null(current_compiler())
+
   with_compiler(
     "some other value",
     expect_identical(current_compiler(), "some other value")
   )
+
+  expect_null(current_compiler())
+
+  local({
+    expect_identical(local_compiler("another value"), "another value")
+    expect_identical(current_compiler(), "another value")
+  })
+
   expect_null(current_compiler())
 })
