@@ -71,6 +71,7 @@ test_that("filter() for substrait_compiler wraps substrait_filter()", {
 
   tbl <- data.frame(col1 = 1, col2 = "one")
   compiler <- substrait_compiler(tbl)
+  compiler$.fns[[">"]] <- function(lhs, rhs) substrait_call(">", lhs, rhs)
 
   expect_identical(
     dplyr::filter(compiler, col1 > 0),
@@ -83,6 +84,7 @@ test_that("mutate() for substrait_compiler wraps substrait_select()", {
 
   tbl <- data.frame(col1 = 1, col2 = "one")
   compiler <- substrait_compiler(tbl)
+  compiler$.fns[[">"]] <- function(lhs, rhs) substrait_call(">", lhs, rhs)
 
   expect_identical(
     dplyr::mutate(compiler, col1 > 0),
@@ -95,6 +97,7 @@ test_that("transmute() for substrait_compiler wraps substrait_select()", {
 
   tbl <- data.frame(col1 = 1, col2 = "one")
   compiler <- substrait_compiler(tbl)
+  compiler$.fns[[">"]] <- function(lhs, rhs) substrait_call(">", lhs, rhs)
 
   expect_identical(
     dplyr::transmute(compiler, col1 > 0),

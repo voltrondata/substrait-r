@@ -96,7 +96,7 @@ test_that("duckdb translation for comparisons works", {
         gte2 = col >= 2,
         lt2 = col < 2,
         lte2 = col <= 2,
-        between_12 = dplyr::between(col, 1, 2)
+        between_12 = between(col, 1, 2)
       ) %>%
       dplyr::collect(),
     tibble::tibble(

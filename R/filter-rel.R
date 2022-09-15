@@ -22,11 +22,7 @@ substrait_filter <- function(.compiler, ...) {
     quos <- rlang::quos(TRUE)
   }
 
-  expressions <- lapply(
-    quos,
-    as_substrait,
-    .ptype = "substrait.Expression"
-  )
+  expressions <- lapply(quos, substrait_eval_quo)
 
   combined_expressions_quo <- Reduce("combine_expressions_and", expressions)
   combined_expressions <- as_substrait(

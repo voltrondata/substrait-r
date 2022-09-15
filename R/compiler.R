@@ -45,6 +45,8 @@ SubstraitCompiler <- R6::R6Class(
     #'   (e.g., [rlang::eval_tidy()]).
     mask = NULL,
 
+    .fns = NULL,
+
     #' @field groups A named list of `substrait.Expression` to be used for
     #'   future grouping (e.g., after calling [dplyr::group_by()]).
     groups = NULL,
@@ -55,6 +57,8 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @param ... Passed to `add_relation()` if `object` is not `NULL`
     initialize = function(object = NULL, ...) {
+      self$.fns <- list()
+
       private$extension_uri <- substrait$extensions$SimpleExtensionURI$create(
         extension_uri_anchor = 1L
       )
@@ -84,14 +88,14 @@ SubstraitCompiler <- R6::R6Class(
     #' This should be the [list()] or [environment()] of functions
     #' that can be translated by this compiler.
     function_mask = function() {
-      new.env(parent = emptyenv())
+      self$.fns
     },
 
     #' @description
     #' Returns the [data mask][rlang::as_data_mask] that will be
     #' used within `substrait_eval()`.
-    eval_mask = function() {
-      column_mask <- as.environment(self$mask)
+    eval_mask = function(.data = TRUE) {
+      column_mask <- if (.data) as.environment(self$mask) else new.env(parent = emptyenv())
       function_mask <- as.environment(self$function_mask())
       parent.env(column_mask) <- function_mask
 
@@ -351,13 +355,19 @@ substrait_call <- function(.fun, ..., .output_type = NULL) {
 }
 
 substrait_eval <- function(expr) {
-  substrait_eval_quo(rlang::enquo(expr))
+  substrait_eval_quo(rlang::enquo(expr), .data = FALSE)
 }
 
-substrait_eval_quo <- function(expr_quo) {
+substrait_eval_data <- function(expr) {
+  substrait_eval_quo(rlang::enquo(expr), .data = TRUE)
+}
+
+substrait_eval_quo <- function(expr_quo, .data = TRUE) {
   compiler <- current_compiler()
-  result <- rlang::eval_tidy(expr_quo, data = compiler$eval_mask())
-  as_substrait(result, "substrait.Expression")
+  rlang::eval_tidy(
+    expr_quo,
+    data = if (is.null(compiler)) NULL else compiler$eval_mask(.data)
+  )
 }
 
 current_compiler <- function() {

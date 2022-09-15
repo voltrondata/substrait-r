@@ -31,12 +31,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
     },
     "substrait.SortField" = {
       # evaluate the result using special rules for function calls
-      result <- substrait_eval_expr(
-        rlang::quo_get_expr(x),
-        compiler = current_compiler(),
-        env = rlang::quo_get_env(x),
-        template = template
-      )
+      result <- substrait_eval_quo(x)
 
       # ...but wrap result in SortField if it isn't already one
       if (inherits(result, "substrait_SortField")) {
@@ -49,17 +44,7 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...,
       }
     },
     "substrait.Expression" = {
-      # evaluate the result using special rules for function calls
-      result <- substrait_eval_expr(
-        rlang::quo_get_expr(x),
-        compiler = current_compiler(),
-        env = rlang::quo_get_env(x),
-        template = template
-      )
-
-      # the result might be an atomic R object and not an Expression yet,
-      # so convert it to one!
-      as_substrait(result, "substrait.Expression")
+      as_substrait(substrait_eval_quo(x), "substrait.Expression")
     },
     NextMethod()
   )
