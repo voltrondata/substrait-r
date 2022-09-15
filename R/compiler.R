@@ -89,6 +89,9 @@ SubstraitCompiler <- R6::R6Class(
     #' @description
     #' Returns the [data mask][rlang::as_data_mask] that will be
     #' used within `substrait_eval()`.
+    #'
+    #' @param .data Use `FALSE` to return a mask containing only function
+    #'   members with no columns.
     eval_mask = function(.data = TRUE) {
       column_mask <- if (.data) as.environment(self$.data) else new.env(parent = emptyenv())
       function_mask <- as.environment(self$.fns)
@@ -346,6 +349,13 @@ substrait_call <- function(.fun, ..., .output_type = NULL) {
   args <- rlang::list2(...)
   compiler <- current_compiler()
   template <- substrait$Expression$ScalarFunction$create()
+  compiler$resolve_function(.fun, args, template, .output_type)
+}
+
+substrait_call_agg <- function(.fun, ..., .output_type = NULL) {
+  args <- rlang::list2(...)
+  compiler <- current_compiler()
+  template <- substrait$AggregateFunction$create()
   compiler$resolve_function(.fun, args, template, .output_type)
 }
 

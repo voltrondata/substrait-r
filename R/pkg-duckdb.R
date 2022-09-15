@@ -288,3 +288,7 @@ duckdb_funs[["/"]] <- function(lhs, rhs) {
 duckdb_funs[["^"]] <- function(lhs, rhs) {
   substrait_call("^", lhs, rhs)
 }
+
+duckdb_funs[["sum"]] <- function(x) {
+  substrait_call_agg("sum", x)
+}

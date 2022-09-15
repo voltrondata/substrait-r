@@ -175,13 +175,14 @@ test_that("summarise() for substrait_compiler wraps substrait_aggregate()", {
   )
 
   compiler <- substrait_compiler(df)
+  compiler$.fns$sum <- function(x) substrait_call_agg("sum", x)
 
   expect_identical(
     dplyr::summarise(compiler, sum(c)),
     substrait_aggregate(compiler, sum(c))
   )
 
-  grouped1 <- substrait_group_by(df, a)
+  grouped1 <- substrait_group_by(compiler, a)
   expect_identical(
     dplyr::summarise(grouped1, sum(c)),
     substrait_aggregate(grouped1, sum(c))
@@ -196,7 +197,7 @@ test_that("summarise() for substrait_compiler wraps substrait_aggregate()", {
       substrait_group_by(a)
   )
 
-  grouped2 <- substrait_group_by(df, a, b)
+  grouped2 <- substrait_group_by(compiler, a, b)
   expect_identical(
     dplyr::summarise(grouped2, sum(c)),
     substrait_aggregate(grouped2, sum(c)) %>%

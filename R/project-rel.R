@@ -10,7 +10,10 @@
 #' @export
 #'
 #' @examples
-#' substrait_select(data.frame(a = 1, b = "one"), c = a + 1)
+#' substrait_select(
+#'   duckdb_substrait_compiler(data.frame(a = 1, b = "one")),
+#'   c = a + 1
+#' )
 #'
 substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   .compiler <- substrait_compiler(.compiler)$clone()

@@ -24,14 +24,16 @@
 #' @importFrom dplyr select
 #' @export
 #'
-#' @examplesIf requireNamespace("dplyr", quietly = TRUE)
-#' compiler <- substrait_compiler(mtcars)
-#' dplyr::select(compiler, mpg2 = mpg)
-#' dplyr::rename(compiler, mpg2 = mpg)
-#' dplyr::filter(compiler, mpg > 20)
-#' dplyr::mutate(compiler, mpg + 10)
-#' dplyr::transmute(compiler, mpg + 10)
-#' dplyr::arrange(compiler, desc(mpg))
+#' @examples
+#' library(dplyr)
+#' compiler <- duckdb_substrait_compiler(mtcars)
+#'
+#' select(compiler, mpg2 = mpg) %>% collect()
+#' rename(compiler, mpg2 = mpg) %>% collect()
+#' filter(compiler, mpg > 20) %>% collect()
+#' mutate(compiler, mpg + 10) %>% collect()
+#' transmute(compiler, mpg + 10) %>% collect()
+#' arrange(compiler, desc(mpg)) %>% collect()
 #'
 select.SubstraitCompiler <- function(.data, ...) {
   sim_data <- simulate_data_frame(.data)
