@@ -294,6 +294,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
 
 # Scalar functions
 duckdb_scalar <- new.env(parent = emptyenv())
+
 duckdb_scalar[["=="]] <- function(lhs, rhs) {
   substrait_call("equals", lhs, rhs)
 }
@@ -319,7 +320,7 @@ duckdb_scalar[["<"]] <- function(lhs, rhs) {
 }
 
 duckdb_scalar[["between"]] <- function(x, left, right) {
-  substrait_eval(x => left & x <= right)
+  substrait_eval(x >= left & x <= right)
 }
 
 duckdb_scalar[["&"]] <- function(lhs, rhs) {
