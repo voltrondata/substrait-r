@@ -39,7 +39,7 @@ SubstraitCompiler <- R6::R6Class(
     #'   and field types of `rel`.
     schema = NULL,
 
-    #' @field mask A named list of `substrait.Expression` objects where the
+    #' @field mask An environment `substrait.Expression` objects where the
     #'   names are identical to the field names as provided in `schema`.
     #'   This list is used as the data mask when evaluating expressions
     #'   (e.g., [rlang::eval_tidy()]).
@@ -77,6 +77,29 @@ SubstraitCompiler <- R6::R6Class(
       if (!is.null(object)) {
         self$add_relation(object, ...)
       }
+    },
+
+    #' @description
+    #' Returns and object ot be used as the `.fns` data pronoun.
+    #' This should be the [list()] or [environment()] of functions
+    #' that can be translated by this compiler.
+    function_mask = function() {
+      new.env(parent = emptyenv())
+    },
+
+    #' @description
+    #' Returns the [data mask][rlang::as_data_mask] that will be
+    #' used within `substrait_eval()`.
+    eval_mask = function() {
+      column_mask <- as.environment(self$mask)
+      function_mask <- as.environment(self$function_mask())
+      parent.env(column_mask) <- function_mask
+
+      mask <- rlang::new_data_mask(column_mask, top = function_mask)
+      mask$.data <- rlang::as_data_pronoun(column_mask)
+      mask$.fns <- rlang::as_data_pronoun(function_mask)
+
+      mask
     },
 
     #' @description
@@ -320,6 +343,22 @@ substrait_compiler.default <- function(object, ...) {
   SubstraitCompiler$new(object, ...)
 }
 
+substrait_call <- function(.fun, ..., .output_type = NULL) {
+  args <- rlang::list2(...)
+  compiler <- current_compiler()
+  template <- substrait$Expression$ScalarFunction$create()
+  compiler$resolve_function(.fun, args, template, .output_type)
+}
+
+substrait_eval <- function(expr) {
+  substrait_eval_quo(rlang::enquo(expr))
+}
+
+substrait_eval_quo <- function(expr_quo) {
+  compiler <- current_compiler()
+  result <- rlang::eval_tidy(expr_quo, data = compiler$eval_mask())
+  as_substrait(result, "substrait.Expression")
+}
 
 current_compiler <- function() {
   compiler_context_env$compiler

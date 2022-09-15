@@ -32,7 +32,7 @@ argument combination.
 \item{\code{schema}}{A \code{substrait.NamedStruct} containing the field names
 and field types of \code{rel}.}
 
-\item{\code{mask}}{A named list of \code{substrait.Expression} objects where the
+\item{\code{mask}}{An environment \code{substrait.Expression} objects where the
 names are identical to the field names as provided in \code{schema}.
 This list is used as the data mask when evaluating expressions
 (e.g., \code{\link[rlang:eval_tidy]{rlang::eval_tidy()}}).}
@@ -46,6 +46,8 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-SubstraitCompiler-new}{\code{SubstraitCompiler$new()}}
+\item \href{#method-SubstraitCompiler-function_mask}{\code{SubstraitCompiler$function_mask()}}
+\item \href{#method-SubstraitCompiler-eval_mask}{\code{SubstraitCompiler$eval_mask()}}
 \item \href{#method-SubstraitCompiler-add_relation}{\code{SubstraitCompiler$add_relation()}}
 \item \href{#method-SubstraitCompiler-named_table}{\code{SubstraitCompiler$named_table()}}
 \item \href{#method-SubstraitCompiler-named_table_list}{\code{SubstraitCompiler$named_table_list()}}
@@ -78,6 +80,29 @@ object.}
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SubstraitCompiler-function_mask"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-function_mask}{}}}
+\subsection{Method \code{function_mask()}}{
+Returns and object ot be used as the \code{.fns} data pronoun.
+This should be the \code{\link[=list]{list()}} or \code{\link[=environment]{environment()}} of functions
+that can be translated by this compiler.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$function_mask()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SubstraitCompiler-eval_mask"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-eval_mask}{}}}
+\subsection{Method \code{eval_mask()}}{
+Returns the \link[rlang:as_data_mask]{data mask} that will be
+used within \code{substrait_eval()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$eval_mask()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SubstraitCompiler-add_relation"></a>}}

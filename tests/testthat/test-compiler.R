@@ -207,6 +207,68 @@ test_that("SubstraitCompiler$plan() includes rel and extensions", {
   )
 })
 
+test_that("substrait_eval() works", {
+  CompilerWithFunctions <- R6::R6Class(
+    "CompilerWithFunctions", inherit = SubstraitCompiler,
+    public = list(
+      function_mask = function() {
+        list(
+          some_fun = function(x) {
+            substrait_call("some_fun_substrait", x)
+          }
+        )
+      }
+    )
+  )
+
+  compiler <- CompilerWithFunctions$new(data.frame(col1 = 1:5, col2 = letters[1:5]))
+  local_compiler(compiler)
+
+  # literal
+  expect_identical(substrait_eval(5), as_substrait(5, "substrait.Expression"))
+
+  # bare function call that reverts to R evaluation
+  expect_identical(substrait_eval(5 + 4), as_substrait(9, "substrait.Expression"))
+
+  # bare field reference in data.frame
+  expect_s3_class(
+    substrait_eval(col1)$selection,
+    "substrait_Expression_FieldReference"
+  )
+
+  # explicit field reference in data.frame
+  expect_s3_class(
+    substrait_eval(.data$col1)$selection,
+    "substrait_Expression_FieldReference"
+  )
+
+  # explicit (!!) non-field reference with same name
+  col1 <- "some other value"
+  expect_identical(
+    substrait_eval(!!col1),
+    as_substrait("some other value", "substrait.Expression")
+  )
+
+  # explicit (.env) non-field reference with same name
+  col1 <- "some other value"
+  expect_identical(
+    substrait_eval(.env$col1),
+    as_substrait("some other value", "substrait.Expression")
+  )
+
+  # bare function call in the mask
+  expect_s3_class(
+    substrait_eval(some_fun(5))$scalar_function,
+    "substrait_Expression_ScalarFunction"
+  )
+
+  # explicit function call in the mask
+  expect_s3_class(
+    substrait_eval(.fns$some_fun(5))$scalar_function,
+    "substrait_Expression_ScalarFunction"
+  )
+})
+
 test_that("global substrait compiler value can be set and accessed", {
   expect_null(current_compiler())
 
