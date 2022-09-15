@@ -39,12 +39,15 @@ SubstraitCompiler <- R6::R6Class(
     #'   and field types of `rel`.
     schema = NULL,
 
-    #' @field mask An environment `substrait.Expression` objects where the
-    #'   names are identical to the field names as provided in `schema`.
-    #'   This list is used as the data mask when evaluating expressions
-    #'   (e.g., [rlang::eval_tidy()]).
-    mask = NULL,
+    #' @field .data An environment or list containing `substrait.Expression`
+    #'   objects. For a fresh compiler, this will be a list of field references
+    #'   with the same length as `schema$names`; however, during evaluation
+    #'   this may be updated to contain temporary columns before a relation
+    #'   is finalized.
+    .data = NULL,
 
+    #' @field .fns An environment or list containing functions that can be
+    #'   translated by this compiler.
     .fns = NULL,
 
     #' @field groups A named list of `substrait.Expression` to be used for
@@ -84,19 +87,11 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
-    #' Returns and object ot be used as the `.fns` data pronoun.
-    #' This should be the [list()] or [environment()] of functions
-    #' that can be translated by this compiler.
-    function_mask = function() {
-      self$.fns
-    },
-
-    #' @description
     #' Returns the [data mask][rlang::as_data_mask] that will be
     #' used within `substrait_eval()`.
     eval_mask = function(.data = TRUE) {
-      column_mask <- if (.data) as.environment(self$mask) else new.env(parent = emptyenv())
-      function_mask <- as.environment(self$function_mask())
+      column_mask <- if (.data) as.environment(self$.data) else new.env(parent = emptyenv())
+      function_mask <- as.environment(self$.fns)
       parent.env(column_mask) <- function_mask
 
       mask <- rlang::new_data_mask(column_mask, top = function_mask)
@@ -136,7 +131,7 @@ SubstraitCompiler <- R6::R6Class(
 
       self$rel <- rel
       self$schema <- rel$read$base_schema
-      self$mask <- substrait_rel_mask(rel)
+      self$.data <- substrait_rel_mask(rel)
       self$groups <- NULL
 
       self

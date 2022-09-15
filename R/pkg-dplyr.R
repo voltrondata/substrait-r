@@ -82,7 +82,7 @@ rename.SubstraitCompiler <- function(.data, ...) {
     simulate_data_frame(.data)
   )
 
-  column_names <- names(.data$mask)
+  column_names <- names(.data$.data)
   new_column_names <- column_names
   new_column_names[column_indices] <- names(column_indices)
 
@@ -116,7 +116,7 @@ filter.SubstraitCompiler <- function(.data, ...) {
 mutate.SubstraitCompiler <- function(.data, ...,
                                      .keep = c("all", "used", "unused", "none")) {
   .keep <- match.arg(.keep)
-  mask <- .data$mask
+  mask <- .data$.data
 
   out <- substrait_select(.data, !!!mask, ...)
   if (.keep == "all") {
@@ -125,7 +125,7 @@ mutate.SubstraitCompiler <- function(.data, ...,
 
   # if only keeping a subset of columns, work out which and project again
   cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
-  substrait_select(out, !!!out$mask[cols], !!!rlang::syms(cols))
+  substrait_select(out, !!!out$.data[cols], !!!rlang::syms(cols))
 }
 
 #' @rdname select.SubstraitCompiler
@@ -275,7 +275,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
     simulate_data_frame(.data)
   )
 
-  column_names <- names(.data$mask)
+  column_names <- names(.data$.data)
   new_column_names <- column_names
   new_column_names[column_indices] <- names(column_indices)
 

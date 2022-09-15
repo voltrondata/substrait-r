@@ -16,7 +16,7 @@ test_that("substrait_select() can select all columns unchanged", {
 
   # check that nothing else about the compiler changed
   expect_identical(result$schema, compiler$schema)
-  expect_identical(result$mask, compiler$mask)
+  expect_identical(result$.data, compiler$.data)
 })
 
 test_that("substrait_project() can add zero columns", {
@@ -33,7 +33,7 @@ test_that("substrait_project() can add zero columns", {
 
   # check that nothing else about the compiler changed
   expect_identical(result$schema, compiler$schema)
-  expect_identical(result$mask, compiler$mask)
+  expect_identical(result$.data, compiler$.data)
 })
 
 test_that("substrait_project() can add columns without an emit clause", {
@@ -50,7 +50,7 @@ test_that("substrait_project() can add columns without an emit clause", {
 
   # make sure we actually added a column
   expect_identical(result$schema$names, c("col1", "col2", "col3"))
-  expect_identical(names(result$mask), c("col1", "col2", "col3"))
+  expect_identical(names(result$.data), c("col1", "col2", "col3"))
   expect_identical(
     result$schema$struct_$types,
     list(
@@ -76,7 +76,7 @@ test_that("substrait_select() resets the mask and schema after evaluation", {
   )
 
   expect_identical(
-    projected$mask,
+    projected$.data,
     list(b = simple_integer_field_reference(0))
   )
 
@@ -95,7 +95,7 @@ test_that("substrait_select() evaluates arguments in order", {
   )
 
   expect_identical(
-    projected$mask,
+    projected$.data,
     list(
       b = simple_integer_field_reference(0),
       c = simple_integer_field_reference(1)

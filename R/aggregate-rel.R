@@ -60,11 +60,11 @@ substrait_aggregate <- function(.compiler, ...) {
     )
   )
 
-  .compiler$mask <- lapply(
+  .compiler$.data <- lapply(
     seq_along(types) - 1L,
     simple_integer_field_reference
   )
-  names(.compiler$mask) <- names(types)
+  names(.compiler$.data) <- names(types)
 
   # drop groups
   .compiler$groups <- NULL

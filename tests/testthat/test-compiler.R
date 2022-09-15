@@ -21,7 +21,7 @@ test_that("substrait_compiler() creates a compiler with a ReadRel from a data fr
   )
 
   expect_identical(
-    compiler$mask,
+    compiler$.data,
     list(
       col1 = simple_integer_field_reference(0L),
       col2 = simple_integer_field_reference(1L)

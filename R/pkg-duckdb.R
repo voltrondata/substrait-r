@@ -130,8 +130,9 @@ DuckDBSubstraitCompiler <- R6::R6Class(
   "DuckDBSubstraitCompiler",
   inherit = SubstraitCompiler,
   public = list(
-    function_mask = function() {
-      as.list(duckdb_scalar)
+    initialize = function(...) {
+      super$initialize(...)
+      self$.fns = duckdb_funs
     },
     validate = function() {
       super$validate()
@@ -152,47 +153,47 @@ DuckDBSubstraitCompiler <- R6::R6Class(
 )
 
 # Scalar functions
-duckdb_scalar <- new.env(parent = emptyenv())
+duckdb_funs <- new.env(parent = emptyenv())
 
-duckdb_scalar[["=="]] <- function(lhs, rhs) {
+duckdb_funs[["=="]] <- function(lhs, rhs) {
   substrait_call("equal", lhs, rhs)
 }
 
-duckdb_scalar[["!="]] <- function(lhs, rhs) {
+duckdb_funs[["!="]] <- function(lhs, rhs) {
   substrait_call("not_equal", lhs, rhs)
 }
 
-duckdb_scalar[[">="]] <- function(lhs, rhs) {
+duckdb_funs[[">="]] <- function(lhs, rhs) {
   substrait_call("gte", lhs, rhs)
 }
 
-duckdb_scalar[["<="]] <- function(lhs, rhs) {
+duckdb_funs[["<="]] <- function(lhs, rhs) {
   substrait_call("lte", lhs, rhs)
 }
 
-duckdb_scalar[[">"]] <- function(lhs, rhs) {
+duckdb_funs[[">"]] <- function(lhs, rhs) {
   substrait_call("gt", lhs, rhs)
 }
 
-duckdb_scalar[["<"]] <- function(lhs, rhs) {
+duckdb_funs[["<"]] <- function(lhs, rhs) {
   substrait_call("lt", lhs, rhs)
 }
 
-duckdb_scalar[["between"]] <- function(x, left, right) {
+duckdb_funs[["between"]] <- function(x, left, right) {
   substrait_eval(x >= left & x <= right)
 }
 
-duckdb_scalar[["&"]] <- function(lhs, rhs) {
+duckdb_funs[["&"]] <- function(lhs, rhs) {
   substrait_call("and", lhs, rhs)
 }
 
-duckdb_scalar[["|"]] <- function(lhs, rhs) {
+duckdb_funs[["|"]] <- function(lhs, rhs) {
   substrait_call("or", lhs, rhs)
 }
 
 # While I'm sure that "not" exists somehow, this is the only way
 # I can get it to work for now (NULLs are not handled properly here)
-duckdb_scalar[["!"]] <- function(rhs) {
+duckdb_funs[["!"]] <- function(rhs) {
   substrait$Expression$create(
     cast = substrait$Expression$Cast$create(
       type = substrait$Type$create(
@@ -213,12 +214,12 @@ duckdb_scalar[["!"]] <- function(rhs) {
   )
 }
 
-duckdb_scalar[["is.na"]] <- function(x) {
+duckdb_funs[["is.na"]] <- function(x) {
   is_not_null <- substrait_call("is_not_null", x)
   substrait_eval(!is_not_null)
 }
 
-duckdb_scalar[["c"]] <- function(...) {
+duckdb_funs[["c"]] <- function(...) {
   # this limits the usage of c() to literals, which is probably the most
   # common usage (e.g., col %in% c("a", "b"))
   args <- rlang::list2(...)
@@ -231,7 +232,7 @@ duckdb_scalar[["c"]] <- function(...) {
   )
 }
 
-duckdb_scalar[["%in%"]] <- function(lhs, rhs) {
+duckdb_funs[["%in%"]] <- function(lhs, rhs) {
   # duckdb implements this using == and or, according to duckdb_get_substrait()
   lhs <- as_substrait(lhs, "substrait.Expression")
   rhs <- as_substrait(rhs, "substrait.Expression")
@@ -268,22 +269,22 @@ duckdb_scalar[["%in%"]] <- function(lhs, rhs) {
   Reduce(combine_or, equal_expressions)
 }
 
-duckdb_scalar[["+"]] <- function(lhs, rhs) {
+duckdb_funs[["+"]] <- function(lhs, rhs) {
   substrait_call("+", lhs, rhs)
 }
 
-duckdb_scalar[["-"]] <- function(lhs, rhs) {
+duckdb_funs[["-"]] <- function(lhs, rhs) {
   substrait_call("-", lhs, rhs)
 }
 
-duckdb_scalar[["*"]] <- function(lhs, rhs) {
+duckdb_funs[["*"]] <- function(lhs, rhs) {
   substrait_call("*", lhs, rhs)
 }
 
-duckdb_scalar[["/"]] <- function(lhs, rhs) {
+duckdb_funs[["/"]] <- function(lhs, rhs) {
   substrait_call("/", lhs, rhs)
 }
 
-duckdb_scalar[["^"]] <- function(lhs, rhs) {
+duckdb_funs[["^"]] <- function(lhs, rhs) {
   substrait_call("^", lhs, rhs)
 }

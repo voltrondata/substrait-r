@@ -41,7 +41,7 @@ test_that("substrait_aggregate() can evaluate a simple aggregation expression", 
   )
   expect_identical(agg$schema$names, c("a", "c"))
   expect_identical(
-    agg$mask,
+    agg$.data,
     list(
       a = simple_integer_field_reference(0),
       c = simple_integer_field_reference(1)

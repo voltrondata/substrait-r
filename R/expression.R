@@ -59,7 +59,7 @@ substrait_eval_expr <- function(x, compiler, env, template) {
     if (rlang::is_symbol(x[[2]], ".data") && rlang::is_symbol(x[[1]], c("$", "[["))) {
       # rlang already has support for the .data pronoun built in, so we can
       # continue with eval_tidy() and let rlang interpret .data$some_var
-      return(rlang::eval_tidy(x, compiler$mask, env))
+      return(rlang::eval_tidy(x, compiler$.data, env))
     } else if (rlang::is_symbol(x[[2]], ".env") && rlang::is_symbol(x[[1]], "$")) {
       # If we have .env$some_var, the righthand side is passed as a symbol,
       # so look up the variable in env based on that. We include inheriting
@@ -89,7 +89,7 @@ substrait_eval_expr <- function(x, compiler, env, template) {
     } else if (is.symbol(fun_expr)) {
       name <- as.character(fun_expr)
     } else {
-      return(rlang::eval_tidy(x, compiler$mask, env))
+      return(rlang::eval_tidy(x, compiler$.data, env))
     }
 
     # Evaluate the arguments first because we need the types to resolve
@@ -119,7 +119,7 @@ substrait_eval_expr <- function(x, compiler, env, template) {
       as_substrait(result, "substrait.Expression")
     }
   } else {
-    rlang::eval_tidy(x, compiler$mask, env)
+    rlang::eval_tidy(x, compiler$.data, env)
   }
 }
 
