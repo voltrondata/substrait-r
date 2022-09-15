@@ -94,7 +94,7 @@ SubstraitCompiler <- R6::R6Class(
     #'   members with no columns.
     eval_mask = function(.data = TRUE) {
       column_mask <- if (.data) as.environment(self$.data) else new.env(parent = emptyenv())
-      function_mask <- as.environment(self$.fns)
+      function_mask <- as.environment(as.list(self$.fns))
       parent.env(column_mask) <- function_mask
 
       mask <- rlang::new_data_mask(column_mask, top = function_mask)
