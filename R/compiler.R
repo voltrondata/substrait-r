@@ -228,8 +228,7 @@ SubstraitCompiler <- R6::R6Class(
       args <- lapply(
         args,
         as_substrait,
-        "substrait.Expression",
-        compiler = self
+        "substrait.Expression"
       )
 
       # resolve argument types

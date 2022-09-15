@@ -156,27 +156,27 @@ DuckDBSubstraitCompiler <- R6::R6Class(
 duckdb_funs <- new.env(parent = emptyenv())
 
 duckdb_funs[["=="]] <- function(lhs, rhs) {
-  substrait_call("equal", lhs, rhs)
+  substrait_call("equal", lhs, rhs, .output_type = substrait_boolean())
 }
 
 duckdb_funs[["!="]] <- function(lhs, rhs) {
-  substrait_call("not_equal", lhs, rhs)
+  substrait_call("not_equal", lhs, rhs, .output_type = substrait_boolean())
 }
 
 duckdb_funs[[">="]] <- function(lhs, rhs) {
-  substrait_call("gte", lhs, rhs)
+  substrait_call("gte", lhs, rhs, .output_type = substrait_boolean())
 }
 
 duckdb_funs[["<="]] <- function(lhs, rhs) {
-  substrait_call("lte", lhs, rhs)
+  substrait_call("lte", lhs, rhs, .output_type = substrait_boolean())
 }
 
 duckdb_funs[[">"]] <- function(lhs, rhs) {
-  substrait_call("gt", lhs, rhs)
+  substrait_call("gt", lhs, rhs, .output_type = substrait_boolean())
 }
 
 duckdb_funs[["<"]] <- function(lhs, rhs) {
-  substrait_call("lt", lhs, rhs)
+  substrait_call("lt", lhs, rhs, .output_type = substrait_boolean())
 }
 
 duckdb_funs[["between"]] <- function(x, left, right) {
@@ -184,11 +184,11 @@ duckdb_funs[["between"]] <- function(x, left, right) {
 }
 
 duckdb_funs[["&"]] <- function(lhs, rhs) {
-  substrait_call("and", lhs, rhs)
+  substrait_call("and", lhs, rhs, .output_type = substrait_boolean())
 }
 
 duckdb_funs[["|"]] <- function(lhs, rhs) {
-  substrait_call("or", lhs, rhs)
+  substrait_call("or", lhs, rhs, .output_type = substrait_boolean())
 }
 
 # While I'm sure that "not" exists somehow, this is the only way
@@ -215,7 +215,7 @@ duckdb_funs[["!"]] <- function(rhs) {
 }
 
 duckdb_funs[["is.na"]] <- function(x) {
-  is_not_null <- substrait_call("is_not_null", x)
+  is_not_null <- substrait_call("is_not_null", x, .output_type = substrait_boolean())
   substrait_eval(!is_not_null)
 }
 
@@ -263,32 +263,35 @@ duckdb_funs[["%in%"]] <- function(lhs, rhs) {
   })
 
   combine_or <- function(lhs, rhs) {
-    as_substrait(substrait_call("or", lhs, rhs), "substrait.Expression")
+    as_substrait(
+      substrait_call("or", lhs, rhs, .output_type = substrait_boolean()),
+      "substrait.Expression"
+    )
   }
 
   Reduce(combine_or, equal_expressions)
 }
 
 duckdb_funs[["+"]] <- function(lhs, rhs) {
-  substrait_call("+", lhs, rhs)
+  substrait_call("+", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
 duckdb_funs[["-"]] <- function(lhs, rhs) {
-  substrait_call("-", lhs, rhs)
+  substrait_call("-", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
 duckdb_funs[["*"]] <- function(lhs, rhs) {
-  substrait_call("*", lhs, rhs)
+  substrait_call("*", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
 duckdb_funs[["/"]] <- function(lhs, rhs) {
-  substrait_call("/", lhs, rhs)
+  substrait_call("/", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
 duckdb_funs[["^"]] <- function(lhs, rhs) {
-  substrait_call("^", lhs, rhs)
+  substrait_call("^", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
 duckdb_funs[["sum"]] <- function(x) {
-  substrait_call_agg("sum", x)
+  substrait_call_agg("sum", x, .output_type = identity)
 }
