@@ -291,3 +291,120 @@ DuckDBSubstraitCompiler <- R6::R6Class(
     }
   )
 )
+
+# Scalar functions
+duckdb_scalar <- new.env(parent = emptyenv())
+duckdb_scalar[["=="]] <- function(lhs, rhs) {
+  substrait_call("equals", lhs, rhs)
+}
+
+duckdb_scalar[["!="]] <- function(lhs, rhs) {
+  substrait_call("not_equal", lhs, rhs)
+}
+
+duckdb_scalar[[">="]] <- function(lhs, rhs) {
+  substrait_call("gte", lhs, rhs)
+}
+
+duckdb_scalar[["<="]] <- function(lhs, rhs) {
+  substrait_call("lte", lhs, rhs)
+}
+
+duckdb_scalar[[">"]] <- function(lhs, rhs) {
+  substrait_call("gt", lhs, rhs)
+}
+
+duckdb_scalar[["<"]] <- function(lhs, rhs) {
+  substrait_call("lt", lhs, rhs)
+}
+
+duckdb_scalar[["between"]] <- function(x, left, right) {
+  substrait_eval(x => left & x <= right)
+}
+
+duckdb_scalar[["&"]] <- function(lhs, rhs) {
+  substrait_call("and", lhs, rhs)
+}
+
+duckdb_scalar[["|"]] <- function(lhs, rhs) {
+  substrait_call("or", lhs, rhs)
+}
+
+duckdb_scalar[["!"]] <- function(rhs) {
+  stop("punting for now")
+}
+
+duckdb_scalar[["is.na"]] <- function(x) {
+  is_not_null <- substrait_call("is_not_null", x)
+  substrait_eval(!is_not_null)
+}
+
+duckdb_scalar[["c"]] <- function(...) {
+  # this limits the usage of c() to literals, which is probably the most
+  # common usage (e.g., col %in% c("a", "b"))
+  args <- rlang::list2(...)
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = lapply(args, as_substrait, "substrait.Expression.Literal")
+      )
+    )
+  )
+}
+
+duckdb_scalar[["%in%"]] <- function(lhs, rhs) {
+  # duckdb implements this using == and or, according to duckdb_get_substrait()
+  lhs <- as_substrait(lhs, "substrait.Expression")
+  rhs <- as_substrait(rhs, "substrait.Expression")
+
+  # if the rhs is a regular literal, wrap in a list
+  rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
+
+  if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
+    rhs <- substrait$Expression$create(
+      literal = substrait$Expression$Literal$create(
+        list = substrait$Expression$Literal$List$create(
+          values = list(rhs$literal)
+        )
+      )
+    )
+  } else if (!rhs_is_list) {
+    rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
+  }
+
+  if (length(rhs$literal$list$values) == 0) {
+    return(as_substrait(FALSE, "substrait.Expression"))
+  } else if (length(rhs$literal$list$values) == 1) {
+    return(substrait_call("equal", lhs, rhs$literal$list$values[[1]]))
+  }
+
+  equal_expressions <- lapply(rhs$literal$list$values, function(value) {
+    as_substrait(substrait_call("equal", lhs, value), "substrait.Expression")
+  })
+
+  combine_or <- function(lhs, rhs) {
+    as_substrait(substrait_call("or", lhs, rhs), "substrait.Expression")
+  }
+
+  Reduce(combine_or, equal_expressions)
+}
+
+duckdb_scalar[["+"]] <- function(lhs, rhs) {
+  substrait_call("+", lhs, rhs)
+}
+
+duckdb_scalar[["-"]] <- function(lhs, rhs) {
+  substrait_call("-", lhs, rhs)
+}
+
+duckdb_scalar[["*"]] <- function(lhs, rhs) {
+  substrait_call("*", lhs, rhs)
+}
+
+duckdb_scalar[["/"]] <- function(lhs, rhs) {
+  substrait_call("/", lhs, rhs)
+}
+
+duckdb_scalar[["^"]] <- function(lhs, rhs) {
+  substrait_call("^", lhs, rhs)
+}
