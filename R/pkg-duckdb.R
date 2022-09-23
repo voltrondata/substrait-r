@@ -273,11 +273,19 @@ duckdb_funs[["%in%"]] <- function(lhs, rhs) {
 }
 
 duckdb_funs[["+"]] <- function(lhs, rhs) {
-  substrait_call("+", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+  if (missing(rhs)) {
+    substrait_call("+", lhs, .output_type = function(lhs) lhs)
+  } else {
+    substrait_call("+", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+  }
 }
 
 duckdb_funs[["-"]] <- function(lhs, rhs) {
-  substrait_call("-", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+  if (missing(rhs)) {
+    substrait_call("-", lhs, .output_type = function(lhs) lhs)
+  } else {
+    substrait_call("-", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+  }
 }
 
 duckdb_funs[["*"]] <- function(lhs, rhs) {
