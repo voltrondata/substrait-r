@@ -71,7 +71,7 @@ has_duckdb_with_substrait <- function() {
 
   duckdb_works_cache$works <- tryCatch(
     with_duckdb_tables(list(), function(con) TRUE),
-    error = function(e) FALSE
+    error = function(e) { message(conditionMessage(e)); FALSE }
   )
 
   duckdb_works_cache$works
