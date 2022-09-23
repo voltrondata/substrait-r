@@ -26,7 +26,6 @@ reference:
 - title: "Substrait compilers"
   desc: Functions for creating substrait compilers
   contents:
-    - SubstraitCompiler
     - substrait_compiler
     - arrow_substrait_compiler
     - duckdb_substrait_compiler
@@ -35,6 +34,13 @@ reference:
   desc: An interface to the DuckDB Substrait Implementation
   contents:
     - duckdb_get_substrait
+
+- title: "Low-level compiler details"
+  desc: Tools for developing substrait compiler interfaces
+  contents:
+    - SubstraitCompiler
+    - current_compiler
+    - substrait_call
 
 - title: "Example datasets"
   contents:
