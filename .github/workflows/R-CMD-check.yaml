@@ -53,7 +53,7 @@ jobs:
         run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake
 
       - name: Install duckdb from CRAN
-        run: install.packages("duckdb")
+        run: R -e 'install.packages("duckdb")'
 
       - name: Setup substrait dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
