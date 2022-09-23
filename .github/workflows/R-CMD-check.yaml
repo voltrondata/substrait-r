@@ -52,10 +52,13 @@ jobs:
       - if: runner.os == 'Linux'
         run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake
 
+      - name: Install duckdb from CRAN
+        run: install.packages("duckdb")
+
       - name: Setup substrait dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck, any::duckdb
+          extra-packages: rcmdcheck
 
       # Not using arrow package until https://github.com/apache/arrow/pull/13914 merges
       # - name: Checkout Arrow repo
