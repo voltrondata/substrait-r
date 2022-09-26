@@ -756,7 +756,6 @@ test_that("Expressions on aggregations", {
 })
 
 test_that("Summarize with 0 arguments", {
-  skip("different order: https://github.com/voltrondata/substrait-r/issues/154")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
