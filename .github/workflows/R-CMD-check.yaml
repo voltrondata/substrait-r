@@ -52,6 +52,9 @@ jobs:
       - if: runner.os == 'Linux'
         run: sudo apt-get install -y protobuf-compiler libprotobuf-dev libprotoc-dev cmake
 
+      - name: Install pinned version of duckdb
+        run: R -e 'install.packages("remotes"); remotes::install_github("cran/duckdb@0.5.0")'
+
       - name: Setup substrait dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
