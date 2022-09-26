@@ -77,20 +77,23 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">substrait_sort</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="st">"one"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="duckdb_substrait_compiler.html">duckdb_substrait_compiler</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="st">"one"</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="va">a</span>,</span></span>
 <span class="r-in"><span>  <span class="fu">substrait_sort_field</span><span class="op">(</span><span class="va">b</span>, <span class="st">"SORT_DIRECTION_DESC_NULLS_LAST"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;SubstraitCompiler&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;DuckDBSubstraitCompiler&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Inherits from: &lt;SubstraitCompiler&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Public:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     .data: list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     .fns: environment</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     add_relation: function (object, ...) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     clone: function (deep = FALSE) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     eval_mask: function (.data = TRUE) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     evaluate: function (...) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     function_extension: function (id) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     function_id: function (name, arg_types) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     groups: NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     initialize: function (object = NULL, ...) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     mask: list</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     initialize: function (...) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     named_table: function (name) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     named_table_list: function () </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     next_id: function () </span>

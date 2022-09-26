@@ -22,6 +22,9 @@
     <loc>/reference/as_substrait.html</loc>
   </url>
   <url>
+    <loc>/reference/current_compiler.html</loc>
+  </url>
+  <url>
     <loc>/reference/duckdb_get_substrait.html</loc>
   </url>
   <url>
@@ -47,6 +50,9 @@
   </url>
   <url>
     <loc>/reference/substrait_aggregate.html</loc>
+  </url>
+  <url>
+    <loc>/reference/substrait_call.html</loc>
   </url>
   <url>
     <loc>/reference/substrait_compiler.html</loc>
