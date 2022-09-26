@@ -71,6 +71,7 @@ test_that("filter() for substrait_compiler wraps substrait_filter()", {
 
   tbl <- data.frame(col1 = 1, col2 = "one")
   compiler <- substrait_compiler(tbl)
+  compiler$.fns[[">"]] <- function(lhs, rhs) substrait_call(">", lhs, rhs)
 
   expect_identical(
     dplyr::filter(compiler, col1 > 0),
@@ -83,6 +84,7 @@ test_that("mutate() for substrait_compiler wraps substrait_select()", {
 
   tbl <- data.frame(col1 = 1, col2 = "one")
   compiler <- substrait_compiler(tbl)
+  compiler$.fns[[">"]] <- function(lhs, rhs) substrait_call(">", lhs, rhs)
 
   expect_identical(
     dplyr::mutate(compiler, col1 > 0),
@@ -95,6 +97,7 @@ test_that("transmute() for substrait_compiler wraps substrait_select()", {
 
   tbl <- data.frame(col1 = 1, col2 = "one")
   compiler <- substrait_compiler(tbl)
+  compiler$.fns[[">"]] <- function(lhs, rhs) substrait_call(">", lhs, rhs)
 
   expect_identical(
     dplyr::transmute(compiler, col1 > 0),
@@ -172,13 +175,14 @@ test_that("summarise() for substrait_compiler wraps substrait_aggregate()", {
   )
 
   compiler <- substrait_compiler(df)
+  compiler$.fns$sum <- function(x) substrait_call_agg("sum", x)
 
   expect_identical(
     dplyr::summarise(compiler, sum(c)),
     substrait_aggregate(compiler, sum(c))
   )
 
-  grouped1 <- substrait_group_by(df, a)
+  grouped1 <- substrait_group_by(compiler, a)
   expect_identical(
     dplyr::summarise(grouped1, sum(c)),
     substrait_aggregate(grouped1, sum(c))
@@ -193,7 +197,7 @@ test_that("summarise() for substrait_compiler wraps substrait_aggregate()", {
       substrait_group_by(a)
   )
 
-  grouped2 <- substrait_group_by(df, a, b)
+  grouped2 <- substrait_group_by(compiler, a, b)
   expect_identical(
     dplyr::summarise(grouped2, sum(c)),
     substrait_aggregate(grouped2, sum(c)) %>%

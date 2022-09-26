@@ -9,24 +9,20 @@
 #'
 #' @examples
 #' substrait_filter(
-#'   data.frame(a = 1, b = "one"),
+#'   duckdb_substrait_compiler(data.frame(a = 1, b = "one")),
 #'   a > 0
 #' )
 #'
 substrait_filter <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
+  local_compiler(.compiler)
 
   quos <- rlang::enquos(...)
   if (length(quos) == 0) {
     quos <- rlang::quos(TRUE)
   }
 
-  expressions <- lapply(
-    quos,
-    as_substrait,
-    .ptype = "substrait.Expression",
-    compiler = .compiler
-  )
+  expressions <- lapply(quos, substrait_eval_quo)
 
   combined_expressions_quo <- Reduce("combine_expressions_and", expressions)
   combined_expressions <- as_substrait(

@@ -21,7 +21,7 @@ test_that("substrait_sort() appends a SortRel to a compiler", {
 
   # check that nothing else about the compiler changed
   expect_identical(result$schema, compiler$schema)
-  expect_identical(result$mask, compiler$mask)
+  expect_identical(result$.data, compiler$.data)
 })
 
 test_that("substrait_sort() expressions can contain substrait_sort_field()", {

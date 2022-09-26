@@ -21,7 +21,7 @@ test_that("substrait_compiler() creates a compiler with a ReadRel from a data fr
   )
 
   expect_identical(
-    compiler$mask,
+    compiler$.data,
     list(
       col1 = simple_integer_field_reference(0L),
       col2 = simple_integer_field_reference(1L)
@@ -205,4 +205,68 @@ test_that("SubstraitCompiler$plan() includes rel and extensions", {
     plan$extensions[[1]]$extension_function$function_anchor,
     fun$function_reference
   )
+})
+
+test_that("substrait_eval() works", {
+  compiler <- local_compiler(data.frame(col1 = 1:5, col2 = letters[1:5]))
+  compiler$.fns$some_fun = function(x) {
+    substrait_call("some_fun_substrait", x)
+  }
+
+  # literal
+  expect_identical(substrait_eval_data(5), 5)
+
+  # bare function call that reverts to R evaluation
+  expect_identical(substrait_eval_data(5 + 4), 9)
+
+  # bare field reference in data.frame
+  expect_s3_class(
+    substrait_eval_data(col1)$selection,
+    "substrait_Expression_FieldReference"
+  )
+
+  # explicit field reference in data.frame
+  expect_s3_class(
+    substrait_eval_data(.data$col1)$selection,
+    "substrait_Expression_FieldReference"
+  )
+
+  # explicit (!!) non-field reference with same name
+  col1 <- "some other value"
+  expect_identical(substrait_eval_data(!!col1), "some other value")
+
+  # explicit (.env) non-field reference with same name
+  expect_identical(substrait_eval_data(.env$col1), "some other value")
+
+  # bare function call in the mask
+  expect_s3_class(
+    substrait_eval(some_fun(5)),
+    "substrait_Expression_ScalarFunction"
+  )
+
+  # explicit function call in the mask
+  expect_s3_class(
+    substrait_eval_data(.fns$some_fun(5)),
+    "substrait_Expression_ScalarFunction"
+  )
+})
+
+test_that("global substrait compiler value can be set and accessed", {
+  expect_null(current_compiler())
+
+  compiler1 <- substrait_compiler(data.frame())
+  with_compiler(
+    compiler1,
+    expect_identical(current_compiler(), compiler1)
+  )
+
+  expect_null(current_compiler())
+
+  local({
+    compiler2 <- substrait_compiler(data.frame(a = 1))
+    expect_identical(local_compiler(compiler2), compiler2)
+    expect_identical(current_compiler(), compiler2)
+  })
+
+  expect_null(current_compiler())
 })

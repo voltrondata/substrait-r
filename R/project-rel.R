@@ -10,10 +10,14 @@
 #' @export
 #'
 #' @examples
-#' substrait_select(data.frame(a = 1, b = "one"), c = a + 1)
+#' substrait_select(
+#'   duckdb_substrait_compiler(data.frame(a = 1, b = "one")),
+#'   c = a + 1
+#' )
 #'
 substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   .compiler <- substrait_compiler(.compiler)$clone()
+  local_compiler(.compiler)
 
   # Evaluate expressions sequentially, updating the compiler as we go so that
   # fields created by earlier arguments are accessible from later arguments
@@ -31,13 +35,12 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
       # Do the evaluation and calculate the output type
       value <- as_substrait(
         quos[[i]],
-        .ptype = "substrait.Expression",
-        compiler = .compiler
+        .ptype = "substrait.Expression"
       )
-      type <- as_substrait(value, .ptype = "substrait.Type", compiler = .compiler)
+      type <- as_substrait(value, .ptype = "substrait.Type")
 
       # Update the compiler mask (used for symbol lookup for subsequent expressions)
-      .compiler$mask[[name]] <- value
+      .compiler$.data[[name]] <- value
 
       # keep track of the new expressions and types
       expressions[[name]] <- value
@@ -48,7 +51,7 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
     } else {
       # Remove from the compiler mask so that we can't use the NULL column in a
       # subsequent argument (as per dplyr behaviour)
-      .compiler$mask[[name]] <- NULL
+      .compiler$.data[[name]] <- NULL
 
       # Remove from our list of new expressions to append if it had been
       # previously added
@@ -101,11 +104,11 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   .compiler$schema$struct_$types <- c(.compiler$schema$struct_$types, types)[output_mapping]
 
   # reset the mask
-  .compiler$mask <- lapply(
+  .compiler$.data <- lapply(
     seq_along(.compiler$schema$struct_$types) - 1L,
     simple_integer_field_reference
   )
-  names(.compiler$mask) <- .compiler$schema$names
+  names(.compiler$.data) <- .compiler$schema$names
 
   .compiler$validate()
 }

@@ -24,14 +24,16 @@
 #' @importFrom dplyr select
 #' @export
 #'
-#' @examplesIf requireNamespace("dplyr", quietly = TRUE)
-#' compiler <- substrait_compiler(mtcars)
-#' dplyr::select(compiler, mpg2 = mpg)
-#' dplyr::rename(compiler, mpg2 = mpg)
-#' dplyr::filter(compiler, mpg > 20)
-#' dplyr::mutate(compiler, mpg + 10)
-#' dplyr::transmute(compiler, mpg + 10)
-#' dplyr::arrange(compiler, desc(mpg))
+#' @examples
+#' library(dplyr)
+#' compiler <- duckdb_substrait_compiler(mtcars)
+#'
+#' select(compiler, mpg2 = mpg) %>% collect()
+#' rename(compiler, mpg2 = mpg) %>% collect()
+#' filter(compiler, mpg > 20) %>% collect()
+#' mutate(compiler, mpg + 10) %>% collect()
+#' transmute(compiler, mpg + 10) %>% collect()
+#' arrange(compiler, desc(mpg)) %>% collect()
 #'
 select.SubstraitCompiler <- function(.data, ...) {
   sim_data <- simulate_data_frame(.data)
@@ -82,7 +84,7 @@ rename.SubstraitCompiler <- function(.data, ...) {
     simulate_data_frame(.data)
   )
 
-  column_names <- names(.data$mask)
+  column_names <- names(.data$.data)
   new_column_names <- column_names
   new_column_names[column_indices] <- names(column_indices)
 
@@ -116,7 +118,7 @@ filter.SubstraitCompiler <- function(.data, ...) {
 mutate.SubstraitCompiler <- function(.data, ...,
                                      .keep = c("all", "used", "unused", "none")) {
   .keep <- match.arg(.keep)
-  mask <- .data$mask
+  mask <- .data$.data
 
   out <- substrait_select(.data, !!!mask, ...)
   if (.keep == "all") {
@@ -125,7 +127,7 @@ mutate.SubstraitCompiler <- function(.data, ...,
 
   # if only keeping a subset of columns, work out which and project again
   cols <- names(mutate(simulate_data_frame(.data), ..., .keep = .keep))
-  substrait_select(out, !!!out$mask[cols], !!!rlang::syms(cols))
+  substrait_select(out, !!!out$.data[cols], !!!rlang::syms(cols))
 }
 
 #' @rdname select.SubstraitCompiler
@@ -275,7 +277,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
     simulate_data_frame(.data)
   )
 
-  column_names <- names(.data$mask)
+  column_names <- names(.data$.data)
   new_column_names <- column_names
   new_column_names[column_indices] <- names(column_indices)
 

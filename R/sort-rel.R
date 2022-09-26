@@ -11,13 +11,14 @@
 #'
 #' @examples
 #' substrait_sort(
-#'   data.frame(a = 1, b = "one"),
+#'   duckdb_substrait_compiler(data.frame(a = 1, b = "one")),
 #'   a,
 #'   substrait_sort_field(b, "SORT_DIRECTION_DESC_NULLS_LAST")
 #' )
 #'
 substrait_sort <- function(.compiler, ...) {
   .compiler <- substrait_compiler(.compiler)$clone()
+  local_compiler(.compiler)
 
   quos <- rlang::enquos(...)
 
@@ -41,8 +42,7 @@ substrait_sort <- function(.compiler, ...) {
   sorts <- lapply(
     with_inlined_sort_field,
     as_substrait,
-    .ptype = "substrait.SortField",
-    compiler = .compiler
+    .ptype = "substrait.SortField"
   )
 
   rel <- substrait$Rel$create(

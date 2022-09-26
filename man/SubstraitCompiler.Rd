@@ -32,10 +32,14 @@ argument combination.
 \item{\code{schema}}{A \code{substrait.NamedStruct} containing the field names
 and field types of \code{rel}.}
 
-\item{\code{mask}}{A named list of \code{substrait.Expression} objects where the
-names are identical to the field names as provided in \code{schema}.
-This list is used as the data mask when evaluating expressions
-(e.g., \code{\link[rlang:eval_tidy]{rlang::eval_tidy()}}).}
+\item{\code{.data}}{An environment or list containing \code{substrait.Expression}
+objects. For a fresh compiler, this will be a list of field references
+with the same length as \code{schema$names}; however, during evaluation
+this may be updated to contain temporary columns before a relation
+is finalized.}
+
+\item{\code{.fns}}{An environment or list containing functions that can be
+translated by this compiler.}
 
 \item{\code{groups}}{A named list of \code{substrait.Expression} to be used for
 future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by()}}).}
@@ -46,6 +50,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-SubstraitCompiler-new}{\code{SubstraitCompiler$new()}}
+\item \href{#method-SubstraitCompiler-eval_mask}{\code{SubstraitCompiler$eval_mask()}}
 \item \href{#method-SubstraitCompiler-add_relation}{\code{SubstraitCompiler$add_relation()}}
 \item \href{#method-SubstraitCompiler-named_table}{\code{SubstraitCompiler$named_table()}}
 \item \href{#method-SubstraitCompiler-named_table_list}{\code{SubstraitCompiler$named_table_list()}}
@@ -75,6 +80,25 @@ Create a new \link{SubstraitCompiler}.
 object.}
 
 \item{\code{...}}{Passed to \code{add_relation()} if \code{object} is not \code{NULL}}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SubstraitCompiler-eval_mask"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-eval_mask}{}}}
+\subsection{Method \code{eval_mask()}}{
+Returns the \link[rlang:as_data_mask]{data mask} that will be
+used within \code{substrait_eval()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$eval_mask(.data = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{.data}}{Use \code{FALSE} to return a mask containing only function
+members with no columns.}
 }
 \if{html}{\out{</div>}}
 }

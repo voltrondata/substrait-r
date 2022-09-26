@@ -82,13 +82,14 @@ A modified \code{\link[=substrait_compiler]{substrait_compiler()}}
 dplyr verb implementations
 }
 \examples{
-\dontshow{if (requireNamespace("dplyr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-compiler <- substrait_compiler(mtcars)
-dplyr::select(compiler, mpg2 = mpg)
-dplyr::rename(compiler, mpg2 = mpg)
-dplyr::filter(compiler, mpg > 20)
-dplyr::mutate(compiler, mpg + 10)
-dplyr::transmute(compiler, mpg + 10)
-dplyr::arrange(compiler, desc(mpg))
-\dontshow{\}) # examplesIf}
+library(dplyr)
+compiler <- duckdb_substrait_compiler(mtcars)
+
+select(compiler, mpg2 = mpg) \%>\% collect()
+rename(compiler, mpg2 = mpg) \%>\% collect()
+filter(compiler, mpg > 20) \%>\% collect()
+mutate(compiler, mpg + 10) \%>\% collect()
+transmute(compiler, mpg + 10) \%>\% collect()
+arrange(compiler, desc(mpg)) \%>\% collect()
+
 }

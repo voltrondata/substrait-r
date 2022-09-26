@@ -14,9 +14,10 @@ test_that("substrait_group_by() / substrait_ungroup() (un) set the grouping", {
 })
 
 test_that("substrait_aggregate() can evaluate a simple aggregation expression", {
-  df <- data.frame(a = c(1, 1, 2, 2, 3), b = 1:5)
+  compiler <- substrait_compiler(data.frame(a = c(1, 1, 2, 2, 3), b = 1:5))
+  compiler$.fns$sum <- function(x) substrait_call_agg("sum", x)
+  compiler$.fns[["+"]] <- function(lhs, rhs) substrait_call("+", lhs, rhs)
 
-  compiler <- substrait_compiler(df)
   grouped <- substrait_group_by(compiler, a)
   agg <- substrait_aggregate(grouped, c = sum(b + 1))
 
@@ -41,7 +42,7 @@ test_that("substrait_aggregate() can evaluate a simple aggregation expression", 
   )
   expect_identical(agg$schema$names, c("a", "c"))
   expect_identical(
-    agg$mask,
+    agg$.data,
     list(
       a = simple_integer_field_reference(0),
       c = simple_integer_field_reference(1)

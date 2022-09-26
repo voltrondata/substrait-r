@@ -26,7 +26,7 @@ Append a Substrait Project Relation
 }
 \examples{
 substrait_sort(
-  data.frame(a = 1, b = "one"),
+  duckdb_substrait_compiler(data.frame(a = 1, b = "one")),
   a,
   substrait_sort_field(b, "SORT_DIRECTION_DESC_NULLS_LAST")
 )

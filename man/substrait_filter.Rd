@@ -19,7 +19,7 @@ Append a Substrait Project Relation
 }
 \examples{
 substrait_filter(
-  data.frame(a = 1, b = "one"),
+  duckdb_substrait_compiler(data.frame(a = 1, b = "one")),
   a > 0
 )
 

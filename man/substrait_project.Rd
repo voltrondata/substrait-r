@@ -24,6 +24,9 @@ A modified \code{.compiler}
 Append a Substrait Project Relation
 }
 \examples{
-substrait_select(data.frame(a = 1, b = "one"), c = a + 1)
+substrait_select(
+  duckdb_substrait_compiler(data.frame(a = 1, b = "one")),
+  c = a + 1
+)
 
 }

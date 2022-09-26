@@ -71,7 +71,7 @@ has_duckdb_with_substrait <- function() {
 
   duckdb_works_cache$works <- tryCatch(
     with_duckdb_tables(list(), function(con) TRUE),
-    error = function(e) FALSE
+    error = function(e) { message(conditionMessage(e)); FALSE }
   )
 
   duckdb_works_cache$works
@@ -130,149 +130,9 @@ DuckDBSubstraitCompiler <- R6::R6Class(
   "DuckDBSubstraitCompiler",
   inherit = SubstraitCompiler,
   public = list(
-    resolve_function = function(name, args, template) {
-      # Note that this is a quick-and-dirty implementation designed to help
-      # test the core functionality with realistic tests. The fact that this
-      # is pretty ugly suggests that expression translation should maybe live
-      # in the compiler rather than its current form (functions in
-      # expressions.R).
-
-      # skip package names for now
-      name <- gsub("^.*?::", "", name)
-
-      # Note: super$resolve_function() will skip any custom things we do here,
-      # whereas self$resolve_function() will apply translations as we
-      # implement them here.
-      switch(name,
-        "==" = super$resolve_function("equal", args, template, output_type = substrait_boolean()),
-        "!=" = super$resolve_function("not_equal", args, template, output_type = substrait_boolean()),
-        ">=" = super$resolve_function("gte", args, template, output_type = substrait_boolean()),
-        "<=" = super$resolve_function("lte", args, template, output_type = substrait_boolean()),
-        ">" = super$resolve_function("gt", args, template, output_type = substrait_boolean()),
-        "<" = super$resolve_function("lt", args, template, output_type = substrait_boolean()),
-        "between" = super$resolve_function(
-          "and",
-          list(
-            super$resolve_function("gte", args[-3], template, output_type = substrait_boolean()),
-            super$resolve_function("lte", args[-2], template, output_type = substrait_boolean())
-          ),
-          template,
-          output_type = substrait_boolean()
-        ),
-        "&" = super$resolve_function("and", args, template, output_type = substrait_boolean()),
-        "|" = super$resolve_function("or", args, template, output_type = substrait_boolean()),
-        # while I'm sure that "not" exists somehow, this is the only way
-        # I can get it to work for now (NULLs are not handled properly here)
-        "!" = {
-          substrait$Expression$create(
-            cast = substrait$Expression$Cast$create(
-              type = substrait$Type$create(
-                bool_ = substrait$Type$Boolean$create()
-              ),
-              input = substrait$Expression$create(
-                if_then = substrait$Expression$IfThen$create(
-                  ifs = list(
-                    substrait$Expression$IfThen$IfClause$create(
-                      if_ = as_substrait(
-                        args[[1]],
-                        "substrait.Expression",
-                        compiler = compiler
-                      ),
-                      then = as_substrait(FALSE, "substrait.Expression")
-                    )
-                  ),
-                  else_ = as_substrait(TRUE, "substrait.Expression")
-                )
-              )
-            )
-          )
-        },
-        "is.na" = {
-          self$resolve_function(
-            "!",
-            list(
-              as_substrait(
-                super$resolve_function("is_not_null", args, template, output_type = substrait_boolean()),
-                "substrait.Expression"
-              )
-            ),
-            template
-          )
-        },
-        "c" = {
-          # this limits the usage of c() to literals, which is probably the most
-          # common usage (e.g., col %in% c("a", "b"))
-          substrait$Expression$create(
-            literal = substrait$Expression$Literal$create(
-              list = substrait$Expression$Literal$List$create(
-                values = lapply(args, as_substrait, "substrait.Expression.Literal")
-              )
-            )
-          )
-        },
-        "%in%" = {
-          # duckdb implements this using == and or, according to
-          # duckdb_get_substrait()
-          lhs <- as_substrait(args[[1]], "substrait.Expression", compiler = self)
-          rhs <- as_substrait(args[[2]], "substrait.Expression", compiler = self)
-
-          # if the rhs is a regular literal, wrap in a list
-          rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
-
-          if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
-            rhs <- substrait$Expression$create(
-              literal = substrait$Expression$Literal$create(
-                list = substrait$Expression$Literal$List$create(
-                  values = list(rhs$literal)
-                )
-              )
-            )
-          } else if (!rhs_is_list) {
-            rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
-          }
-
-          if (length(rhs$literal$list$values) == 0) {
-            return(as_substrait(FALSE, "substrait.Expression"))
-          } else if (length(rhs$literal$list$values) == 1) {
-            return(
-              super$resolve_function(
-                "equal",
-                list(lhs, rhs$literal$list$values[[1]]),
-                template,
-                output_type = substrait_boolean()
-              )
-            )
-          }
-
-          equal_expressions <- lapply(rhs$literal$list$values, function(value) {
-            as_substrait(
-              super$resolve_function("equal", list(lhs, value), template, output_type = substrait_boolean()),
-              "substrait.Expression"
-            )
-          })
-
-          combine_or <- function(lhs, rhs) {
-            as_substrait(
-              super$resolve_function("or", list(lhs, rhs), template, output_type = substrait_boolean()),
-              "substrait.Expression"
-            )
-          }
-
-          Reduce(combine_or, equal_expressions)
-        },
-
-        # pass through by default (but listing here the functions that are
-        # known to work with the same names as R)
-        "+" = ,
-        "-" = ,
-        "*" = ,
-        "/" = ,
-        "^" = ,
-        "sum" = super$resolve_function(name, args, template, output_type = function(x, y) x),
-        rlang::abort(
-          paste0('could not find function "', name, '"')
-        )
-      )
+    initialize = function(...) {
+      super$initialize(...)
+      self$.fns = duckdb_funs
     },
     validate = function() {
       super$validate()
@@ -291,3 +151,155 @@ DuckDBSubstraitCompiler <- R6::R6Class(
     }
   )
 )
+
+# Scalar functions
+duckdb_funs <- new.env(parent = emptyenv())
+
+duckdb_funs[["=="]] <- function(lhs, rhs) {
+  substrait_call("equal", lhs, rhs, .output_type = substrait_boolean())
+}
+
+duckdb_funs[["!="]] <- function(lhs, rhs) {
+  substrait_call("not_equal", lhs, rhs, .output_type = substrait_boolean())
+}
+
+duckdb_funs[[">="]] <- function(lhs, rhs) {
+  substrait_call("gte", lhs, rhs, .output_type = substrait_boolean())
+}
+
+duckdb_funs[["<="]] <- function(lhs, rhs) {
+  substrait_call("lte", lhs, rhs, .output_type = substrait_boolean())
+}
+
+duckdb_funs[[">"]] <- function(lhs, rhs) {
+  substrait_call("gt", lhs, rhs, .output_type = substrait_boolean())
+}
+
+duckdb_funs[["<"]] <- function(lhs, rhs) {
+  substrait_call("lt", lhs, rhs, .output_type = substrait_boolean())
+}
+
+duckdb_funs[["between"]] <- function(x, left, right) {
+  substrait_eval(x >= left & x <= right)
+}
+
+duckdb_funs[["&"]] <- function(lhs, rhs) {
+  substrait_call("and", lhs, rhs, .output_type = substrait_boolean())
+}
+
+duckdb_funs[["|"]] <- function(lhs, rhs) {
+  substrait_call("or", lhs, rhs, .output_type = substrait_boolean())
+}
+
+# While I'm sure that "not" exists somehow, this is the only way
+# I can get it to work for now (NULLs are not handled properly here)
+duckdb_funs[["!"]] <- function(rhs) {
+  substrait$Expression$create(
+    cast = substrait$Expression$Cast$create(
+      type = substrait$Type$create(
+        bool_ = substrait$Type$Boolean$create()
+      ),
+      input = substrait$Expression$create(
+        if_then = substrait$Expression$IfThen$create(
+          ifs = list(
+            substrait$Expression$IfThen$IfClause$create(
+              if_ = as_substrait(rhs, "substrait.Expression"),
+              then = as_substrait(FALSE, "substrait.Expression")
+            )
+          ),
+          else_ = as_substrait(TRUE, "substrait.Expression")
+        )
+      )
+    )
+  )
+}
+
+duckdb_funs[["is.na"]] <- function(x) {
+  is_not_null <- substrait_call("is_not_null", x, .output_type = substrait_boolean())
+  substrait_eval(!is_not_null)
+}
+
+duckdb_funs[["c"]] <- function(...) {
+  # this limits the usage of c() to literals, which is probably the most
+  # common usage (e.g., col %in% c("a", "b"))
+  args <- rlang::list2(...)
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = lapply(args, as_substrait, "substrait.Expression.Literal")
+      )
+    )
+  )
+}
+
+duckdb_funs[["%in%"]] <- function(lhs, rhs) {
+  # duckdb implements this using == and or, according to duckdb_get_substrait()
+  lhs <- as_substrait(lhs, "substrait.Expression")
+  rhs <- as_substrait(rhs, "substrait.Expression")
+
+  # if the rhs is a regular literal, wrap in a list
+  rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
+
+  if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
+    rhs <- substrait$Expression$create(
+      literal = substrait$Expression$Literal$create(
+        list = substrait$Expression$Literal$List$create(
+          values = list(rhs$literal)
+        )
+      )
+    )
+  } else if (!rhs_is_list) {
+    rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
+  }
+
+  if (length(rhs$literal$list$values) == 0) {
+    return(as_substrait(FALSE, "substrait.Expression"))
+  } else if (length(rhs$literal$list$values) == 1) {
+    return(substrait_call("equal", lhs, rhs$literal$list$values[[1]]))
+  }
+
+  equal_expressions <- lapply(rhs$literal$list$values, function(value) {
+    as_substrait(substrait_call("equal", lhs, value), "substrait.Expression")
+  })
+
+  combine_or <- function(lhs, rhs) {
+    as_substrait(
+      substrait_call("or", lhs, rhs, .output_type = substrait_boolean()),
+      "substrait.Expression"
+    )
+  }
+
+  Reduce(combine_or, equal_expressions)
+}
+
+duckdb_funs[["+"]] <- function(lhs, rhs) {
+  if (missing(rhs)) {
+    substrait_call("+", lhs, .output_type = function(lhs) lhs)
+  } else {
+    substrait_call("+", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+  }
+}
+
+duckdb_funs[["-"]] <- function(lhs, rhs) {
+  if (missing(rhs)) {
+    substrait_call("-", lhs, .output_type = function(lhs) lhs)
+  } else {
+    substrait_call("-", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+  }
+}
+
+duckdb_funs[["*"]] <- function(lhs, rhs) {
+  substrait_call("*", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+}
+
+duckdb_funs[["/"]] <- function(lhs, rhs) {
+  substrait_call("/", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+}
+
+duckdb_funs[["^"]] <- function(lhs, rhs) {
+  substrait_call("^", lhs, rhs, .output_type = function(lhs, rhs) lhs)
+}
+
+duckdb_funs[["sum"]] <- function(x) {
+  substrait_call_agg("sum", x, .output_type = identity)
+}

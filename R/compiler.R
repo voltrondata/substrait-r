@@ -39,11 +39,16 @@ SubstraitCompiler <- R6::R6Class(
     #'   and field types of `rel`.
     schema = NULL,
 
-    #' @field mask A named list of `substrait.Expression` objects where the
-    #'   names are identical to the field names as provided in `schema`.
-    #'   This list is used as the data mask when evaluating expressions
-    #'   (e.g., [rlang::eval_tidy()]).
-    mask = NULL,
+    #' @field .data An environment or list containing `substrait.Expression`
+    #'   objects. For a fresh compiler, this will be a list of field references
+    #'   with the same length as `schema$names`; however, during evaluation
+    #'   this may be updated to contain temporary columns before a relation
+    #'   is finalized.
+    .data = NULL,
+
+    #' @field .fns An environment or list containing functions that can be
+    #'   translated by this compiler.
+    .fns = NULL,
 
     #' @field groups A named list of `substrait.Expression` to be used for
     #'   future grouping (e.g., after calling [dplyr::group_by()]).
@@ -55,6 +60,8 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @param ... Passed to `add_relation()` if `object` is not `NULL`
     initialize = function(object = NULL, ...) {
+      self$.fns <- list()
+
       private$extension_uri <- substrait$extensions$SimpleExtensionURI$create(
         extension_uri_anchor = 1L
       )
@@ -77,6 +84,24 @@ SubstraitCompiler <- R6::R6Class(
       if (!is.null(object)) {
         self$add_relation(object, ...)
       }
+    },
+
+    #' @description
+    #' Returns the [data mask][rlang::as_data_mask] that will be
+    #' used within `substrait_eval()`.
+    #'
+    #' @param .data Use `FALSE` to return a mask containing only function
+    #'   members with no columns.
+    eval_mask = function(.data = TRUE) {
+      column_mask <- if (.data) as.environment(self$.data) else new.env(parent = emptyenv())
+      function_mask <- as.environment(as.list(self$.fns))
+      parent.env(column_mask) <- function_mask
+
+      mask <- rlang::new_data_mask(column_mask, top = function_mask)
+      mask$.data <- rlang::as_data_pronoun(column_mask)
+      mask$.fns <- rlang::as_data_pronoun(function_mask)
+
+      mask
     },
 
     #' @description
@@ -109,7 +134,7 @@ SubstraitCompiler <- R6::R6Class(
 
       self$rel <- rel
       self$schema <- rel$read$base_schema
-      self$mask <- substrait_rel_mask(rel)
+      self$.data <- substrait_rel_mask(rel)
       self$groups <- NULL
 
       self
@@ -203,8 +228,7 @@ SubstraitCompiler <- R6::R6Class(
       args <- lapply(
         args,
         as_substrait,
-        "substrait.Expression",
-        compiler = self
+        "substrait.Expression"
       )
 
       # resolve argument types
@@ -319,3 +343,160 @@ substrait_compiler.SubstraitCompiler <- function(object, ...) {
 substrait_compiler.default <- function(object, ...) {
   SubstraitCompiler$new(object, ...)
 }
+
+#' Translation utilities
+#'
+#' These functions are used to translate R function calls into Substrait
+#' expressions that can be passed on to a consumer, compiled, and evaluated
+#' there. Use [substrait_call()] to generate a substrait.Expression.ScalarFunction
+#' based on a function name and a series of arguments; use [substrait_eval()]
+#' to translate R code using Substrait function translations where possible;
+#' and use [substrait_eval_data()] translate R code using Substrait function
+#' translations *and* the `.data` mask from the [current_compiler()].
+#'
+#' @param .fun The name of a substrait function as a string that will
+#'   be passed on to the consumer. The function will be registered with
+#'   the compiler and assigned a new identifier if it has not already been
+#'   used.
+#' @param ... Function arguments. These will be coerced to a substrait.Expression
+#'   if they have not been already. Translation functions should take care to
+#'   handle R objects that do not readily translate into substrait types
+#'   via `as_substrait(x, "substrait.Expression")` before passing them to
+#'   `substrait_call()` or `substrait_call_agg()`.
+#' @param .output_type The output type of the call. In the future this may
+#'   be built in to the compiler since in theory the compiler should be able
+#'   to predict this.
+#' @param expr An expression to evaluate with the translations defined by
+#'   the current compiler. You can use this to define translations that use
+#'   other translations in a more readable way. You can use tidy evaluation
+#'   within `expr`, including unquoting (`!!`), `.data$some_column`, to access
+#'   a column explicitly, and `.fns$some_function()` to access a translation
+#'   explicitly.
+#'
+#' @return All of these functions return an object that can be coerced
+#'   to a substrait.Expression via `as_substrait(x, "substrait.Expression")`.
+#' @export
+#'
+#' @examples
+#' # create a compiler
+#' compiler <- substrait_compiler(data.frame(a = 1, b = 2))
+#'
+#' # usually functions are defined in internal package code,
+#' # but you can also define them for testing like this:
+#' compiler$.fns$sqrt <- function(x) {
+#'   substrait_call("sqrt", x, .output_type = substrait_fp64())
+#' }
+#'
+#' # substrait_eval() does not have access to column names
+#' try(with_compiler(compiler, substrait_eval(b)))
+#'
+#' # ..but does have access to functions
+#' with_compiler(compiler, substrait_eval(sqrt(4)))
+#'
+#' # use substrait_eval_data() to do a more direct test of a translation
+#' with_compiler(compiler, substrait_eval_data(sqrt(b)))
+#'
+substrait_call <- function(.fun, ..., .output_type = NULL) {
+  args <- rlang::list2(...)
+  compiler <- current_compiler()
+  template <- substrait$Expression$ScalarFunction$create()
+  compiler$resolve_function(.fun, args, template, .output_type)
+}
+
+#' @rdname substrait_call
+#' @export
+substrait_call_agg <- function(.fun, ..., .output_type = NULL) {
+  args <- rlang::list2(...)
+  compiler <- current_compiler()
+  template <- substrait$AggregateFunction$create()
+  compiler$resolve_function(.fun, args, template, .output_type)
+}
+
+#' @rdname substrait_call
+#' @export
+substrait_eval <- function(expr) {
+  substrait_eval_quo(rlang::enquo(expr), .data = FALSE)
+}
+
+#' @rdname substrait_call
+#' @export
+substrait_eval_data <- function(expr) {
+  substrait_eval_quo(rlang::enquo(expr), .data = TRUE)
+}
+
+substrait_eval_quo <- function(expr_quo, .data = TRUE) {
+  compiler <- current_compiler()
+  rlang::eval_tidy(
+    expr_quo,
+    data = if (is.null(compiler)) NULL else compiler$eval_mask(.data)
+  )
+}
+
+#' Compiler context
+#'
+#' When translation functions are called, the compiler that is evaluating
+#' them is made available as a global variable accessible via
+#' [current_compiler()]. Typically this is not needed directly within a
+#' translation function but is used by [substrait_call()] and other functions
+#' that need to interact with the current compiler. Translation authors
+#' may find [with_compiler()] and/or [local_compiler()] useful to test
+#' translation functions directly.
+#'
+#' @param compiler A [substrait_compiler()] or object that can be
+#'   coerced to one.
+#' @param code An expression to evaluate with `compiler` as the
+#'   [current_compiler()].
+#' @param .local_envir The environment for which `compiler` should remain the
+#'   [current_compiler()]. This should usually stay the default value of
+#'   the calling environment.
+#'
+#' @return
+#'   - [current_compiler()] returns a [substrait_compiler()] or `NULL` if
+#'     none has been registered.
+#'   - [with_compiler()] returns the result of evaluating `code`
+#'   - [local_compiler()] returns the result of coercing `compiler` to a
+#'     [substrait_compiler()].
+#' @export
+#'
+#' @examples
+#' current_compiler()
+#'
+#' with_compiler(data.frame(a = 1L), {
+#'   current_compiler()$schema
+#' })
+#'
+#' local({
+#'   compiler <- local_compiler(data.frame(a = 1L))
+#'   compiler$schema
+#'   current_compiler()$schema
+#' })
+#'
+#' current_compiler()
+#'
+current_compiler <- function() {
+  compiler_context_env$compiler
+}
+
+#' @rdname current_compiler
+#' @export
+with_compiler <- function(compiler, code) {
+  prev_compiler <- current_compiler()
+  on.exit(compiler_context_env$compiler <- prev_compiler)
+  compiler_context_env$compiler <- substrait_compiler(compiler)
+  force(code)
+}
+
+#' @rdname current_compiler
+#' @export
+local_compiler <- function(compiler, .local_envir = parent.frame()) {
+  prev_compiler <- current_compiler()
+  cleanup <- function() {
+    compiler_context_env$compiler <- prev_compiler
+  }
+  cleanup_call <- rlang::call2(cleanup)
+  do.call(base::on.exit, list(cleanup_call, TRUE), envir = .local_envir)
+  compiler_context_env$compiler <- substrait_compiler(compiler)
+}
+
+compiler_context_env <- new.env(parent = emptyenv())
+compiler_context_env$compiler <- NULL
