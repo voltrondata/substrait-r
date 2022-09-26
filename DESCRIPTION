@@ -20,7 +20,7 @@ RoxygenNote: 7.2.1
 Suggests: 
     arrow,
     covr,
-    duckdb (>= 0.5.0),
+    duckdb (== 0.5.0),
     DBI,
     callr,
     rappdirs,
