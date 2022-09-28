@@ -756,12 +756,13 @@ test_that("Expressions on aggregations", {
 })
 
 test_that("Summarize with 0 arguments", {
-  skip("different order: https://github.com/voltrondata/substrait-r/issues/154")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
       group_by(lgl) %>%
       summarize() %>%
+      # order of returned values is different but not relevant to this test
+      arrange(lgl) %>%
       collect(),
     example_data
   )
