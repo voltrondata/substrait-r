@@ -200,13 +200,6 @@ summarise.SubstraitCompiler <- function(.data, ..., .groups = NULL) {
 
   .data <- substrait_aggregate(.data, ...)
 
-  if (n_groups > 0) {
-    .data <- substrait_sort(
-      .data,
-      !!!rlang::syms(.data$schema$names[seq_len(n_groups)])
-    )
-  }
-
   if (identical(.groups, "drop")) {
     .data
   } else if (identical(.groups, "drop_last")) {

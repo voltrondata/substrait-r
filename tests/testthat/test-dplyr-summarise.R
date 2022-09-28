@@ -761,6 +761,8 @@ test_that("Summarize with 0 arguments", {
     .input %>%
       group_by(lgl) %>%
       summarize() %>%
+      # order of returned values is different but not relevant to this test
+      arrange(lgl) %>%
       collect(),
     example_data
   )
