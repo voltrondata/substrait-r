@@ -230,7 +230,7 @@ create_substrait_enum <- function(value, .qualified_name, descriptor = NULL) {
   )
 }
 
-unspecified <- function() {
+arg_unspecified <- function() {
   structure(list(), class = "substrait_proto_unspecified")
 }
 
