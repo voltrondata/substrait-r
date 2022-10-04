@@ -84,7 +84,7 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
   } else {
     common <- substrait$RelCommon$create(
       emit = substrait$RelCommon$Emit$create(
-        output_mapping = output_mapping
+        output_mapping = output_mapping - 1L
       )
     )
   }

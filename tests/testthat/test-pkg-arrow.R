@@ -24,33 +24,6 @@ test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabul
   )
 })
 
-test_that("ArrowSubstraitCompiler can translate simple unary and binary calls", {
-  compiler <- ArrowSubstraitCompiler$new()
-
-  translated <- compiler$resolve_function("abs", list(5), list())
-  translated_fun <- compiler$function_extension(translated$function_reference)
-  expect_identical(translated_fun$name, "abs_checked")
-
-  translated <- compiler$resolve_function("+", list(5, 6), list())
-  translated_fun <- compiler$function_extension(translated$function_reference)
-  expect_identical(translated_fun$name, "add")
-
-  expect_error(
-    compiler$resolve_function("not_a_fun!", list(), list()),
-    'could not find function "not_a_fun!"'
-  )
-
-  expect_error(
-    compiler$resolve_function("abs", list(), list()),
-    "Expected one argument"
-  )
-
-  expect_error(
-    compiler$resolve_function("+", list(), list()),
-    "Expected two arguments"
-  )
-})
-
 test_that("ArrowSubstraitCompiler can evaluate a plan with one relation", {
   skip_if_not(has_arrow_with_substrait())
 
@@ -66,7 +39,6 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with one relation", {
 
 test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
   skip_if_not(has_arrow_with_substrait())
-  skip("Until https://github.com/apache/arrow/pull/13914 merges")
 
   df <- data.frame(
     letter = letters[1:5],
@@ -84,7 +56,6 @@ test_that("ArrowSubstraitCompiler can evaluate a plan with a field reference", {
 
 test_that("ArrowSubstraitCompiler can evaluate a project with a function call", {
   skip_if_not(has_arrow_with_substrait())
-  skip("Until https://github.com/apache/arrow/pull/13914 merges")
 
   df <- data.frame(
     letter = letters[1:5],

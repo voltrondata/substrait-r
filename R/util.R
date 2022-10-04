@@ -4,9 +4,8 @@ compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...)
   expected <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = tbl)))
 
   if ("arrow" %in% engine) {
-    warning("Skipping Arrow evluation until https://github.com/apache/arrow/pull/13914 merges")
-    # out_substrait <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl))))
-    # expect_identical(out_substrait, expected, ...)
+    out_substrait <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl))))
+    expect_identical(out_substrait, expected, ...)
   }
 
   if ("duckdb" %in% engine) {
