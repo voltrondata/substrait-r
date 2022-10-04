@@ -10,6 +10,8 @@ ArrowSubstraitCompiler <- R6::R6Class(
     evaluate = function(...) {
       plan <- self$plan()
 
+      # Here we only implement 'add()', so this works because the only
+      # function that we ever use is contained in this extensions definition.
       plan$extension_uris[[1]]$uri <-
         "https://github.com/substrait-io/substrait/blob/main/extensions/functions_arithmetic.yaml"
 
@@ -26,7 +28,15 @@ ArrowSubstraitCompiler <- R6::R6Class(
 arrow_funs <- new.env(parent = emptyenv())
 
 arrow_funs[["+"]] <- function(lhs, rhs) {
-  substrait_call("add", substrait$Expression$Enum$create(specified = "SILENT"), lhs, rhs, .output_type = function(opt, lhs, rhs) lhs)
+  substrait_call(
+    "add",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) lhs
+  )
 }
 
 #' Create an Arrow Substrait Compiler

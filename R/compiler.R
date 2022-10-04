@@ -225,11 +225,15 @@ SubstraitCompiler <- R6::R6Class(
     resolve_function = function(name, args, template, output_type = NULL) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)
-      args <- lapply(
-        args,
+      is_function_arg <- vapply(args, inherits, logical(1), "substrait_FunctionArgument")
+      args[!is_function_arg] <- lapply(
+        args[!is_function_arg],
         as_substrait,
         "substrait.Expression"
       )
+
+      # ...then resolve them as FunctionArguments
+      args <- lapply(args, as_substrait, "substrait.FunctionArgument")
 
       # resolve argument types
       arg_types <- lapply(args, as_substrait, "substrait.Type", compiler = self)
@@ -244,10 +248,8 @@ SubstraitCompiler <- R6::R6Class(
       }
 
       template$function_reference <- id
-      template$arguments <- lapply(args, function(arg) {
-        substrait$FunctionArgument$create(value = arg)
-      })
-      template$output_type <- output_type
+      template$arguments <- args
+      template$output_type <- as_substrait(output_type, "substrait.Type")
 
       template
     },
