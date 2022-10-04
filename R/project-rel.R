@@ -134,7 +134,9 @@ simple_integer_field_reference <- function(pos0) {
           # 0-indexed!
           field = pos0
         )
-      )
+      ),
+      # Required field
+      root_reference = substrait$Expression$FieldReference$RootReference$create()
     )
   )
 }
