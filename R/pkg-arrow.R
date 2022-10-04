@@ -35,7 +35,7 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
     ),
     lhs,
     rhs,
-    .output_type = function(opt, lhs, rhs) lhs
+    .output_type = function(opt, lhs, rhs) rhs
   )
 }
 
