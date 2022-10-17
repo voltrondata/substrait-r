@@ -83,6 +83,7 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ...) {
 
       guessed_type
     },
+    "substrait.FunctionArgument" = substrait$FunctionArgument$create(value = x),
     NextMethod()
   )
 }
@@ -102,11 +103,29 @@ as_substrait.substrait_AggregateRel_Measure <- function(x, .ptype = NULL, ...) {
 #' @export
 as_substrait.substrait_Expression_ScalarFunction <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
-    return(x)
+    .ptype <- x
   }
 
   switch(make_qualified_name(.ptype),
     "substrait.Expression" = substrait$Expression$create(scalar_function = x),
+    NextMethod()
+  )
+}
+
+#' @export
+as_substrait.substrait_FunctionArgument <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    .ptype <- x
+  }
+
+  switch(make_qualified_name(.ptype),
+    "substrait.Type" = {
+      if (!is.null(x$value)) {
+        as_substrait(x$value)
+      } else {
+        substrait$Type$create()
+      }
+    },
     NextMethod()
   )
 }

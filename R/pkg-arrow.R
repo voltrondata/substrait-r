@@ -3,55 +3,17 @@ ArrowSubstraitCompiler <- R6::R6Class(
   "ArrowSubstraitCompiler",
   inherit = SubstraitCompiler,
   public = list(
-    resolve_function = function(name, args, template) {
-      # To get started, just replace the name of the function with the
-      # arrow compute name for functions that don't have a custom
-      # translation.
-      # unary_map <- asNamespace("arrow")$.unary_function_map
-      # binary_map <- asNamespace("arrow")$.binary_function_map
-
-      # 'add' is currently the only function that works:
-      # https://github.com/apache/arrow/blob/master/cpp/src/arrow/engine/substrait/extension_set.cc#L245-L253
-      # ...but also include one function that doesn't work so that we can test
-      unary_map <- c("abs" = "abs_checked")
-      binary_map <- c("+" = "add")
-
-      name <- gsub("^.*?::", "", name)
-      if (name %in% names(unary_map)) {
-        if (length(args) != 1) {
-          stop(
-            sprintf(
-              "Expected one argument in call to %s (%s) but got %d",
-              name, unname(unary_map[name]), length(args)
-            )
-          )
-        }
-
-        name <- unname(unary_map[[name]])
-      } else if (name %in% names(binary_map)) {
-        if (length(args) != 2) {
-          stop(
-            sprintf(
-              "Expected two arguments in call to %s (%s) but got %d",
-              name, unname(binary_map[name]), length(args)
-            )
-          )
-        }
-
-        name <- unname(binary_map[[name]])
-      } else {
-        rlang::abort(
-          paste0('could not find function "', name, '"')
-        )
-      }
-
-      super$resolve_function(name, args, template)
+    initialize = function(...) {
+      super$initialize(...)
+      self$.fns = arrow_funs
     },
     evaluate = function(...) {
       plan <- self$plan()
 
+      # Here we only implement 'add()', so this works because the only
+      # function that we ever use is contained in this extensions definition.
       plan$extension_uris[[1]]$uri <-
-        "https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml"
+        "https://github.com/substrait-io/substrait/blob/main/extensions/functions_arithmetic.yaml"
 
       substrait_eval_arrow(
         plan = plan,
@@ -61,6 +23,21 @@ ArrowSubstraitCompiler <- R6::R6Class(
     }
   )
 )
+
+# Scalar functions
+arrow_funs <- new.env(parent = emptyenv())
+
+arrow_funs[["+"]] <- function(lhs, rhs) {
+  substrait_call(
+    "add",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
 
 #' Create an Arrow Substrait Compiler
 #'

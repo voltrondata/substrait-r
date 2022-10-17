@@ -38,7 +38,10 @@ test_that("substrait_create() works for substrait_proto_auto()", {
 
   # check a recursive list
   expect_identical(
-    substrait_create("substrait.Type", i8 = substrait_proto_auto()),
+    substrait_create(
+      "substrait.Type",
+      i8 = substrait_proto_auto(nullability = "NULLABILITY_NULLABLE")
+    ),
     substrait_i8()
   )
 })
@@ -48,14 +51,14 @@ test_that("as.list() works for substrait objects", {
   expect_identical(
     as.list(msg),
     list(
-      i8 = substrait$Type$I8$create()
+      i8 = substrait$Type$I8$create(nullability = "NULLABILITY_NULLABLE")
     )
   )
 
   expect_identical(
     as.list(msg, recursive = TRUE),
     list(
-      i8 = rlang::set_names(list(), character())
+      i8 = list(nullability = 1L)
     )
   )
 
@@ -140,7 +143,7 @@ test_that("substrait_proto_message list-like interface works", {
 test_that("substrait_proto_message class can be created with a message field", {
   # using internal constructor
   expect_identical(
-    substrait_boolean(),
+    substrait$Type$create(bool_ = substrait_proto_auto()),
     structure(
       list(content = as.raw(c(0x0a, 0x00))),
       class = c(
@@ -166,7 +169,7 @@ test_that("substrait_proto_message class can be created with a message field", {
 
   # using list()
   expect_identical(
-    substrait_boolean(),
+    substrait$Type$create(bool_ = substrait_proto_auto()),
     structure(
       list(content = as.raw(c(0x0a, 0x00))),
       class = c(

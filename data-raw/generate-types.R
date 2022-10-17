@@ -138,7 +138,7 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
 
   if (nrow(type) > 0) {
     type <- lapply(type, "[[", 1)
-    formals <- glue::glue("{ type$fields$field_name } = unspecified()")
+    formals <- glue::glue("{ type$fields$field_name } = arg_unspecified()")
     formals_flat <- paste(formals, collapse = ", ")
 
     sanitizers <- glue::glue(
