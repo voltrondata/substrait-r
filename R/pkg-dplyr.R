@@ -38,15 +38,17 @@
 select.SubstraitCompiler <- function(.data, ...) {
   sim_data <- simulate_data_frame(.data)
 
-  column_indices <- tidyselect::eval_select(
-    rlang::expr(c(...)),
-    sim_data
-  )
+  column_indices <- tidyselect::eval_select(rlang::expr(c(...)),sim_data)
 
   # restore groups
   if (!rlang::is_empty(.data$groups)) {
-    cols_used <- vapply(rlang::enquos(...), rlang::quo_name, character(1))
-    missing_cols <- setdiff(names(.data$groups), cols_used)
+
+    selected_cols <- purrr::map_chr(enquos(...), rlang::quo_name)
+    renamed <- selected_cols[names(column_indices) != selected_cols]
+
+    # add in missing columns
+    missing_cols <- setdiff(names(.data$groups), selected_cols)
+    renamed_groups <- selected_cols[!names(selected_cols) %in% selected_cols]
 
     if (!rlang::is_empty(missing_cols)) {
       prepend_cols <- tidyselect::eval_select(
@@ -64,6 +66,14 @@ select.SubstraitCompiler <- function(.data, ...) {
         fill = TRUE
       )
     }
+
+    # ensure any group columns are being renamed
+    gbv <- .data$groups
+    renamed_groups <- names(gbv) %in% renamed
+    names(gbv)[renamed_groups] <- names(renamed)[match(names(gbv[renamed_groups]), renamed)]
+
+    .data$groups <- gbv
+
   }
 
   new_mask <- rlang::set_names(
@@ -227,11 +237,12 @@ summarize.SubstraitCompiler <- summarise.SubstraitCompiler
 #' @importFrom dplyr collect
 #' @export
 collect.SubstraitCompiler <- function(x, ...) {
+
   out <- dplyr::as_tibble(x$evaluate(...))
 
   # add back in grouping if needed
   if (!rlang::is_empty(x$groups)) {
-    out <- dplyr::grouped_df(out, intersect(names(out), names(x$groups)))
+    out <- dplyr::grouped_df(out, names(x$groups))
   }
 
   out
