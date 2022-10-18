@@ -70,6 +70,7 @@ select.SubstraitCompiler <- function(.data, ...) {
     gbv <- .data$groups
     renamed_groups <- names(gbv) %in% renamed
     names(gbv)[renamed_groups] <- names(renamed)[match(names(gbv[renamed_groups]), renamed)]
+    .data <- .data$clone()
 
     .data$groups <- gbv
   }
