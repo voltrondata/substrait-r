@@ -38,11 +38,10 @@
 select.SubstraitCompiler <- function(.data, ...) {
   sim_data <- simulate_data_frame(.data)
 
-  column_indices <- tidyselect::eval_select(rlang::expr(c(...)),sim_data)
+  column_indices <- tidyselect::eval_select(rlang::expr(c(...)), sim_data)
 
   # restore groups
   if (!rlang::is_empty(.data$groups)) {
-
     selected_cols <- vapply(rlang::enquos(...), rlang::quo_name, character(1))
     renamed <- selected_cols[names(column_indices) != selected_cols]
 
@@ -73,7 +72,6 @@ select.SubstraitCompiler <- function(.data, ...) {
     names(gbv)[renamed_groups] <- names(renamed)[match(names(gbv[renamed_groups]), renamed)]
 
     .data$groups <- gbv
-
   }
 
   new_mask <- rlang::set_names(
@@ -237,7 +235,6 @@ summarize.SubstraitCompiler <- summarise.SubstraitCompiler
 #' @importFrom dplyr collect
 #' @export
 collect.SubstraitCompiler <- function(x, ...) {
-
   out <- dplyr::as_tibble(x$evaluate(...))
 
   # add back in grouping if needed
