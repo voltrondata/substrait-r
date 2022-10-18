@@ -43,7 +43,7 @@ select.SubstraitCompiler <- function(.data, ...) {
   # restore groups
   if (!rlang::is_empty(.data$groups)) {
 
-    selected_cols <- purrr::map_chr(enquos(...), rlang::quo_name)
+    selected_cols <- vapply(rlang::enquos(...), rlang::quo_name, character(1))
     renamed <- selected_cols[names(column_indices) != selected_cols]
 
     # add in missing columns
