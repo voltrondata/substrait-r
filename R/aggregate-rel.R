@@ -82,6 +82,9 @@ substrait_group_by <- function(.compiler, ...) {
   if (length(quos) == 0) {
     .compiler$groups <- NULL
     return(.compiler)
+  } else {
+    # add any new groups to the data
+    .compiler <- dplyr::mutate(.compiler, !!!quos)
   }
 
   .compiler$groups <- lapply(

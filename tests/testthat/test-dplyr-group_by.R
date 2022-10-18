@@ -27,7 +27,7 @@ test_that("group_by groupings are recorded", {
 })
 
 test_that("group_by supports creating/renaming", {
-  skip("creating/renaming not supported: https://github.com/voltrondata/substrait-r/issues/137")
+
   compare_dplyr_binding(
     .input %>%
       group_by(chr, numbers = int) %>%
@@ -66,6 +66,7 @@ test_that("ungroup", {
   # ungrouped tibbles
   expect_error(
     compare_dplyr_binding(
+      engine = "duckdb",
       .input %>%
         group_by(chr) %>%
         select(int, chr) %>%
@@ -78,7 +79,6 @@ test_that("ungroup", {
 })
 
 test_that("group_by then rename", {
-  skip("creating/renaming not supported: https://github.com/voltrondata/substrait-r/issues/137")
   compare_dplyr_binding(
     .input %>%
       group_by(chr) %>%
@@ -154,3 +154,4 @@ test_that("group_by with .drop", {
     example_with_logical_factors
   )
 })
+

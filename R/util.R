@@ -1,5 +1,8 @@
 
 compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
+
+  engine <- match.arg(engine, several.ok = TRUE)
+
   expr <- rlang::enquo(expr)
   expected <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = tbl)))
 
