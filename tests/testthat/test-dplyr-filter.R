@@ -146,8 +146,6 @@ test_that("filtering with expression + autocasting", {
 })
 
 test_that("More complex select/filter", {
-  # skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
-  skip("Multiple filter conditions: https://github.com/voltrondata/substrait-r/issues/139")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
