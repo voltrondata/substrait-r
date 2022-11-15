@@ -56,9 +56,116 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
   )
 }
 
+arrow_funs[["-"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.subtract",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+arrow_funs[["*"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.multiply",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+arrow_funs[["/"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.divide",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+arrow_funs[["-"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.negate",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+arrow_funs[["%%"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.modulus",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+arrow_funs[["%/%"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.divide",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+arrow_funs[["sqrt"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.sqrt",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+arrow_funs[["exp"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.exp",
+    substrait$FunctionArgument$create(
+      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+    ),
+    lhs,
+    rhs,
+    .output_type = function(opt, lhs, rhs) rhs
+  )
+}
+
+
+
 arrow_funs[[">"]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.gt",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["<"]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.lt",
     lhs,
     rhs,
     .output_type = substrait_boolean()
