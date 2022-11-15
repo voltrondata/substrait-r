@@ -281,6 +281,10 @@ SubstraitCompiler <- R6::R6Class(
       extension_function$function_anchor
     },
 
+    extension_uri_anchor = function(name){
+      private$extension_uri[[1]]$extension_uri_anchor
+    },
+
     #' @description
     #' Get the extension uri anchor value for a given function
     #'
