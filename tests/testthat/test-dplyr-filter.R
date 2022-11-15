@@ -58,7 +58,6 @@ test_that("filtering with arithmetic", {
   )
 
   compare_dplyr_binding(
-    engine = "duckdb",
     .input %>%
       filter(some_negative / 2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -67,7 +66,6 @@ test_that("filtering with arithmetic", {
   )
 
   compare_dplyr_binding(
-    engine = "duckdb",
     .input %>%
       filter(some_negative / 2L > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -76,7 +74,6 @@ test_that("filtering with arithmetic", {
   )
 
   compare_dplyr_binding(
-    engine = "duckdb",
     .input %>%
       filter(some_negative / 2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -85,7 +82,6 @@ test_that("filtering with arithmetic", {
   )
 
   compare_dplyr_binding(
-    engine = "duckdb",
     .input %>%
       filter(some_negative / 2L > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -93,9 +89,9 @@ test_that("filtering with arithmetic", {
     example_data
   )
 
-  skip("%/% not inplemented yet https://github.com/voltrondata/substrait-r/issues/110")
   compare_dplyr_binding(
-    engine = "duckdb",
+    # skip("%/% not implemented yet in duckdb https://github.com/voltrondata/substrait-r/issues/110")
+    engine = "arrow",
     .input %>%
       filter(some_negative %/% 2 > 3) %>%
       select(string = chr, int, dbl) %>%
@@ -104,7 +100,8 @@ test_that("filtering with arithmetic", {
   )
 
   compare_dplyr_binding(
-    engine = "duckdb",
+   # power function not yet implemented in Arrow
+   engine = "duckdb",
     .input %>%
       filter(int^2 > 3) %>%
       select(string = chr, int, dbl) %>%
