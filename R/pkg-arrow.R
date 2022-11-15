@@ -20,7 +20,7 @@ ArrowSubstraitCompiler <- R6::R6Class(
     },
 
     extension_uri_anchor = function(name){
-      prefix = strsplit(name, ".", fixed = TRUE)[[1]][1]
+      prefix <- strsplit(name, ".", fixed = TRUE)[[1]][1]
       private$extension_uri[[prefix]]$extension_uri_anchor
     },
 
