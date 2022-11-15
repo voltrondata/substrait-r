@@ -36,12 +36,15 @@ test_that("group_by supports creating/renaming", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(chr, numbers = int * 4) %>%
       collect(),
     example_data
   )
+
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(int > 4, lgl, foo = int > 5) %>%
       collect(),
