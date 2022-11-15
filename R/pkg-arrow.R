@@ -2,24 +2,41 @@
 ArrowSubstraitCompiler <- R6::R6Class(
   "ArrowSubstraitCompiler",
   inherit = SubstraitCompiler,
+  private = list(extension_uri = NULL),
   public = list(
     initialize = function(...) {
+      private$extension_uri <- list(
+        "arithmetic" = substrait$extensions$SimpleExtensionURI$create(
+          extension_uri_anchor = 1L,
+          uri = "https://github.com/substrait-io/substrait/blob/main/extensions/functions_arithmetic.yaml"
+        ),
+        "comparison" = substrait$extensions$SimpleExtensionURI$create(
+          extension_uri_anchor = 2L,
+          uri = "https://github.com/substrait-io/substrait/blob/main/extensions/functions_comparison.yaml"
+        )
+      )
       super$initialize(...)
       self$.fns = arrow_funs
     },
+
+    extension_uri_anchor = function(name){
+      prefix = strsplit(name, ".", fixed = TRUE)[[1]][1]
+      private$extension_uri[[prefix]]$extension_uri_anchor
+    },
+
     evaluate = function(...) {
       plan <- self$plan()
-
-      # Here we only implement 'add()', so this works because the only
-      # function that we ever use is contained in this extensions definition.
-      plan$extension_uris[[1]]$uri <-
-        "https://github.com/substrait-io/substrait/blob/main/extensions/functions_arithmetic.yaml"
 
       substrait_eval_arrow(
         plan = plan,
         tables = self$named_table_list(),
         col_names = self$schema$names
       )
+    },
+
+    resolve_function  = function(name, args, template, output_type = NULL){
+      fun_name <- strsplit(name, ".", fixed = TRUE)[[1]][2]
+      super$resolve_function(fun_name, args, template, output_type)
     }
   )
 )
@@ -29,7 +46,7 @@ arrow_funs <- new.env(parent = emptyenv())
 
 arrow_funs[["+"]] <- function(lhs, rhs) {
   substrait_call(
-    "add",
+    "arithmetic.add",
     substrait$FunctionArgument$create(
       enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
     ),
