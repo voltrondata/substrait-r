@@ -56,6 +56,15 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
   )
 }
 
+arrow_funs[[">"]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.gt",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
 #' Create an Arrow Substrait Compiler
 #'
 #' @param object A [data.frame()], [arrow::Table], [arrow::RecordBatch],

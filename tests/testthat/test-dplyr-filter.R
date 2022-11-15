@@ -50,8 +50,6 @@ test_that("filtering with expression", {
 
 test_that("filtering with arithmetic", {
   compare_dplyr_binding(
-    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
-    engine = "duckdb",
     .input %>%
       filter(some_negative + 1 > 3) %>%
       select(string = chr, int, dbl) %>%
