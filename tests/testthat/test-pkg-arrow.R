@@ -31,6 +31,28 @@ test_that("ArrowSubstraitCompiler$plan() generates the correct extension URIs", 
   )
 })
 
+test_that("ArrowSubsaitCompiler$plan() generates the correct extension URIs", {
+  compiler <- arrow_substrait_compiler(mtcars) %>%
+    substrait_select(hp1 = hp > 100, hp2 = hp + 2)
+
+  plan <- compiler$plan()
+  expect_length(plan$extension_uris, 2)
+
+  expect_identical(plan$extensions[[1]]$extension_function$name, "gt")
+  expect_identical(
+    plan$extensions[[1]]$extension_function$extension_uri_reference,
+    # uri reference for "comparison"
+    2
+  )
+
+  expect_identical(plan$extensions[[2]]$extension_function$name, "add")
+  expect_identical(
+    plan$extensions[[2]]$extension_function$extension_uri_reference,
+    # uri reference for "comparison"
+    1
+  )
+})
+
 test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabular", {
   rb <- arrow::record_batch(
     a_field = arrow::Array$create(integer(), arrow::int32())
