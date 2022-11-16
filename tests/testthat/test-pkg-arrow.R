@@ -1,7 +1,10 @@
 
 test_that("ArrowSubsaitCompiler$plan() generates the correct extension URIs", {
-  compiler <- arrow_substrait_compiler(mtcars) %>%
-    substrait_select(hp1 = hp > 100, hp2 = hp + 2)
+
+  df <- tibble::tibble(x = 1:3)
+
+  compiler <- arrow_substrait_compiler(df) %>%
+    substrait_select(x1 = x > 2, x2 = x + 2)
 
   plan <- compiler$plan()
   expect_length(plan$extension_uris, 2)
@@ -9,7 +12,7 @@ test_that("ArrowSubsaitCompiler$plan() generates the correct extension URIs", {
   expect_identical(plan$extensions[[1]]$extension_function$name, "gt")
   expect_identical(
     plan$extensions[[1]]$extension_function$extension_uri_reference,
-    # uri reference for "comparison"
+    # uri reference for "add"
     2
   )
 
@@ -19,6 +22,14 @@ test_that("ArrowSubsaitCompiler$plan() generates the correct extension URIs", {
     # uri reference for "comparison"
     1
   )
+
+  out_df <- as.data.frame(compiler$evaluate())
+
+  expect_identical(
+    out_tibble,
+    tibble::tibble(x1 = c(FALSE, FALSE, TRUE), x2 = c(3, 4, 5))
+  )
+
 })
 
 test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabular", {
