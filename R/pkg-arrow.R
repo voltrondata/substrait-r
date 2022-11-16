@@ -5,6 +5,8 @@ ArrowSubstraitCompiler <- R6::R6Class(
   private = list(extension_uri = NULL),
   public = list(
     initialize = function(...) {
+      super$initialize(...)
+      self$.fns <- arrow_funs
       private$extension_uri <- list(
         "arithmetic" = substrait$extensions$SimpleExtensionURI$create(
           extension_uri_anchor = 1L,
@@ -15,8 +17,6 @@ ArrowSubstraitCompiler <- R6::R6Class(
           uri = "https://github.com/substrait-io/substrait/blob/main/extensions/functions_comparison.yaml"
         )
       )
-      super$initialize(...)
-      self$.fns <- arrow_funs
     },
     extension_uri_anchor = function(name) {
       prefix <- strsplit(name, ".", fixed = TRUE)[[1]][1]
@@ -32,12 +32,18 @@ ArrowSubstraitCompiler <- R6::R6Class(
       )
     },
     plan = function() {
-      for (x in seq_along(private$function_extensions)) {
-        short_name <- strsplit(private$function_extensions[[x]]$name, ".", fixed = TRUE)[[1]][2]
-        private$function_extensions[[x]]$name <- short_name
+      plan <- super$plan()
+
+      for (i in seq_along(plan$extensions)) {
+        if (is.null(plan$extensions[[i]]$extension_function)) {
+          next
+        }
+
+        short_name <- strsplit(plan$extensions[[i]]$extension_function$name, ".", fixed = TRUE)[[1]][2]
+        plan$extensions[[i]]$extension_function$name <- short_name
       }
 
-      super$plan()
+      plan
     }
   )
 )
@@ -225,7 +231,6 @@ from_substrait.RecordBatch <- function(msg, x, ...) {
 
 substrait_eval_arrow <- function(plan, tables, col_names) {
   stopifnot(has_arrow_with_substrait())
-
   plan <- as_substrait(plan, "substrait.Plan")
   stopifnot(rlang::is_named2(tables))
 
