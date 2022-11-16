@@ -32,7 +32,6 @@ test_that("ArrowSubstraitCompiler$plan() generates the correct extension URIs", 
 })
 
 test_that("ArrowSubsaitCompiler$plan() generates the correct extension URIs", {
-
   df <- tibble::tibble(x = 1:3)
 
   compiler <- arrow_substrait_compiler(df) %>%
@@ -58,10 +57,9 @@ test_that("ArrowSubsaitCompiler$plan() generates the correct extension URIs", {
   out_df <- as.data.frame(compiler$evaluate())
 
   expect_identical(
-    out_tibble,
+    out_df,
     tibble::tibble(x1 = c(FALSE, FALSE, TRUE), x2 = c(3, 4, 5))
   )
-
 })
 
 test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabular", {
