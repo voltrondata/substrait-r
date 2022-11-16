@@ -16,14 +16,12 @@ ArrowSubstraitCompiler <- R6::R6Class(
         )
       )
       super$initialize(...)
-      self$.fns = arrow_funs
+      self$.fns <- arrow_funs
     },
-
     extension_uri_anchor = function(name) {
       prefix <- strsplit(name, ".", fixed = TRUE)[[1]][1]
       private$extension_uri[[prefix]]$extension_uri_anchor
     },
-
     evaluate = function(...) {
       plan <- self$plan()
 
@@ -33,10 +31,13 @@ ArrowSubstraitCompiler <- R6::R6Class(
         col_names = self$schema$names
       )
     },
+    plan = function() {
+      for (x in seq_along(private$function_extensions)) {
+        short_name <- strsplit(private$function_extensions[[x]]$name, ".", fixed = TRUE)[[1]][2]
+        private$function_extensions[[x]]$name <- short_name
+      }
 
-    resolve_function  = function(name, args, template, output_type = NULL){
-      fun_name <- strsplit(name, ".", fixed = TRUE)[[1]][2]
-      super$resolve_function(fun_name, args, template, output_type)
+      super$plan()
     }
   )
 )
