@@ -34,9 +34,14 @@ ArrowSubstraitCompiler <- R6::R6Class(
       )
     },
 
-    resolve_function  = function(name, args, template, output_type = NULL){
-      fun_name <- strsplit(name, ".", fixed = TRUE)[[1]][2]
-      super$resolve_function(fun_name, args, template, output_type)
+    plan = function(){
+
+      for (x in seq_along(private$function_extensions)) {
+        short_name = strsplit(private$function_extensions[[x]]$name, ".", fixed = TRUE)[[1]][2]
+        private$function_extensions[[x]]$name = short_name
+      }
+
+      super$plan()
     }
   )
 )
@@ -151,8 +156,6 @@ arrow_funs[["exp"]] <- function(lhs, rhs) {
     .output_type = function(opt, lhs, rhs) rhs
   )
 }
-
-
 
 arrow_funs[[">"]] <- function(lhs, rhs) {
   substrait_call(
