@@ -1,4 +1,3 @@
-library(arrow, warn.conflicts = FALSE)
 skip_if_not(has_arrow_with_substrait())
 
 test_that("ArrowSubstraitCompiler$plan() generates the correct extension URIs", {
