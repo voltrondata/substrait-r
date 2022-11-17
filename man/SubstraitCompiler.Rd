@@ -59,6 +59,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \item \href{#method-SubstraitCompiler-evaluate}{\code{SubstraitCompiler$evaluate()}}
 \item \href{#method-SubstraitCompiler-resolve_function}{\code{SubstraitCompiler$resolve_function()}}
 \item \href{#method-SubstraitCompiler-function_id}{\code{SubstraitCompiler$function_id()}}
+\item \href{#method-SubstraitCompiler-extension_uri_anchor}{\code{SubstraitCompiler$extension_uri_anchor()}}
 \item \href{#method-SubstraitCompiler-function_extension}{\code{SubstraitCompiler$function_extension()}}
 \item \href{#method-SubstraitCompiler-next_id}{\code{SubstraitCompiler$next_id()}}
 \item \href{#method-SubstraitCompiler-clone}{\code{SubstraitCompiler$clone()}}
@@ -263,6 +264,24 @@ specified, the package name will not be present in \code{name}.}
 }
 \subsection{Returns}{
 An integer function reference
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SubstraitCompiler-extension_uri_anchor"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-extension_uri_anchor}{}}}
+\subsection{Method \code{extension_uri_anchor()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$extension_uri_anchor(name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{The fully-qualified name of the function as it was
+called (e.g., \code{pkg::fun}). If no package name was explicitly
+specified, the package name will not be present in \code{name}.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
