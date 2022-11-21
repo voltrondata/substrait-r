@@ -58,6 +58,7 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
+          working-directory: /home/runner/work/substrait-r/substrait-r/substrait/
 
       - name: Checkout Arrow repo
         uses: actions/checkout@v3
