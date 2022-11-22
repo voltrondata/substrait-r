@@ -96,6 +96,10 @@ jobs:
           make clean
           R CMD INSTALL .
 
+      - name: Install DuckDB
+        run: |
+         R -e "remotes::install_github("cran/duckdb@0.6.0", build = FALSE)"
+
       - name: Run R CMD check
         uses: r-lib/actions/check-r-package@v2
         with:
