@@ -62,7 +62,7 @@ jobs:
 
       - name: Install DuckDB
         run: |
-         R -e "remotes::install_github('duckdb/duckdb@0.6.0', subdir ='tools/rpkg', build = FALSE)"
+         R -e "remotes::install_github('duckdb/duckdb@v0.6.0', subdir ='tools/rpkg', build = FALSE)"
 
       - name: Checkout Arrow repo
         uses: actions/checkout@v3
