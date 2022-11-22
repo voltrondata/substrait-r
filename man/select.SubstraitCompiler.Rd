@@ -82,6 +82,7 @@ A modified \code{\link[=substrait_compiler]{substrait_compiler()}}
 dplyr verb implementations
 }
 \examples{
+\dontshow{if (has_duckdb_with_substrait()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(dplyr)
 compiler <- duckdb_substrait_compiler(mtcars)
 
@@ -91,5 +92,5 @@ filter(compiler, mpg > 20) \%>\% collect()
 mutate(compiler, mpg + 10) \%>\% collect()
 transmute(compiler, mpg + 10) \%>\% collect()
 arrange(compiler, desc(mpg)) \%>\% collect()
-
+\dontshow{\}) # examplesIf}
 }

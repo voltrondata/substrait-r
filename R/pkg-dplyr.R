@@ -24,7 +24,7 @@
 #' @importFrom dplyr select
 #' @export
 #'
-#' @examples
+#' @examplesIf has_duckdb_with_substrait()
 #' library(dplyr)
 #' compiler <- duckdb_substrait_compiler(mtcars)
 #'
