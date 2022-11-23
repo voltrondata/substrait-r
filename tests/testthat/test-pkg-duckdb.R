@@ -1,3 +1,4 @@
+skip_if_not(has_duckdb_with_substrait())
 
 test_that("duckdb_substrait_compiler() works", {
   skip_if_not(has_duckdb_with_substrait())
