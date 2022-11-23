@@ -1,6 +1,7 @@
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 skip_if_not(has_arrow_with_substrait())
+skip_if_not(has_duckdb_with_substrait())
 
 example_with_logical_factors <- tibble::tibble(
   starting_a_fight = factor(c(FALSE, TRUE, TRUE, TRUE)),

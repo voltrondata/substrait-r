@@ -1,6 +1,7 @@
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 skip_if_not(has_arrow_with_substrait())
+skip_if_not(has_duckdb_with_substrait())
 
 test_that("filter() on is.na()", {
 
