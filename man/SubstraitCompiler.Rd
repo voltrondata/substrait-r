@@ -270,6 +270,7 @@ An integer function reference
 \if{html}{\out{<a id="method-SubstraitCompiler-extension_uri_anchor"></a>}}
 \if{latex}{\out{\hypertarget{method-SubstraitCompiler-extension_uri_anchor}{}}}
 \subsection{Method \code{extension_uri_anchor()}}{
+Get the extension uri anchor value for a given function
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$extension_uri_anchor(name)}\if{html}{\out{</div>}}
 }
@@ -277,11 +278,12 @@ An integer function reference
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{name}}{The fully-qualified name of the function as it was
-called (e.g., \code{pkg::fun}). If no package name was explicitly
-specified, the package name will not be present in \code{name}.}
+\item{\code{name}}{The name of the function}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The uri anchor value
 }
 }
 \if{html}{\out{<hr>}}
