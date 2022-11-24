@@ -107,6 +107,7 @@ future grouping (e.g., after calling <code><a href="https://dplyr.tidyverse.org/
 <li><p><a href="#method-SubstraitCompiler-evaluate"><code>SubstraitCompiler$evaluate()</code></a></p></li>
 <li><p><a href="#method-SubstraitCompiler-resolve_function"><code>SubstraitCompiler$resolve_function()</code></a></p></li>
 <li><p><a href="#method-SubstraitCompiler-function_id"><code>SubstraitCompiler$function_id()</code></a></p></li>
+<li><p><a href="#method-SubstraitCompiler-extension_uri_anchor"><code>SubstraitCompiler$extension_uri_anchor()</code></a></p></li>
 <li><p><a href="#method-SubstraitCompiler-function_extension"><code>SubstraitCompiler$function_extension()</code></a></p></li>
 <li><p><a href="#method-SubstraitCompiler-next_id"><code>SubstraitCompiler$next_id()</code></a></p></li>
 <li><p><a href="#method-SubstraitCompiler-clone"><code>SubstraitCompiler$clone()</code></a></p></li>
@@ -319,15 +320,35 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 <p>An integer function reference</p>
 </div>
 
-</div><p></p><hr><a id="method-SubstraitCompiler-function_extension"></a><div class="section">
-<h3 id="method-function-extension-">Method <code>function_extension()</code><a class="anchor" aria-label="anchor" href="#method-function-extension-"></a></h3>
-<p>Retrieve a function extension by anchor/reference</p><div class="section">
+</div><p></p><hr><a id="method-SubstraitCompiler-extension_uri_anchor"></a><div class="section">
+<h3 id="method-extension-uri-anchor-">Method <code>extension_uri_anchor()</code><a class="anchor" aria-label="anchor" href="#method-extension-uri-anchor-"></a></h3>
+<p>Get the extension uri anchor value for a given function</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">function_extension</span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">extension_uri_anchor</span><span class="op">(</span><span class="va">name</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>name</code></dt>
+<dd><p>The name of the function</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
+<p>The uri anchor value</p>
+</div>
+
+</div><p></p><hr><a id="method-SubstraitCompiler-function_extension"></a><div class="section">
+<h3 id="method-function-extension-">Method <code>function_extension()</code><a class="anchor" aria-label="anchor" href="#method-function-extension-"></a></h3>
+<p>Retrieve a function extension by anchor/reference</p><div class="section">
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">function_extension</span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>id</code></dt>
 <dd><p>An function_anchor/function_reference identifier</p></dd>
 
@@ -335,7 +356,7 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
+<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
 <p>A
 <code>substrait.extensions.SimpleExtensionDeclaration.ExtensionFunction</code>.</p>
 </div>
@@ -343,12 +364,12 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 </div><p></p><hr><a id="method-SubstraitCompiler-next_id"></a><div class="section">
 <h3 id="method-next-id-">Method <code>next_id()</code><a class="anchor" aria-label="anchor" href="#method-next-id-"></a></h3>
 <p>Get the next unique identifier.</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">next_id</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
 <p>An integer that has not been returned by a previous call to
 <code>next_id()</code> for this instance.</p>
 </div>
@@ -356,12 +377,12 @@ specified, the package name will not be present in <code>name</code>.</p></dd>
 </div><p></p><hr><a id="method-SubstraitCompiler-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
