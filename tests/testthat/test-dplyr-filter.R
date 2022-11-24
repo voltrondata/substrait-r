@@ -1,6 +1,7 @@
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 skip_if_not(has_arrow_with_substrait())
+skip_if_not(has_duckdb_with_substrait())
 
 test_that("filter() on is.na()", {
 
@@ -50,8 +51,6 @@ test_that("filtering with expression", {
 
 test_that("filtering with arithmetic", {
   compare_dplyr_binding(
-    # skip("arithmetic functions not yet implemented: https://github.com/voltrondata/substrait-r/issues/20")
-    engine = "duckdb",
     .input %>%
       filter(some_negative + 1 > 3) %>%
       select(string = chr, int, dbl) %>%

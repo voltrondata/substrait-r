@@ -62,8 +62,8 @@ SubstraitCompiler <- R6::R6Class(
     initialize = function(object = NULL, ...) {
       self$.fns <- list()
 
-      private$extension_uri <- substrait$extensions$SimpleExtensionURI$create(
-        extension_uri_anchor = 1L
+      private$extension_uri <- list(
+        substrait$extensions$SimpleExtensionURI$create(extension_uri_anchor = 1L)
       )
 
       # these are key/value stores but for at least function_extensions
@@ -189,9 +189,7 @@ SubstraitCompiler <- R6::R6Class(
             )
           )
         ),
-        extension_uris = list(
-          private$extension_uri
-        ),
+        extension_uris = private$extension_uri,
         extensions = c(
           lapply(
             unname(private$function_extensions),
@@ -271,7 +269,7 @@ SubstraitCompiler <- R6::R6Class(
           extensions$
           SimpleExtensionDeclaration$
           ExtensionFunction$create(
-          extension_uri_reference = private$extension_uri$extension_uri_anchor,
+          extension_uri_reference = self$extension_uri_anchor(name),
           function_anchor = self$next_id(),
           name = name
         )
@@ -281,6 +279,16 @@ SubstraitCompiler <- R6::R6Class(
       }
 
       extension_function$function_anchor
+    },
+
+    #' @description
+    #' Get the extension uri anchor value for a given function
+    #'
+    #' @param name The name of the function
+    #'
+    #' @return The uri anchor value
+    extension_uri_anchor = function(name) {
+      private$extension_uri[[1]]$extension_uri_anchor
     },
 
     #' @description

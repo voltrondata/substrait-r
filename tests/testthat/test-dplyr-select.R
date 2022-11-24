@@ -1,6 +1,7 @@
 library(dplyr, warn.conflicts = FALSE)
 library(arrow)
 skip_if_not(has_arrow_with_substrait())
+skip_if_not(has_duckdb_with_substrait())
 
 test_that("Empty select returns no columns", {
   skip("Arrow - https://github.com/voltrondata/substrait-r/issues/51")

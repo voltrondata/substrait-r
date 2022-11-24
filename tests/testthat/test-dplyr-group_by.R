@@ -1,6 +1,7 @@
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 skip_if_not(has_arrow_with_substrait())
+skip_if_not(has_duckdb_with_substrait())
 
 example_with_logical_factors <- tibble::tibble(
   starting_a_fight = factor(c(FALSE, TRUE, TRUE, TRUE)),
@@ -36,12 +37,15 @@ test_that("group_by supports creating/renaming", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(chr, numbers = int * 4) %>%
       collect(),
     example_data
   )
+
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>%
       group_by(int > 4, lgl, foo = int > 5) %>%
       collect(),

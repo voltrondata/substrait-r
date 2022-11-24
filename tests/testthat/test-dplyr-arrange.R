@@ -1,5 +1,6 @@
 library(dplyr, warn.conflicts = FALSE)
 skip_if_not(has_arrow_with_substrait())
+skip_if_not(has_duckdb_with_substrait())
 
 
 # randomize order of rows in test data
