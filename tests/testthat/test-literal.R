@@ -562,3 +562,130 @@ test_that("from_substrait() works for character()", {
     c("a string", "another string")
   )
 })
+
+test_that("as_substrait() works for Date", {
+
+  input_date <- as.Date(19320, origin = "1970-01-01")
+
+  # The substrait.Type representation of a Date() is a Type with the
+  # date member set and unknown nullability
+  expect_identical(
+    as_substrait(input_date, "substrait.Type"),
+    substrait_date()
+  )
+
+  # The Substrait representation of a non-NA Date(1)
+  # as an Expression is a Literal with the date member set
+  expect_identical(
+    as_substrait(input_date, "substrait.Expression"),
+    substrait$Expression$create(
+      literal = substrait$Expression$Literal$create(date = input_date)
+    )
+  )
+
+  # The Substrait representation of an NA Date(1)
+  # as an Expression is a Literal with the null member set
+  # to the appropriate type.
+  expect_identical(
+    as_substrait(structure(NA, class = "Date")),
+    substrait$Expression$Literal$create(
+      null = substrait_date()
+    )
+  )
+
+  # The default representation of a Date(1) is a Literal with the
+  # date payload set.
+  expect_identical(
+    as_substrait(input_date),
+    substrait$Expression$Literal$create(date = 19320)
+  )
+
+  # The representation of a Date(n) is a Literal$List() of Literals
+  # (which we can create by lapplying along the Date())
+  expect_identical(
+    as_substrait(
+      c(input_date, as.Date(19321, origin = "1970-01-01")),
+      substrait$Expression$Literal$create(list = substrait_proto_auto())
+    ),
+    substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = list(
+          as_substrait(input_date),
+          as_substrait(as.Date(19321, origin = "1970-01-01"))
+        )
+      )
+    )
+  )
+
+  # Check that we fail when an unexpected type is requested
+  expect_error(as_substrait(input_date, "substrait.NotAType"), "Can't create substrait")
+  expect_error(as_substrait(c(input_date, input_date), "substrait.NotAType"), "Can't create substrait")
+})
+
+test_that("from_substrait() works for Date()", {
+  expect_identical(
+    from_substrait(substrait_date(), Date()),
+    Date()
+  )
+
+  expect_identical(
+    from_substrait(substrait$Type$create(), Date()),
+    Date()
+  )
+
+  expect_error(
+    from_substrait(substrait_i32(), Date()),
+    "Can't convert substrait.Type"
+  )
+
+  # Check that we can extract a Date() from an Expression with the literal
+  # member set.
+  expect_identical(
+    from_substrait(
+      substrait$Expression$create(
+        literal = substrait$Expression$Literal$create(date = 19320)
+      ),
+      Date()
+    ),
+    as.Date(19320, origin = "1970-01-01")
+  )
+
+  # Check that we can extract a double() from a Literal with the date
+  # member set.
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(date = 19320),
+      Date()
+    ),
+    as.Date(19320, origin = "1970-01-01")
+  )
+
+  # Check that we can extract a Date() from an Expression with
+  # the null member set.
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(
+        null = substrait_date()
+      ),
+      Date()
+    ),
+    NA_real_
+  )
+
+  # Check that we can extract a Date(n) from a Literal with
+  # the list member set.
+  expect_identical(
+    from_substrait(
+      substrait$Expression$Literal$create(
+        list = substrait$Expression$Literal$List$create(
+          values = list(
+            as_substrait(19320),
+            as_substrait(19321)
+          )
+        )
+      ),
+      Date()
+    ),
+    c(as.Date(19320, origin = "1970-01-01"), as.Date(19321, origin = "1970-01-01"))
+  )
+})
