@@ -23,7 +23,7 @@ test_that("Can aggregate", {
     example_data
   )
 
-  skip("https://github.com/voltrondata/substrait-r/issues/142")
+  skip("https://github.com/voltrondata/substrait-r/issues/215")
 
   compare_dplyr_binding(
     engine = "duckdb",
