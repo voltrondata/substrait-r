@@ -303,3 +303,7 @@ duckdb_funs[["^"]] <- function(lhs, rhs) {
 duckdb_funs[["sum"]] <- function(x) {
   substrait_call_agg("sum", x, .output_type = identity)
 }
+
+duckdb_funs[["n"]] <- function() {
+  substrait_call_agg("count", .output_type = substrait_i64())
+}
