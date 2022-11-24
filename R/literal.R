@@ -226,7 +226,6 @@ as_substrait.logical <- function(x, .ptype = NULL, ...) {
   } else {
     switch(.qualified_name,
       "substrait.Expression.Literal" = {
-        # TODO: update this
         substrait$Expression$Literal$create(
           list = substrait$Expression$Literal$List$create(
             values = lapply(x, as_substrait.logical, .ptype = "substrait.Expression.Literal")

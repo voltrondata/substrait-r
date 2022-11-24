@@ -583,12 +583,11 @@ test_that("as_substrait() works for Date", {
     )
   )
 
-  # TODO: fix this
   # The Substrait representation of an NA Date(1)
   # as an Expression is a Literal with the null member set
   # to the appropriate type.
   expect_identical(
-    as_substrait(Date(0)),
+    as_substrait(structure(NA, class = "Date")),
     substrait$Expression$Literal$create(
       null = substrait_date()
     )
