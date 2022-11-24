@@ -100,3 +100,8 @@ with_language <- function(lang, expr) {
   }
   force(expr)
 }
+
+# TODO: this is copied verbatim from lubridate - do we need to acknowledge somewhere?
+Date <- function(length = 0L) {
+    structure(rep.int(NA_real_, length), class = "Date")
+}
