@@ -567,7 +567,7 @@ test_that("as_substrait() works for Date", {
 
   input_date <- as.Date(19320, origin = "1970-01-01")
 
-  # The substrait.Type representation of a Date() is a Type with the
+  # The substrait.Type representation of a Date is a Type with the
   # date member set and unknown nullability
   expect_identical(
     as_substrait(input_date, "substrait.Type"),
@@ -622,19 +622,19 @@ test_that("as_substrait() works for Date", {
   expect_error(as_substrait(c(input_date, input_date), "substrait.NotAType"), "Can't create substrait")
 })
 
-test_that("from_substrait() works for Date()", {
+test_that("from_substrait() works for Date", {
   expect_identical(
-    from_substrait(substrait_date(), Date()),
-    Date()
+    from_substrait(substrait_date(), as.Date(character())),
+    as.Date(character())
   )
 
   expect_identical(
-    from_substrait(substrait$Type$create(), Date()),
-    Date()
+    from_substrait(substrait$Type$create(), as.Date(character())),
+    as.Date(character())
   )
 
   expect_error(
-    from_substrait(substrait_i32(), Date()),
+    from_substrait(substrait_i32(), as.Date(character())),
     "Can't convert substrait.Type"
   )
 
@@ -645,7 +645,7 @@ test_that("from_substrait() works for Date()", {
       substrait$Expression$create(
         literal = substrait$Expression$Literal$create(date = 19320)
       ),
-      Date()
+      as.Date(character())
     ),
     as.Date(19320, origin = "1970-01-01")
   )
@@ -655,7 +655,7 @@ test_that("from_substrait() works for Date()", {
   expect_identical(
     from_substrait(
       substrait$Expression$Literal$create(date = 19320),
-      Date()
+      as.Date(character())
     ),
     as.Date(19320, origin = "1970-01-01")
   )
@@ -667,7 +667,7 @@ test_that("from_substrait() works for Date()", {
       substrait$Expression$Literal$create(
         null = substrait_date()
       ),
-      Date()
+      as.Date(character())
     ),
     NA_real_
   )
@@ -684,7 +684,7 @@ test_that("from_substrait() works for Date()", {
           )
         )
       ),
-      Date()
+      as.Date(character())
     ),
     c(as.Date(19320, origin = "1970-01-01"), as.Date(19321, origin = "1970-01-01"))
   )

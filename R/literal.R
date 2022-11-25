@@ -482,18 +482,18 @@ from_substrait.Date <- function(msg, x, ...) {
     "substrait.Type" = {
       type <- names(msg)
       if (length(type) == 0) {
-        return(Date())
+        return(as.Date(character()))
       }
 
       if (!identical(type, "date")) {
-        stop(sprintf("Can't convert substrait.Type<%s> to Date() ptype", type))
+        stop(sprintf("Can't convert substrait.Type<%s> to Date ptype", type))
       }
-      Date()
+      as.Date(character())
     },
     "substrait.Expression" = {
       literal <- msg$literal
       if (is.null(literal)) {
-        stop("Can't convert non-literal Expression to Date()")
+        stop("Can't convert non-literal Expression to Date")
       }
 
       from_substrait(literal, x)
@@ -503,7 +503,7 @@ from_substrait.Date <- function(msg, x, ...) {
       switch(names(lst)[1],
         "null" = NA_real_,
         "list" = {
-          out <- vapply(lst$list$values, from_substrait, Date(1), Date())
+          out <- vapply(lst$list$values, from_substrait, as.Date(character(1)), as.Date(character()))
           as.Date(out, origin = "1970-01-01")
         },
         as.Date(lst[[1]], origin = "1970-01-01")
