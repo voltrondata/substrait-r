@@ -121,25 +121,32 @@ SubstraitCompiler <- R6::R6Class(
         )
       }
 
-      tbl_id <- sprintf("named_table_%d", self$next_id())
-
-      rel <- substrait$Rel$create(
-        read = substrait$ReadRel$create(
-          base_schema = as_substrait(object, "substrait.NamedStruct"),
-          named_table = substrait$ReadRel$NamedTable$create(
-            names = tbl_id
-          )
-        )
-      )
-
-      private$named_tables[[tbl_id]] <- object
-
-      self$rel <- rel
-      self$schema <- rel$read$base_schema
-      self$.data <- substrait_rel_mask(rel)
+      self$rel <- substrait$Rel$create(read = self$add_named_table(object, ...))
+      self$schema <- self$rel$read$base_schema
+      self$.data <- substrait_rel_mask(self$rel)
       self$groups <- NULL
 
       self
+    },
+
+    #' @description
+    #' Registers an object for use as a named table with this compiler.
+    #'
+    #' @param ... Unused by the default method
+    #'
+    #' @return A substrait.ReadRel that refers to `object` when used with this
+    #'   compiler.
+    add_named_table = function(object, ...) {
+      tbl_id <- sprintf("named_table_%d", self$next_id())
+      named_struct <- as_substrait(object, "substrait.NamedStruct")
+
+      private$named_tables[[tbl_id]] <- object
+      substrait$ReadRel$create(
+        base_schema = as_substrait(object, "substrait.NamedStruct"),
+        named_table = substrait$ReadRel$NamedTable$create(
+          names = tbl_id
+        )
+      )
     },
 
     #' @description
