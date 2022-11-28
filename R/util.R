@@ -100,3 +100,13 @@ with_language <- function(lang, expr) {
   }
   force(expr)
 }
+
+tpch_tables <- function() {
+  c("customer", "lineitem", "nation", "orders", "part", "partsupp", "region", "supplier")
+}
+
+read_tpch_df <- function(name) {
+  match.arg( name, tpch_tables())
+  file <- system.file(sprintf("extdata/tpch0001/%s.csv", name), package = "substrait")
+  tibble::as_tibble(utils::read.csv(file, stringsAsFactors = FALSE))
+}
