@@ -55,7 +55,7 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.add",
     substrait$FunctionArgument$create(
-      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
+      enum_ = "ERROR"
     ),
     lhs,
     rhs,
