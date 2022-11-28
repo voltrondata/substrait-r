@@ -283,6 +283,51 @@ as_substrait.character <- function(x, .ptype = NULL, ...) {
 }
 
 #' @export
+as_substrait.Date <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    .ptype <- substrait$Expression$Literal$create(date = NaN)
+  }
+
+  .qualified_name <- make_qualified_name(.ptype)
+
+  if (identical(.qualified_name, "substrait.Expression")) {
+    return(
+      substrait$Expression$create(
+        literal = as_substrait.Date(x, "substrait.Expression.Literal")
+      )
+    )
+  } else if (identical(.qualified_name, "substrait.Type")) {
+    return(substrait_date())
+  }
+
+  if (length(x) == 1 && !("list" %in% names(.ptype))) {
+    switch(.qualified_name,
+      "substrait.Expression.Literal" = {
+        if (is.na(x) && !is.nan(x)) {
+          substrait$Expression$Literal$create(
+            null = substrait_date()
+          )
+        } else {
+          substrait$Expression$Literal$create(date = x)
+        }
+      },
+      NextMethod()
+    )
+  } else {
+    switch(.qualified_name,
+      "substrait.Expression.Literal" = {
+        substrait$Expression$Literal$create(
+          list = substrait$Expression$Literal$List$create(
+            values = lapply(x, as_substrait.Date, .ptype = "substrait.Expression.Literal")
+          )
+        )
+      },
+      NextMethod()
+    )
+  }
+}
+
+#' @export
 from_substrait.double <- function(msg, x, ...) {
   .qualified_name <- make_qualified_name(msg)
   switch(.qualified_name,
@@ -429,3 +474,42 @@ from_substrait.character <- function(msg, x, ...) {
     NextMethod()
   )
 }
+
+#' @export
+from_substrait.Date <- function(msg, x, ...) {
+  .qualified_name <- make_qualified_name(msg)
+  switch(.qualified_name,
+    "substrait.Type" = {
+      type <- names(msg)
+      if (length(type) == 0) {
+        return(as.Date(character()))
+      }
+
+      if (!identical(type, "date")) {
+        stop(sprintf("Can't convert substrait.Type<%s> to Date ptype", type))
+      }
+      as.Date(character())
+    },
+    "substrait.Expression" = {
+      literal <- msg$literal
+      if (is.null(literal)) {
+        stop("Can't convert non-literal Expression to Date")
+      }
+
+      from_substrait(literal, x)
+    },
+    "substrait.Expression.Literal" = {
+      lst <- as.list(msg)
+      switch(names(lst)[1],
+        "null" = NA_real_,
+        "list" = {
+          out <- vapply(lst$list$values, from_substrait, as.Date(character(1)), as.Date(character()))
+          as.Date(out, origin = "1970-01-01")
+        },
+        as.Date(lst[[1]], origin = "1970-01-01")
+      )
+    },
+    NextMethod()
+  )
+}
+
