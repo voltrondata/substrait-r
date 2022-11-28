@@ -13,52 +13,201 @@
 #endif
 
 /* Enum definitions */
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_AggregationPhase { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_AggregationPhase_AGGREGATION_PHASE_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_AggregationPhase_AGGREGATION_PHASE_INITIAL_TO_INTERMEDIATE = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_AggregationPhase_AGGREGATION_PHASE_INTERMEDIATE_TO_INTERMEDIATE = 2, 
+    /* A complete invocation: the function should aggregate the given set of
+ inputs to yield a single return value. This style must be used for
+ aggregate or window functions that are not decomposable. */
     substrait_AggregationPhase_AGGREGATION_PHASE_INITIAL_TO_RESULT = 3, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, generated previously using
+ INITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.
+ This call should combine the intermediate values to yield the final
+ return value. */
     substrait_AggregationPhase_AGGREGATION_PHASE_INTERMEDIATE_TO_RESULT = 4 
 } substrait_AggregationPhase;
 
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_JoinRel_JoinType { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_JoinRel_JoinType_JOIN_TYPE_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_JoinRel_JoinType_JOIN_TYPE_INNER = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_JoinRel_JoinType_JOIN_TYPE_OUTER = 2, 
+    /* A complete invocation: the function should aggregate the given set of
+ inputs to yield a single return value. This style must be used for
+ aggregate or window functions that are not decomposable. */
     substrait_JoinRel_JoinType_JOIN_TYPE_LEFT = 3, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, generated previously using
+ INITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.
+ This call should combine the intermediate values to yield the final
+ return value. */
     substrait_JoinRel_JoinType_JOIN_TYPE_RIGHT = 4, 
     substrait_JoinRel_JoinType_JOIN_TYPE_SEMI = 5, 
     substrait_JoinRel_JoinType_JOIN_TYPE_ANTI = 6, 
     substrait_JoinRel_JoinType_JOIN_TYPE_SINGLE = 7 
 } substrait_JoinRel_JoinType;
 
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_SetRel_SetOp { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_SetRel_SetOp_SET_OP_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_SetRel_SetOp_SET_OP_MINUS_PRIMARY = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_SetRel_SetOp_SET_OP_MINUS_MULTISET = 2, 
+    /* A complete invocation: the function should aggregate the given set of
+ inputs to yield a single return value. This style must be used for
+ aggregate or window functions that are not decomposable. */
     substrait_SetRel_SetOp_SET_OP_INTERSECTION_PRIMARY = 3, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, generated previously using
+ INITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.
+ This call should combine the intermediate values to yield the final
+ return value. */
     substrait_SetRel_SetOp_SET_OP_INTERSECTION_MULTISET = 4, 
     substrait_SetRel_SetOp_SET_OP_UNION_DISTINCT = 5, 
     substrait_SetRel_SetOp_SET_OP_UNION_ALL = 6 
 } substrait_SetRel_SetOp;
 
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
+typedef enum _substrait_DdlRel_DdlObject { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
+    substrait_DdlRel_DdlObject_DDL_OBJECT_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
+    substrait_DdlRel_DdlObject_DDL_OBJECT_TABLE = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
+    substrait_DdlRel_DdlObject_DDL_OBJECT_VIEW = 2 
+} substrait_DdlRel_DdlObject;
+
+typedef enum _substrait_DdlRel_DdlOp { 
+    substrait_DdlRel_DdlOp_DDL_OP_UNSPECIFIED = 0, 
+    substrait_DdlRel_DdlOp_DDL_OP_CREATE = 1, 
+    substrait_DdlRel_DdlOp_DDL_OP_CREATE_OR_REPLACE = 2, 
+    substrait_DdlRel_DdlOp_DDL_OP_ALTER = 3, 
+    substrait_DdlRel_DdlOp_DDL_OP_DROP = 4, 
+    substrait_DdlRel_DdlOp_DDL_OP_DROP_IF_EXIST = 5 
+} substrait_DdlRel_DdlOp;
+
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
+typedef enum _substrait_WriteRel_WriteOp { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
+    substrait_WriteRel_WriteOp_WRITE_OP_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
+    substrait_WriteRel_WriteOp_WRITE_OP_INSERT = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
+    substrait_WriteRel_WriteOp_WRITE_OP_DELETE = 2, 
+    /* A complete invocation: the function should aggregate the given set of
+ inputs to yield a single return value. This style must be used for
+ aggregate or window functions that are not decomposable. */
+    substrait_WriteRel_WriteOp_WRITE_OP_UPDATE = 3, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, generated previously using
+ INITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.
+ This call should combine the intermediate values to yield the final
+ return value. */
+    substrait_WriteRel_WriteOp_WRITE_OP_CTAS = 4 
+} substrait_WriteRel_WriteOp;
+
+typedef enum _substrait_WriteRel_OutputMode { 
+    substrait_WriteRel_OutputMode_OUTPUT_MODE_UNSPECIFIED = 0, 
+    substrait_WriteRel_OutputMode_OUTPUT_MODE_NO_OUTPUT = 1, 
+    substrait_WriteRel_OutputMode_OUTPUT_MODE_MODIFIED_TUPLES = 2 
+} substrait_WriteRel_OutputMode;
+
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_Expression_Cast_FailureBehavior { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_Expression_Cast_FailureBehavior_FAILURE_BEHAVIOR_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_Expression_Cast_FailureBehavior_FAILURE_BEHAVIOR_RETURN_NULL = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_Expression_Cast_FailureBehavior_FAILURE_BEHAVIOR_THROW_EXCEPTION = 2 
 } substrait_Expression_Cast_FailureBehavior;
 
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_Expression_Subquery_SetPredicate_PredicateOp { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_Expression_Subquery_SetPredicate_PredicateOp_PREDICATE_OP_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_Expression_Subquery_SetPredicate_PredicateOp_PREDICATE_OP_EXISTS = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_Expression_Subquery_SetPredicate_PredicateOp_PREDICATE_OP_UNIQUE = 2 
 } substrait_Expression_Subquery_SetPredicate_PredicateOp;
 
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_Expression_Subquery_SetComparison_ComparisonOp { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_Expression_Subquery_SetComparison_ComparisonOp_COMPARISON_OP_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_Expression_Subquery_SetComparison_ComparisonOp_COMPARISON_OP_EQ = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_Expression_Subquery_SetComparison_ComparisonOp_COMPARISON_OP_NE = 2, 
+    /* A complete invocation: the function should aggregate the given set of
+ inputs to yield a single return value. This style must be used for
+ aggregate or window functions that are not decomposable. */
     substrait_Expression_Subquery_SetComparison_ComparisonOp_COMPARISON_OP_LT = 3, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, generated previously using
+ INITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.
+ This call should combine the intermediate values to yield the final
+ return value. */
     substrait_Expression_Subquery_SetComparison_ComparisonOp_COMPARISON_OP_GT = 4, 
     substrait_Expression_Subquery_SetComparison_ComparisonOp_COMPARISON_OP_LE = 5, 
     substrait_Expression_Subquery_SetComparison_ComparisonOp_COMPARISON_OP_GE = 6 
@@ -70,18 +219,46 @@ typedef enum _substrait_Expression_Subquery_SetComparison_ReductionOp {
     substrait_Expression_Subquery_SetComparison_ReductionOp_REDUCTION_OP_ALL = 2 
 } substrait_Expression_Subquery_SetComparison_ReductionOp;
 
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_SortField_SortDirection { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_SortField_SortDirection_SORT_DIRECTION_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_SortField_SortDirection_SORT_DIRECTION_ASC_NULLS_FIRST = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_SortField_SortDirection_SORT_DIRECTION_ASC_NULLS_LAST = 2, 
+    /* A complete invocation: the function should aggregate the given set of
+ inputs to yield a single return value. This style must be used for
+ aggregate or window functions that are not decomposable. */
     substrait_SortField_SortDirection_SORT_DIRECTION_DESC_NULLS_FIRST = 3, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, generated previously using
+ INITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.
+ This call should combine the intermediate values to yield the final
+ return value. */
     substrait_SortField_SortDirection_SORT_DIRECTION_DESC_NULLS_LAST = 4, 
     substrait_SortField_SortDirection_SORT_DIRECTION_CLUSTERED = 5 
 } substrait_SortField_SortDirection;
 
+/* Describes which part of an aggregation or window function to perform within
+ the context of distributed algorithms. */
 typedef enum _substrait_AggregateFunction_AggregationInvocation { 
+    /* Implies `INTERMEDIATE_TO_RESULT`. */
     substrait_AggregateFunction_AggregationInvocation_AGGREGATION_INVOCATION_UNSPECIFIED = 0, 
+    /* Specifies that the function should be run only up to the point of
+ generating an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_AggregateFunction_AggregationInvocation_AGGREGATION_INVOCATION_ALL = 1, 
+    /* Specifies that the inputs of the aggregate or window function are the
+ intermediate values of the function, and that the output should also be
+ an intermediate value, to be further aggregated later using
+ INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT. */
     substrait_AggregateFunction_AggregationInvocation_AGGREGATION_INVOCATION_DISTINCT = 2 
 } substrait_AggregateFunction_AggregationInvocation;
 
@@ -97,10 +274,16 @@ typedef struct _substrait_AggregateFunction {
     substrait_AggregateFunction_AggregationInvocation *invocation;
     pb_size_t arguments_count;
     struct _substrait_FunctionArgument *arguments;
+    pb_size_t options_count;
+    struct _substrait_FunctionOption *options;
 } substrait_AggregateFunction;
 
+typedef struct _substrait_AggregateFunction_ReferenceRel { 
+    int32_t *subtree_ordinal;
+} substrait_AggregateFunction_ReferenceRel;
+
+/* The argument of a function */
 typedef struct _substrait_AggregateRel { 
-    /* points to a function_anchor defined in this plan */
     struct _substrait_RelCommon *common;
     struct _substrait_Rel *input;
     pb_size_t groupings_count;
@@ -110,7 +293,12 @@ typedef struct _substrait_AggregateRel {
     struct _substrait_extensions_AdvancedExtension *advanced_extension;
 } substrait_AggregateRel;
 
+/* An optional function argument.  Typically used for specifying behavior in
+ invalid or corner cases. */
 typedef struct _substrait_AggregateRel_Grouping { 
+    /* Name of the option to set. If the consumer does not recognize the
+ option, it must reject the plan. The name is matched case-insensitively
+ with option names defined for the function. */
     pb_size_t grouping_expressions_count;
     struct _substrait_Expression *grouping_expressions;
 } substrait_AggregateRel_Grouping;
@@ -123,9 +311,27 @@ typedef struct _substrait_AggregateRel_Measure {
 typedef struct _substrait_CrossRel { 
     struct _substrait_RelCommon *common;
     struct _substrait_Rel *left;
+    /* The columns that will be modified (representing after-image of a schema change) */
     struct _substrait_Rel *right;
+    /* The default values for the columns (representing after-image of a schema change)
+ E.g., in case of an ALTER TABLE that changes some of the column default values, we expect
+ the table_defaults Struct to report a full list of default values reflecting the result of applying
+ the ALTER TABLE operator successfully */
     struct _substrait_extensions_AdvancedExtension *advanced_extension;
 } substrait_CrossRel;
+
+typedef struct _substrait_DdlRel { 
+    pb_size_t which_write_type;
+    union {
+        struct _substrait_NamedObjectWrite *named_object;
+        struct _substrait_ExtensionObject *extension_object;
+    } write_type;
+    struct _substrait_NamedStruct *table_schema;
+    struct _substrait_Expression_Literal_Struct *table_defaults;
+    substrait_DdlRel_DdlObject *object;
+    substrait_DdlRel_DdlOp *op;
+    struct _substrait_Rel *view_definition;
+} substrait_DdlRel;
 
 typedef struct _substrait_ExchangeRel { 
     struct _substrait_RelCommon *common;
@@ -187,7 +393,7 @@ typedef struct _substrait_Expression {
         struct _substrait_Expression_SwitchExpression *switch_expression;
         struct _substrait_Expression_SingularOrList *singular_or_list;
         struct _substrait_Expression_MultiOrList *multi_or_list;
-        struct _substrait_Expression_Enum *enum_;
+        struct _substrait_Expression_Enum *enum;
         struct _substrait_Expression_Cast *cast;
         struct _substrait_Expression_Subquery *subquery;
     } rex_type;
@@ -342,6 +548,8 @@ typedef struct _substrait_Expression_Literal_Struct {
 typedef struct _substrait_Expression_Literal_UserDefined { 
     uint32_t *type_reference;
     struct _substrait_Any *value;
+    pb_size_t type_parameters_count;
+    struct _substrait_Type_Parameter *type_parameters;
 } substrait_Expression_Literal_UserDefined;
 
 typedef struct _substrait_Expression_Literal_VarChar { 
@@ -351,7 +559,7 @@ typedef struct _substrait_Expression_Literal_VarChar {
 
 typedef struct _substrait_Expression_MaskExpression { 
     struct _substrait_Expression_MaskExpression_StructSelect *select;
-    bool *maintain_singular_struct_;
+    bool *maintain_singular_struct;
 } substrait_Expression_MaskExpression;
 
 typedef struct _substrait_Expression_MaskExpression_ListSelect { 
@@ -456,6 +664,8 @@ typedef struct _substrait_Expression_ScalarFunction {
     struct _substrait_Type *output_type;
     pb_size_t arguments_count;
     struct _substrait_FunctionArgument *arguments;
+    pb_size_t options_count;
+    struct _substrait_FunctionOption *options;
 } substrait_Expression_ScalarFunction;
 
 typedef struct _substrait_Expression_SingularOrList { 
@@ -522,6 +732,9 @@ typedef struct _substrait_Expression_WindowFunction {
     struct _substrait_Expression *args;
     pb_size_t arguments_count;
     struct _substrait_FunctionArgument *arguments;
+    substrait_AggregateFunction_AggregationInvocation *invocation;
+    pb_size_t options_count;
+    struct _substrait_FunctionOption *options;
 } substrait_Expression_WindowFunction;
 
 typedef struct _substrait_Expression_WindowFunction_Bound { 
@@ -562,46 +775,80 @@ typedef struct _substrait_ExtensionMultiRel {
     struct _substrait_Any *detail;
 } substrait_ExtensionMultiRel;
 
+typedef struct _substrait_ExtensionObject { 
+    struct _substrait_Any *detail;
+} substrait_ExtensionObject;
+
 typedef struct _substrait_ExtensionSingleRel { 
     struct _substrait_RelCommon *common;
     struct _substrait_Rel *input;
     struct _substrait_Any *detail;
 } substrait_ExtensionSingleRel;
 
-/* The description of a field to sort on (including the direction of sorting and null semantics) */
+/* The operator that modifies the content of a database (operates on 1 table at a time, but tuple-selection/source can be
+ based on joining of multiple tables). */
 typedef struct _substrait_FetchRel { 
     struct _substrait_RelCommon *common;
     struct _substrait_Rel *input;
+    /* The schema of the table (must align with Rel input (e.g., number of leaf fields must match)) */
     int64_t *offset;
+    /* The type of operation to perform */
     int64_t *count;
+    /* The relation that determines the tuples to add/remove/modify
+ the schema must match with table_schema. Default values must be explicitly stated
+ in a ProjectRel at the top of the input. The match must also
+ occur in case of DELETE to ensure multi-engine plans are unequivocal. */
     struct _substrait_extensions_AdvancedExtension *advanced_extension;
 } substrait_FetchRel;
 
+/* An aggregate function. */
 typedef struct _substrait_FilterRel { 
+    /* Points to a function_anchor defined in this plan, which must refer
+ to an aggregate function in the associated YAML file. Required; 0 is
+ considered to be a valid anchor/reference. */
     struct _substrait_RelCommon *common;
+    /* The arguments to be bound to the function. This must have exactly the
+ number of arguments specified in the function definition, and the
+ argument types must also match exactly:
+
+  - Value arguments must be bound using FunctionArgument.value, and
+    the expression in that must yield a value of a type that a function
+    overload is defined for.
+  - Type arguments must be bound using FunctionArgument.type, and a
+    function overload must be defined for that type.
+  - Enum arguments must be bound using FunctionArgument.enum
+    followed by Enum.specified, with a string that case-insensitively
+    matches one of the allowed options.
+  - Optional enum arguments must be bound using FunctionArgument.enum
+    followed by either Enum.specified or Enum.unspecified. If specified,
+    the string must case-insensitively match one of the allowed options. */
     struct _substrait_Rel *input;
+    /* Options to specify behavior for corner cases, or leave behavior
+ unspecified if the consumer does not need specific behavior in these
+ cases. */
     struct _substrait_Expression *condition;
+    /* Must be set to the return type of the function, exactly as derived
+ using the declaration in the extension. */
     struct _substrait_extensions_AdvancedExtension *advanced_extension;
 } substrait_FilterRel;
 
 typedef struct _substrait_FunctionArgument { 
     pb_size_t which_arg_type;
     union {
-        struct _substrait_FunctionArgument_Enum *enum_;
+        char *enum_;
         struct _substrait_Type *type;
         struct _substrait_Expression *value;
     } arg_type;
 } substrait_FunctionArgument;
 
-typedef struct _substrait_FunctionArgument_Enum { 
-    pb_size_t which_enum_kind;
-    union {
-        char *specified;
-        struct _substrait_Any *unspecified;
-    } enum_kind;
-} substrait_FunctionArgument_Enum;
+typedef struct _substrait_FunctionOption { 
+    char *name;
+    pb_size_t preference_count;
+    char **preference;
+} substrait_FunctionOption;
 
-/* The argument of a function */
+/* A stub type that can be used to extend/introduce new table types outside
+ the specification. */
 typedef struct _substrait_JoinRel { 
     struct _substrait_RelCommon *common;
     struct _substrait_Rel *left;
@@ -612,8 +859,16 @@ typedef struct _substrait_JoinRel {
     struct _substrait_extensions_AdvancedExtension *advanced_extension;
 } substrait_JoinRel;
 
-/* A relation (used internally in a plan) */
+typedef struct _substrait_NamedObjectWrite { 
+    pb_size_t names_count;
+    char **names;
+    struct _substrait_extensions_AdvancedExtension *advanced_extension;
+} substrait_NamedObjectWrite;
+
+/* A base object for writing (e.g., a table or a view). */
 typedef struct _substrait_ProjectRel { 
+    /* The list of string is used to represent namespacing (e.g., mydb.mytable).
+ This assumes shared catalog between systems exchanging a message. */
     struct _substrait_RelCommon *common;
     struct _substrait_Rel *input;
     pb_size_t expressions_count;
@@ -628,7 +883,6 @@ typedef struct _substrait_ReadRel {
     struct _substrait_NamedStruct *base_schema;
     /* A list of expression grouping that the aggregation measured should be calculated for. */
     struct _substrait_Expression *filter;
-    /* A list of one or more aggregate expressions along with an optional filter. */
     struct _substrait_Expression_MaskExpression *projection;
     pb_size_t which_read_type;
     union {
@@ -638,6 +892,8 @@ typedef struct _substrait_ReadRel {
         struct _substrait_ReadRel_ExtensionTable *extension_table;
     } read_type;
     struct _substrait_extensions_AdvancedExtension *advanced_extension;
+    /* A list of one or more aggregate expressions along with an optional filter. */
+    struct _substrait_Expression *best_effort_filter;
 } substrait_ReadRel;
 
 /* The relational set operators (intersection/union/etc..) */
@@ -670,6 +926,7 @@ typedef struct _substrait_ReadRel_LocalFiles_FileOrFiles {
         struct _substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions *arrow;
         struct _substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions *orc;
         struct _substrait_Any *extension;
+        struct _substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions *dwrf;
     } file_format;
 } substrait_ReadRel_LocalFiles_FileOrFiles;
 
@@ -677,6 +934,11 @@ typedef struct _substrait_ReadRel_LocalFiles_FileOrFiles {
 typedef struct _substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions { 
     char dummy_field;
 } substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions;
+
+/* A relation (used internally in a plan) */
+typedef struct _substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions { 
+    char dummy_field;
+} substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions;
 
 /* A relation with output field names.
 
@@ -787,6 +1049,7 @@ typedef struct _substrait_SortField {
     } sort_kind;
 } substrait_SortField;
 
+/* The description of a field to sort on (including the direction of sorting and null semantics) */
 typedef struct _substrait_SortRel { 
     struct _substrait_RelCommon *common;
     struct _substrait_Rel *input;
@@ -794,6 +1057,18 @@ typedef struct _substrait_SortRel {
     struct _substrait_SortField *sorts;
     struct _substrait_extensions_AdvancedExtension *advanced_extension;
 } substrait_SortRel;
+
+typedef struct _substrait_WriteRel { 
+    pb_size_t which_write_type;
+    union {
+        struct _substrait_NamedObjectWrite *named_table;
+        struct _substrait_ExtensionObject *extension_table;
+    } write_type;
+    struct _substrait_NamedStruct *table_schema;
+    substrait_WriteRel_WriteOp *op;
+    struct _substrait_Rel *input;
+    substrait_WriteRel_OutputMode *output;
+} substrait_WriteRel;
 
 
 /* Helper constants for enums */
@@ -808,6 +1083,22 @@ typedef struct _substrait_SortRel {
 #define _substrait_SetRel_SetOp_MIN substrait_SetRel_SetOp_SET_OP_UNSPECIFIED
 #define _substrait_SetRel_SetOp_MAX substrait_SetRel_SetOp_SET_OP_UNION_ALL
 #define _substrait_SetRel_SetOp_ARRAYSIZE ((substrait_SetRel_SetOp)(substrait_SetRel_SetOp_SET_OP_UNION_ALL+1))
+
+#define _substrait_DdlRel_DdlObject_MIN substrait_DdlRel_DdlObject_DDL_OBJECT_UNSPECIFIED
+#define _substrait_DdlRel_DdlObject_MAX substrait_DdlRel_DdlObject_DDL_OBJECT_VIEW
+#define _substrait_DdlRel_DdlObject_ARRAYSIZE ((substrait_DdlRel_DdlObject)(substrait_DdlRel_DdlObject_DDL_OBJECT_VIEW+1))
+
+#define _substrait_DdlRel_DdlOp_MIN substrait_DdlRel_DdlOp_DDL_OP_UNSPECIFIED
+#define _substrait_DdlRel_DdlOp_MAX substrait_DdlRel_DdlOp_DDL_OP_DROP_IF_EXIST
+#define _substrait_DdlRel_DdlOp_ARRAYSIZE ((substrait_DdlRel_DdlOp)(substrait_DdlRel_DdlOp_DDL_OP_DROP_IF_EXIST+1))
+
+#define _substrait_WriteRel_WriteOp_MIN substrait_WriteRel_WriteOp_WRITE_OP_UNSPECIFIED
+#define _substrait_WriteRel_WriteOp_MAX substrait_WriteRel_WriteOp_WRITE_OP_CTAS
+#define _substrait_WriteRel_WriteOp_ARRAYSIZE ((substrait_WriteRel_WriteOp)(substrait_WriteRel_WriteOp_WRITE_OP_CTAS+1))
+
+#define _substrait_WriteRel_OutputMode_MIN substrait_WriteRel_OutputMode_OUTPUT_MODE_UNSPECIFIED
+#define _substrait_WriteRel_OutputMode_MAX substrait_WriteRel_OutputMode_OUTPUT_MODE_MODIFIED_TUPLES
+#define _substrait_WriteRel_OutputMode_ARRAYSIZE ((substrait_WriteRel_OutputMode)(substrait_WriteRel_OutputMode_OUTPUT_MODE_MODIFIED_TUPLES+1))
 
 #define _substrait_Expression_Cast_FailureBehavior_MIN substrait_Expression_Cast_FailureBehavior_FAILURE_BEHAVIOR_UNSPECIFIED
 #define _substrait_Expression_Cast_FailureBehavior_MAX substrait_Expression_Cast_FailureBehavior_FAILURE_BEHAVIOR_THROW_EXCEPTION
@@ -845,7 +1136,7 @@ extern "C" {
 #define substrait_RelCommon_Hint_init_default    {NULL, NULL, NULL}
 #define substrait_RelCommon_Hint_Stats_init_default {NULL, NULL, NULL}
 #define substrait_RelCommon_Hint_RuntimeConstraint_init_default {NULL}
-#define substrait_ReadRel_init_default           {NULL, NULL, NULL, NULL, 0, {NULL}, NULL}
+#define substrait_ReadRel_init_default           {NULL, NULL, NULL, NULL, 0, {NULL}, NULL, NULL}
 #define substrait_ReadRel_NamedTable_init_default {0, NULL, NULL}
 #define substrait_ReadRel_VirtualTable_init_default {0, NULL}
 #define substrait_ReadRel_ExtensionTable_init_default {NULL}
@@ -854,6 +1145,7 @@ extern "C" {
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions_init_default {0}
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions_init_default {0}
 #define substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_init_default {0}
+#define substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_init_default {0}
 #define substrait_ProjectRel_init_default        {NULL, NULL, 0, NULL, NULL}
 #define substrait_JoinRel_init_default           {NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 #define substrait_CrossRel_init_default          {NULL, NULL, NULL, NULL}
@@ -876,8 +1168,12 @@ extern "C" {
 #define substrait_ExchangeRel_ExchangeTarget_init_default {0, NULL, 0, {NULL}}
 #define substrait_RelRoot_init_default           {NULL, 0, NULL}
 #define substrait_Rel_init_default               {0, {NULL}}
+#define substrait_NamedObjectWrite_init_default  {0, NULL, NULL}
+#define substrait_ExtensionObject_init_default   {NULL}
+#define substrait_DdlRel_init_default            {0, {NULL}, NULL, NULL, NULL, NULL, NULL}
+#define substrait_WriteRel_init_default          {0, {NULL}, NULL, NULL, NULL, NULL}
 #define substrait_FunctionArgument_init_default  {0, {NULL}}
-#define substrait_FunctionArgument_Enum_init_default {0, {NULL}}
+#define substrait_FunctionOption_init_default    {NULL, 0, NULL}
 #define substrait_Expression_init_default        {0, {NULL}}
 #define substrait_Expression_Enum_init_default   {0, {NULL}}
 #define substrait_Expression_Enum_Empty_init_default {0}
@@ -890,9 +1186,9 @@ extern "C" {
 #define substrait_Expression_Literal_IntervalDayToSecond_init_default {NULL, NULL, NULL}
 #define substrait_Expression_Literal_Struct_init_default {0, NULL}
 #define substrait_Expression_Literal_List_init_default {0, NULL}
-#define substrait_Expression_Literal_UserDefined_init_default {NULL, NULL}
-#define substrait_Expression_ScalarFunction_init_default {NULL, 0, NULL, NULL, 0, NULL}
-#define substrait_Expression_WindowFunction_init_default {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL}
+#define substrait_Expression_Literal_UserDefined_init_default {NULL, NULL, 0, NULL}
+#define substrait_Expression_ScalarFunction_init_default {NULL, 0, NULL, NULL, 0, NULL, 0, NULL}
+#define substrait_Expression_WindowFunction_init_default {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL, 0, NULL}
 #define substrait_Expression_WindowFunction_Bound_init_default {0, {NULL}}
 #define substrait_Expression_WindowFunction_Bound_Preceding_init_default {NULL}
 #define substrait_Expression_WindowFunction_Bound_Following_init_default {NULL}
@@ -933,14 +1229,15 @@ extern "C" {
 #define substrait_Expression_Subquery_SetPredicate_init_default {NULL, NULL}
 #define substrait_Expression_Subquery_SetComparison_init_default {NULL, NULL, NULL, NULL}
 #define substrait_SortField_init_default         {NULL, 0, {NULL}}
-#define substrait_AggregateFunction_init_default {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, 0, NULL}
+#define substrait_AggregateFunction_init_default {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL}
+#define substrait_AggregateFunction_ReferenceRel_init_default {NULL}
 #define substrait_RelCommon_init_zero            {0, {NULL}, NULL, NULL}
 #define substrait_RelCommon_Direct_init_zero     {0}
 #define substrait_RelCommon_Emit_init_zero       {0, NULL}
 #define substrait_RelCommon_Hint_init_zero       {NULL, NULL, NULL}
 #define substrait_RelCommon_Hint_Stats_init_zero {NULL, NULL, NULL}
 #define substrait_RelCommon_Hint_RuntimeConstraint_init_zero {NULL}
-#define substrait_ReadRel_init_zero              {NULL, NULL, NULL, NULL, 0, {NULL}, NULL}
+#define substrait_ReadRel_init_zero              {NULL, NULL, NULL, NULL, 0, {NULL}, NULL, NULL}
 #define substrait_ReadRel_NamedTable_init_zero   {0, NULL, NULL}
 #define substrait_ReadRel_VirtualTable_init_zero {0, NULL}
 #define substrait_ReadRel_ExtensionTable_init_zero {NULL}
@@ -949,6 +1246,7 @@ extern "C" {
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions_init_zero {0}
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions_init_zero {0}
 #define substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_init_zero {0}
+#define substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_init_zero {0}
 #define substrait_ProjectRel_init_zero           {NULL, NULL, 0, NULL, NULL}
 #define substrait_JoinRel_init_zero              {NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 #define substrait_CrossRel_init_zero             {NULL, NULL, NULL, NULL}
@@ -971,8 +1269,12 @@ extern "C" {
 #define substrait_ExchangeRel_ExchangeTarget_init_zero {0, NULL, 0, {NULL}}
 #define substrait_RelRoot_init_zero              {NULL, 0, NULL}
 #define substrait_Rel_init_zero                  {0, {NULL}}
+#define substrait_NamedObjectWrite_init_zero     {0, NULL, NULL}
+#define substrait_ExtensionObject_init_zero      {NULL}
+#define substrait_DdlRel_init_zero               {0, {NULL}, NULL, NULL, NULL, NULL, NULL}
+#define substrait_WriteRel_init_zero             {0, {NULL}, NULL, NULL, NULL, NULL}
 #define substrait_FunctionArgument_init_zero     {0, {NULL}}
-#define substrait_FunctionArgument_Enum_init_zero {0, {NULL}}
+#define substrait_FunctionOption_init_zero       {NULL, 0, NULL}
 #define substrait_Expression_init_zero           {0, {NULL}}
 #define substrait_Expression_Enum_init_zero      {0, {NULL}}
 #define substrait_Expression_Enum_Empty_init_zero {0}
@@ -985,9 +1287,9 @@ extern "C" {
 #define substrait_Expression_Literal_IntervalDayToSecond_init_zero {NULL, NULL, NULL}
 #define substrait_Expression_Literal_Struct_init_zero {0, NULL}
 #define substrait_Expression_Literal_List_init_zero {0, NULL}
-#define substrait_Expression_Literal_UserDefined_init_zero {NULL, NULL}
-#define substrait_Expression_ScalarFunction_init_zero {NULL, 0, NULL, NULL, 0, NULL}
-#define substrait_Expression_WindowFunction_init_zero {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL}
+#define substrait_Expression_Literal_UserDefined_init_zero {NULL, NULL, 0, NULL}
+#define substrait_Expression_ScalarFunction_init_zero {NULL, 0, NULL, NULL, 0, NULL, 0, NULL}
+#define substrait_Expression_WindowFunction_init_zero {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL, 0, NULL}
 #define substrait_Expression_WindowFunction_Bound_init_zero {0, {NULL}}
 #define substrait_Expression_WindowFunction_Bound_Preceding_init_zero {NULL}
 #define substrait_Expression_WindowFunction_Bound_Following_init_zero {NULL}
@@ -1028,7 +1330,8 @@ extern "C" {
 #define substrait_Expression_Subquery_SetPredicate_init_zero {NULL, NULL}
 #define substrait_Expression_Subquery_SetComparison_init_zero {NULL, NULL, NULL, NULL}
 #define substrait_SortField_init_zero            {NULL, 0, {NULL}}
-#define substrait_AggregateFunction_init_zero    {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, 0, NULL}
+#define substrait_AggregateFunction_init_zero    {NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL}
+#define substrait_AggregateFunction_ReferenceRel_init_zero {NULL}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define substrait_AggregateFunction_function_reference_tag 1
@@ -1038,6 +1341,8 @@ extern "C" {
 #define substrait_AggregateFunction_output_type_tag 5
 #define substrait_AggregateFunction_invocation_tag 6
 #define substrait_AggregateFunction_arguments_tag 7
+#define substrait_AggregateFunction_options_tag  8
+#define substrait_AggregateFunction_ReferenceRel_subtree_ordinal_tag 1
 #define substrait_AggregateRel_common_tag        1
 #define substrait_AggregateRel_input_tag         2
 #define substrait_AggregateRel_groupings_tag     3
@@ -1050,6 +1355,13 @@ extern "C" {
 #define substrait_CrossRel_left_tag              2
 #define substrait_CrossRel_right_tag             3
 #define substrait_CrossRel_advanced_extension_tag 10
+#define substrait_DdlRel_named_object_tag        1
+#define substrait_DdlRel_extension_object_tag    2
+#define substrait_DdlRel_table_schema_tag        3
+#define substrait_DdlRel_table_defaults_tag      4
+#define substrait_DdlRel_object_tag              5
+#define substrait_DdlRel_op_tag                  6
+#define substrait_DdlRel_view_definition_tag     7
 #define substrait_ExchangeRel_common_tag         1
 #define substrait_ExchangeRel_input_tag          2
 #define substrait_ExchangeRel_partition_count_tag 3
@@ -1076,7 +1388,7 @@ extern "C" {
 #define substrait_Expression_switch_expression_tag 7
 #define substrait_Expression_singular_or_list_tag 8
 #define substrait_Expression_multi_or_list_tag   9
-#define substrait_Expression_enum__tag           10
+#define substrait_Expression_enum_tag            10
 #define substrait_Expression_cast_tag            11
 #define substrait_Expression_subquery_tag        12
 #define substrait_Expression_Cast_type_tag       1
@@ -1146,10 +1458,11 @@ extern "C" {
 #define substrait_Expression_Literal_Struct_fields_tag 1
 #define substrait_Expression_Literal_UserDefined_type_reference_tag 1
 #define substrait_Expression_Literal_UserDefined_value_tag 2
+#define substrait_Expression_Literal_UserDefined_type_parameters_tag 3
 #define substrait_Expression_Literal_VarChar_value_tag 1
 #define substrait_Expression_Literal_VarChar_length_tag 2
 #define substrait_Expression_MaskExpression_select_tag 1
-#define substrait_Expression_MaskExpression_maintain_singular_struct__tag 2
+#define substrait_Expression_MaskExpression_maintain_singular_struct_tag 2
 #define substrait_Expression_MaskExpression_ListSelect_selection_tag 1
 #define substrait_Expression_MaskExpression_ListSelect_child_tag 2
 #define substrait_Expression_MaskExpression_ListSelect_ListSelectItem_item_tag 1
@@ -1184,6 +1497,7 @@ extern "C" {
 #define substrait_Expression_ScalarFunction_args_tag 2
 #define substrait_Expression_ScalarFunction_output_type_tag 3
 #define substrait_Expression_ScalarFunction_arguments_tag 4
+#define substrait_Expression_ScalarFunction_options_tag 5
 #define substrait_Expression_SingularOrList_value_tag 1
 #define substrait_Expression_SingularOrList_options_tag 2
 #define substrait_Expression_Subquery_scalar_tag 1
@@ -1213,6 +1527,8 @@ extern "C" {
 #define substrait_Expression_WindowFunction_output_type_tag 7
 #define substrait_Expression_WindowFunction_args_tag 8
 #define substrait_Expression_WindowFunction_arguments_tag 9
+#define substrait_Expression_WindowFunction_invocation_tag 10
+#define substrait_Expression_WindowFunction_options_tag 11
 #define substrait_Expression_WindowFunction_Bound_preceding_tag 1
 #define substrait_Expression_WindowFunction_Bound_following_tag 2
 #define substrait_Expression_WindowFunction_Bound_current_row_tag 3
@@ -1224,6 +1540,7 @@ extern "C" {
 #define substrait_ExtensionMultiRel_common_tag   1
 #define substrait_ExtensionMultiRel_inputs_tag   2
 #define substrait_ExtensionMultiRel_detail_tag   3
+#define substrait_ExtensionObject_detail_tag     1
 #define substrait_ExtensionSingleRel_common_tag  1
 #define substrait_ExtensionSingleRel_input_tag   2
 #define substrait_ExtensionSingleRel_detail_tag  3
@@ -1239,8 +1556,8 @@ extern "C" {
 #define substrait_FunctionArgument_enum__tag     1
 #define substrait_FunctionArgument_type_tag      2
 #define substrait_FunctionArgument_value_tag     3
-#define substrait_FunctionArgument_Enum_specified_tag 1
-#define substrait_FunctionArgument_Enum_unspecified_tag 2
+#define substrait_FunctionOption_name_tag        1
+#define substrait_FunctionOption_preference_tag  2
 #define substrait_JoinRel_common_tag             1
 #define substrait_JoinRel_left_tag               2
 #define substrait_JoinRel_right_tag              3
@@ -1248,6 +1565,8 @@ extern "C" {
 #define substrait_JoinRel_post_join_filter_tag   5
 #define substrait_JoinRel_type_tag               6
 #define substrait_JoinRel_advanced_extension_tag 10
+#define substrait_NamedObjectWrite_names_tag     1
+#define substrait_NamedObjectWrite_advanced_extension_tag 10
 #define substrait_ProjectRel_common_tag          1
 #define substrait_ProjectRel_input_tag           2
 #define substrait_ProjectRel_expressions_tag     3
@@ -1261,6 +1580,7 @@ extern "C" {
 #define substrait_ReadRel_named_table_tag        7
 #define substrait_ReadRel_extension_table_tag    8
 #define substrait_ReadRel_advanced_extension_tag 10
+#define substrait_ReadRel_best_effort_filter_tag 11
 #define substrait_ReadRel_ExtensionTable_detail_tag 1
 #define substrait_ReadRel_LocalFiles_items_tag   1
 #define substrait_ReadRel_LocalFiles_advanced_extension_tag 10
@@ -1275,6 +1595,7 @@ extern "C" {
 #define substrait_ReadRel_LocalFiles_FileOrFiles_arrow_tag 10
 #define substrait_ReadRel_LocalFiles_FileOrFiles_orc_tag 11
 #define substrait_ReadRel_LocalFiles_FileOrFiles_extension_tag 12
+#define substrait_ReadRel_LocalFiles_FileOrFiles_dwrf_tag 13
 #define substrait_ReadRel_NamedTable_names_tag   1
 #define substrait_ReadRel_NamedTable_advanced_extension_tag 10
 #define substrait_ReadRel_VirtualTable_values_tag 1
@@ -1315,6 +1636,12 @@ extern "C" {
 #define substrait_SortRel_input_tag              2
 #define substrait_SortRel_sorts_tag              3
 #define substrait_SortRel_advanced_extension_tag 10
+#define substrait_WriteRel_named_table_tag       1
+#define substrait_WriteRel_extension_table_tag   2
+#define substrait_WriteRel_table_schema_tag      3
+#define substrait_WriteRel_op_tag                4
+#define substrait_WriteRel_input_tag             5
+#define substrait_WriteRel_output_tag            6
 
 /* Struct field encoding specification for nanopb */
 #define substrait_RelCommon_FIELDLIST(X, a) \
@@ -1372,7 +1699,8 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,virtual_table,read_type.virtual_ta
 X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,local_files,read_type.local_files),   6) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,named_table,read_type.named_table),   7) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (read_type,extension_table,read_type.extension_table),   8) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
+X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  best_effort_filter,  11)
 #define substrait_ReadRel_CALLBACK NULL
 #define substrait_ReadRel_DEFAULT NULL
 #define substrait_ReadRel_common_MSGTYPE substrait_RelCommon
@@ -1384,6 +1712,7 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
 #define substrait_ReadRel_read_type_named_table_MSGTYPE substrait_ReadRel_NamedTable
 #define substrait_ReadRel_read_type_extension_table_MSGTYPE substrait_ReadRel_ExtensionTable
 #define substrait_ReadRel_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
+#define substrait_ReadRel_best_effort_filter_MSGTYPE substrait_Expression
 
 #define substrait_ReadRel_NamedTable_FIELDLIST(X, a) \
 X(a, POINTER,  REPEATED, STRING,   names,             1) \
@@ -1423,13 +1752,15 @@ X(a, POINTER,  SINGULAR, UINT64,   length,            8) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (file_format,parquet,file_format.parquet),   9) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (file_format,arrow,file_format.arrow),  10) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (file_format,orc,file_format.orc),  11) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (file_format,extension,file_format.extension),  12)
+X(a, POINTER,  ONEOF,    MESSAGE,  (file_format,extension,file_format.extension),  12) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (file_format,dwrf,file_format.dwrf),  13)
 #define substrait_ReadRel_LocalFiles_FileOrFiles_CALLBACK NULL
 #define substrait_ReadRel_LocalFiles_FileOrFiles_DEFAULT NULL
 #define substrait_ReadRel_LocalFiles_FileOrFiles_file_format_parquet_MSGTYPE substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions
 #define substrait_ReadRel_LocalFiles_FileOrFiles_file_format_arrow_MSGTYPE substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions
 #define substrait_ReadRel_LocalFiles_FileOrFiles_file_format_orc_MSGTYPE substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions
 #define substrait_ReadRel_LocalFiles_FileOrFiles_file_format_extension_MSGTYPE substrait_Any
+#define substrait_ReadRel_LocalFiles_FileOrFiles_file_format_dwrf_MSGTYPE substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions
 
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions_FIELDLIST(X, a) \
 
@@ -1445,6 +1776,11 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (file_format,extension,file_format.extension)
 
 #define substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_CALLBACK NULL
 #define substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_DEFAULT NULL
+
+#define substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_FIELDLIST(X, a) \
+
+#define substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_CALLBACK NULL
+#define substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_DEFAULT NULL
 
 #define substrait_ProjectRel_FIELDLIST(X, a) \
 X(a, POINTER,  OPTIONAL, MESSAGE,  common,            1) \
@@ -1685,22 +2021,63 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (rel_type,cross,rel_type.cross),  12)
 #define substrait_Rel_rel_type_extension_leaf_MSGTYPE substrait_ExtensionLeafRel
 #define substrait_Rel_rel_type_cross_MSGTYPE substrait_CrossRel
 
+#define substrait_NamedObjectWrite_FIELDLIST(X, a) \
+X(a, POINTER,  REPEATED, STRING,   names,             1) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  advanced_extension,  10)
+#define substrait_NamedObjectWrite_CALLBACK NULL
+#define substrait_NamedObjectWrite_DEFAULT NULL
+#define substrait_NamedObjectWrite_advanced_extension_MSGTYPE substrait_extensions_AdvancedExtension
+
+#define substrait_ExtensionObject_FIELDLIST(X, a) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  detail,            1)
+#define substrait_ExtensionObject_CALLBACK NULL
+#define substrait_ExtensionObject_DEFAULT NULL
+#define substrait_ExtensionObject_detail_MSGTYPE substrait_Any
+
+#define substrait_DdlRel_FIELDLIST(X, a) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (write_type,named_object,write_type.named_object),   1) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (write_type,extension_object,write_type.extension_object),   2) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  table_schema,      3) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  table_defaults,    4) \
+X(a, POINTER,  SINGULAR, UENUM,    object,            5) \
+X(a, POINTER,  SINGULAR, UENUM,    op,                6) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  view_definition,   7)
+#define substrait_DdlRel_CALLBACK NULL
+#define substrait_DdlRel_DEFAULT NULL
+#define substrait_DdlRel_write_type_named_object_MSGTYPE substrait_NamedObjectWrite
+#define substrait_DdlRel_write_type_extension_object_MSGTYPE substrait_ExtensionObject
+#define substrait_DdlRel_table_schema_MSGTYPE substrait_NamedStruct
+#define substrait_DdlRel_table_defaults_MSGTYPE substrait_Expression_Literal_Struct
+#define substrait_DdlRel_view_definition_MSGTYPE substrait_Rel
+
+#define substrait_WriteRel_FIELDLIST(X, a) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (write_type,named_table,write_type.named_table),   1) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (write_type,extension_table,write_type.extension_table),   2) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  table_schema,      3) \
+X(a, POINTER,  SINGULAR, UENUM,    op,                4) \
+X(a, POINTER,  OPTIONAL, MESSAGE,  input,             5) \
+X(a, POINTER,  SINGULAR, UENUM,    output,            6)
+#define substrait_WriteRel_CALLBACK NULL
+#define substrait_WriteRel_DEFAULT NULL
+#define substrait_WriteRel_write_type_named_table_MSGTYPE substrait_NamedObjectWrite
+#define substrait_WriteRel_write_type_extension_table_MSGTYPE substrait_ExtensionObject
+#define substrait_WriteRel_table_schema_MSGTYPE substrait_NamedStruct
+#define substrait_WriteRel_input_MSGTYPE substrait_Rel
+
 #define substrait_FunctionArgument_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (arg_type,enum_,arg_type.enum_),   1) \
+X(a, POINTER,  ONEOF,    STRING,   (arg_type,enum_,arg_type.enum_),   1) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (arg_type,type,arg_type.type),   2) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (arg_type,value,arg_type.value),   3)
 #define substrait_FunctionArgument_CALLBACK NULL
 #define substrait_FunctionArgument_DEFAULT NULL
-#define substrait_FunctionArgument_arg_type_enum__MSGTYPE substrait_FunctionArgument_Enum
 #define substrait_FunctionArgument_arg_type_type_MSGTYPE substrait_Type
 #define substrait_FunctionArgument_arg_type_value_MSGTYPE substrait_Expression
 
-#define substrait_FunctionArgument_Enum_FIELDLIST(X, a) \
-X(a, POINTER,  ONEOF,    STRING,   (enum_kind,specified,enum_kind.specified),   1) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (enum_kind,unspecified,enum_kind.unspecified),   2)
-#define substrait_FunctionArgument_Enum_CALLBACK NULL
-#define substrait_FunctionArgument_Enum_DEFAULT NULL
-#define substrait_FunctionArgument_Enum_enum_kind_unspecified_MSGTYPE substrait_Any
+#define substrait_FunctionOption_FIELDLIST(X, a) \
+X(a, POINTER,  SINGULAR, STRING,   name,              1) \
+X(a, POINTER,  REPEATED, STRING,   preference,        2)
+#define substrait_FunctionOption_CALLBACK NULL
+#define substrait_FunctionOption_DEFAULT NULL
 
 #define substrait_Expression_FIELDLIST(X, a) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,literal,rex_type.literal),   1) \
@@ -1711,7 +2088,7 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,if_then,rex_type.if_then),   6) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,switch_expression,rex_type.switch_expression),   7) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,singular_or_list,rex_type.singular_or_list),   8) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,multi_or_list,rex_type.multi_or_list),   9) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,enum_,rex_type.enum_),  10) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,enum,rex_type.enum),  10) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,cast,rex_type.cast),  11) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,subquery,rex_type.subquery),  12)
 #define substrait_Expression_CALLBACK NULL
@@ -1724,7 +2101,7 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,subquery,rex_type.subquery),  12)
 #define substrait_Expression_rex_type_switch_expression_MSGTYPE substrait_Expression_SwitchExpression
 #define substrait_Expression_rex_type_singular_or_list_MSGTYPE substrait_Expression_SingularOrList
 #define substrait_Expression_rex_type_multi_or_list_MSGTYPE substrait_Expression_MultiOrList
-#define substrait_Expression_rex_type_enum__MSGTYPE substrait_Expression_Enum
+#define substrait_Expression_rex_type_enum_MSGTYPE substrait_Expression_Enum
 #define substrait_Expression_rex_type_cast_MSGTYPE substrait_Expression_Cast
 #define substrait_Expression_rex_type_subquery_MSGTYPE substrait_Expression_Subquery
 
@@ -1838,21 +2215,25 @@ X(a, POINTER,  REPEATED, MESSAGE,  values,            1)
 
 #define substrait_Expression_Literal_UserDefined_FIELDLIST(X, a) \
 X(a, POINTER,  SINGULAR, UINT32,   type_reference,    1) \
-X(a, POINTER,  OPTIONAL, MESSAGE,  value,             2)
+X(a, POINTER,  OPTIONAL, MESSAGE,  value,             2) \
+X(a, POINTER,  REPEATED, MESSAGE,  type_parameters,   3)
 #define substrait_Expression_Literal_UserDefined_CALLBACK NULL
 #define substrait_Expression_Literal_UserDefined_DEFAULT NULL
 #define substrait_Expression_Literal_UserDefined_value_MSGTYPE substrait_Any
+#define substrait_Expression_Literal_UserDefined_type_parameters_MSGTYPE substrait_Type_Parameter
 
 #define substrait_Expression_ScalarFunction_FIELDLIST(X, a) \
 X(a, POINTER,  SINGULAR, UINT32,   function_reference,   1) \
 X(a, POINTER,  REPEATED, MESSAGE,  args,              2) \
 X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       3) \
-X(a, POINTER,  REPEATED, MESSAGE,  arguments,         4)
+X(a, POINTER,  REPEATED, MESSAGE,  arguments,         4) \
+X(a, POINTER,  REPEATED, MESSAGE,  options,           5)
 #define substrait_Expression_ScalarFunction_CALLBACK NULL
 #define substrait_Expression_ScalarFunction_DEFAULT NULL
 #define substrait_Expression_ScalarFunction_args_MSGTYPE substrait_Expression
 #define substrait_Expression_ScalarFunction_output_type_MSGTYPE substrait_Type
 #define substrait_Expression_ScalarFunction_arguments_MSGTYPE substrait_FunctionArgument
+#define substrait_Expression_ScalarFunction_options_MSGTYPE substrait_FunctionOption
 
 #define substrait_Expression_WindowFunction_FIELDLIST(X, a) \
 X(a, POINTER,  SINGULAR, UINT32,   function_reference,   1) \
@@ -1863,7 +2244,9 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  lower_bound,       5) \
 X(a, POINTER,  SINGULAR, UENUM,    phase,             6) \
 X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       7) \
 X(a, POINTER,  REPEATED, MESSAGE,  args,              8) \
-X(a, POINTER,  REPEATED, MESSAGE,  arguments,         9)
+X(a, POINTER,  REPEATED, MESSAGE,  arguments,         9) \
+X(a, POINTER,  SINGULAR, UENUM,    invocation,       10) \
+X(a, POINTER,  REPEATED, MESSAGE,  options,          11)
 #define substrait_Expression_WindowFunction_CALLBACK NULL
 #define substrait_Expression_WindowFunction_DEFAULT NULL
 #define substrait_Expression_WindowFunction_partitions_MSGTYPE substrait_Expression
@@ -1873,6 +2256,7 @@ X(a, POINTER,  REPEATED, MESSAGE,  arguments,         9)
 #define substrait_Expression_WindowFunction_output_type_MSGTYPE substrait_Type
 #define substrait_Expression_WindowFunction_args_MSGTYPE substrait_Expression
 #define substrait_Expression_WindowFunction_arguments_MSGTYPE substrait_FunctionArgument
+#define substrait_Expression_WindowFunction_options_MSGTYPE substrait_FunctionOption
 
 #define substrait_Expression_WindowFunction_Bound_FIELDLIST(X, a) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (kind,preceding,kind.preceding),   1) \
@@ -2029,7 +2413,7 @@ X(a, POINTER,  OPTIONAL, MESSAGE,  child,             2)
 
 #define substrait_Expression_MaskExpression_FIELDLIST(X, a) \
 X(a, POINTER,  OPTIONAL, MESSAGE,  select,            1) \
-X(a, POINTER,  SINGULAR, BOOL,     maintain_singular_struct_,   2)
+X(a, POINTER,  SINGULAR, BOOL,     maintain_singular_struct,   2)
 #define substrait_Expression_MaskExpression_CALLBACK NULL
 #define substrait_Expression_MaskExpression_DEFAULT NULL
 #define substrait_Expression_MaskExpression_select_MSGTYPE substrait_Expression_MaskExpression_StructSelect
@@ -2186,13 +2570,20 @@ X(a, POINTER,  REPEATED, MESSAGE,  sorts,             3) \
 X(a, POINTER,  SINGULAR, UENUM,    phase,             4) \
 X(a, POINTER,  OPTIONAL, MESSAGE,  output_type,       5) \
 X(a, POINTER,  SINGULAR, UENUM,    invocation,        6) \
-X(a, POINTER,  REPEATED, MESSAGE,  arguments,         7)
+X(a, POINTER,  REPEATED, MESSAGE,  arguments,         7) \
+X(a, POINTER,  REPEATED, MESSAGE,  options,           8)
 #define substrait_AggregateFunction_CALLBACK NULL
 #define substrait_AggregateFunction_DEFAULT NULL
 #define substrait_AggregateFunction_args_MSGTYPE substrait_Expression
 #define substrait_AggregateFunction_sorts_MSGTYPE substrait_SortField
 #define substrait_AggregateFunction_output_type_MSGTYPE substrait_Type
 #define substrait_AggregateFunction_arguments_MSGTYPE substrait_FunctionArgument
+#define substrait_AggregateFunction_options_MSGTYPE substrait_FunctionOption
+
+#define substrait_AggregateFunction_ReferenceRel_FIELDLIST(X, a) \
+X(a, POINTER,  SINGULAR, INT32,    subtree_ordinal,   1)
+#define substrait_AggregateFunction_ReferenceRel_CALLBACK NULL
+#define substrait_AggregateFunction_ReferenceRel_DEFAULT NULL
 
 extern const pb_msgdesc_t substrait_RelCommon_msg;
 extern const pb_msgdesc_t substrait_RelCommon_Direct_msg;
@@ -2209,6 +2600,7 @@ extern const pb_msgdesc_t substrait_ReadRel_LocalFiles_FileOrFiles_msg;
 extern const pb_msgdesc_t substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions_msg;
 extern const pb_msgdesc_t substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions_msg;
 extern const pb_msgdesc_t substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_msg;
+extern const pb_msgdesc_t substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_msg;
 extern const pb_msgdesc_t substrait_ProjectRel_msg;
 extern const pb_msgdesc_t substrait_JoinRel_msg;
 extern const pb_msgdesc_t substrait_CrossRel_msg;
@@ -2231,8 +2623,12 @@ extern const pb_msgdesc_t substrait_ExchangeRel_RoundRobin_msg;
 extern const pb_msgdesc_t substrait_ExchangeRel_ExchangeTarget_msg;
 extern const pb_msgdesc_t substrait_RelRoot_msg;
 extern const pb_msgdesc_t substrait_Rel_msg;
+extern const pb_msgdesc_t substrait_NamedObjectWrite_msg;
+extern const pb_msgdesc_t substrait_ExtensionObject_msg;
+extern const pb_msgdesc_t substrait_DdlRel_msg;
+extern const pb_msgdesc_t substrait_WriteRel_msg;
 extern const pb_msgdesc_t substrait_FunctionArgument_msg;
-extern const pb_msgdesc_t substrait_FunctionArgument_Enum_msg;
+extern const pb_msgdesc_t substrait_FunctionOption_msg;
 extern const pb_msgdesc_t substrait_Expression_msg;
 extern const pb_msgdesc_t substrait_Expression_Enum_msg;
 extern const pb_msgdesc_t substrait_Expression_Enum_Empty_msg;
@@ -2289,6 +2685,7 @@ extern const pb_msgdesc_t substrait_Expression_Subquery_SetPredicate_msg;
 extern const pb_msgdesc_t substrait_Expression_Subquery_SetComparison_msg;
 extern const pb_msgdesc_t substrait_SortField_msg;
 extern const pb_msgdesc_t substrait_AggregateFunction_msg;
+extern const pb_msgdesc_t substrait_AggregateFunction_ReferenceRel_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define substrait_RelCommon_fields &substrait_RelCommon_msg
@@ -2306,6 +2703,7 @@ extern const pb_msgdesc_t substrait_AggregateFunction_msg;
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions_fields &substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions_msg
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions_fields &substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions_msg
 #define substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_fields &substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_msg
+#define substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_fields &substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_msg
 #define substrait_ProjectRel_fields &substrait_ProjectRel_msg
 #define substrait_JoinRel_fields &substrait_JoinRel_msg
 #define substrait_CrossRel_fields &substrait_CrossRel_msg
@@ -2328,8 +2726,12 @@ extern const pb_msgdesc_t substrait_AggregateFunction_msg;
 #define substrait_ExchangeRel_ExchangeTarget_fields &substrait_ExchangeRel_ExchangeTarget_msg
 #define substrait_RelRoot_fields &substrait_RelRoot_msg
 #define substrait_Rel_fields &substrait_Rel_msg
+#define substrait_NamedObjectWrite_fields &substrait_NamedObjectWrite_msg
+#define substrait_ExtensionObject_fields &substrait_ExtensionObject_msg
+#define substrait_DdlRel_fields &substrait_DdlRel_msg
+#define substrait_WriteRel_fields &substrait_WriteRel_msg
 #define substrait_FunctionArgument_fields &substrait_FunctionArgument_msg
-#define substrait_FunctionArgument_Enum_fields &substrait_FunctionArgument_Enum_msg
+#define substrait_FunctionOption_fields &substrait_FunctionOption_msg
 #define substrait_Expression_fields &substrait_Expression_msg
 #define substrait_Expression_Enum_fields &substrait_Expression_Enum_msg
 #define substrait_Expression_Enum_Empty_fields &substrait_Expression_Enum_Empty_msg
@@ -2386,6 +2788,7 @@ extern const pb_msgdesc_t substrait_AggregateFunction_msg;
 #define substrait_Expression_Subquery_SetComparison_fields &substrait_Expression_Subquery_SetComparison_msg
 #define substrait_SortField_fields &substrait_SortField_msg
 #define substrait_AggregateFunction_fields &substrait_AggregateFunction_msg
+#define substrait_AggregateFunction_ReferenceRel_fields &substrait_AggregateFunction_ReferenceRel_msg
 
 /* Maximum encoded size of messages (where known) */
 /* substrait_RelCommon_size depends on runtime parameters */
@@ -2420,8 +2823,12 @@ extern const pb_msgdesc_t substrait_AggregateFunction_msg;
 /* substrait_ExchangeRel_ExchangeTarget_size depends on runtime parameters */
 /* substrait_RelRoot_size depends on runtime parameters */
 /* substrait_Rel_size depends on runtime parameters */
+/* substrait_NamedObjectWrite_size depends on runtime parameters */
+/* substrait_ExtensionObject_size depends on runtime parameters */
+/* substrait_DdlRel_size depends on runtime parameters */
+/* substrait_WriteRel_size depends on runtime parameters */
 /* substrait_FunctionArgument_size depends on runtime parameters */
-/* substrait_FunctionArgument_Enum_size depends on runtime parameters */
+/* substrait_FunctionOption_size depends on runtime parameters */
 /* substrait_Expression_size depends on runtime parameters */
 /* substrait_Expression_Enum_size depends on runtime parameters */
 /* substrait_Expression_Literal_size depends on runtime parameters */
@@ -2474,12 +2881,14 @@ extern const pb_msgdesc_t substrait_AggregateFunction_msg;
 /* substrait_Expression_Subquery_SetComparison_size depends on runtime parameters */
 /* substrait_SortField_size depends on runtime parameters */
 /* substrait_AggregateFunction_size depends on runtime parameters */
+/* substrait_AggregateFunction_ReferenceRel_size depends on runtime parameters */
 #define substrait_ExchangeRel_Broadcast_size     0
 #define substrait_Expression_Enum_Empty_size     0
 #define substrait_Expression_FieldReference_RootReference_size 0
 #define substrait_Expression_WindowFunction_Bound_CurrentRow_size 0
 #define substrait_Expression_WindowFunction_Bound_Unbounded_size 0
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions_size 0
+#define substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions_size 0
 #define substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions_size 0
 #define substrait_ReadRel_LocalFiles_FileOrFiles_ParquetReadOptions_size 0
 #define substrait_RelCommon_Direct_size          0

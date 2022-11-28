@@ -69,7 +69,7 @@ typedef struct _substrait_DerivationExpression {
         int32_t *integer_literal;
         struct _substrait_DerivationExpression_UnaryOp *unary_op;
         struct _substrait_DerivationExpression_BinaryOp *binary_op;
-        struct _substrait_DerivationExpression_IfElse *if_else_;
+        struct _substrait_DerivationExpression_IfElse *if_else;
         struct _substrait_DerivationExpression_ReturnProgram *return_program;
     } kind;
 } substrait_DerivationExpression;
@@ -237,7 +237,7 @@ extern "C" {
 #define substrait_DerivationExpression_integer_literal_tag 35
 #define substrait_DerivationExpression_unary_op_tag 36
 #define substrait_DerivationExpression_binary_op_tag 37
-#define substrait_DerivationExpression_if_else__tag 38
+#define substrait_DerivationExpression_if_else_tag 38
 #define substrait_DerivationExpression_return_program_tag 39
 #define substrait_DerivationExpression_BinaryOp_op_type_tag 1
 #define substrait_DerivationExpression_BinaryOp_arg1_tag 2
@@ -312,7 +312,7 @@ X(a, POINTER,  ONEOF,    STRING,   (kind,integer_parameter_name,kind.integer_par
 X(a, POINTER,  ONEOF,    INT32,    (kind,integer_literal,kind.integer_literal),  35) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (kind,unary_op,kind.unary_op),  36) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (kind,binary_op,kind.binary_op),  37) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (kind,if_else_,kind.if_else_),  38) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (kind,if_else,kind.if_else),  38) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (kind,return_program,kind.return_program),  39)
 #define substrait_DerivationExpression_CALLBACK NULL
 #define substrait_DerivationExpression_DEFAULT NULL
@@ -342,7 +342,7 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (kind,return_program,kind.return_program),  3
 #define substrait_DerivationExpression_kind_uuid_MSGTYPE substrait_Type_UUID
 #define substrait_DerivationExpression_kind_unary_op_MSGTYPE substrait_DerivationExpression_UnaryOp
 #define substrait_DerivationExpression_kind_binary_op_MSGTYPE substrait_DerivationExpression_BinaryOp
-#define substrait_DerivationExpression_kind_if_else__MSGTYPE substrait_DerivationExpression_IfElse
+#define substrait_DerivationExpression_kind_if_else_MSGTYPE substrait_DerivationExpression_IfElse
 #define substrait_DerivationExpression_kind_return_program_MSGTYPE substrait_DerivationExpression_ReturnProgram
 
 #define substrait_DerivationExpression_ExpressionFixedChar_FIELDLIST(X, a) \
