@@ -69,6 +69,8 @@ jobs:
         with:
           repository: apache/arrow
           path: arrow
+          # last commit before ARROW-17966 which is a breaking change here
+          ref: '7276c359e8be9b16ce5f122b81ec0bb89417224c'
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
         run: |
