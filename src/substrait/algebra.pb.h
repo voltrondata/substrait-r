@@ -393,7 +393,7 @@ typedef struct _substrait_Expression {
         struct _substrait_Expression_SwitchExpression *switch_expression;
         struct _substrait_Expression_SingularOrList *singular_or_list;
         struct _substrait_Expression_MultiOrList *multi_or_list;
-        struct _substrait_Expression_Enum *enum;
+        struct _substrait_Expression_Enum *enum_;
         struct _substrait_Expression_Cast *cast;
         struct _substrait_Expression_Subquery *subquery;
     } rex_type;
@@ -1388,7 +1388,7 @@ extern "C" {
 #define substrait_Expression_switch_expression_tag 7
 #define substrait_Expression_singular_or_list_tag 8
 #define substrait_Expression_multi_or_list_tag   9
-#define substrait_Expression_enum_tag            10
+#define substrait_Expression_enum__tag           10
 #define substrait_Expression_cast_tag            11
 #define substrait_Expression_subquery_tag        12
 #define substrait_Expression_Cast_type_tag       1
@@ -2088,7 +2088,7 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,if_then,rex_type.if_then),   6) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,switch_expression,rex_type.switch_expression),   7) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,singular_or_list,rex_type.singular_or_list),   8) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,multi_or_list,rex_type.multi_or_list),   9) \
-X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,enum,rex_type.enum),  10) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,enum_,rex_type.enum_),  10) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,cast,rex_type.cast),  11) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,subquery,rex_type.subquery),  12)
 #define substrait_Expression_CALLBACK NULL
@@ -2101,7 +2101,7 @@ X(a, POINTER,  ONEOF,    MESSAGE,  (rex_type,subquery,rex_type.subquery),  12)
 #define substrait_Expression_rex_type_switch_expression_MSGTYPE substrait_Expression_SwitchExpression
 #define substrait_Expression_rex_type_singular_or_list_MSGTYPE substrait_Expression_SingularOrList
 #define substrait_Expression_rex_type_multi_or_list_MSGTYPE substrait_Expression_MultiOrList
-#define substrait_Expression_rex_type_enum_MSGTYPE substrait_Expression_Enum
+#define substrait_Expression_rex_type_enum__MSGTYPE substrait_Expression_Enum
 #define substrait_Expression_rex_type_cast_MSGTYPE substrait_Expression_Cast
 #define substrait_Expression_rex_type_subquery_MSGTYPE substrait_Expression_Subquery
 

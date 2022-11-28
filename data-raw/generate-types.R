@@ -48,6 +48,8 @@ proto_types_with_nesting <- list.files(
   str_remove("\\}\\s*") %>%
   str_split("_")
 
+# Note: before you run this you will have to Clean + Install if you have
+# updated the .proto files (i.e., you have just bumped the Substrait version)
 proto_types <- tibble(
   name = map_chr(proto_types_with_nesting, ~ .x[length(.x)]),
   name_qualified = map_chr(proto_types_with_nesting, paste, collapse = "."),

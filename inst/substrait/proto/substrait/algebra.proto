@@ -521,7 +521,7 @@ message Expression {
     // deprecated: enum literals are only sensible in the context of
     // function arguments, for which FunctionArgument should now be
     // used
-    Enum enum = 10 [deprecated = true];
+    Enum enum_ = 10 [deprecated = true];
   }
 
   message Enum {
