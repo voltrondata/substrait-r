@@ -246,6 +246,6 @@ test_that("duckdb translation for n() works", {
       dplyr::group_by(lgl) %>%
       dplyr::summarise(n = n()) %>%
       dplyr::collect(),
-    tibble::tibble(lgl = c(NA, TRUE, FALSE), `n` = c(3L,4L,3L))
+    tibble::tibble(lgl = c(NA, TRUE, FALSE), n = c(3L, 4L, 3L))
   )
 })
