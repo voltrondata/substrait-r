@@ -60,7 +60,7 @@ jobs:
 
       - name: Cache Arrow build
         id: cache-arrow
-        uses: actions/cache@v3:
+        uses: actions/cache@v3
         with:
           path: ${{ env.GITHUB_WORKSPACE }}/arrow_install
           key: ${{ runner.os }}-arrow-${{ env.ARROW_REF }}-1
