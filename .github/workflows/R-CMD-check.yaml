@@ -34,8 +34,6 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      ARROW_HOME: ${{ env.GITHUB_WORKSPACE }}/arrow_install
-      LD_LIBRARY_PATH: ${{ env.GITHUB_WORKSPACE }}/arrow_install/lib
       ARROW_R_DEV: TRUE
       ARROW_REF: '54e17920eee65e4227eba889aadbdfeb66c114cd'
 
@@ -62,9 +60,9 @@ jobs:
 
       - name: Cache Arrow build
         id: cache-arrow
-        uses: actions/cache@v3
+        uses: actions/cache@v3:
         with:
-          path: ${{ env.ARROW_HOME }}
+          path: ${{ env.GITHUB_WORKSPACE }}/arrow_install
           key: ${{ runner.os }}-arrow-${{ env.ARROW_REF }}-1
 
       - name: Checkout Arrow repo
@@ -76,6 +74,9 @@ jobs:
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
         if: steps.cache-arrow.outputs.cache-hit != 'true'
+        env:
+          ARROW_HOME: ${{ env.GITHUB_WORKSPACE }}/arrow_install
+          LD_LIBRARY_PATH: ${{ env.GITHUB_WORKSPACE }}/arrow_install/lib
         run: |
           cd arrow/cpp
           mkdir build_dir
@@ -103,5 +104,8 @@ jobs:
 
       - name: Run R CMD check
         uses: r-lib/actions/check-r-package@v2
+        env:
+          ARROW_HOME: ${{ env.GITHUB_WORKSPACE }}/arrow_install
+          LD_LIBRARY_PATH: ${{ env.GITHUB_WORKSPACE }}/arrow_install/lib
         with:
           working-directory: substrait
