@@ -37,6 +37,7 @@ jobs:
       ARROW_HOME: '/install_dir'
       LD_LIBRARY_PATH: '/install_dir/lib'
       ARROW_R_DEV: TRUE
+      ARROW_REF: '54e17920eee65e4227eba889aadbdfeb66c114cd'
 
     steps:
       - uses: actions/checkout@v3
@@ -60,22 +61,24 @@ jobs:
           extra-packages: rcmdcheck
           working-directory: /home/runner/work/substrait-r/substrait-r/substrait/
 
-      - name: Install DuckDB
-        run: |
-         R -e "remotes::install_github('cran/duckdb@v0.5.0')"
+      - name: Cache Arrow build
+        id: cache-arrow
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.ARROW_HOME }}
+          key: ${{ runner.os }}-arrow-${{ env.ARROW_REF }}-1
 
       - name: Checkout Arrow repo
         uses: actions/checkout@v3
         with:
           repository: apache/arrow
           path: arrow
-          # last commit before ARROW-17966 which is a breaking change here
-          ref: '7276c359e8be9b16ce5f122b81ec0bb89417224c'
+          ref: ${{ env.ARROW_REF }}
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
+        if: steps.cache-arrow.outputs.cache-hit != 'true'
         run: |
-          mkdir install_dir
-          cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
+          cd arrow/cpp
           mkdir build_dir
           cd build_dir
 
@@ -86,17 +89,17 @@ jobs:
           -DARROW_INSTALL_NAME_RPATH=OFF -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
 
           sudo make -j2 install
+          cd ../../r
+          R CMD INSTALL . --build
+          cp *.tgz $ARROW_HOME
 
       - name: Setup arrow dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: /home/runner/work/substrait-r/substrait-r/arrow/r/
+          working-directory: arrow/r
 
       - name: Install Arrow R package
-        run: |
-          cd /home/runner/work/substrait-r/substrait-r/arrow/r/
-          make clean
-          R CMD INSTALL .
+        run: R CMD INSTALL $ARROW_HOME/*.tgz
 
       - name: Run R CMD check
         uses: r-lib/actions/check-r-package@v2
