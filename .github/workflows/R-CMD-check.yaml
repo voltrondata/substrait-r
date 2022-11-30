@@ -91,7 +91,7 @@ jobs:
           sudo make -j2 install
           cd ../../r
           R CMD INSTALL . --build
-          cp arrow*.tar.gz $ARROW_HOME
+          sudo cp arrow*.tar.gz $ARROW_HOME
 
       - name: Setup arrow dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
