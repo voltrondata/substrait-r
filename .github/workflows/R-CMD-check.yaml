@@ -96,10 +96,11 @@ jobs:
       - name: Setup arrow dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: arrow/r
+          working-directory: 'arrow/r'
 
       - name: Install Arrow R package
-        run: R CMD INSTALL $ARROW_HOME/*.tgz
+        run: |
+          R CMD INSTALL $ARROW_HOME/*.tgz
 
       - name: Run R CMD check
         uses: r-lib/actions/check-r-package@v2
