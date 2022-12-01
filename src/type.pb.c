@@ -81,6 +81,9 @@ PB_BIND(substrait_Type_Map, substrait_Type_Map, AUTO)
 PB_BIND(substrait_Type_UserDefined, substrait_Type_UserDefined, AUTO)
 
 
+PB_BIND(substrait_Type_Parameter, substrait_Type_Parameter, AUTO)
+
+
 PB_BIND(substrait_NamedStruct, substrait_NamedStruct, AUTO)
 
 

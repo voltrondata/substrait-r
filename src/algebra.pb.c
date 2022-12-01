@@ -51,6 +51,9 @@ PB_BIND(substrait_ReadRel_LocalFiles_FileOrFiles_ArrowReadOptions, substrait_Rea
 PB_BIND(substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions, substrait_ReadRel_LocalFiles_FileOrFiles_OrcReadOptions, AUTO)
 
 
+PB_BIND(substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions, substrait_ReadRel_LocalFiles_FileOrFiles_DwrfReadOptions, AUTO)
+
+
 PB_BIND(substrait_ProjectRel, substrait_ProjectRel, AUTO)
 
 
@@ -117,10 +120,22 @@ PB_BIND(substrait_RelRoot, substrait_RelRoot, AUTO)
 PB_BIND(substrait_Rel, substrait_Rel, AUTO)
 
 
+PB_BIND(substrait_NamedObjectWrite, substrait_NamedObjectWrite, AUTO)
+
+
+PB_BIND(substrait_ExtensionObject, substrait_ExtensionObject, AUTO)
+
+
+PB_BIND(substrait_DdlRel, substrait_DdlRel, AUTO)
+
+
+PB_BIND(substrait_WriteRel, substrait_WriteRel, AUTO)
+
+
 PB_BIND(substrait_FunctionArgument, substrait_FunctionArgument, AUTO)
 
 
-PB_BIND(substrait_FunctionArgument_Enum, substrait_FunctionArgument_Enum, AUTO)
+PB_BIND(substrait_FunctionOption, substrait_FunctionOption, AUTO)
 
 
 PB_BIND(substrait_Expression, substrait_Expression, AUTO)
@@ -289,6 +304,13 @@ PB_BIND(substrait_SortField, substrait_SortField, AUTO)
 
 
 PB_BIND(substrait_AggregateFunction, substrait_AggregateFunction, AUTO)
+
+
+PB_BIND(substrait_AggregateFunction_ReferenceRel, substrait_AggregateFunction_ReferenceRel, AUTO)
+
+
+
+
 
 
 

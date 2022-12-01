@@ -13,9 +13,15 @@ properties:
         name:
           type: string
         structure:
-          type: object
-          additionalProperties:
-            $ref: "#/$defs/type"
+          oneOf:
+            - type: string  # any data type
+            - type: object  # syntactic sugar for a non-nullable named struct
+              additionalProperties:
+                $ref: "#/$defs/type"
+        parameters:  # parameter list for compound types
+          $ref: "#/$defs/type_param_defs"
+        variadic:  # when set, last parameter may be specified one or more times
+          type: boolean
   type_variations:
     type: array
     minItems: 1
@@ -25,7 +31,7 @@ properties:
       required: [parent, name]
       properties:
         parent:
-          type: string
+          $ref: "#/$defs/type"
         name:
           type: string
         description:
@@ -41,12 +47,46 @@ properties:
     type: array
     items:
       $ref: "#/$defs/aggregateFunction"
+  window_functions:
+    type: array
+    items:
+      $ref: "#/$defs/windowFunction"
 
 $defs:
   type:
     oneOf:
       - type: string
       - type: object
+  type_param_defs:  # an array of compound type parameter definitions
+    type: array
+    items:
+      type: object
+      required: [type]
+      properties:
+        name:  # name of the parameter (for documentation only)
+          type: string
+        description:  # description (for documentation only)
+          type: string
+        type:  # expected metatype for the parameter
+          type: string
+          enum:
+            - dataType
+            - boolean
+            - integer
+            - enumeration
+            - string
+        min:  # for integers, the minimum supported value (inclusive)
+          type: number
+        max:  # for integers, the maximum supported value (inclusive)
+          type: number
+        options:  # for enums, the list of supported values
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+        optional:  # when set to true, the parameter may be omitted at the end or skipped using null
+          type: boolean
   arguments:  # an array of arguments
     type: array
     items:
@@ -63,8 +103,6 @@ $defs:
               type: array
               items:
                 type: string
-            required:
-              type: boolean
         - type: object # value
           required: [ value ]
           properties:
@@ -74,6 +112,8 @@ $defs:
               type: string
             value:
               $ref: "#/$defs/type"
+            constant:
+              type: boolean
         - type: object # type
           required: [ type ]
           properties:
@@ -83,6 +123,19 @@ $defs:
               type: string
             type:
               type: string
+  options:  # a map of options
+    type: object
+    additionalProperties:
+      type: object # option
+      additionalProperties: false
+      required: [ values ]
+      properties:
+        description:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
   variadicBehavior:
     type: object
     additionalProperties: false
@@ -135,6 +188,8 @@ $defs:
           properties:
             args:
               $ref: "#/$defs/arguments"
+            options:
+              $ref: "#/$defs/options"
             variadic:
               $ref: "#/$defs/variadicBehavior"
             sessionDependent:
@@ -162,10 +217,12 @@ $defs:
         items:
           type: object
           additionalProperties: false
-          required: [ intermediate, return ]
+          required: [ return ]
           properties:
             args:
               $ref: "#/$defs/arguments"
+            options:
+              $ref: "#/$defs/options"
             variadic:
               $ref: "#/$defs/variadicBehavior"
             sessionDependent:
@@ -186,6 +243,7 @@ $defs:
               $ref: "#/$defs/maxset"
             decomposable:
               $ref: "#/$defs/decomposable"
+
   windowFunction:
     type: object
     additionalProperties: false
@@ -201,10 +259,12 @@ $defs:
         items:
           type: object
           additionalProperties: false
-          required: [ intermediate, return ]
+          required: [ return ]
           properties:
             args:
               $ref: "#/$defs/arguments"
+            options:
+              $ref: "#/$defs/options"
             variadic:
               $ref: "#/$defs/variadicBehavior"
             sessionDependent:

@@ -26,6 +26,8 @@
 #'   `substrait.AggregateFunction`.
 #' @param output_type An explicit output type to use or a function accepting
 #'   one type per `args`.
+#' @param options An optional list of `substrait.FunctionOptions` message
+#'   specifying function options for this call.
 #'
 #' @export
 SubstraitCompiler <- R6::R6Class(
@@ -220,7 +222,7 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @return A modified `template` with `function_reference`,
     #'   `args`, and `output_type` set.
-    resolve_function = function(name, args, template, output_type = NULL) {
+    resolve_function = function(name, args, template, output_type = NULL, options = NULL) {
       # resolve arguments as Expressions if they haven't been already
       # (generally they should be already but this will assert that)
       is_function_arg <- vapply(args, inherits, logical(1), "substrait_FunctionArgument")
@@ -247,6 +249,9 @@ SubstraitCompiler <- R6::R6Class(
 
       template$function_reference <- id
       template$arguments <- args
+      if (!is.null(options)) {
+        template$options <- lapply(options, as_substrait, "substrait.FunctionOption")
+      }
       template$output_type <- as_substrait(output_type, "substrait.Type")
 
       template
@@ -376,6 +381,8 @@ substrait_compiler.default <- function(object, ...) {
 #' @param .output_type The output type of the call. In the future this may
 #'   be built in to the compiler since in theory the compiler should be able
 #'   to predict this.
+#' @param .options An optional list of substrait.FunctionOption messages
+#'   to associate with this call.
 #' @param expr An expression to evaluate with the translations defined by
 #'   the current compiler. You can use this to define translations that use
 #'   other translations in a more readable way. You can use tidy evaluation
@@ -406,11 +413,11 @@ substrait_compiler.default <- function(object, ...) {
 #' # use substrait_eval_data() to do a more direct test of a translation
 #' with_compiler(compiler, substrait_eval_data(sqrt(b)))
 #'
-substrait_call <- function(.fun, ..., .output_type = NULL) {
+substrait_call <- function(.fun, ..., .output_type = NULL, .options = NULL) {
   args <- rlang::list2(...)
   compiler <- current_compiler()
   template <- substrait$Expression$ScalarFunction$create()
-  compiler$resolve_function(.fun, args, template, .output_type)
+  compiler$resolve_function(.fun, args, template, .output_type, .options)
 }
 
 #' @rdname substrait_call

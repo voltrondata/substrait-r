@@ -18,9 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      ARROW_R_DEV: TRUE
+      ARROW_REF: '54e17920eee65e4227eba889aadbdfeb66c114cd'
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: substrait
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -32,7 +36,55 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: covr
+          working-directory: substrait
+
+      - name: Cache Arrow build
+        id: cache-arrow
+        uses: actions/cache@v3
+        with:
+          path: arrow_install
+          key: ${{ runner.os }}-arrow-${{ env.ARROW_REF }}-1
+
+      - name: Checkout Arrow repo
+        if: steps.cache-arrow.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: apache/arrow
+          path: arrow
+          ref: ${{ env.ARROW_REF }}
+
+      - name: Install Arrow with ARROW_SUBSTRAIT turned on
+        if: steps.cache-arrow.outputs.cache-hit != 'true'
+        env:
+          ARROW_HOME: ${{ github.workspace }}/arrow_install
+          LD_LIBRARY_PATH: ${{ github.workspace }}/arrow_install/lib
+        run: |
+          cd arrow/cpp
+          mkdir build_dir
+          cd build_dir
+          cmake -DCMAKE_INSTALL_PREFIX=${ARROW_HOME} \
+          -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Debug  -DARROW_COMPUTE=ON   -DARROW_CSV=ON   -DARROW_DATASET=OFF \
+          -DARROW_FILESYSTEM=ON   -DARROW_JEMALLOC=OFF   -DARROW_JSON=OFF   -DARROW_PARQUET=ON   -DARROW_WITH_SNAPPY=OFF \
+          -DARROW_WITH_ZLIB=OFF   -DARROW_INSTALL_NAME_RPATH=OFF   -DARROW_EXTRA_ERROR_CONTEXT=ON \
+          -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
+
+          make -j2 install
+          cd ../../r
+          R CMD INSTALL . --build
+          cp arrow*.tar.gz $ARROW_HOME
+
+      - name: Install Arrow R package
+        env:
+          ARROW_HOME: ${{ github.workspace }}/arrow_install
+          LD_LIBRARY_PATH: ${{ github.workspace }}/arrow_install/lib
+        run: |
+          R CMD INSTALL $ARROW_HOME/arrow*.tar.gz
 
       - name: Test coverage
-        run: covr::codecov()
+        env:
+          ARROW_HOME: ${{ github.workspace }}/arrow_install
+          LD_LIBRARY_PATH: ${{ github.workspace }}/arrow_install/lib
+        run: |
+          setwd("substrait")
+          covr::codecov()
         shell: Rscript {0}

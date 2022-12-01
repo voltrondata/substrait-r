@@ -4,6 +4,7 @@
 #ifndef PB_SUBSTRAIT_SUBSTRAIT_TYPE_PB_H_INCLUDED
 #define PB_SUBSTRAIT_SUBSTRAIT_TYPE_PB_H_INCLUDED
 #include <pb.h>
+#include "substrait/any.pb.h"
 
 #if PB_PROTO_HEADER_VERSION != 40
 #error Regenerate this file with the current version of nanopb generator.
@@ -165,6 +166,18 @@ typedef struct _substrait_Type_Map {
     substrait_Type_Nullability *nullability;
 } substrait_Type_Map;
 
+typedef struct _substrait_Type_Parameter { 
+    pb_size_t which_parameter;
+    union {
+        struct _substrait_Any *null;
+        struct _substrait_Type *data_type;
+        bool *boolean;
+        int64_t *integer;
+        char *enum_;
+        char *string;
+    } parameter;
+} substrait_Type_Parameter;
+
 typedef struct _substrait_Type_String { 
     uint32_t *type_variation_reference;
     substrait_Type_Nullability *nullability;
@@ -201,6 +214,8 @@ typedef struct _substrait_Type_UserDefined {
     uint32_t *type_reference;
     uint32_t *type_variation_reference;
     substrait_Type_Nullability *nullability;
+    pb_size_t type_parameters_count;
+    struct _substrait_Type_Parameter *type_parameters;
 } substrait_Type_UserDefined;
 
 typedef struct _substrait_Type_VarChar { 
@@ -245,7 +260,8 @@ extern "C" {
 #define substrait_Type_Struct_init_default       {0, NULL, NULL, NULL}
 #define substrait_Type_List_init_default         {NULL, NULL, NULL}
 #define substrait_Type_Map_init_default          {NULL, NULL, NULL, NULL}
-#define substrait_Type_UserDefined_init_default  {NULL, NULL, NULL}
+#define substrait_Type_UserDefined_init_default  {NULL, NULL, NULL, 0, NULL}
+#define substrait_Type_Parameter_init_default    {0, {NULL}}
 #define substrait_NamedStruct_init_default       {0, NULL, NULL}
 #define substrait_Type_init_zero                 {0, {NULL}}
 #define substrait_Type_Boolean_init_zero         {NULL, NULL}
@@ -271,7 +287,8 @@ extern "C" {
 #define substrait_Type_Struct_init_zero          {0, NULL, NULL, NULL}
 #define substrait_Type_List_init_zero            {NULL, NULL, NULL}
 #define substrait_Type_Map_init_zero             {NULL, NULL, NULL, NULL}
-#define substrait_Type_UserDefined_init_zero     {NULL, NULL, NULL}
+#define substrait_Type_UserDefined_init_zero     {NULL, NULL, NULL, 0, NULL}
+#define substrait_Type_Parameter_init_zero       {0, {NULL}}
 #define substrait_NamedStruct_init_zero          {0, NULL, NULL}
 
 /* Field tags (for use in manual encoding/decoding) */
@@ -341,6 +358,12 @@ extern "C" {
 #define substrait_Type_Map_value_tag             2
 #define substrait_Type_Map_type_variation_reference_tag 3
 #define substrait_Type_Map_nullability_tag       4
+#define substrait_Type_Parameter_null_tag        1
+#define substrait_Type_Parameter_data_type_tag   2
+#define substrait_Type_Parameter_boolean_tag     3
+#define substrait_Type_Parameter_integer_tag     4
+#define substrait_Type_Parameter_enum__tag       5
+#define substrait_Type_Parameter_string_tag      6
 #define substrait_Type_String_type_variation_reference_tag 1
 #define substrait_Type_String_nullability_tag    2
 #define substrait_Type_Struct_types_tag          1
@@ -357,6 +380,7 @@ extern "C" {
 #define substrait_Type_UserDefined_type_reference_tag 1
 #define substrait_Type_UserDefined_type_variation_reference_tag 2
 #define substrait_Type_UserDefined_nullability_tag 3
+#define substrait_Type_UserDefined_type_parameters_tag 4
 #define substrait_Type_VarChar_length_tag        1
 #define substrait_Type_VarChar_type_variation_reference_tag 2
 #define substrait_Type_VarChar_nullability_tag   3
@@ -569,9 +593,23 @@ X(a, POINTER,  SINGULAR, UENUM,    nullability,       4)
 #define substrait_Type_UserDefined_FIELDLIST(X, a) \
 X(a, POINTER,  SINGULAR, UINT32,   type_reference,    1) \
 X(a, POINTER,  SINGULAR, UINT32,   type_variation_reference,   2) \
-X(a, POINTER,  SINGULAR, UENUM,    nullability,       3)
+X(a, POINTER,  SINGULAR, UENUM,    nullability,       3) \
+X(a, POINTER,  REPEATED, MESSAGE,  type_parameters,   4)
 #define substrait_Type_UserDefined_CALLBACK NULL
 #define substrait_Type_UserDefined_DEFAULT NULL
+#define substrait_Type_UserDefined_type_parameters_MSGTYPE substrait_Type_Parameter
+
+#define substrait_Type_Parameter_FIELDLIST(X, a) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (parameter,null,parameter.null),   1) \
+X(a, POINTER,  ONEOF,    MESSAGE,  (parameter,data_type,parameter.data_type),   2) \
+X(a, POINTER,  ONEOF,    BOOL,     (parameter,boolean,parameter.boolean),   3) \
+X(a, POINTER,  ONEOF,    INT64,    (parameter,integer,parameter.integer),   4) \
+X(a, POINTER,  ONEOF,    STRING,   (parameter,enum_,parameter.enum_),   5) \
+X(a, POINTER,  ONEOF,    STRING,   (parameter,string,parameter.string),   6)
+#define substrait_Type_Parameter_CALLBACK NULL
+#define substrait_Type_Parameter_DEFAULT NULL
+#define substrait_Type_Parameter_parameter_null_MSGTYPE substrait_Any
+#define substrait_Type_Parameter_parameter_data_type_MSGTYPE substrait_Type
 
 #define substrait_NamedStruct_FIELDLIST(X, a) \
 X(a, POINTER,  REPEATED, STRING,   names,             1) \
@@ -605,6 +643,7 @@ extern const pb_msgdesc_t substrait_Type_Struct_msg;
 extern const pb_msgdesc_t substrait_Type_List_msg;
 extern const pb_msgdesc_t substrait_Type_Map_msg;
 extern const pb_msgdesc_t substrait_Type_UserDefined_msg;
+extern const pb_msgdesc_t substrait_Type_Parameter_msg;
 extern const pb_msgdesc_t substrait_NamedStruct_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
@@ -633,6 +672,7 @@ extern const pb_msgdesc_t substrait_NamedStruct_msg;
 #define substrait_Type_List_fields &substrait_Type_List_msg
 #define substrait_Type_Map_fields &substrait_Type_Map_msg
 #define substrait_Type_UserDefined_fields &substrait_Type_UserDefined_msg
+#define substrait_Type_Parameter_fields &substrait_Type_Parameter_msg
 #define substrait_NamedStruct_fields &substrait_NamedStruct_msg
 
 /* Maximum encoded size of messages (where known) */
@@ -661,6 +701,7 @@ extern const pb_msgdesc_t substrait_NamedStruct_msg;
 /* substrait_Type_List_size depends on runtime parameters */
 /* substrait_Type_Map_size depends on runtime parameters */
 /* substrait_Type_UserDefined_size depends on runtime parameters */
+/* substrait_Type_Parameter_size depends on runtime parameters */
 /* substrait_NamedStruct_size depends on runtime parameters */
 
 #ifdef __cplusplus

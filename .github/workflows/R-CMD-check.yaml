@@ -34,9 +34,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      ARROW_HOME: '/install_dir'
-      LD_LIBRARY_PATH: '/install_dir/lib'
       ARROW_R_DEV: TRUE
+      ARROW_REF: '54e17920eee65e4227eba889aadbdfeb66c114cd'
 
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +43,6 @@ jobs:
           path: substrait
 
       - uses: r-lib/actions/setup-pandoc@v2
-
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
@@ -58,47 +56,54 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
-          working-directory: /home/runner/work/substrait-r/substrait-r/substrait/
+          working-directory: substrait
 
-      - name: Install DuckDB
-        run: |
-         R -e "remotes::install_github('cran/duckdb@v0.5.0')"
+      - name: Cache Arrow build
+        id: cache-arrow
+        uses: actions/cache@v3
+        with:
+          path: arrow_install
+          key: ${{ runner.os }}-arrow-${{ env.ARROW_REF }}-1
 
       - name: Checkout Arrow repo
+        if: steps.cache-arrow.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: apache/arrow
           path: arrow
-          # last commit before ARROW-17966 which is a breaking change here
-          ref: '7276c359e8be9b16ce5f122b81ec0bb89417224c'
+          ref: ${{ env.ARROW_REF }}
 
       - name: Install Arrow with ARROW_SUBSTRAIT turned on
+        if: steps.cache-arrow.outputs.cache-hit != 'true'
+        env:
+          ARROW_HOME: ${{ github.workspace }}/arrow_install
+          LD_LIBRARY_PATH: ${{ github.workspace }}/arrow_install/lib
         run: |
-          mkdir install_dir
-          cd /home/runner/work/substrait-r/substrait-r/arrow/cpp
+          cd arrow/cpp
           mkdir build_dir
           cd build_dir
-
           cmake -DCMAKE_INSTALL_PREFIX=${ARROW_HOME} \
           -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Debug  -DARROW_COMPUTE=ON   -DARROW_CSV=ON   -DARROW_DATASET=OFF \
           -DARROW_FILESYSTEM=ON   -DARROW_JEMALLOC=OFF   -DARROW_JSON=OFF   -DARROW_PARQUET=ON   -DARROW_WITH_SNAPPY=OFF \
           -DARROW_WITH_ZLIB=OFF   -DARROW_INSTALL_NAME_RPATH=OFF   -DARROW_EXTRA_ERROR_CONTEXT=ON \
-          -DARROW_INSTALL_NAME_RPATH=OFF -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
+          -DARROW_DEPENDENCY_SOURCE=BUNDLED -DARROW_SUBSTRAIT=ON ..
 
-          sudo make -j2 install
-
-      - name: Setup arrow dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          working-directory: /home/runner/work/substrait-r/substrait-r/arrow/r/
+          make -j2 install
+          cd ../../r
+          R CMD INSTALL . --build
+          cp arrow*.tar.gz $ARROW_HOME
 
       - name: Install Arrow R package
+        env:
+          ARROW_HOME: ${{ github.workspace }}/arrow_install
+          LD_LIBRARY_PATH: ${{ github.workspace }}/arrow_install/lib
         run: |
-          cd /home/runner/work/substrait-r/substrait-r/arrow/r/
-          make clean
-          R CMD INSTALL .
+          R CMD INSTALL $ARROW_HOME/arrow*.tar.gz
 
       - name: Run R CMD check
         uses: r-lib/actions/check-r-package@v2
+        env:
+          ARROW_HOME: ${{ github.workspace }}/arrow_install
+          LD_LIBRARY_PATH: ${{ github.workspace }}/arrow_install/lib
         with:
-          working-directory: /home/runner/work/substrait-r/substrait-r/substrait/
+          working-directory: substrait

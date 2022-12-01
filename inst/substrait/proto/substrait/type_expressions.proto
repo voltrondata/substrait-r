@@ -51,7 +51,7 @@ message DerivationExpression {
     int32 integer_literal = 35;
     UnaryOp unary_op = 36;
     BinaryOp binary_op = 37;
-    IfElse if_else_ = 38;
+    IfElse if_else = 38;
     ReturnProgram return_program = 39;
   }
 

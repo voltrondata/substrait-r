@@ -54,12 +54,15 @@ arrow_funs <- new.env(parent = emptyenv())
 arrow_funs[["+"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.add",
-    substrait$FunctionArgument$create(
-      enum_ = substrait$FunctionArgument$Enum$create(unspecified = substrait_proto_auto())
-    ),
     lhs,
     rhs,
-    .output_type = function(opt, lhs, rhs) rhs
+    .output_type = function(lhs, rhs) rhs,
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
   )
 }
 

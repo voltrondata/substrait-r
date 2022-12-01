@@ -7,7 +7,7 @@
 \alias{substrait_eval_data}
 \title{Translation utilities}
 \usage{
-substrait_call(.fun, ..., .output_type = NULL)
+substrait_call(.fun, ..., .output_type = NULL, .options = NULL)
 
 substrait_call_agg(.fun, ..., .output_type = NULL)
 
@@ -30,6 +30,9 @@ via \code{as_substrait(x, "substrait.Expression")} before passing them to
 \item{.output_type}{The output type of the call. In the future this may
 be built in to the compiler since in theory the compiler should be able
 to predict this.}
+
+\item{.options}{An optional list of substrait.FunctionOption messages
+to associate with this call.}
 
 \item{expr}{An expression to evaluate with the translations defined by
 the current compiler. You can use this to define translations that use

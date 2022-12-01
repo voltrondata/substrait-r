@@ -12,4 +12,10 @@ PB_BIND(substrait_PlanRel, substrait_PlanRel, AUTO)
 PB_BIND(substrait_Plan, substrait_Plan, AUTO)
 
 
+PB_BIND(substrait_PlanVersion, substrait_PlanVersion, AUTO)
+
+
+PB_BIND(substrait_Version, substrait_Version, AUTO)
+
+
 

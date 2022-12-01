@@ -20,11 +20,9 @@ RoxygenNote: 7.2.1
 Suggests: 
     arrow,
     covr,
-    duckdb (>= 0.5.0),
+    duckdb (>= 0.6.0),
     DBI,
     callr,
-    rappdirs,
-    remotes,
     withr,
     stringr,
     tibble,
@@ -40,8 +38,6 @@ Imports:
     vctrs,
     dplyr,
     R6
-Remotes:
-    cran/duckdb@0.5.0
 Depends: 
     R (>= 2.10)
 LazyData: true

@@ -1,14 +1,14 @@
 
 curl::curl_download(
-  "https://github.com/substrait-io/substrait/archive/refs/tags/v0.6.0.zip",
+  "https://github.com/substrait-io/substrait/archive/refs/tags/v0.20.0.zip",
   "data-raw/substrait.zip"
 )
 
 unzip("data-raw/substrait.zip", exdir = "data-raw")
 
 unlink("inst/substrait", recursive = TRUE)
-fs::dir_copy("data-raw/substrait-0.6.0", "inst")
-fs::file_move("inst/substrait-0.6.0", "inst/substrait")
+fs::dir_copy("data-raw/substrait-0.20.0", "inst")
+fs::file_move("inst/substrait-0.20.0", "inst/substrait")
 
 dotfiles <- list.files(
   "inst/substrait", "^\\.",
@@ -21,7 +21,7 @@ unlink(dotfiles)
 unlink("inst/substrait/.github", recursive = TRUE)
 unlink("inst/substrait/site", recursive = TRUE)
 
-unlink("data-raw/substrait-0.6.0", recursive = TRUE)
+unlink("data-raw/substrait-0.20.0", recursive = TRUE)
 unlink("data-raw/substrait.zip")
 
 # vendor nanopb
@@ -88,16 +88,11 @@ for (f in file.path("inst/substrait/proto", proto_files)) {
 unlink(list.files("src", "\\.pb\\.c$", recursive = TRUE, full.names = TRUE))
 unlink("src/substrait", recursive = TRUE)
 
-# TODO(dd): figure out the correct nanopb.options
-# to resolve circular references...-s type:FT_POINTER
-# is the workaround but this in theory only needs to exist for
-# message fields. The right way to do this is to configure
-# a standalone nanopb substrait project that handles this
-# and adds the correct options to the .proto files
-# as documented. Currrently we just need the files to exist
-# because we parse bits of them to get properties that
-# RProtoBut doesn't let us access.
-# https://github.com/metormote/nanopb/blob/master/docs/concepts.rst#compiling-proto-files-with-nanopb-options
+# TODO(dd): Currently the only purpose of compiling these is (1) to get a
+# sanity check that the vendored version works and (2) to extract the
+# fully qualified name of each message and enum type (RProtoBuf doesn't
+# quite work for this because it will only list nested *types* and doesn't consider
+# namespaces like substrait.extension).
 proto_files_flat <- paste(proto_files, collapse = " ")
 
 withr::with_dir("inst/substrait/proto", {
