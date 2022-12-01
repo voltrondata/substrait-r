@@ -81,7 +81,6 @@ jobs:
           cd arrow/cpp
           mkdir build_dir
           cd build_dir
-
           cmake -DCMAKE_INSTALL_PREFIX=${ARROW_HOME} \
           -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Debug  -DARROW_COMPUTE=ON   -DARROW_CSV=ON   -DARROW_DATASET=OFF \
           -DARROW_FILESYSTEM=ON   -DARROW_JEMALLOC=OFF   -DARROW_JSON=OFF   -DARROW_PARQUET=ON   -DARROW_WITH_SNAPPY=OFF \
