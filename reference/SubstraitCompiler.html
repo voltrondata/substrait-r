@@ -257,7 +257,13 @@ SubstraitCompiler class. The returned object should have a
 <h3 id="method-resolve-function-">Method <code>resolve_function()</code><a class="anchor" aria-label="anchor" href="#method-resolve-function-"></a></h3>
 <p>Resolves an R function call as a Substrait function call.</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">resolve_function</span><span class="op">(</span><span class="va">name</span>, <span class="va">args</span>, <span class="va">template</span>, output_type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">SubstraitCompiler</span><span class="op">$</span><span class="fu">resolve_function</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  <span class="va">args</span>,</span>
+<span>  <span class="va">template</span>,</span>
+<span>  output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  options <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -283,6 +289,11 @@ objects created while evaluating the user-provided arguments
 <dt><code>output_type</code></dt>
 <dd><p>An explicit output type to use or a function accepting
 one type per <code>args</code>.</p></dd>
+
+
+<dt><code>options</code></dt>
+<dd><p>An optional list of <code>substrait.FunctionOptions</code> message
+specifying function options for this call.</p></dd>
 
 
 </dl><p></p></div>

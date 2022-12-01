@@ -60,7 +60,7 @@ translations <em>and</em> the <code>.data</code> mask from the <code><a href="cu
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">substrait_call</span><span class="op">(</span><span class="va">.fun</span>, <span class="va">...</span>, .output_type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">substrait_call</span><span class="op">(</span><span class="va">.fun</span>, <span class="va">...</span>, .output_type <span class="op">=</span> <span class="cn">NULL</span>, .options <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">substrait_call_agg</span><span class="op">(</span><span class="va">.fun</span>, <span class="va">...</span>, .output_type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
@@ -90,6 +90,11 @@ via <code>as_substrait(x, "substrait.Expression")</code> before passing them to
 <dd><p>The output type of the call. In the future this may
 be built in to the compiler since in theory the compiler should be able
 to predict this.</p></dd>
+
+
+<dt>.options</dt>
+<dd><p>An optional list of substrait.FunctionOption messages
+to associate with this call.</p></dd>
 
 
 <dt>expr</dt>
