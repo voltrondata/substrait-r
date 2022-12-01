@@ -66,6 +66,7 @@ jobs:
           key: ${{ runner.os }}-arrow-${{ env.ARROW_REF }}-1
 
       - name: Checkout Arrow repo
+        if: steps.cache-arrow.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: apache/arrow
@@ -91,11 +92,6 @@ jobs:
           cd ../../r
           R CMD INSTALL . --build
           cp arrow*.tar.gz $ARROW_HOME
-
-      - name: Setup arrow dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          working-directory: 'arrow/r'
 
       - name: Install Arrow R package
         env:
