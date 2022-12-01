@@ -99,6 +99,9 @@ jobs:
           working-directory: 'arrow/r'
 
       - name: Install Arrow R package
+        env:
+          ARROW_HOME: ${{ github.workspace }}/arrow_install
+          LD_LIBRARY_PATH: ${{ github.workspace }}/arrow_install/lib
         run: |
           R CMD INSTALL $ARROW_HOME/arrow*.tar.gz
 
