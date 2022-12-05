@@ -3,7 +3,7 @@ test_that("arrow translation for mean() works", {
 
   expect_equal(
     example_data %>%
-    arrow_substrait_compiler() %>%
+      arrow_substrait_compiler() %>%
       substrait_aggregate(x = mean(int, na.rm = TRUE)) %>%
       dplyr::collect(),
     tibble::tibble(x = 4.44444444444444)
@@ -16,7 +16,6 @@ test_that("arrow translation for mean() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE"
   )
-
 })
 
 test_that("arrow translation for sum() works", {
@@ -24,7 +23,7 @@ test_that("arrow translation for sum() works", {
 
   expect_equal(
     example_data %>%
-    arrow_substrait_compiler() %>%
+      arrow_substrait_compiler() %>%
       substrait_aggregate(x = sum(int, na.rm = TRUE)) %>%
       dplyr::collect(),
     tibble::tibble(x = 40)
@@ -37,7 +36,6 @@ test_that("arrow translation for sum() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE"
   )
-
 })
 
 test_that("arrow translation for min() works", {
@@ -58,7 +56,6 @@ test_that("arrow translation for min() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE"
   )
-
 })
 
 test_that("arrow translation for max() works", {
@@ -79,7 +76,6 @@ test_that("arrow translation for max() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE"
   )
-
 })
 
 test_that("duckdb translation for n() works", {
@@ -113,7 +109,6 @@ test_that("duckdb translation for sum() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
   )
-
 })
 
 test_that("duckdb translation for mean() works", {
@@ -134,7 +129,6 @@ test_that("duckdb translation for mean() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
   )
-
 })
 
 test_that("duckdb translation for min() works", {
@@ -155,7 +149,6 @@ test_that("duckdb translation for min() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
   )
-
 })
 
 test_that("duckdb translation for max() works", {
@@ -176,5 +169,4 @@ test_that("duckdb translation for max() works", {
       dplyr::collect(),
     "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
   )
-
 })
