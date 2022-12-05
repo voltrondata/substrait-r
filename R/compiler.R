@@ -428,7 +428,7 @@ substrait_call <- function(.fun, ..., .output_type = NULL, .options = NULL) {
 #' @seealso [Substrait docs on aggregate function properties](https://substrait.io/expressions/aggregate_functions/#aggregate-binding)
 #'
 #' @export
-substrait_call_agg <- function(.fun, .output_type = NULL, .phase = 0L, .invocation = 0L, ...) {
+substrait_call_agg <- function(.fun, ..., .output_type = NULL, .phase = 0L, .invocation = 0L) {
   args <- rlang::list2(...)
   compiler <- current_compiler()
   template <- substrait$AggregateFunction$create(phase = .phase, invocation = .invocation)
