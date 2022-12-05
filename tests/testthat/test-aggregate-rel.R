@@ -61,40 +61,50 @@ test_that("simple aggregations can be evaluated by DuckDB", {
   )
 
   # check zero, one, and two grouping levels
-  expect_identical(
-    df %>%
-      duckdb_substrait_compiler() %>%
-      substrait_aggregate(c = sum(c + 1)) %>%
-      dplyr::collect(),
-    tibble::tibble(
-      c = as.double(sum(2:6))
-    )
+  expect_warning(
+    expect_identical(
+      df %>%
+        duckdb_substrait_compiler() %>%
+        substrait_aggregate(c = sum(c + 1)) %>%
+        dplyr::collect(),
+      tibble::tibble(
+        c = as.double(sum(2:6))
+      )
+    ),
+    "Missing value removal from aggregate functions not supported in DuckDB"
   )
 
-  expect_identical(
-    df %>%
-      duckdb_substrait_compiler() %>%
-      substrait_group_by(a) %>%
-      substrait_aggregate(c = sum(c + 1)) %>%
-      dplyr::collect(),
-    tibble::tibble(
-      a = c(1, 2, 3),
-      c = c(5, 9, 6)
-    )
+  expect_warning(
+    expect_identical(
+      df %>%
+        duckdb_substrait_compiler() %>%
+        substrait_group_by(a) %>%
+        substrait_aggregate(c = sum(c + 1)) %>%
+        dplyr::collect(),
+      tibble::tibble(
+        a = c(1, 2, 3),
+        c = c(5, 9, 6)
+      )
+    ),
+    "Missing value removal from aggregate functions not supported in DuckDB"
   )
 
-  expect_identical(
-    df %>%
-      duckdb_substrait_compiler() %>%
-      substrait_group_by(a, b) %>%
-      substrait_aggregate(c = sum(c + 1)) %>%
-      dplyr::collect(),
-    tibble::tibble(
-      a = c(1, 2, 2, 3),
-      b = c(1, 1, 2, 2),
-      c = c(5, 4, 5, 6)
-    )
+  expect_warning(
+    expect_identical(
+      df %>%
+        duckdb_substrait_compiler() %>%
+        substrait_group_by(a, b) %>%
+        substrait_aggregate(c = sum(c + 1)) %>%
+        dplyr::collect(),
+      tibble::tibble(
+        a = c(1, 2, 2, 3),
+        b = c(1, 1, 2, 2),
+        c = c(5, 4, 5, 6)
+      )
+    ),
+    "Missing value removal from aggregate functions not supported in DuckDB"
   )
+
 
   # check zero measures and >1 measure
   expect_identical(
@@ -109,20 +119,25 @@ test_that("simple aggregations can be evaluated by DuckDB", {
     )
   )
 
-  expect_identical(
-    df %>%
-      duckdb_substrait_compiler() %>%
-      substrait_group_by(a, b) %>%
-      substrait_aggregate(
-        c = sum(c + 1),
-        d = sum(c)
-      ) %>%
-      dplyr::collect(),
-    tibble::tibble(
-      a = c(1, 2, 2, 3),
-      b = c(1, 1, 2, 2),
-      c = c(5, 4, 5, 6),
-      d = c(3, 3, 4, 5)
+  expect_warning(
+    expect_warning(
+      expect_identical(
+        df %>%
+          duckdb_substrait_compiler() %>%
+          substrait_group_by(a, b) %>%
+          substrait_aggregate(
+            c = sum(c + 1),
+            d = sum(c)
+          ) %>%
+          dplyr::collect(),
+        tibble::tibble(
+          a = c(1, 2, 2, 3),
+          b = c(1, 1, 2, 2),
+          c = c(5, 4, 5, 6),
+          d = c(3, 3, 4, 5)
+        ),
+      "Missing value removal from aggregate functions not supported in DuckDB"
+      )
     )
   )
 })
