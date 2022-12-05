@@ -11,10 +11,10 @@ substrait_call(.fun, ..., .output_type = NULL, .options = NULL)
 
 substrait_call_agg(
   .fun,
+  ...,
   .output_type = NULL,
   .phase = 0L,
-  .invocation = 0L,
-  ...
+  .invocation = 0L
 )
 
 substrait_eval(expr)
