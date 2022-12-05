@@ -249,3 +249,91 @@ test_that("duckdb translation for n() works", {
     tibble::tibble(lgl = c(NA, TRUE, FALSE), n = c(3L, 4L, 3L))
   )
 })
+
+test_that("duckdb translation for sum() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      dplyr::summarise(x = sum(int, na.rm = TRUE)) %>%
+      dplyr::collect(),
+    example_data,
+    .FUN = testthat::expect_equal
+  )
+
+  expect_warning(
+    example_data %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::summarise(x = sum(int, na.rm = FALSE)) %>%
+      dplyr::collect(),
+    "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
+  )
+
+})
+
+test_that("duckdb translation for mean() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      dplyr::summarise(x = mean(int, na.rm = TRUE)) %>%
+      dplyr::collect(),
+    example_data,
+    .FUN = testthat::expect_equal
+  )
+
+  expect_warning(
+    example_data %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::summarise(x = mean(int, na.rm = FALSE)) %>%
+      dplyr::collect(),
+    "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
+  )
+
+})
+
+test_that("duckdb translation for min() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      dplyr::summarise(x = min(int, na.rm = TRUE)) %>%
+      dplyr::collect(),
+    example_data,
+    .FUN = testthat::expect_equal
+  )
+
+  expect_warning(
+    example_data %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::summarise(x = min(int, na.rm = FALSE)) %>%
+      dplyr::collect(),
+    "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
+  )
+
+})
+
+test_that("duckdb translation for max() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      dplyr::summarise(x = max(int, na.rm = TRUE)) %>%
+      dplyr::collect(),
+    example_data,
+    .FUN = testthat::expect_equal
+  )
+
+  expect_warning(
+    example_data %>%
+      duckdb_substrait_compiler() %>%
+      dplyr::summarise(x = max(int, na.rm = FALSE)) %>%
+      dplyr::collect(),
+    "Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE"
+  )
+
+})
