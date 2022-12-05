@@ -1,5 +1,5 @@
 
-compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), .FUN = testthat::expect_identical, ...) {
+compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
 
   engine <- match.arg(engine, several.ok = TRUE)
 
@@ -8,12 +8,12 @@ compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), .FUN
 
   if ("arrow" %in% engine) {
     out_substrait <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = arrow_substrait_compiler(tbl))))
-    .FUN(out_substrait, expected, ...)
+    testthat::expect_identical(out_substrait, expected, ...)
   }
 
   if ("duckdb" %in% engine) {
     out_duckdb <- rlang::eval_tidy(expr, rlang::new_data_mask(rlang::env(.input = duckdb_substrait_compiler(tbl))))
-    .FUN(out_duckdb, expected, ...)
+    testthat::expect_identical(out_duckdb, expected, ...)
   }
 }
 
