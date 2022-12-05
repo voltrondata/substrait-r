@@ -422,10 +422,10 @@ substrait_call <- function(.fun, ..., .output_type = NULL, .options = NULL) {
 
 #' @rdname substrait_call
 #' @export
-substrait_call_agg <- function(.fun, ..., .output_type = NULL) {
+substrait_call_agg <- function(.fun, ..., .output_type = NULL, phase = 0L, invocation = 0L) {
   args <- rlang::list2(...)
   compiler <- current_compiler()
-  template <- substrait$AggregateFunction$create()
+  template <- substrait$AggregateFunction$create(phase = phase, invocation = invocation)
   compiler$resolve_function(.fun, args, template, .output_type)
 }
 
