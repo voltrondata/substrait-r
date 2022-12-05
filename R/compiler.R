@@ -421,11 +421,17 @@ substrait_call <- function(.fun, ..., .output_type = NULL, .options = NULL) {
 }
 
 #' @rdname substrait_call
+#'
+#' @param .phase Describes the input type of the data describing what portion of the operation is required
+#' @param .invocation Whether the function uses all or only distinct values in the aggregation calculation
+#'
+#' @seealso [Substrait docs on aggregate function properties](https://substrait.io/expressions/aggregate_functions/#aggregate-binding)
+#'
 #' @export
-substrait_call_agg <- function(.fun, ..., .output_type = NULL, phase = 0L, invocation = 0L) {
+substrait_call_agg <- function(.fun, .output_type = NULL, .phase = 0L, .invocation = 0L, ...) {
   args <- rlang::list2(...)
   compiler <- current_compiler()
-  template <- substrait$AggregateFunction$create(phase = phase, invocation = invocation)
+  template <- substrait$AggregateFunction$create(phase = .phase, invocation = .invocation)
   compiler$resolve_function(.fun, args, template, .output_type)
 }
 

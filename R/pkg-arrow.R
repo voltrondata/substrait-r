@@ -84,26 +84,26 @@ arrow_funs[["mean"]] <- function(x) {
   )
 }
 
-# TODO: remove non-default `phase` and `invocation` param values for aggregation functions when Arrow consumer supports this
+# TODO: remove non-default `.phase` and `.invocation` param values for aggregation functions when Arrow consumer supports this
 
 arrow_funs[["sum"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
-  substrait_call_agg("arithmetic.sum", x, .output_type = substrait_fp64(), phase = 3L, invocation = 1L)
+  substrait_call_agg("arithmetic.sum", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
 arrow_funs[["mean"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
-  substrait_call_agg("arithmetic.avg", x, .output_type = substrait_fp64(), phase = 3L, invocation = 1L)
+  substrait_call_agg("arithmetic.avg", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
 arrow_funs[["min"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
-  substrait_call_agg("arithmetic.min", x, .output_type = substrait_fp64(), phase = 3L, invocation = 1L)
+  substrait_call_agg("arithmetic.min", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
 arrow_funs[["max"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
-  substrait_call_agg("arithmetic.max", x, .output_type = substrait_i64(), phase = 3L, invocation = 1L)
+  substrait_call_agg("arithmetic.max", x, .output_type = substrait_i64(), .phase = 3L, .invocation = 1L)
 }
 
 check_na_rm <- function(na.rm) {
