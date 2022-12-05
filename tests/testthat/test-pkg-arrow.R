@@ -297,3 +297,16 @@ test_that("substrait_eval_arrow() can evaluate a plan with one read relation", {
     error = TRUE
   )
 })
+
+test_that("arrow translation for n() works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_identical(
+    example_data %>%
+      arrow_substrait_compiler() %>%
+      dplyr::group_by(lgl) %>%
+      dplyr::summarise(n = n()) %>%
+      dplyr::collect(),
+    tibble::tibble(lgl = c(NA, TRUE, FALSE), n = c(3L, 4L, 3L))
+  )
+})

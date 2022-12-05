@@ -75,6 +75,15 @@ arrow_funs[[">"]] <- function(lhs, rhs) {
   )
 }
 
+# TODO: remove `x` input parameter as this should not be needed for `count` function
+arrow_funs[["n"]] <- function(x) {
+  substrait_call_agg_temp(
+    "aggregate_generic.count",
+    x,
+    .output_type = substrait_i64()
+  )
+}
+
 #' Create an Arrow Substrait Compiler
 #'
 #' @param object A [data.frame()], [arrow::Table], [arrow::RecordBatch],
