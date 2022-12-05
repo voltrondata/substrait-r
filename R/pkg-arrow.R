@@ -76,7 +76,7 @@ arrow_funs[[">"]] <- function(lhs, rhs) {
 }
 
 # TODO: remove `x` input parameter as this should not be needed for `count` function
-# TODO: remove non-default phase/invocation values
+# TODO: remove non-default phase/invocation values when these supported in Arrow
 arrow_funs[["n"]] <- function(x) {
   substrait_call_agg(
     "aggregate_generic.count",
