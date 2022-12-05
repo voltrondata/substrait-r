@@ -76,11 +76,14 @@ arrow_funs[[">"]] <- function(lhs, rhs) {
 }
 
 # TODO: remove `x` input parameter as this should not be needed for `count` function
+# TODO: remove non-default phase/invocation values
 arrow_funs[["n"]] <- function(x) {
-  substrait_call_agg_temp(
+  substrait_call_agg(
     "aggregate_generic.count",
     x,
-    .output_type = substrait_i64()
+    .output_type = substrait_i64(),
+    phase = 3L,
+    invocation = 1L
   )
 }
 
