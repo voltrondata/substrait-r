@@ -16,14 +16,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-# substrait
+# Substrait R Package for Generating Cross-language Specification of Data Compute Operations
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/voltrondata/substrait-r/workflows/R-CMD-check/badge.svg)](https://github.com/voltrondata/substrait-r/actions)
 [![Codecov test coverage](https://codecov.io/gh/voltrondata/substrait-r/branch/master/graph/badge.svg)](https://app.codecov.io/gh/voltrondata/substrait-r?branch=master)
 <!-- badges: end -->
 
-The goal of substrait is to provide an R interface to the [Substrait](https://substrait.io) cross-language serialization for relational algebra. This is an experimental package that is under heavy development!
+The goal of the Substrait R package is to provide an R interface to  [Substrait](https://substrait.io), a cross-language specification for data compute operations. The Substrait R package allows you to construct a Substrait plan from R for evaluation by a Substrait consumer, such as Arrow or DuckDB.
+
+This is an experimental package that is under heavy development!
 
 ## Installation
 
@@ -95,7 +97,7 @@ The constructors are currently implemented using about 1000 lines of auto-genera
 
 ## Under the hood
 
-Substrait objects are represented as a classed version of the `raw()` vector containing serialized data. This makes the representation independent from the protocol buffer library use to encode/deocde the objects and is particularly useful with `expect_identical()`.
+Substrait objects are represented as a classed version of the `raw()` vector containing serialized data. This makes the representation independent from the protocol buffer library use to encode/decode the objects and is particularly useful with `expect_identical()`.
 
 ```{r}
 unclass(msg)
