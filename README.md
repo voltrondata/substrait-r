@@ -28,7 +28,7 @@ remotes::install_github("voltrondata/substrait-r")
 You will need a [development version of the arrow
 package](https://arrow.apache.org/docs/r/articles/developers/setup.html)
 to actually evaluate anything (in particular, with Arrow configured
-using `-DARROW_ENGINE=ON`).
+using `-DARROW_SUBSTRAIT=ON`).
 
 ## Example
 
