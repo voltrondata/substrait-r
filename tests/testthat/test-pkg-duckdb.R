@@ -236,16 +236,3 @@ test_that("duckdb raises error for empty projection", {
     "Column list must not be empty"
   )
 })
-
-test_that("duckdb translation for n() works", {
-  skip_if_not(has_duckdb_with_substrait())
-
-  expect_identical(
-    example_data %>%
-      duckdb_substrait_compiler() %>%
-      dplyr::group_by(lgl) %>%
-      dplyr::summarise(n = n()) %>%
-      dplyr::collect(),
-    tibble::tibble(lgl = c(NA, TRUE, FALSE), n = c(3L, 4L, 3L))
-  )
-})

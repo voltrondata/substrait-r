@@ -300,10 +300,32 @@ duckdb_funs[["^"]] <- function(lhs, rhs) {
   substrait_call("^", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
-duckdb_funs[["sum"]] <- function(x) {
+duckdb_funs[["sum"]] <- function(x, na.rm = FALSE) {
+  check_na_rm_duckdb(na.rm)
   substrait_call_agg("sum", x, .output_type = identity)
+}
+
+duckdb_funs[["mean"]] <- function(x, na.rm = FALSE) {
+  check_na_rm_duckdb(na.rm)
+  substrait_call_agg("avg", x, .output_type = substrait_i64())
+}
+
+duckdb_funs[["min"]] <- function(x, na.rm = FALSE) {
+  check_na_rm_duckdb(na.rm)
+  substrait_call_agg("min", x, .output_type = substrait_i64())
+}
+
+duckdb_funs[["max"]] <- function(x, na.rm = FALSE) {
+  check_na_rm_duckdb(na.rm)
+  substrait_call_agg("max", x, .output_type = substrait_i64())
 }
 
 duckdb_funs[["n"]] <- function() {
   substrait_call_agg("count", .output_type = substrait_i64())
+}
+
+check_na_rm_duckdb <- function(na.rm) {
+  if (!na.rm) {
+    warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
+  }
 }

@@ -75,6 +75,43 @@ arrow_funs[[">"]] <- function(lhs, rhs) {
   )
 }
 
+arrow_funs[["mean"]] <- function(x) {
+  substrait_call_agg(
+    "comparison.gt",
+    lhs,
+    rhs,
+    .output_type = substrait_i64()
+  )
+}
+
+# TODO: remove non-default `.phase` and `.invocation` param values for aggregation functions when Arrow consumer supports this
+
+arrow_funs[["sum"]] <- function(x, na.rm = FALSE) {
+  check_na_rm(na.rm)
+  substrait_call_agg("arithmetic.sum", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
+}
+
+arrow_funs[["mean"]] <- function(x, na.rm = FALSE) {
+  check_na_rm(na.rm)
+  substrait_call_agg("arithmetic.avg", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
+}
+
+arrow_funs[["min"]] <- function(x, na.rm = FALSE) {
+  check_na_rm(na.rm)
+  substrait_call_agg("arithmetic.min", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
+}
+
+arrow_funs[["max"]] <- function(x, na.rm = FALSE) {
+  check_na_rm(na.rm)
+  substrait_call_agg("arithmetic.max", x, .output_type = substrait_i64(), .phase = 3L, .invocation = 1L)
+}
+
+check_na_rm <- function(na.rm) {
+  if (!na.rm) {
+    warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")
+  }
+}
+
 #' Create an Arrow Substrait Compiler
 #'
 #' @param object A [data.frame()], [arrow::Table], [arrow::RecordBatch],

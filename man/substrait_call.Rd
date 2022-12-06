@@ -9,7 +9,13 @@
 \usage{
 substrait_call(.fun, ..., .output_type = NULL, .options = NULL)
 
-substrait_call_agg(.fun, ..., .output_type = NULL)
+substrait_call_agg(
+  .fun,
+  ...,
+  .output_type = NULL,
+  .phase = 0L,
+  .invocation = 0L
+)
 
 substrait_eval(expr)
 
@@ -33,6 +39,10 @@ to predict this.}
 
 \item{.options}{An optional list of substrait.FunctionOption messages
 to associate with this call.}
+
+\item{.phase}{Describes the input type of the data describing what portion of the operation is required}
+
+\item{.invocation}{Whether the function uses all or only distinct values in the aggregation calculation}
 
 \item{expr}{An expression to evaluate with the translations defined by
 the current compiler. You can use this to define translations that use
@@ -73,4 +83,7 @@ with_compiler(compiler, substrait_eval(sqrt(4)))
 # use substrait_eval_data() to do a more direct test of a translation
 with_compiler(compiler, substrait_eval_data(sqrt(b)))
 
+}
+\seealso{
+\href{https://substrait.io/expressions/aggregate_functions/#aggregate-binding}{Substrait docs on aggregate function properties}
 }
