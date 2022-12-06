@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Substrait R Package for Generating Cross-language Specification of Data Compute Operations
+# Substrait R Interface
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/voltrondata/substrait-r/workflows/R-CMD-check/badge.svg)](https://github.com/voltrondata/substrait-r/actions)
