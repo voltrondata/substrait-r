@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/voltrondata/substrait-r/branch/master/graph/badge.svg)](https://app.codecov.io/gh/voltrondata/substrait-r?branch=master)
 <!-- badges: end -->
 
-The goal of the Substrait R package is to provide an R interface to  [Substrait](https://substrait.io), a cross-language specification for data compute operations. The Substrait R package allows you to construct a Substrait plan from R for evaluation by a Substrait consumer, such as Arrow or DuckDB.
+The goal of the Substrait R package is to provide an R interface to [Substrait](https://substrait.io), a cross-language specification for data compute operations. The Substrait R package allows you to construct a Substrait plan from R for evaluation by a Substrait consumer, such as Arrow or DuckDB.
 
 This is an experimental package that is under heavy development!
 
