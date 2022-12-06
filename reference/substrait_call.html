@@ -62,7 +62,13 @@ translations <em>and</em> the <code>.data</code> mask from the <code><a href="cu
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">substrait_call</span><span class="op">(</span><span class="va">.fun</span>, <span class="va">...</span>, .output_type <span class="op">=</span> <span class="cn">NULL</span>, .options <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">substrait_call_agg</span><span class="op">(</span><span class="va">.fun</span>, <span class="va">...</span>, .output_type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">substrait_call_agg</span><span class="op">(</span></span>
+<span>  <span class="va">.fun</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .output_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .phase <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  .invocation <span class="op">=</span> <span class="fl">0L</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">substrait_eval</span><span class="op">(</span><span class="va">expr</span><span class="op">)</span></span>
 <span></span>
@@ -97,6 +103,14 @@ to predict this.</p></dd>
 to associate with this call.</p></dd>
 
 
+<dt>.phase</dt>
+<dd><p>Describes the input type of the data describing what portion of the operation is required</p></dd>
+
+
+<dt>.invocation</dt>
+<dd><p>Whether the function uses all or only distinct values in the aggregation calculation</p></dd>
+
+
 <dt>expr</dt>
 <dd><p>An expression to evaluate with the translations defined by
 the current compiler. You can use this to define translations that use
@@ -112,6 +126,10 @@ explicitly.</p></dd>
 
 <p>All of these functions return an object that can be coerced
 to a substrait.Expression via <code>as_substrait(x, "substrait.Expression")</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><a href="https://substrait.io/expressions/aggregate_functions/#aggregate-binding" class="external-link">Substrait docs on aggregate function properties</a></p></div>
     </div>
 
     <div class="section level2">
