@@ -55,7 +55,7 @@ substrait_aggregate <- function(.compiler, ...) {
 
   .compiler$schema <- substrait$NamedStruct$create(
     names = names(types),
-    struct_ = substrait$Type$Struct$create(
+    struct = substrait$Type$Struct$create(
       types = types
     )
   )

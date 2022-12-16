@@ -143,7 +143,7 @@ test_that("substrait_proto_message list-like interface works", {
 test_that("substrait_proto_message class can be created with a message field", {
   # using internal constructor
   expect_identical(
-    substrait$Type$create(bool_ = substrait_proto_auto()),
+    substrait$Type$create(bool = substrait_proto_auto()),
     structure(
       list(content = as.raw(c(0x0a, 0x00))),
       class = c(
@@ -156,7 +156,7 @@ test_that("substrait_proto_message class can be created with a message field", {
 
   # using RProtoBuf
   expect_identical(
-    substrait$Type$create(bool_ = RProtoBuf::P("substrait.Type.Boolean")$new()),
+    substrait$Type$create(bool = RProtoBuf::P("substrait.Type.Boolean")$new()),
     structure(
       list(content = as.raw(c(0x0a, 0x00))),
       class = c(
@@ -169,7 +169,7 @@ test_that("substrait_proto_message class can be created with a message field", {
 
   # using list()
   expect_identical(
-    substrait$Type$create(bool_ = substrait_proto_auto()),
+    substrait$Type$create(bool = substrait_proto_auto()),
     structure(
       list(content = as.raw(c(0x0a, 0x00))),
       class = c(

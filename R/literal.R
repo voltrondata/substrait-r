@@ -16,7 +16,7 @@ as_substrait.substrait_Expression_Literal <- function(x, .ptype = NULL, ...) {
       # a few of these have to be renamed because the field names are
       # inconsistent between substrait.Type and substrait.Expression.Literal
       guessed_type <- switch(which_literal,
-        boolean = "bool_",
+        boolean = "bool",
         which_literal
       )
 
@@ -46,7 +46,7 @@ as_substrait.data.frame <- function(x, .ptype = NULL, ...) {
       types <- lapply(x, as_substrait, "substrait.Type")
       substrait$NamedStruct$create(
         names = names(x),
-        struct_ = substrait$Type$Struct$create(
+        struct = substrait$Type$Struct$create(
           types = types
         )
       )
@@ -70,7 +70,7 @@ from_substrait.data.frame <- function(msg, x, ...) {
       }
 
       stopifnot(identical(names(ptype), msg$names))
-      ptype <- Map(from_substrait, msg$struct_$types, ptype)
+      ptype <- Map(from_substrait, msg$struct$types, ptype)
       names(ptype) <- msg$names
       x[names(ptype)] <- ptype
       x
@@ -91,7 +91,7 @@ from_substrait.vctrs_unspecified <- function(msg, x, ...) {
       }
 
       switch(type,
-        "bool_" = logical(),
+        "bool" = logical(),
         "i32" = integer(),
         "fp64" = double(),
         "string" = character(),
@@ -411,7 +411,7 @@ from_substrait.logical <- function(msg, x, ...) {
         return(logical())
       }
 
-      if (!identical(type, "bool_")) {
+      if (!identical(type, "bool")) {
         stop(sprintf("Can't convert substrait.Type<%s> to logical() ptype", type))
       }
       logical()

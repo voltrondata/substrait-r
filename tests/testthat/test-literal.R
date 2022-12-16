@@ -50,7 +50,7 @@ test_that("as_substrait() works for data.frame()", {
     as_substrait(data.frame(a_field = integer()), "substrait.NamedStruct"),
     substrait$NamedStruct$create(
       names = "a_field",
-      struct_ = substrait$Type$Struct$create(
+      struct = substrait$Type$Struct$create(
         types = list(
           substrait_i32()
         )
@@ -70,7 +70,7 @@ test_that("from_substrait() works for data.frame()", {
     from_substrait(
       substrait$NamedStruct$create(
         names = "a_field",
-        struct_ = substrait$Type$Struct$create(
+        struct = substrait$Type$Struct$create(
           types = list(
             substrait_i32()
           )
@@ -85,7 +85,7 @@ test_that("from_substrait() works for data.frame()", {
     from_substrait(
       substrait$NamedStruct$create(
         names = "a_field",
-        struct_ = substrait$Type$Struct$create(
+        struct = substrait$Type$Struct$create(
           types = list(
             substrait_i32()
           )

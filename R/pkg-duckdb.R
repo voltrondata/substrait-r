@@ -197,17 +197,17 @@ duckdb_funs[["!"]] <- function(rhs) {
   substrait$Expression$create(
     cast = substrait$Expression$Cast$create(
       type = substrait$Type$create(
-        bool_ = substrait$Type$Boolean$create()
+        bool = substrait$Type$Boolean$create()
       ),
       input = substrait$Expression$create(
         if_then = substrait$Expression$IfThen$create(
           ifs = list(
             substrait$Expression$IfThen$IfClause$create(
-              if_ = as_substrait(rhs, "substrait.Expression"),
+              `if` = as_substrait(rhs, "substrait.Expression"),
               then = as_substrait(FALSE, "substrait.Expression")
             )
           ),
-          else_ = as_substrait(TRUE, "substrait.Expression")
+          `else` = as_substrait(TRUE, "substrait.Expression")
         )
       )
     )
