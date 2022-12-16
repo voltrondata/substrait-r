@@ -128,7 +128,7 @@ message FunctionSignature {
     oneof argument_kind {
       ValueArgument value = 2;
       TypeArgument type = 3;
-      EnumArgument enum_ = 4;
+      EnumArgument enum = 4;
     }
 
     message ValueArgument {

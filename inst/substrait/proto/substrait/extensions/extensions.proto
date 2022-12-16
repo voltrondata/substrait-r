@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package substrait.extensions;
 
-import "substrait/any.proto";
+import "google/protobuf/any.proto";
 
 option csharp_namespace = "Substrait.Protobuf";
 option go_package = "github.com/substrait-io/substrait-go/proto/extensions";
@@ -74,8 +74,8 @@ message SimpleExtensionDeclaration {
 message AdvancedExtension {
   // An optimization is helpful information that don't influence semantics. May
   // be ignored by a consumer.
-  Any optimization = 1;
+  google.protobuf.Any optimization = 1;
 
   // An enhancement alter semantics. Cannot be ignored by a consumer.
-  Any enhancement = 2;
+  google.protobuf.Any enhancement = 2;
 }

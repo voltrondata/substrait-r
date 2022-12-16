@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package substrait;
 
-import "substrait/any.proto";
+import "google/protobuf/any.proto";
 import "substrait/extensions/extensions.proto";
 import "substrait/type.proto";
 
@@ -86,7 +86,7 @@ message ReadRel {
   // A stub type that can be used to extend/introduce new table types outside
   // the specification.
   message ExtensionTable {
-    Any detail = 1;
+    google.protobuf.Any detail = 1;
   }
 
   // Represents a list of files in input of a scan operation
@@ -137,7 +137,7 @@ message ReadRel {
         ParquetReadOptions parquet = 9;
         ArrowReadOptions arrow = 10;
         OrcReadOptions orc = 11;
-        Any extension = 12;
+        google.protobuf.Any extension = 12;
         DwrfReadOptions dwrf = 13;
       }
     }
@@ -268,20 +268,20 @@ message SetRel {
 message ExtensionSingleRel {
   RelCommon common = 1;
   Rel input = 2;
-  Any detail = 3;
+  google.protobuf.Any detail = 3;
 }
 
 // Stub to support extension with a zero inputs
 message ExtensionLeafRel {
   RelCommon common = 1;
-  Any detail = 2;
+  google.protobuf.Any detail = 2;
 }
 
 // Stub to support extension with multiple inputs
 message ExtensionMultiRel {
   RelCommon common = 1;
   repeated Rel inputs = 2;
-  Any detail = 3;
+  google.protobuf.Any detail = 3;
 }
 
 // A redistribution operation
@@ -335,7 +335,7 @@ message ExchangeRel {
 
     oneof target_type {
       string uri = 2;
-      Any extended = 3;
+      google.protobuf.Any extended = 3;
     }
   }
 }
@@ -379,7 +379,7 @@ message NamedObjectWrite {
 // A stub type that can be used to extend/introduce new table types outside
 // the specification.
 message ExtensionObject {
-  Any detail = 1;
+  google.protobuf.Any detail = 1;
 }
 
 message DdlRel {
@@ -482,7 +482,7 @@ message WriteRel {
 // The argument of a function
 message FunctionArgument {
   oneof arg_type {
-    string enum_ = 1;
+    string enum = 1;
     Type type = 2;
     Expression value = 3;
   }
@@ -521,7 +521,7 @@ message Expression {
     // deprecated: enum literals are only sensible in the context of
     // function arguments, for which FunctionArgument should now be
     // used
-    Enum enum_ = 10 [deprecated = true];
+    Enum enum = 10 [deprecated = true];
   }
 
   message Enum {
@@ -560,7 +560,7 @@ message Expression {
       VarChar var_char = 22;
       bytes fixed_binary = 23;
       Decimal decimal = 24;
-      Struct struct_ = 25;
+      Struct struct = 25;
       Map map = 26;
       // Timestamp in units of microseconds since the UNIX epoch.
       int64 timestamp_tz = 27;
@@ -638,7 +638,7 @@ message Expression {
 
       // the value of the literal, serialized using some type-specific
       // protobuf message
-      Any value = 2;
+      google.protobuf.Any value = 2;
     }
   }
 
@@ -793,10 +793,10 @@ message Expression {
 
   message IfThen {
     repeated IfClause ifs = 1;
-    Expression else_ = 2;
+    Expression else = 2;
 
     message IfClause {
-      Expression if_ = 1;
+      Expression if = 1;
       Expression then = 2;
     }
   }
@@ -816,10 +816,10 @@ message Expression {
   message SwitchExpression {
     Expression match = 3;
     repeated IfValue ifs = 1;
-    Expression else_ = 2;
+    Expression else = 2;
 
     message IfValue {
-      Literal if_ = 1;
+      Literal if = 1;
       Expression then = 2;
     }
   }
@@ -847,7 +847,7 @@ message Expression {
     }
 
     message PythonPickleFunction {
-      bytes function_ = 1;
+      bytes function = 1;
       repeated string prerequisite = 2;
     }
 
@@ -911,7 +911,7 @@ message Expression {
 
     message Select {
       oneof type {
-        StructSelect struct_ = 1;
+        StructSelect struct = 1;
         ListSelect list = 2;
         MapSelect map = 3;
       }
