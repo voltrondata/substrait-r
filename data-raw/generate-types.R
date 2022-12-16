@@ -2,6 +2,7 @@
 library(tidyverse)
 library(RProtoBuf)
 
+# Add the proto files to RProtoBuf so that it can be used to query type info
 proto_files <- list.files(
   "inst/substrait/proto",
   "\\.proto$",
@@ -13,43 +14,12 @@ readProtoFiles2(
   protoPath = "inst/substrait/proto"
 )
 
-qualified_type_from_descriptor <- function(descriptor) {
-  paste(
-    c("substrait", rprotobuf_descriptor_to_class(descriptor)),
-    collapse = "."
-  )
-}
 
-rprotobuf_descriptor_to_class <- function(descriptor, child = c()) {
-  # special case the extensions namespace because RProtoBuf doesn't have
-  # a good way to extract this from the descriptor
-  extensions_types <- c("AdvancedExtension", "SimpleExtensionDeclaration", "SimpleExtensionURI")
-  if (descriptor$name() %in% extensions_types) {
-    return(c("extensions", descriptor$name(), child))
-  }
+# In a previous step we generated a full list of types with nesting included
+# Use this to build up the list of types
+proto_types_with_nesting <- read_lines("inst/substrait/types_gen.txt") %>%
+  strsplit(".", fixed = TRUE)
 
-  containing <- descriptor$containing_type()
-  if (is.null(containing)) {
-    c(descriptor$name(), child)
-  } else {
-    rprotobuf_descriptor_to_class(containing, child = c(descriptor$name(), child))
-  }
-}
-
-# use nanopb defs for now
-proto_types_with_nesting <- list.files(
-  "src", "\\.pb.h",
-  full.names = TRUE,
-  recursive = TRUE
-) %>%
-  map(read_file) %>%
-  map(str_match_all, "\\}\\s+substrait_[^;]+") %>%
-  unlist() %>%
-  str_remove("\\}\\s*") %>%
-  str_split("_")
-
-# Note: before you run this you will have to Clean + Install if you have
-# updated the .proto files (i.e., you have just bumped the Substrait version)
 proto_types <- tibble(
   name = map_chr(proto_types_with_nesting, ~ .x[length(.x)]),
   name_qualified = map_chr(proto_types_with_nesting, paste, collapse = "."),
@@ -73,6 +43,31 @@ enum_types <- proto_types %>%
   ) %>%
   select(-descriptor)
 
+# special case the extensions namespace because RProtoBuf doesn't have
+# a good way to extract this from the descriptor
+extensions_types <- proto_types %>%
+  filter(str_detect(name_qualified, "substrait\\.extensions\\.[^.]*$")) %>%
+  pull(name)
+
+rprotobuf_descriptor_to_class <- function(descriptor, child = c()) {
+  if (descriptor$name() %in% extensions_types) {
+    return(c("extensions", descriptor$name(), child))
+  }
+
+  containing <- descriptor$containing_type()
+  if (is.null(containing)) {
+    c(descriptor$name(), child)
+  } else {
+    rprotobuf_descriptor_to_class(containing, child = c(descriptor$name(), child))
+  }
+}
+
+qualified_type_from_descriptor <- function(descriptor) {
+  paste(
+    c("substrait", rprotobuf_descriptor_to_class(descriptor)),
+    collapse = "."
+  )
+}
 
 rprotobuf_types <- tibble(
   rprotobuf_name = str_subset(names(asNamespace("RProtoBuf")), "^TYPE_"),
@@ -140,11 +135,11 @@ generate_tree <- function(qualified_name = "substrait", indent = "") {
 
   if (nrow(type) > 0) {
     type <- lapply(type, "[[", 1)
-    formals <- glue::glue("{ type$fields$field_name } = arg_unspecified()")
+    formals <- glue::glue("`{ type$fields$field_name }` = arg_unspecified()")
     formals_flat <- paste(formals, collapse = ", ")
 
     sanitizers <- glue::glue(
-      '  { type$fields$field_name } = clean_value({ type$fields$field_name }, "{ type$fields$field_type }", "{ type$fields$field_type_name_qualified }", repeated = { type$fields$is_repeated })'
+      '  `{ type$fields$field_name }` = clean_value(`{ type$fields$field_name }`, "{ type$fields$field_type }", "{ type$fields$field_type_name_qualified }", repeated = { type$fields$is_repeated })'
     )
     sanitizers_flat <- paste(sanitizers, collapse = ",\n")
 

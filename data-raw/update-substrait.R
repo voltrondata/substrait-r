@@ -1,4 +1,7 @@
 
+# Update the substrait .proto files ----
+# Requirements: the protoc command-line utility; python3 with pip3 install protobuf
+
 curl::curl_download(
   "https://github.com/substrait-io/substrait/archive/refs/tags/v0.20.0.zip",
   "data-raw/substrait.zip"
@@ -80,3 +83,22 @@ output <- withr::with_dir("data-raw/tmp", {
 readr::write_lines(sort(output), "inst/substrait/types_gen.txt")
 
 unlink("data-raw/tmp", recursive = TRUE)
+
+# We also need to copy some files because RProtoBuf doesn't come with a copy
+# of the well known types (??). This is specific to a homebrew install.
+unlink("inst/substrait/proto/google", recursive = TRUE)
+well_known_types <- list.files(
+  "/opt/homebrew/Cellar/protobuf/21.8/include",
+  "\\.proto$",
+  recursive = TRUE
+)
+
+well_known_types_dst <- file.path("inst/substrait/proto", well_known_types)
+for (d in unique(dirname(well_known_types_dst))) {
+  dir.create(d, recursive = TRUE)
+}
+
+file.copy(
+  file.path("/opt/homebrew/Cellar/protobuf/21.8/include", well_known_types),
+  well_known_types_dst
+)
