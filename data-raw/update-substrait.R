@@ -1,4 +1,7 @@
 
+# Update the substrait .proto files ----
+# Requirements: the protoc command-line utility; python3 with pip3 install protobuf
+
 curl::curl_download(
   "https://github.com/substrait-io/substrait/archive/refs/tags/v0.20.0.zip",
   "data-raw/substrait.zip"
@@ -24,87 +27,78 @@ unlink("inst/substrait/site", recursive = TRUE)
 unlink("data-raw/substrait-0.20.0", recursive = TRUE)
 unlink("data-raw/substrait.zip")
 
-# vendor nanopb
-# https://jpa.kapsi.fi/nanopb/download/
-curl::curl_download(
-  "https://jpa.kapsi.fi/nanopb/download/nanopb-0.4.6-macosx-x86.tar.gz",
-  "data-raw/nanopb.tar.gz"
-)
+dir.create("data-raw/tmp")
+withr::with_dir("data-raw/tmp", {
+  system('protoc -I=../../inst/substrait/proto --python_out=. `find ../../inst/substrait/proto -name "*.proto"`')
+})
 
-untar("data-raw/nanopb.tar.gz", exdir = "data-raw")
+module_names <- list.files("data-raw/tmp", "\\.py$", recursive = TRUE) %>%
+  stringr::str_remove("\\.py$") %>%
+  stringr::str_replace_all("/", ".")
 
-nanopb_files <- c(
-  "pb_common.c", "pb_common.h",
-  "pb_decode.c", "pb_decode.h",
-  "pb_encode.c", "pb_encode.h",
-  "pb.h"
-)
+module_names_code <- glue::glue('
+import {module_names}
+add_pkg_types({module_names})
+') %>%
+  paste(collapse = "\n")
 
-unlink(list.files("src", "^pb", full.names = TRUE))
-fs::file_copy(file.path("data-raw/nanopb-0.4.6-macosx-x86", nanopb_files), "src")
+list_msg_types_all <- glue::glue('
 
-# add the 'Any' and 'Empty' type
-# Probably don't need this because it's built in to Google protobuf
-# but I haven't figured out the right includes yet to make it work
-# https://github.com/protocolbuffers/protobuf/tree/main/src/google/protobuf
-readr::write_file('
-syntax = "proto3";
+message_types = []
+enum_types = []
 
-package substrait;
+def add_nested_types(message_type):
+    for nested_message_type_name in message_type.DESCRIPTOR.nested_types_by_name:
+        nested_type = getattr(message_type, nested_message_type_name)
+        message_types.append(nested_type.DESCRIPTOR.full_name)
+        add_nested_types(nested_type)
 
-message Any {
-  string type_url = 1;
-  bytes value = 2;
-}
+    for nested_enum_type_name in message_type.DESCRIPTOR.enum_types_by_name:
+        enum_type = getattr(message_type, nested_enum_type_name)
+        enum_types.append(enum_type.DESCRIPTOR.full_name)
 
-message Empty {}
+def add_pkg_types(pkg):
+    for message_type_name in pkg.DESCRIPTOR.message_types_by_name:
+        message_type = getattr(pkg, message_type_name)
+        message_types.append(message_type.DESCRIPTOR.full_name)
+        add_nested_types(message_type)
 
-', "inst/substrait/proto/substrait/any.proto")
+    for enum_type_name in pkg.DESCRIPTOR.enum_types_by_name:
+        enum_type = getattr(pkg, enum_type_name)
+        enum_types.append(enum_type.DESCRIPTOR.full_name)
 
-# modify references to the Any type and
-# clean up reserved words that were used as field names and give them
-# an underscore suffix (because nanopb doesn't do any escaping itself)
-proto_files <- list.files(
-  "inst/substrait/proto", "\\.proto$",
+{module_names_code}
+
+print("\\n".join(message_types))
+print("\\n".join(enum_types))
+
+')
+
+readr::write_file(list_msg_types_all, "data-raw/tmp/list_all.py")
+
+output <- withr::with_dir("data-raw/tmp", {
+  system("python3 list_all.py", intern = TRUE)
+})
+
+readr::write_lines(sort(output), "inst/substrait/types_gen.txt")
+
+unlink("data-raw/tmp", recursive = TRUE)
+
+# We also need to copy some files because RProtoBuf doesn't come with a copy
+# of the well known types (??). This is specific to a homebrew install.
+unlink("inst/substrait/proto/google", recursive = TRUE)
+well_known_types <- list.files(
+  "/opt/homebrew/Cellar/protobuf/21.8/include",
+  "\\.proto$",
   recursive = TRUE
 )
 
-for (f in file.path("inst/substrait/proto", proto_files)) {
-  readr::read_file(f) |>
-    stringr::str_replace_all(stringr::fixed("google.protobuf.Any"), "Any") |>
-    stringr::str_replace_all(stringr::fixed("google.protobuf.Empty"), "Any") |>
-    stringr::str_replace_all(
-      stringr::fixed("google/protobuf/any.proto"),
-      "substrait/any.proto"
-    ) |>
-    stringr::str_replace_all(
-      "(\\s+)(enum|struct|if|else|bool|function)(\\s*=\\s*[0-9]+;)",
-      "\\1\\2_\\3"
-    ) |>
-    readr::write_file(f)
+well_known_types_dst <- file.path("inst/substrait/proto", well_known_types)
+for (d in unique(dirname(well_known_types_dst))) {
+  dir.create(d, recursive = TRUE)
 }
 
-# clean up previous nano-pb generated files
-unlink(list.files("src", "\\.pb\\.c$", recursive = TRUE, full.names = TRUE))
-unlink("src/substrait", recursive = TRUE)
-
-# TODO(dd): Currently the only purpose of compiling these is (1) to get a
-# sanity check that the vendored version works and (2) to extract the
-# fully qualified name of each message and enum type (RProtoBuf doesn't
-# quite work for this because it will only list nested *types* and doesn't consider
-# namespaces like substrait.extension).
-proto_files_flat <- paste(proto_files, collapse = " ")
-
-withr::with_dir("inst/substrait/proto", {
-  system(
-    glue::glue(
-      "../../../data-raw/nanopb-0.4.6-macosx-x86/generator-bin/nanopb_generator \\
-        -s type:FT_POINTER { proto_files_flat } \\
-        --output-dir=../../../src"
-    )
-  )
-})
-
-# pull all the .c files out into src/
-c_files <- list.files("src", "\\.pb\\.c$", recursive = TRUE, full.names = TRUE)
-fs::file_move(c_files, "src")
+file.copy(
+  file.path("/opt/homebrew/Cellar/protobuf/21.8/include", well_known_types),
+  well_known_types_dst
+)

@@ -12,7 +12,7 @@
 #' substrait_string()
 #'
 substrait_boolean <- function() {
-  substrait$Type$create(bool_ = substrait_proto_auto(nullability = "NULLABILITY_NULLABLE"))
+  substrait$Type$create(bool = substrait_proto_auto(nullability = "NULLABILITY_NULLABLE"))
 }
 
 #' @rdname substrait-type

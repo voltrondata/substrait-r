@@ -13,7 +13,7 @@ test_that("substrait_rel_schema() works for simple relations", {
     substrait_rel_schema(read_rel),
     substrait$NamedStruct$create(
       names = c("column1", "column2"),
-      struct_ = substrait$Type$Struct$create(
+      struct = substrait$Type$Struct$create(
         types = list(
           substrait_fp64(),
           substrait_string()

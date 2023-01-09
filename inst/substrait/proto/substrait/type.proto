@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package substrait;
 
-import "substrait/any.proto";
+import "google/protobuf/empty.proto";
 
 option csharp_namespace = "Substrait.Protobuf";
 option go_package = "github.com/substrait-io/substrait-go/proto";
@@ -12,7 +12,7 @@ option java_package = "io.substrait.proto";
 
 message Type {
   oneof kind {
-    Boolean bool_ = 1;
+    Boolean bool = 1;
     I8 i8 = 2;
     I16 i16 = 3;
     I32 i32 = 5;
@@ -34,7 +34,7 @@ message Type {
     FixedBinary fixed_binary = 23;
     Decimal decimal = 24;
 
-    Struct struct_ = 25;
+    Struct struct = 25;
     List list = 27;
     Map map = 28;
 
@@ -189,7 +189,7 @@ message Type {
     oneof parameter {
       // Explicitly null/unspecified parameter, to select the default value (if
       // any).
-      Any null = 1;
+      google.protobuf.Empty null = 1;
 
       // Data type parameters, like the i32 in LIST<i32>.
       Type data_type = 2;
@@ -197,7 +197,7 @@ message Type {
       // Value parameters, like the 10 in VARCHAR<10>.
       bool boolean = 3;
       int64 integer = 4;
-      string enum_ = 5;
+      string enum = 5;
       string string = 6;
     }
   }
@@ -225,5 +225,5 @@ message Type {
 message NamedStruct {
   // list of names in dfs order
   repeated string names = 1;
-  Type.Struct struct_ = 2;
+  Type.Struct struct = 2;
 }

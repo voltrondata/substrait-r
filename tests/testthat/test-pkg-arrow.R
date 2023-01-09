@@ -42,7 +42,7 @@ test_that("substrait_compiler() creates an ArrowSubstraitCompiler for ArrowTabul
     compiler$schema,
     substrait$NamedStruct$create(
       names = "a_field",
-      struct_ = substrait$Type$Struct$create(
+      struct = substrait$Type$Struct$create(
         types = list(
           substrait_i32()
         )
@@ -147,7 +147,7 @@ test_that("as_substrait() works for arrow Schema", {
     as_substrait(arrow::schema("a field" = arrow::int32())),
     substrait$NamedStruct$create(
       names = "a field",
-      struct_ = substrait$Type$Struct$create(
+      struct = substrait$Type$Struct$create(
         types = list(
           substrait_i32()
         )
@@ -193,7 +193,7 @@ test_that("from_substrait() works for arrow::schema()", {
     from_substrait(
       substrait$NamedStruct$create(
         names = "a_field",
-        struct_ = substrait$Type$Struct$create(
+        struct = substrait$Type$Struct$create(
           types = list(
             substrait_i32()
           )
@@ -208,7 +208,7 @@ test_that("from_substrait() works for arrow::schema()", {
     from_substrait(
       substrait$NamedStruct$create(
         names = "a_field",
-        struct_ = substrait$Type$Struct$create(
+        struct = substrait$Type$Struct$create(
           types = list(
             substrait_i32()
           )
@@ -244,7 +244,7 @@ test_that("from_substrait() works for RecordBatch", {
   recreated_rb <- from_substrait(
     substrait$NamedStruct$create(
       names = "a_field",
-      struct_ = substrait$Type$Struct$create(
+      struct = substrait$Type$Struct$create(
         types = list(
           substrait_i32()
         )

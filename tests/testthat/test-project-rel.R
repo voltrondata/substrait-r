@@ -52,7 +52,7 @@ test_that("substrait_project() can add columns without an emit clause", {
   expect_identical(result$schema$names, c("col1", "col2", "col3"))
   expect_identical(names(result$.data), c("col1", "col2", "col3"))
   expect_identical(
-    result$schema$struct_$types,
+    result$schema$struct$types,
     list(
       substrait_fp64(),
       substrait_string(),
@@ -82,7 +82,7 @@ test_that("substrait_select() resets the mask and schema after evaluation", {
 
   expect_identical(projected$schema$names, "b")
   expect_identical(
-    projected$schema$struct_$types,
+    projected$schema$struct$types,
     list(substrait_i32())
   )
 })

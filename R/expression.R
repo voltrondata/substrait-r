@@ -62,12 +62,12 @@ as_substrait.substrait_Expression <- function(x, .ptype = NULL, ...) {
           # because 0 is the default value
           field <- struct_field$field %||% 0L
 
-          if (field < 0 || field >= length(compiler$schema$struct_$types)) {
+          if (field < 0 || field >= length(compiler$schema$struct$types)) {
             stop(sprintf("Field reference out of bounds [%d]", field))
           }
 
           # because field is zero-indexed
-          compiler$schema$struct_$types[[field + 1]]
+          compiler$schema$struct$types[[field + 1]]
         },
         "scalar_function" = x$scalar_function$output_type %||% substrait$Type$create(),
         "window_function" = x$window_function$output_type %||% substrait$Type$create(),

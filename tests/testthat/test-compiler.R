@@ -11,7 +11,7 @@ test_that("substrait_compiler() creates a compiler with a ReadRel from a data fr
     compiler$schema,
     substrait$NamedStruct$create(
       names = c("col1", "col2"),
-      struct_ = substrait$Type$Struct$create(
+      struct = substrait$Type$Struct$create(
         types = list(
           substrait_fp64(),
           substrait_string()

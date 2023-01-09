@@ -165,7 +165,7 @@ from_substrait.DataType <- function(msg, x, ...) {
       }
 
       arrow_type_guessed <- switch(type,
-        "bool_" = arrow::bool(),
+        "bool" = arrow::bool(),
         "i32" = arrow::int32(),
         "fp64" = arrow::float64(),
         "string" = arrow::string(),
@@ -203,7 +203,7 @@ as_substrait.Schema <- function(x, .ptype = NULL, ...) {
 
       substrait$NamedStruct$create(
         names = x$names,
-        struct_ = substrait$Type$Struct$create(
+        struct = substrait$Type$Struct$create(
           types = types
         )
       )
@@ -240,7 +240,7 @@ from_substrait.Schema <- function(msg, x, ...) {
       }
 
       stopifnot(identical(names(ptype), msg$names))
-      ptype <- Map(from_substrait, msg$struct_$types, ptype)
+      ptype <- Map(from_substrait, msg$struct$types, ptype)
       names(ptype) <- msg$names
       arrow::schema(!!!ptype)
     },
