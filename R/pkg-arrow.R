@@ -143,24 +143,6 @@ arrow_funs[[">="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["between"]] <- function(x, low, high) {
-  substrait_call(
-    "comparison.between",
-    x,
-    low,
-    high,
-    .output_type = substrait_boolean()
-  )
-}
-
-arrow_funs[["is.null"]] <- function(x) {
-  substrait_call(
-    "comparison.is_null",
-    x,
-    .output_type = substrait_boolean()
-  )
-}
-
 check_na_rm <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")
