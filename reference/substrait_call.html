@@ -88,7 +88,7 @@ used.</p></dd>
 <dd><p>Function arguments. These will be coerced to a substrait.Expression
 if they have not been already. Translation functions should take care to
 handle R objects that do not readily translate into substrait types
-via <code>as_substrait(x, "substrait.Expression")</code> before passing them to
+via <code>as_substrait_expression(x)</code> before passing them to
 <code>substrait_call()</code> or <code>substrait_call_agg()</code>.</p></dd>
 
 
@@ -125,7 +125,7 @@ explicitly.</p></dd>
     
 
 <p>All of these functions return an object that can be coerced
-to a substrait.Expression via <code>as_substrait(x, "substrait.Expression")</code>.</p>
+to a substrait.Expression via <code>as_substrait_expression(x)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

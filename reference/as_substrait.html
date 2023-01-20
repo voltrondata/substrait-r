@@ -44,7 +44,11 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_substrait</span><span class="op">(</span><span class="va">x</span>, .ptype <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">from_substrait</span><span class="op">(</span><span class="va">msg</span>, <span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">from_substrait</span><span class="op">(</span><span class="va">msg</span>, <span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as_substrait_expression</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as_substrait_type</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,6 +85,16 @@ created by <code><a href="substrait_create.html">substrait_create()</a></code>)<
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">as_substrait</span><span class="op">(</span><span class="va">substrait</span><span class="op">$</span><span class="va">Type</span><span class="op">$</span><span class="va">Boolean</span><span class="op">$</span><span class="fu">create</span><span class="op">(</span>type_variation_reference <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> message of type 'substrait.Type.Boolean' with 1 field set</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> type_variation_reference: 1</span>
+<span class="r-in"><span><span class="fu">as_substrait_expression</span><span class="op">(</span><span class="fl">4L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> message of type 'substrait.Expression' with 1 field set</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> literal {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   i32: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-in"><span><span class="fu">as_substrait_expression</span><span class="op">(</span><span class="fl">3.14</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> message of type 'substrait.Expression' with 1 field set</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> literal {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   fp64: 3.14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
