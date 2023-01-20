@@ -351,7 +351,7 @@ as_substrait.Schema <- function(x, .ptype = NULL, ...) {
     "substrait.NamedStruct" = {
       types <- lapply(
         x$names,
-        function(col) as_substrait(x$GetFieldByName(col), "substrait.Type")
+        function(col) as_substrait_type(x$GetFieldByName(col))
       )
 
       substrait$NamedStruct$create(

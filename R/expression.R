@@ -24,13 +24,13 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...) {
         result
       } else {
         substrait$SortField$create(
-          expr = as_substrait(result, "substrait.Expression"),
+          expr = as_substrait_expression(result),
           direction = "SORT_DIRECTION_ASC_NULLS_LAST"
         )
       }
     },
     "substrait.Expression" = {
-      as_substrait(substrait_eval_quo(x), "substrait.Expression")
+      as_substrait_expression(substrait_eval_quo(x))
     },
     NextMethod()
   )

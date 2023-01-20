@@ -20,9 +20,8 @@ test_that("as_substrait() can convert a Literal to an Expression", {
 
 test_that("as_substrait() can convert a Literal to a Type", {
   expect_identical(
-    as_substrait(
-      substrait$Expression$Literal$create(i32 = 4L),
-      "substrait.Type"
+    as_substrait_type(
+      substrait$Expression$Literal$create(i32 = 4L)
     ),
     substrait_i32()
   )
@@ -133,14 +132,14 @@ test_that("as_substrait() works for double()", {
   # The substrait.Type representation of a double() is a Type with the
   # fp64 member set and unknown nullability
   expect_identical(
-    as_substrait(3.14, "substrait.Type"),
+    as_substrait_type(3.14),
     substrait_fp64()
   )
 
   # The Substrait representation of a non-NA double(1)
   # as an Expression is a Literal with the fp64 member set
   expect_identical(
-    as_substrait(3.14, "substrait.Expression"),
+    as_substrait_expression(3.14),
     substrait$Expression$create(
       literal = substrait$Expression$Literal$create(fp64 = 3.14)
     )
@@ -255,12 +254,12 @@ test_that("from_substrait() works for double()", {
 
 test_that("as_substrait() works for integer()", {
   expect_identical(
-    as_substrait(3L, "substrait.Type"),
+    as_substrait_type(3L),
     substrait_i32()
   )
 
   expect_identical(
-    as_substrait(3L, "substrait.Expression"),
+    as_substrait_expression(3L),
     substrait$Expression$create(
       literal = substrait$Expression$Literal$create(i32 = 3)
     )
@@ -298,12 +297,12 @@ test_that("as_substrait() works for integer()", {
 
 test_that("as_substrait() works for logical()", {
   expect_identical(
-    as_substrait(TRUE, "substrait.Type"),
+    as_substrait_type(TRUE),
     substrait_boolean()
   )
 
   expect_identical(
-    as_substrait(TRUE, "substrait.Expression"),
+    as_substrait_expression(TRUE),
     substrait$Expression$create(
       literal = substrait$Expression$Literal$create(boolean = TRUE)
     )
@@ -341,12 +340,12 @@ test_that("as_substrait() works for logical()", {
 
 test_that("as_substrait() works for character()", {
   expect_identical(
-    as_substrait("a string", "substrait.Type"),
+    as_substrait_type("a string"),
     substrait_string()
   )
 
   expect_identical(
-    as_substrait("a string", "substrait.Expression"),
+    as_substrait_expression("a string"),
     substrait$Expression$create(
       literal = substrait$Expression$Literal$create(string = "a string")
     )
@@ -570,14 +569,14 @@ test_that("as_substrait() works for Date", {
   # The substrait.Type representation of a Date is a Type with the
   # date member set and unknown nullability
   expect_identical(
-    as_substrait(input_date, "substrait.Type"),
+    as_substrait_type(input_date),
     substrait_date()
   )
 
   # The Substrait representation of a non-NA Date(1)
   # as an Expression is a Literal with the date member set
   expect_identical(
-    as_substrait(input_date, "substrait.Expression"),
+    as_substrait_expression(input_date),
     substrait$Expression$create(
       literal = substrait$Expression$Literal$create(date = input_date)
     )

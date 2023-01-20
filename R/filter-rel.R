@@ -25,9 +25,8 @@ substrait_filter <- function(.compiler, ...) {
   expressions <- lapply(quos, substrait_eval_quo)
 
   combined_expressions_quo <- Reduce("combine_expressions_and", expressions)
-  combined_expressions <- as_substrait(
-    combined_expressions_quo,
-    "substrait.Expression"
+  combined_expressions <- as_substrait_expression(
+    combined_expressions_quo
   )
 
   rel <- substrait$Rel$create(
@@ -53,7 +52,7 @@ build_filters <- function(compiler, filters) {
   )
 
   combined_expressions <- Reduce("combine_expressions_and", expressions)
-  as_substrait(combined_expressions, "substrait.Expression")
+  as_substrait_expression(combined_expressions)
 }
 
 combine_expressions_and <- function(expr1, expr2) {

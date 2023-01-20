@@ -43,7 +43,7 @@ as_substrait.data.frame <- function(x, .ptype = NULL, ...) {
   .qualified_name <- make_qualified_name(.ptype)
   switch(.qualified_name,
     "substrait.NamedStruct" = {
-      types <- lapply(x, as_substrait, "substrait.Type")
+      types <- lapply(x, as_substrait_type)
       substrait$NamedStruct$create(
         names = names(x),
         struct = substrait$Type$Struct$create(

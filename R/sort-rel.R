@@ -60,7 +60,7 @@ substrait_sort <- function(.compiler, ...) {
 #' @rdname substrait_sort
 #' @export
 substrait_sort_field <- function(expr, direction = "SORT_DIRECTION_ASC_NULLS_LAST") {
-  expr <- as_substrait(expr, "substrait.Expression")
+  expr <- as_substrait_expression(expr)
   substrait$SortField$create(expr = expr, direction = direction)
 }
 

@@ -72,6 +72,8 @@ substrait_proto_auto <- function(...) {
 #'
 #' @examples
 #' as_substrait(substrait$Type$Boolean$create(type_variation_reference = 1))
+#' as_substrait_expression(4L)
+#' as_substrait_expression(3.14)
 #'
 as_substrait <- function(x, .ptype = NULL, ...) {
   UseMethod("as_substrait", x)
@@ -152,6 +154,19 @@ make_ptype <- function(.qualified_name) {
     )
   }
 }
+
+#' @rdname as_substrait
+#' @export
+as_substrait_expression <- function(x, ...){
+  as_substrait(x, "substrait.Expression", ...)
+}
+
+#' @rdname as_substrait
+#' @export
+as_substrait_type <- function(x, ...){
+  as_substrait(x, "substrait.Type", ...)
+}
+
 
 make_qualified_name <- function(.ptype) {
   if (inherits(.ptype, "substrait_proto_message")) {
