@@ -2,18 +2,18 @@
 test_that("quosures of atomics can be translated to Expression objects", {
   expect_identical(
     as_substrait(rlang::quo(5)),
-    as_substrait(5, "substrait.Expression")
+    as_substrait_expression(5)
   )
 
   some_value <- 5
   expect_identical(
     as_substrait(rlang::quo(some_value)),
-    as_substrait(5, "substrait.Expression")
+    as_substrait_expression(5)
   )
 
   expect_identical(
     as_substrait(rlang::quo(!!some_value)),
-    as_substrait(5, "substrait.Expression")
+    as_substrait_expression(5)
   )
 
   expect_error(

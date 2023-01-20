@@ -203,11 +203,11 @@ duckdb_funs[["!"]] <- function(rhs) {
         if_then = substrait$Expression$IfThen$create(
           ifs = list(
             substrait$Expression$IfThen$IfClause$create(
-              `if` = as_substrait(rhs, "substrait.Expression"),
-              then = as_substrait(FALSE, "substrait.Expression")
+              `if` = as_substrait_expression(rhs),
+              then = as_substrait_expression(FALSE)
             )
           ),
-          `else` = as_substrait(TRUE, "substrait.Expression")
+          `else` = as_substrait_expression(TRUE)
         )
       )
     )
@@ -234,8 +234,8 @@ duckdb_funs[["c"]] <- function(...) {
 
 duckdb_funs[["%in%"]] <- function(lhs, rhs) {
   # duckdb implements this using == and or, according to duckdb_get_substrait()
-  lhs <- as_substrait(lhs, "substrait.Expression")
-  rhs <- as_substrait(rhs, "substrait.Expression")
+  lhs <- as_substrait_expression(lhs)
+  rhs <- as_substrait_expression(rhs)
 
   # if the rhs is a regular literal, wrap in a list
   rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
@@ -253,13 +253,13 @@ duckdb_funs[["%in%"]] <- function(lhs, rhs) {
   }
 
   if (length(rhs$literal$list$values) == 0) {
-    return(as_substrait(FALSE, "substrait.Expression"))
+    return(as_substrait_expression(FALSE))
   } else if (length(rhs$literal$list$values) == 1) {
     return(substrait_call("equal", lhs, rhs$literal$list$values[[1]]))
   }
 
   equal_expressions <- lapply(rhs$literal$list$values, function(value) {
-    as_substrait(substrait_call("equal", lhs, value), "substrait.Expression")
+    as_substrait_expression(substrait_call("equal", lhs, value))
   })
 
   combine_or <- function(lhs, rhs) {

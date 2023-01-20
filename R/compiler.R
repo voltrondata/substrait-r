@@ -376,7 +376,7 @@ substrait_compiler.default <- function(object, ...) {
 #' @param ... Function arguments. These will be coerced to a substrait.Expression
 #'   if they have not been already. Translation functions should take care to
 #'   handle R objects that do not readily translate into substrait types
-#'   via `as_substrait(x, "substrait.Expression")` before passing them to
+#'   via `as_substrait_expression(x)` before passing them to
 #'   `substrait_call()` or `substrait_call_agg()`.
 #' @param .output_type The output type of the call. In the future this may
 #'   be built in to the compiler since in theory the compiler should be able
@@ -391,7 +391,7 @@ substrait_compiler.default <- function(object, ...) {
 #'   explicitly.
 #'
 #' @return All of these functions return an object that can be coerced
-#'   to a substrait.Expression via `as_substrait(x, "substrait.Expression")`.
+#'   to a substrait.Expression via `as_substrait_expression(x)`.
 #' @export
 #'
 #' @examples

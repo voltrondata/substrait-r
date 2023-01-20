@@ -30,7 +30,7 @@ used.}
 \item{...}{Function arguments. These will be coerced to a substrait.Expression
 if they have not been already. Translation functions should take care to
 handle R objects that do not readily translate into substrait types
-via \code{as_substrait(x, "substrait.Expression")} before passing them to
+via \code{as_substrait_expression(x)} before passing them to
 \code{substrait_call()} or \code{substrait_call_agg()}.}
 
 \item{.output_type}{The output type of the call. In the future this may
@@ -53,7 +53,7 @@ explicitly.}
 }
 \value{
 All of these functions return an object that can be coerced
-to a substrait.Expression via \code{as_substrait(x, "substrait.Expression")}.
+to a substrait.Expression via \code{as_substrait_expression(x)}.
 }
 \description{
 These functions are used to translate R function calls into Substrait
