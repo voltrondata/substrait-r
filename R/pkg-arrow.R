@@ -60,7 +60,123 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["-"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.subtract",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["*"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.multiply",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["/"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.divide",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["^"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.power",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["sqrt"]] <- function(x) {
+  substrait_call(
+    "arithmetic.sqrt",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["abs"]] <- function(x) {
+  substrait_call(
+    "arithmetic.abs",
+    x,
+    .output_type = function(x) x,
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["exp"]] <- function(x) {
+  substrait_call(
+    "arithmetic.exp",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+arrow_funs[["sign"]] <- function(x) {
+  substrait_call(
+    "arithmetic.sign",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
       )
     )
   )

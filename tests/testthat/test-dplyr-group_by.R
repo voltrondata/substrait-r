@@ -20,8 +20,7 @@ test_that("group_by groupings are recorded", {
     .input %>%
       group_by(chr) %>%
       select(int, chr) %>%
-      # skip("comparison operators not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
-      # filter(int > 5) %>%
+      filter(int > 5) %>%
       collect(),
     example_data
   )
@@ -37,7 +36,6 @@ test_that("group_by supports creating/renaming", {
   )
 
   compare_dplyr_binding(
-    engine = "duckdb",
     .input %>%
       group_by(chr, numbers = int * 4) %>%
       collect(),
@@ -45,7 +43,6 @@ test_that("group_by supports creating/renaming", {
   )
 
   compare_dplyr_binding(
-    engine = "duckdb",
     .input %>%
       group_by(int > 4, lgl, foo = int > 5) %>%
       collect(),
@@ -59,8 +56,7 @@ test_that("ungroup", {
       group_by(chr) %>%
       select(int, chr) %>%
       ungroup() %>%
-      # skip("comparison operators not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
-      # filter(int > 5) %>%
+      filter(int > 5) %>%
       collect(),
     example_data
   )

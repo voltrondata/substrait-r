@@ -369,3 +369,114 @@ test_that("arrow translation for >= works", {
     tibble::tibble(dbl = c(0, 9))
   )
 })
+
+test_that("arrow translation for + works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = dbl + 3) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(-996, -96, -6, 3, 12))
+  )
+})
+
+test_that("arrow translation for - works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = dbl - 3) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(-1002, -102, -12, -3, 6))
+  )
+})
+
+test_that("arrow translation for * works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = dbl * 3) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(-2997, -297, -27, 0, 27))
+  )
+})
+
+test_that("arrow translation for / works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = dbl / 3) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(-333, -33, -3, 0, 3))
+  )
+})
+
+test_that("arrow translation for ^ works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = dbl ^ 3) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(-997002999, -970299, -729, 0, 729))
+  )
+})
+
+test_that("arrow translation for sqrt() works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = sqrt(dbl)) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(NaN, NaN, NaN, 0, 3))
+  )
+})
+
+test_that("arrow translation for abs() works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = abs(dbl)) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(999, 99, 9, 0, 9))
+  )
+})
+
+test_that("arrow translation for exp() works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = exp(dbl)) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(
+      0, 1.01122149261045e-43, 0.00012340980408668,
+      1, 8103.08392757538
+    ))
+  )
+})
+
+test_that("arrow translation for sign() works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = sign(dbl)) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(-1, -1, -1, 0, 1))
+  )
+})

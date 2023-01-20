@@ -89,7 +89,6 @@ test_that("select using selection helpers", {
 
 test_that("filtering with rename", {
 
-  # skip("https://github.com/voltrondata/substrait-r/issues/92")
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
