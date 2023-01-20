@@ -43,13 +43,11 @@ substrait_aggregate <- function(.compiler, ...) {
   types <- c(
     lapply(
       .compiler$groups,
-      as_substrait,
-      .ptype = "substrait.Type"
+      as_substrait_type
     ),
     lapply(
       measures,
-      as_substrait,
-      .ptype = "substrait.Type"
+      as_substrait_type
     )
   )
 

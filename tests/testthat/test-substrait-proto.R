@@ -2,7 +2,7 @@
 test_that("as_substrait() default error works", {
   expect_error(as_substrait(new.env()), "Can't create substrait message")
   expect_error(
-    as_substrait(new.env(), .ptype = "substrait.Type"),
+    as_substrait_type(new.env()),
     "Can't create substrait.Type"
   )
   expect_error(

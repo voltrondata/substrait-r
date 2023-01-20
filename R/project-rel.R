@@ -37,7 +37,7 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
         quos[[i]],
         .ptype = "substrait.Expression"
       )
-      type <- as_substrait(value, .ptype = "substrait.Type")
+      type <- as_substrait_type(value)
 
       # Update the compiler mask (used for symbol lookup for subsequent expressions)
       .compiler$.data[[name]] <- value

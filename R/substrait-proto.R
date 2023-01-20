@@ -158,6 +158,12 @@ as_substrait_expression <- function(x, ...){
   as_substrait(x, "substrait.Expression", ...)
 }
 
+#' @export
+as_substrait_type <- function(x, ...){
+  as_substrait(x, "substrait.Type", ...)
+}
+
+
 make_qualified_name <- function(.ptype) {
   if (inherits(.ptype, "substrait_proto_message")) {
     gsub("_", ".", class(.ptype)[1])

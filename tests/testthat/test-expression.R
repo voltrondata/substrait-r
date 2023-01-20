@@ -79,20 +79,18 @@ test_that("as_substrait() can convert Expression objects to Expressions", {
 
 test_that("as_substrait() can convert Expression objects to Types", {
   expect_identical(
-    as_substrait(
+    as_substrait_type(
       substrait$Expression$create(
         literal = substrait$Expression$Literal$create(i32 = 4L)
-      ),
-      "substrait.Type"
+      )
     ),
     substrait_i32()
   )
 
   with_compiler(substrait_compiler(data.frame(a = 5L)), {
     expect_identical(
-      as_substrait(
-        simple_integer_field_reference(0L),
-        "substrait.Type"
+      as_substrait_type(
+        simple_integer_field_reference(0L)
       ),
       substrait_i32()
     )
@@ -100,54 +98,49 @@ test_that("as_substrait() can convert Expression objects to Types", {
 
   with_compiler(substrait_compiler(data.frame()), {
     expect_error(
-      as_substrait(
-        simple_integer_field_reference(0L),
-        "substrait.Type"
+      as_substrait_type(
+        simple_integer_field_reference(0L)
       ),
       "Field reference out of bounds"
     )
   })
 
   expect_error(
-    as_substrait(
-      simple_integer_field_reference(0L),
-      "substrait.Type"
+    as_substrait_type(
+      simple_integer_field_reference(0L)
     ),
     "Can't guess field reference type without"
   )
 
   expect_identical(
-    as_substrait(
+    as_substrait_type(
       substrait$Expression$create(
         cast = substrait$Expression$Cast$create(
           type = substrait_i32()
         )
-      ),
-      "substrait.Type"
+      )
     ),
     substrait_i32()
   )
 
   expect_identical(
-    as_substrait(
+    as_substrait_type(
       substrait$Expression$create(
         scalar_function = substrait$Expression$ScalarFunction$create(
           output_type = substrait_i32()
         )
-      ),
-      "substrait.Type"
+      )
     ),
     substrait_i32()
   )
 
   expect_identical(
-    as_substrait(
+    as_substrait_type(
       substrait$Expression$create(
         window_function = substrait$Expression$WindowFunction$create(
           output_type = substrait_i32()
         )
-      ),
-      "substrait.Type"
+      )
     ),
     substrait_i32()
   )

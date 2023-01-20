@@ -236,7 +236,7 @@ SubstraitCompiler <- R6::R6Class(
       args <- lapply(args, as_substrait, "substrait.FunctionArgument")
 
       # resolve argument types
-      arg_types <- lapply(args, as_substrait, "substrait.Type", compiler = self)
+      arg_types <- lapply(args, as_substrait_type, compiler = self)
 
       # resolve the function identifier
       id <- self$function_id(name, arg_types)
@@ -252,7 +252,7 @@ SubstraitCompiler <- R6::R6Class(
       if (!is.null(options)) {
         template$options <- lapply(options, as_substrait, "substrait.FunctionOption")
       }
-      template$output_type <- as_substrait(output_type, "substrait.Type")
+      template$output_type <- as_substrait_type(output_type)
 
       template
     },
@@ -264,7 +264,7 @@ SubstraitCompiler <- R6::R6Class(
     #' @param arg_types A `list()` of `substrait.Type` objects.
     #' @return An integer function reference
     function_id = function(name, arg_types) {
-      arg_types <- unname(lapply(arg_types, as_substrait, "substrait.Type"))
+      arg_types <- unname(lapply(arg_types, as_substrait_type))
       key <- list(name = name, arg_types = arg_types)
       key_hash <- rlang::hash(key)
 
