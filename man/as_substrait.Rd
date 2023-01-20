@@ -3,11 +3,17 @@
 \name{as_substrait}
 \alias{as_substrait}
 \alias{from_substrait}
+\alias{as_substrait_expression}
+\alias{as_substrait_type}
 \title{Convert to and from 'Substrait' messages}
 \usage{
 as_substrait(x, .ptype = NULL, ...)
 
 from_substrait(msg, x, ...)
+
+as_substrait_expression(x, ...)
+
+as_substrait_type(x, ...)
 }
 \arguments{
 \item{x}{An object to convert to or from a 'Substrait' message.
@@ -30,5 +36,7 @@ Convert to and from 'Substrait' messages
 }
 \examples{
 as_substrait(substrait$Type$Boolean$create(type_variation_reference = 1))
+as_substrait_expression(4L)
+as_substrait_expression(3.14)
 
 }
