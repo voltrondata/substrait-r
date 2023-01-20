@@ -263,9 +263,8 @@ duckdb_funs[["%in%"]] <- function(lhs, rhs) {
   })
 
   combine_or <- function(lhs, rhs) {
-    as_substrait(
-      substrait_call("or", lhs, rhs, .output_type = substrait_boolean()),
-      "substrait.Expression"
+    as_substrait_expression(
+      substrait_call("or", lhs, rhs, .output_type = substrait_boolean())
     )
   }
 

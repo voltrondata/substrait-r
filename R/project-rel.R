@@ -33,10 +33,7 @@ substrait_project <- function(.compiler, ..., .drop_columns = character()) {
 
     if (!rlang::quo_is_null(quos[[i]])) {
       # Do the evaluation and calculate the output type
-      value <- as_substrait(
-        quos[[i]],
-        .ptype = "substrait.Expression"
-      )
+      value <- as_substrait_expression(quos[[i]])
       type <- as_substrait_type(value)
 
       # Update the compiler mask (used for symbol lookup for subsequent expressions)
