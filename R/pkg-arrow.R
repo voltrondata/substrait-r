@@ -60,7 +60,7 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
@@ -75,7 +75,7 @@ arrow_funs[["-"]] <- function(lhs, rhs) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
@@ -90,7 +90,7 @@ arrow_funs[["*"]] <- function(lhs, rhs) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
@@ -105,7 +105,7 @@ arrow_funs[["/"]] <- function(lhs, rhs) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
@@ -119,7 +119,7 @@ arrow_funs[["sqrt"]] <- function(x) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
@@ -133,7 +133,7 @@ arrow_funs[["abs"]] <- function(x) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
@@ -147,7 +147,7 @@ arrow_funs[["exp"]] <- function(x) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
@@ -161,7 +161,7 @@ arrow_funs[["sign"]] <- function(x) {
     .options = list(
       substrait$FunctionOption$create(
         name = "overflow",
-        preference = "ERROR"
+        preference = "SILENT"
       )
     )
   )
