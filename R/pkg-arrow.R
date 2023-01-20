@@ -111,6 +111,21 @@ arrow_funs[["/"]] <- function(lhs, rhs) {
   )
 }
 
+arrow_funs[["^"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.power",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
 arrow_funs[["sqrt"]] <- function(x) {
   substrait_call(
     "arithmetic.sqrt",

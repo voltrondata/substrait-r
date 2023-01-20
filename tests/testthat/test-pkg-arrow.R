@@ -418,6 +418,18 @@ test_that("arrow translation for / works", {
   )
 })
 
+test_that("arrow translation for ^ works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    example_data[1:5, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl = dbl ^ 3) %>%
+      dplyr::collect(),
+    tibble::tibble(dbl = c(-997002999, -970299, -729, 0, 729))
+  )
+})
+
 test_that("arrow translation for sqrt() works", {
   skip_if_not(has_arrow_with_substrait())
 
