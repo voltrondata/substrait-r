@@ -66,6 +66,107 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
   )
 }
 
+arrow_funs[["-"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.subtract",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
+  )
+}
+
+arrow_funs[["*"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.multiply",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
+  )
+}
+
+arrow_funs[["/"]] <- function(lhs, rhs) {
+  substrait_call(
+    "arithmetic.divide",
+    lhs,
+    rhs,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
+  )
+}
+
+arrow_funs[["sqrt"]] <- function(x) {
+  substrait_call(
+    "arithmetic.sqrt",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
+  )
+}
+
+arrow_funs[["abs"]] <- function(x) {
+  substrait_call(
+    "arithmetic.abs",
+    x,
+    .output_type = function(x) x,
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
+  )
+}
+
+arrow_funs[["exp"]] <- function(x) {
+  substrait_call(
+    "arithmetic.exp",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
+  )
+}
+
+arrow_funs[["sign"]] <- function(x) {
+  substrait_call(
+    "arithmetic.sign",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "ERROR"
+      )
+    )
+  )
+}
+
 # TODO: remove non-default `.phase` and `.invocation` param values for aggregation functions when Arrow consumer supports this
 
 arrow_funs[["sum"]] <- function(x, na.rm = FALSE) {
