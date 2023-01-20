@@ -153,7 +153,7 @@ make_ptype <- function(.qualified_name) {
   }
 }
 
-
+#' @export
 as_substrait_expression <- function(x, ...){
   as_substrait(x, "substrait.Expression", ...)
 }
