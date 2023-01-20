@@ -66,24 +66,6 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[[">"]] <- function(lhs, rhs) {
-  substrait_call(
-    "comparison.gt",
-    lhs,
-    rhs,
-    .output_type = substrait_boolean()
-  )
-}
-
-arrow_funs[["mean"]] <- function(x) {
-  substrait_call_agg(
-    "comparison.gt",
-    lhs,
-    rhs,
-    .output_type = substrait_i64()
-  )
-}
-
 # TODO: remove non-default `.phase` and `.invocation` param values for aggregation functions when Arrow consumer supports this
 
 arrow_funs[["sum"]] <- function(x, na.rm = FALSE) {
@@ -104,6 +86,79 @@ arrow_funs[["min"]] <- function(x, na.rm = FALSE) {
 arrow_funs[["max"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.max", x, .output_type = substrait_i64(), .phase = 3L, .invocation = 1L)
+}
+
+# Comparison functions
+arrow_funs[["!="]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.not_equal",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["=="]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.equal",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["<"]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.lt",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[[">"]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.gt",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["<="]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.lte",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[[">="]] <- function(lhs, rhs) {
+  substrait_call(
+    "comparison.gte",
+    lhs,
+    rhs,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["between"]] <- function(x, low, high) {
+  substrait_call(
+    "comparison.between",
+    x,
+    low,
+    high,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["is.null"]] <- function(x) {
+  substrait_call(
+    "comparison.is_null",
+    x,
+    .output_type = substrait_boolean()
+  )
 }
 
 check_na_rm <- function(na.rm) {
