@@ -39,8 +39,6 @@ test_that("Filter should be able to return an empty table", {
 test_that("filtering with expression", {
   char_sym <- "b"
   compare_dplyr_binding(
-    # skip("== not implemented yet: https://github.com/voltrondata/substrait-r/issues/92")
-    engine = "duckdb",
     .input %>%
       filter(chr == char_sym) %>%
       select(string = chr, int) %>%
@@ -260,8 +258,6 @@ test_that("filter environment scope", {
 
   b_var <- "b"
   compare_dplyr_binding(
-    #   skip("== not yet implemented: https://github.com/voltrondata/substrait-r/issues/92")
-    engine = "duckdb",
     .input %>%
       filter(chr == b_var) %>%
       collect(),
@@ -274,7 +270,6 @@ test_that("filter environment scope", {
     example_data
   )
 
-  skip("== not defined (Arrow) https://github.com/voltrondata/substrait-r/issues/76")
   # This works but only because there are S3 methods for those operations
   skip("user-defined functions not supported https://github.com/voltrondata/substrait-r/issues/102")
   isEqualTo <- function(x, y) x == y & !is.na(x)
