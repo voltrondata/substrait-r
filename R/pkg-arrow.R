@@ -259,6 +259,75 @@ arrow_funs[[">="]] <- function(lhs, rhs) {
   )
 }
 
+arrow_funs[["is.null"]] <- function(x) {
+  substrait_call(
+    "comparison.is_null",
+    x,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["!"]] <- function(x) {
+  substrait_call(
+    "boolean.not",
+    x,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["between"]] <- function(x, left, right) {
+  substrait_eval(x >= left & x <= right)
+}
+
+arrow_funs[["&"]] <- function(lhs, rhs) {
+  substrait_call("boolean.and", lhs, rhs, .output_type = substrait_boolean())
+}
+
+arrow_funs[["|"]] <- function(lhs, rhs) {
+  substrait_call("boolean.or", lhs, rhs, .output_type = substrait_boolean())
+}
+
+arrow_funs[["is.na"]] <- function(x) {
+  is_not_null <- substrait_call(
+    "comparison.is_not_null",
+    x,
+    .output_type = substrait_boolean()
+  )
+
+  substrait_eval(!is_not_null)
+}
+
+arrow_funs[["%in%"]] <- function(lhs, rhs) {
+  # duckdb implements this using == and or, according to duckdb_get_substrait()
+  lhs <- as_substrait_expression(lhs)
+  rhs <- as_substrait_expression(rhs)
+
+  # if the rhs is a regular literal, wrap in a list
+  rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
+
+  if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
+    rhs <- substrait_expression_literal_list(rhs$literal)
+  } else if (!rhs_is_list) {
+    rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
+  }
+
+  if (length(rhs$literal$list$values) == 0) {
+    return(as_substrait_expression(FALSE))
+  } else if (length(rhs$literal$list$values) == 1) {
+    return(substrait_call("equal", lhs, rhs$literal$list$values[[1]]))
+  }
+
+  equal_expressions <- lapply(rhs$literal$list$values, function(value) {
+    substrait_eval(lhs == value)
+  })
+
+  combine_or <- function(lhs, rhs) {
+    substrait_eval(lhs | rhs)
+  }
+
+  Reduce(combine_or, equal_expressions)
+}
+
 check_na_rm <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")
