@@ -484,6 +484,7 @@ test_that("arrow translation for sign() works", {
 test_that("arrow translation for %in% works", {
   skip_if_not(has_arrow_with_substrait())
 
+  # TODO: fix "Can't create substrait.Expression from object of type 'NULL'"
   # case of zero items
   expect_identical(
     tibble::tibble(col = letters) %>%
@@ -494,6 +495,7 @@ test_that("arrow translation for %in% works", {
   )
 
   # case of one item (translates to ==)
+  # TODO: fix "Error: NotImplemented: No conversion function exists to convert the Substrait function NA to an Arrow call expression"
   expect_identical(
     tibble::tibble(col = letters) %>%
       arrow_substrait_compiler() %>%
@@ -520,6 +522,7 @@ test_that("arrow translation for %in% works", {
     tibble::tibble(col = letters)
   )
 
+    # TODO: fix "Error: NotImplemented: No conversion function exists to convert the Substrait function NA to an Arrow call expression"
   # ...even if that literal reduces to a scalar literal
   expect_identical(
     tibble::tibble(col = letters) %>%
