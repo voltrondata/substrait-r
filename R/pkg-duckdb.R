@@ -241,13 +241,7 @@ duckdb_funs[["%in%"]] <- function(lhs, rhs) {
   rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
 
   if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
-    rhs <- substrait$Expression$create(
-      literal = substrait$Expression$Literal$create(
-        list = substrait$Expression$Literal$List$create(
-          values = list(rhs$literal)
-        )
-      )
-    )
+    rhs <- substrait_expression_literal_list(rhs$literal)
   } else if (!rhs_is_list) {
     rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
   }
@@ -259,13 +253,11 @@ duckdb_funs[["%in%"]] <- function(lhs, rhs) {
   }
 
   equal_expressions <- lapply(rhs$literal$list$values, function(value) {
-    as_substrait_expression(substrait_call("equal", lhs, value))
+    substrait_eval(lhs == value)
   })
 
   combine_or <- function(lhs, rhs) {
-    as_substrait_expression(
-      substrait_call("or", lhs, rhs, .output_type = substrait_boolean())
-    )
+    substrait_eval(lhs | rhs)
   }
 
   Reduce(combine_or, equal_expressions)
@@ -327,4 +319,14 @@ check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
   }
+}
+
+substrait_expression_literal_list <- function(values){
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = list(values)
+      )
+    )
+  )
 }
