@@ -480,3 +480,60 @@ test_that("arrow translation for sign() works", {
     tibble::tibble(dbl = c(-1, -1, -1, 0, 1))
   )
 })
+
+test_that("arrow translation for %in% works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  # case of zero items
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      arrow_substrait_compiler() %>%
+      dplyr::filter(col %in% c()) %>%
+      dplyr::collect(),
+    tibble::tibble(col = character())
+  )
+
+  # case of one item (translates to ==)
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      arrow_substrait_compiler() %>%
+      dplyr::filter(col %in% c("d")) %>%
+      dplyr::collect(),
+    tibble::tibble(col = c("d"))
+  )
+
+  # case of n items (translates to == reduced with or)
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      arrow_substrait_compiler() %>%
+      dplyr::filter(col %in% c("d", "e")) %>%
+      dplyr::collect(),
+    tibble::tibble(col = c("d", "e"))
+  )
+
+  # make sure that a user-provided literal will also work
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      arrow_substrait_compiler() %>%
+      dplyr::filter(col %in% !!letters) %>%
+      dplyr::collect(),
+    tibble::tibble(col = letters)
+  )
+
+  # ...even if that literal reduces to a scalar literal
+  expect_identical(
+    tibble::tibble(col = letters) %>%
+      arrow_substrait_compiler() %>%
+      dplyr::filter(col %in% !!c("d")) %>%
+      dplyr::collect(),
+    tibble::tibble(col = "d")
+  )
+
+  # make sure that a non-list literal on the rhs errors
+  expect_error(
+    tibble::tibble(col = letters) %>%
+      arrow_substrait_compiler() %>%
+      dplyr::filter(col %in% col),
+    "must be a list literal"
+  )
+})
