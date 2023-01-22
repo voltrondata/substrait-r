@@ -4,7 +4,7 @@
 \alias{substrait_fetch}
 \title{Append a Substrait Fetch Relation}
 \usage{
-substrait_fetch(.compiler, offset, count)
+substrait_fetch(.compiler, offset = 0, count)
 }
 \arguments{
 \item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
