@@ -311,6 +311,7 @@ arrow_funs[["is.na"]] <- function(x) {
 }
 
 arrow_funs[["%in%"]] <- function(lhs, rhs) {
+  # TODO: refactor to general function which can be used by both duckdb and arrow
   # duckdb implements this using == and or, according to duckdb_get_substrait()
   lhs <- as_substrait_expression(lhs)
   rhs <- as_substrait_expression(rhs)
@@ -327,7 +328,7 @@ arrow_funs[["%in%"]] <- function(lhs, rhs) {
   if (length(rhs$literal$list$values) == 0) {
     return(as_substrait_expression(FALSE))
   } else if (length(rhs$literal$list$values) == 1) {
-    return(substrait_call("equal", lhs, rhs$literal$list$values[[1]]))
+    return(substrait_eval(lhs == rhs$literal$list$values[[1]]))
   }
 
   equal_expressions <- lapply(rhs$literal$list$values, function(value) {

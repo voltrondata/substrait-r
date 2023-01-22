@@ -424,7 +424,7 @@ test_that("arrow translation for ^ works", {
   expect_equal(
     example_data[1:5, "dbl"] %>%
       arrow_substrait_compiler() %>%
-      substrait_project(dbl = dbl ^ 3) %>%
+      substrait_project(dbl = dbl^3) %>%
       dplyr::collect(),
     tibble::tibble(dbl = c(-997002999, -970299, -729, 0, 729))
   )
@@ -494,7 +494,6 @@ test_that("arrow translation for %in% works", {
   )
 
   # case of one item (translates to ==)
-  # TODO: fix "Error: NotImplemented: No conversion function exists to convert the Substrait function NA to an Arrow call expression"
   expect_identical(
     tibble::tibble(col = letters) %>%
       arrow_substrait_compiler() %>%
@@ -521,7 +520,6 @@ test_that("arrow translation for %in% works", {
     tibble::tibble(col = letters)
   )
 
-    # TODO: fix "Error: NotImplemented: No conversion function exists to convert the Substrait function NA to an Arrow call expression"
   # ...even if that literal reduces to a scalar literal
   expect_identical(
     tibble::tibble(col = letters) %>%
