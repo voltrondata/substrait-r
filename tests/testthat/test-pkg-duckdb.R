@@ -309,3 +309,18 @@ test_that("duckdb translation for >= works", {
     tibble::tibble(dbl = c(0, 9))
   )
 })
+
+test_that("duckdb translation for grepl works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c("cat", "bat", "mouse")) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_filter(grepl("a", x)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      x = c("cat", "bat")
+    )
+  )
+
+})

@@ -286,6 +286,10 @@ arrow_funs[["is.na"]] <- function(x) {
   substrait_eval(!is_not_null)
 }
 
+arrow_funs[["grepl"]] <- function(pattern, x) {
+  substrait_call("string.contains", x, pattern)
+}
+
 check_na_rm <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")

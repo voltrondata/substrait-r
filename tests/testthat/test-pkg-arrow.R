@@ -632,3 +632,18 @@ test_that("arrow translation for is.na() works", {
     )
   )
 })
+
+test_that("arrow translation for grepl works", {
+  skip_if_not(has_arrow_with_substrait())
+  skip("Substrait function `contains` not yet implemented in Arrow C++")
+
+  expect_equal(
+    tibble::tibble(x = c("cat", "bat", "mouse")) %>%
+      arrow_substrait_compiler() %>%
+      substrait_filter(grepl("a", x)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      x = c("cat", "bat")
+    )
+  )
+})

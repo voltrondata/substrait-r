@@ -283,6 +283,10 @@ duckdb_funs[["n"]] <- function() {
   substrait_call_agg("count", .output_type = substrait_i64())
 }
 
+duckdb_funs[["grepl"]] <- function(pattern, x) {
+  substrait_call("contains", x, pattern)
+}
+
 check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
