@@ -14,7 +14,7 @@
 #'   count = 2
 #' )
 #'
-substrait_fetch <- function(.compiler, offset, count) {
+substrait_fetch <- function(.compiler, offset = 0, count) {
   .compiler <- substrait_compiler(.compiler)$clone()
   local_compiler(.compiler)
 
