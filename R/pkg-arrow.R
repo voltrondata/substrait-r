@@ -182,6 +182,19 @@ arrow_funs[["sign"]] <- function(x) {
   )
 }
 
+arrow_funs[["c"]] <- function(...) {
+  # TODO: this is copied verbatim from duckdb so just make a general function
+  #       which can be loaded by both
+  args <- rlang::list2(...)
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = lapply(args, as_substrait, "substrait.Expression.Literal")
+      )
+    )
+  )
+}
+
 # TODO: remove non-default `.phase` and `.invocation` param values for aggregation functions when Arrow consumer supports this
 
 arrow_funs[["sum"]] <- function(x, na.rm = FALSE) {

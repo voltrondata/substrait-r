@@ -484,7 +484,6 @@ test_that("arrow translation for sign() works", {
 test_that("arrow translation for %in% works", {
   skip_if_not(has_arrow_with_substrait())
 
-  # TODO: fix "Can't create substrait.Expression from object of type 'NULL'"
   # case of zero items
   expect_identical(
     tibble::tibble(col = letters) %>%
