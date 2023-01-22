@@ -2,7 +2,8 @@
 #' Append a Substrait Fetch Relation
 #'
 #' @param .compiler A [substrait_compiler()] or object that can be coerced to one
-#' @param ... Expressions
+#' @param offset Number of rows to skip before returning rows
+#' @param count Number of rows to return
 #'
 #' @return A modified `.compiler`
 #' @export

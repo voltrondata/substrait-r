@@ -9,7 +9,9 @@ substrait_fetch(.compiler, offset = 0, count)
 \arguments{
 \item{.compiler}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or object that can be coerced to one}
 
-\item{...}{Expressions}
+\item{offset}{Number of rows to skip before returning rows}
+
+\item{count}{Number of rows to return}
 }
 \value{
 A modified \code{.compiler}
