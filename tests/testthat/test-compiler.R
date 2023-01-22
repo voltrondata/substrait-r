@@ -270,3 +270,11 @@ test_that("global substrait compiler value can be set and accessed", {
 
   expect_null(current_compiler())
 })
+
+test_that("head.SubstraitCompiler works", {
+  compiler <- substrait_compiler(data.frame(a = 1:10))
+  out <- head(compiler, 3)
+  plan <- out$plan()
+  expect_s3_class(plan$relations[[1]]$root$input$fetch, "substrait_FetchRel")
+  expect_identical(plan$relations[[1]]$root$input$fetch$count, 3)
+})
