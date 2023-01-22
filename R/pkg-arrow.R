@@ -6,7 +6,7 @@ ArrowSubstraitCompiler <- R6::R6Class(
   public = list(
     initialize = function(...) {
       super$initialize(...)
-      self$.fns <- arrow_funs
+      self$.fns <- c(arrow_funs$functions, compiler_function_env$functions)
       private$extension_uri <- list(
         "arithmetic" = substrait$extensions$SimpleExtensionURI$create(
           extension_uri_anchor = 1L,
@@ -50,8 +50,9 @@ ArrowSubstraitCompiler <- R6::R6Class(
 
 # Scalar functions
 arrow_funs <- new.env(parent = emptyenv())
+arrow_funs$functions <- list()
 
-arrow_funs[["+"]] <- function(lhs, rhs) {
+arrow_funs$functions[["+"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.add",
     lhs,
@@ -66,7 +67,7 @@ arrow_funs[["+"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["-"]] <- function(lhs, rhs) {
+arrow_funs$functions[["-"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.subtract",
     lhs,
@@ -81,7 +82,7 @@ arrow_funs[["-"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["*"]] <- function(lhs, rhs) {
+arrow_funs$functions[["*"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.multiply",
     lhs,
@@ -96,7 +97,7 @@ arrow_funs[["*"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["/"]] <- function(lhs, rhs) {
+arrow_funs$functions[["/"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.divide",
     lhs,
@@ -111,7 +112,7 @@ arrow_funs[["/"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["^"]] <- function(lhs, rhs) {
+arrow_funs$functions[["^"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.power",
     lhs,
@@ -126,7 +127,7 @@ arrow_funs[["^"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["sqrt"]] <- function(x) {
+arrow_funs$functions[["sqrt"]] <- function(x) {
   substrait_call(
     "arithmetic.sqrt",
     x,
@@ -140,7 +141,7 @@ arrow_funs[["sqrt"]] <- function(x) {
   )
 }
 
-arrow_funs[["abs"]] <- function(x) {
+arrow_funs$functions[["abs"]] <- function(x) {
   substrait_call(
     "arithmetic.abs",
     x,
@@ -154,7 +155,7 @@ arrow_funs[["abs"]] <- function(x) {
   )
 }
 
-arrow_funs[["exp"]] <- function(x) {
+arrow_funs$functions[["exp"]] <- function(x) {
   substrait_call(
     "arithmetic.exp",
     x,
@@ -168,7 +169,7 @@ arrow_funs[["exp"]] <- function(x) {
   )
 }
 
-arrow_funs[["sign"]] <- function(x) {
+arrow_funs$functions[["sign"]] <- function(x) {
   substrait_call(
     "arithmetic.sign",
     x,
@@ -182,43 +183,30 @@ arrow_funs[["sign"]] <- function(x) {
   )
 }
 
-arrow_funs[["c"]] <- function(...) {
-  # TODO: this is copied verbatim from duckdb so just make a general function
-  #       which can be loaded by both
-  args <- rlang::list2(...)
-  substrait$Expression$create(
-    literal = substrait$Expression$Literal$create(
-      list = substrait$Expression$Literal$List$create(
-        values = lapply(args, as_substrait, "substrait.Expression.Literal")
-      )
-    )
-  )
-}
-
 # TODO: remove non-default `.phase` and `.invocation` param values for aggregation functions when Arrow consumer supports this
 
-arrow_funs[["sum"]] <- function(x, na.rm = FALSE) {
+arrow_funs$functions[["sum"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.sum", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
-arrow_funs[["mean"]] <- function(x, na.rm = FALSE) {
+arrow_funs$functions[["mean"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.avg", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
-arrow_funs[["min"]] <- function(x, na.rm = FALSE) {
+arrow_funs$functions[["min"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.min", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
-arrow_funs[["max"]] <- function(x, na.rm = FALSE) {
+arrow_funs$functions[["max"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.max", x, .output_type = substrait_i64(), .phase = 3L, .invocation = 1L)
 }
 
 # Comparison functions
-arrow_funs[["!="]] <- function(lhs, rhs) {
+arrow_funs$functions[["!="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.not_equal",
     lhs,
@@ -227,7 +215,7 @@ arrow_funs[["!="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["=="]] <- function(lhs, rhs) {
+arrow_funs$functions[["=="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.equal",
     lhs,
@@ -236,7 +224,7 @@ arrow_funs[["=="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["<"]] <- function(lhs, rhs) {
+arrow_funs$functions[["<"]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.lt",
     lhs,
@@ -245,7 +233,7 @@ arrow_funs[["<"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[[">"]] <- function(lhs, rhs) {
+arrow_funs$functions[[">"]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.gt",
     lhs,
@@ -254,7 +242,7 @@ arrow_funs[[">"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["<="]] <- function(lhs, rhs) {
+arrow_funs$functions[["<="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.lte",
     lhs,
@@ -263,7 +251,7 @@ arrow_funs[["<="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[[">="]] <- function(lhs, rhs) {
+arrow_funs$functions[[">="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.gte",
     lhs,
@@ -308,38 +296,6 @@ arrow_funs[["is.na"]] <- function(x) {
   )
 
   substrait_eval(!is_not_null)
-}
-
-arrow_funs[["%in%"]] <- function(lhs, rhs) {
-  # TODO: refactor to general function which can be used by both duckdb and arrow
-  # duckdb implements this using == and or, according to duckdb_get_substrait()
-  lhs <- as_substrait_expression(lhs)
-  rhs <- as_substrait_expression(rhs)
-
-  # if the rhs is a regular literal, wrap in a list
-  rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
-
-  if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
-    rhs <- substrait_expression_literal_list(rhs$literal)
-  } else if (!rhs_is_list) {
-    rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
-  }
-
-  if (length(rhs$literal$list$values) == 0) {
-    return(as_substrait_expression(FALSE))
-  } else if (length(rhs$literal$list$values) == 1) {
-    return(substrait_eval(lhs == rhs$literal$list$values[[1]]))
-  }
-
-  equal_expressions <- lapply(rhs$literal$list$values, function(value) {
-    substrait_eval(lhs == value)
-  })
-
-  combine_or <- function(lhs, rhs) {
-    substrait_eval(lhs | rhs)
-  }
-
-  Reduce(combine_or, equal_expressions)
 }
 
 check_na_rm <- function(na.rm) {

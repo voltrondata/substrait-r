@@ -523,3 +523,49 @@ local_compiler <- function(compiler, .local_envir = parent.frame()) {
 
 compiler_context_env <- new.env(parent = emptyenv())
 compiler_context_env$compiler <- NULL
+
+compiler_function_env <- new.env(parent = emptyenv())
+compiler_function_env$functions <- list()
+
+compiler_function_env$functions[["%in%"]] <- function(lhs, rhs) {
+
+  lhs <- as_substrait_expression(lhs)
+  rhs <- as_substrait_expression(rhs)
+
+  # if the rhs is a regular literal, wrap in a list
+  rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
+
+  if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
+    rhs <- substrait_expression_literal_list(rhs$literal)
+  } else if (!rhs_is_list) {
+    rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
+  }
+
+  if (length(rhs$literal$list$values) == 0) {
+    return(as_substrait_expression(FALSE))
+  } else if (length(rhs$literal$list$values) == 1) {
+    return(substrait_eval(lhs == rhs$literal$list$values[[1]]))
+  }
+
+  equal_expressions <- lapply(rhs$literal$list$values, function(value) {
+    substrait_eval(lhs == value)
+  })
+
+  combine_or <- function(lhs, rhs) {
+    substrait_eval(lhs | rhs)
+  }
+
+  browser()
+  Reduce(combine_or, equal_expressions)
+}
+
+compiler_function_env$functions[["c"]] <- function(...) {
+  args <- rlang::list2(...)
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = lapply(args, as_substrait, "substrait.Expression.Literal")
+      )
+    )
+  )
+}
