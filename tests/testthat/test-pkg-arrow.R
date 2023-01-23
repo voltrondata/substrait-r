@@ -620,7 +620,7 @@ test_that("arrow translation for comparisons works", {
   )
 })
 
-test_that("arrow translation for is.na() works",{
+test_that("arrow translation for is.na() works", {
   expect_equal(
     example_data[6:10, "dbl"] %>%
       arrow_substrait_compiler() %>%
