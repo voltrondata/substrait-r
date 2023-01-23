@@ -135,7 +135,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
   public = list(
     initialize = function(...) {
       super$initialize(...)
-      self$.fns <- c(duckdb_funs$functions, compiler_function_env$functions)
+      self$.fns <- c(as.list(duckdb_funs), as.list(substrait_funs))
     },
     validate = function() {
       super$validate()
@@ -157,47 +157,42 @@ DuckDBSubstraitCompiler <- R6::R6Class(
 
 # Scalar functions
 duckdb_funs <- new.env(parent = emptyenv())
-duckdb_funs$functions <- list()
 
-duckdb_funs$functions[["=="]] <- function(lhs, rhs) {
+duckdb_funs[["=="]] <- function(lhs, rhs) {
   substrait_call("equal", lhs, rhs, .output_type = substrait_boolean())
 }
 
-duckdb_funs$functions[["!="]] <- function(lhs, rhs) {
+duckdb_funs[["!="]] <- function(lhs, rhs) {
   substrait_call("not_equal", lhs, rhs, .output_type = substrait_boolean())
 }
 
-duckdb_funs$functions[[">="]] <- function(lhs, rhs) {
+duckdb_funs[[">="]] <- function(lhs, rhs) {
   substrait_call("gte", lhs, rhs, .output_type = substrait_boolean())
 }
 
-duckdb_funs$functions[["<="]] <- function(lhs, rhs) {
+duckdb_funs[["<="]] <- function(lhs, rhs) {
   substrait_call("lte", lhs, rhs, .output_type = substrait_boolean())
 }
 
-duckdb_funs$functions[[">"]] <- function(lhs, rhs) {
+duckdb_funs[[">"]] <- function(lhs, rhs) {
   substrait_call("gt", lhs, rhs, .output_type = substrait_boolean())
 }
 
-duckdb_funs$functions[["<"]] <- function(lhs, rhs) {
+duckdb_funs[["<"]] <- function(lhs, rhs) {
   substrait_call("lt", lhs, rhs, .output_type = substrait_boolean())
 }
 
-duckdb_funs$functions[["between"]] <- function(x, left, right) {
-  substrait_eval(x >= left & x <= right)
-}
-
-duckdb_funs$functions[["&"]] <- function(lhs, rhs) {
+duckdb_funs[["&"]] <- function(lhs, rhs) {
   substrait_call("and", lhs, rhs, .output_type = substrait_boolean())
 }
 
-duckdb_funs$functions[["|"]] <- function(lhs, rhs) {
+duckdb_funs[["|"]] <- function(lhs, rhs) {
   substrait_call("or", lhs, rhs, .output_type = substrait_boolean())
 }
 
 # While I'm sure that "not" exists somehow, this is the only way
 # I can get it to work for now (NULLs are not handled properly here)
-duckdb_funs$functions[["!"]] <- function(rhs) {
+duckdb_funs[["!"]] <- function(rhs) {
   substrait$Expression$create(
     cast = substrait$Expression$Cast$create(
       type = substrait$Type$create(
@@ -218,12 +213,12 @@ duckdb_funs$functions[["!"]] <- function(rhs) {
   )
 }
 
-duckdb_funs$functions[["is.na"]] <- function(x) {
+duckdb_funs[["is.na"]] <- function(x) {
   is_not_null <- substrait_call("is_not_null", x, .output_type = substrait_boolean())
   substrait_eval(!is_not_null)
 }
 
-duckdb_funs$functions[["c"]] <- function(...) {
+duckdb_funs[["c"]] <- function(...) {
   # this limits the usage of c() to literals, which is probably the most
   # common usage (e.g., col %in% c("a", "b"))
   args <- rlang::list2(...)
@@ -236,7 +231,7 @@ duckdb_funs$functions[["c"]] <- function(...) {
   )
 }
 
-duckdb_funs$functions[["+"]] <- function(lhs, rhs) {
+duckdb_funs[["+"]] <- function(lhs, rhs) {
   if (missing(rhs)) {
     substrait_call("+", lhs, .output_type = function(lhs) lhs)
   } else {
@@ -244,7 +239,7 @@ duckdb_funs$functions[["+"]] <- function(lhs, rhs) {
   }
 }
 
-duckdb_funs$functions[["-"]] <- function(lhs, rhs) {
+duckdb_funs[["-"]] <- function(lhs, rhs) {
   if (missing(rhs)) {
     substrait_call("-", lhs, .output_type = function(lhs) lhs)
   } else {
@@ -252,39 +247,39 @@ duckdb_funs$functions[["-"]] <- function(lhs, rhs) {
   }
 }
 
-duckdb_funs$functions[["*"]] <- function(lhs, rhs) {
+duckdb_funs[["*"]] <- function(lhs, rhs) {
   substrait_call("*", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
-duckdb_funs$functions[["/"]] <- function(lhs, rhs) {
+duckdb_funs[["/"]] <- function(lhs, rhs) {
   substrait_call("/", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
-duckdb_funs$functions[["^"]] <- function(lhs, rhs) {
+duckdb_funs[["^"]] <- function(lhs, rhs) {
   substrait_call("^", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
-duckdb_funs$functions[["sum"]] <- function(x, na.rm = FALSE) {
+duckdb_funs[["sum"]] <- function(x, na.rm = FALSE) {
   check_na_rm_duckdb(na.rm)
   substrait_call_agg("sum", x, .output_type = identity)
 }
 
-duckdb_funs$functions[["mean"]] <- function(x, na.rm = FALSE) {
+duckdb_funs[["mean"]] <- function(x, na.rm = FALSE) {
   check_na_rm_duckdb(na.rm)
   substrait_call_agg("avg", x, .output_type = substrait_i64())
 }
 
-duckdb_funs$functions[["min"]] <- function(x, na.rm = FALSE) {
+duckdb_funs[["min"]] <- function(x, na.rm = FALSE) {
   check_na_rm_duckdb(na.rm)
   substrait_call_agg("min", x, .output_type = substrait_i64())
 }
 
-duckdb_funs$functions[["max"]] <- function(x, na.rm = FALSE) {
+duckdb_funs[["max"]] <- function(x, na.rm = FALSE) {
   check_na_rm_duckdb(na.rm)
   substrait_call_agg("max", x, .output_type = substrait_i64())
 }
 
-duckdb_funs$functions[["n"]] <- function() {
+duckdb_funs[["n"]] <- function() {
   substrait_call_agg("count", .output_type = substrait_i64())
 }
 
@@ -292,14 +287,4 @@ check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
   }
-}
-
-substrait_expression_literal_list <- function(values) {
-  substrait$Expression$create(
-    literal = substrait$Expression$Literal$create(
-      list = substrait$Expression$Literal$List$create(
-        values = list(values)
-      )
-    )
-  )
 }

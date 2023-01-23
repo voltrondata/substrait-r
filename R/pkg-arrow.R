@@ -6,7 +6,7 @@ ArrowSubstraitCompiler <- R6::R6Class(
   public = list(
     initialize = function(...) {
       super$initialize(...)
-      self$.fns <- c(arrow_funs$functions, compiler_function_env$functions)
+      self$.fns <- c(as.list(arrow_funs), as.list(substrait_funs))
       private$extension_uri <- list(
         "arithmetic" = substrait$extensions$SimpleExtensionURI$create(
           extension_uri_anchor = 1L,
@@ -50,9 +50,9 @@ ArrowSubstraitCompiler <- R6::R6Class(
 
 # Scalar functions
 arrow_funs <- new.env(parent = emptyenv())
-arrow_funs$functions <- list()
+arrow_funs <- list()
 
-arrow_funs$functions[["+"]] <- function(lhs, rhs) {
+arrow_funs[["+"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.add",
     lhs,
@@ -67,7 +67,7 @@ arrow_funs$functions[["+"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["-"]] <- function(lhs, rhs) {
+arrow_funs[["-"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.subtract",
     lhs,
@@ -82,7 +82,7 @@ arrow_funs$functions[["-"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["*"]] <- function(lhs, rhs) {
+arrow_funs[["*"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.multiply",
     lhs,
@@ -97,7 +97,7 @@ arrow_funs$functions[["*"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["/"]] <- function(lhs, rhs) {
+arrow_funs[["/"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.divide",
     lhs,
@@ -112,7 +112,7 @@ arrow_funs$functions[["/"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["^"]] <- function(lhs, rhs) {
+arrow_funs[["^"]] <- function(lhs, rhs) {
   substrait_call(
     "arithmetic.power",
     lhs,
@@ -127,7 +127,7 @@ arrow_funs$functions[["^"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["sqrt"]] <- function(x) {
+arrow_funs[["sqrt"]] <- function(x) {
   substrait_call(
     "arithmetic.sqrt",
     x,
@@ -141,7 +141,7 @@ arrow_funs$functions[["sqrt"]] <- function(x) {
   )
 }
 
-arrow_funs$functions[["abs"]] <- function(x) {
+arrow_funs[["abs"]] <- function(x) {
   substrait_call(
     "arithmetic.abs",
     x,
@@ -155,7 +155,7 @@ arrow_funs$functions[["abs"]] <- function(x) {
   )
 }
 
-arrow_funs$functions[["exp"]] <- function(x) {
+arrow_funs[["exp"]] <- function(x) {
   substrait_call(
     "arithmetic.exp",
     x,
@@ -169,7 +169,7 @@ arrow_funs$functions[["exp"]] <- function(x) {
   )
 }
 
-arrow_funs$functions[["sign"]] <- function(x) {
+arrow_funs[["sign"]] <- function(x) {
   substrait_call(
     "arithmetic.sign",
     x,
@@ -185,28 +185,28 @@ arrow_funs$functions[["sign"]] <- function(x) {
 
 # TODO: remove non-default `.phase` and `.invocation` param values for aggregation functions when Arrow consumer supports this
 
-arrow_funs$functions[["sum"]] <- function(x, na.rm = FALSE) {
+arrow_funs[["sum"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.sum", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
-arrow_funs$functions[["mean"]] <- function(x, na.rm = FALSE) {
+arrow_funs[["mean"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.avg", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
-arrow_funs$functions[["min"]] <- function(x, na.rm = FALSE) {
+arrow_funs[["min"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.min", x, .output_type = substrait_fp64(), .phase = 3L, .invocation = 1L)
 }
 
-arrow_funs$functions[["max"]] <- function(x, na.rm = FALSE) {
+arrow_funs[["max"]] <- function(x, na.rm = FALSE) {
   check_na_rm(na.rm)
   substrait_call_agg("arithmetic.max", x, .output_type = substrait_i64(), .phase = 3L, .invocation = 1L)
 }
 
 # Comparison functions
-arrow_funs$functions[["!="]] <- function(lhs, rhs) {
+arrow_funs[["!="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.not_equal",
     lhs,
@@ -215,7 +215,7 @@ arrow_funs$functions[["!="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["=="]] <- function(lhs, rhs) {
+arrow_funs[["=="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.equal",
     lhs,
@@ -224,7 +224,7 @@ arrow_funs$functions[["=="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["<"]] <- function(lhs, rhs) {
+arrow_funs[["<"]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.lt",
     lhs,
@@ -233,7 +233,7 @@ arrow_funs$functions[["<"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[[">"]] <- function(lhs, rhs) {
+arrow_funs[[">"]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.gt",
     lhs,
@@ -242,7 +242,7 @@ arrow_funs$functions[[">"]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["<="]] <- function(lhs, rhs) {
+arrow_funs[["<="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.lte",
     lhs,
@@ -251,7 +251,7 @@ arrow_funs$functions[["<="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[[">="]] <- function(lhs, rhs) {
+arrow_funs[[">="]] <- function(lhs, rhs) {
   substrait_call(
     "comparison.gte",
     lhs,
@@ -260,7 +260,7 @@ arrow_funs$functions[[">="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs$functions[["is.null"]] <- function(x) {
+arrow_funs[["is.null"]] <- function(x) {
   substrait_call(
     "comparison.is_null",
     x,
@@ -268,7 +268,7 @@ arrow_funs$functions[["is.null"]] <- function(x) {
   )
 }
 
-arrow_funs$functions[["!"]] <- function(x) {
+arrow_funs[["!"]] <- function(x) {
   substrait_call(
     "boolean.not",
     x,
@@ -276,19 +276,15 @@ arrow_funs$functions[["!"]] <- function(x) {
   )
 }
 
-arrow_funs$functions[["between"]] <- function(x, left, right) {
-  substrait_eval(x >= left & x <= right)
-}
-
-arrow_funs$functions[["&"]] <- function(lhs, rhs) {
+arrow_funs[["&"]] <- function(lhs, rhs) {
   substrait_call("boolean.and", lhs, rhs, .output_type = substrait_boolean())
 }
 
-arrow_funs$functions[["|"]] <- function(lhs, rhs) {
+arrow_funs[["|"]] <- function(lhs, rhs) {
   substrait_call("boolean.or", lhs, rhs, .output_type = substrait_boolean())
 }
 
-arrow_funs$functions[["is.na"]] <- function(x) {
+arrow_funs[["is.na"]] <- function(x) {
   is_not_null <- substrait_call(
     "comparison.is_not_null",
     x,

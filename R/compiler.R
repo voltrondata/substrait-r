@@ -166,7 +166,6 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @return `self`
     validate = function() {
-
       # DuckDB backend doesn't accept empty SELECT clause
       if (inherits(self, "DuckDBSubstraitCompiler") && length(self$schema$names) == 0) {
         rlang::abort("Column list must not be empty")
@@ -524,11 +523,9 @@ local_compiler <- function(compiler, .local_envir = parent.frame()) {
 compiler_context_env <- new.env(parent = emptyenv())
 compiler_context_env$compiler <- NULL
 
-compiler_function_env <- new.env(parent = emptyenv())
-compiler_function_env$functions <- list()
+substrait_funs <- new.env(parent = emptyenv())
 
-compiler_function_env$functions[["%in%"]] <- function(lhs, rhs) {
-
+substrait_funs[["%in%"]] <- function(lhs, rhs) {
   lhs <- as_substrait_expression(lhs)
   rhs <- as_substrait_expression(rhs)
 
@@ -558,12 +555,28 @@ compiler_function_env$functions[["%in%"]] <- function(lhs, rhs) {
   Reduce(combine_or, equal_expressions)
 }
 
-compiler_function_env$functions[["c"]] <- function(...) {
+substrait_funs[["c"]] <- function(...) {
   args <- rlang::list2(...)
+  substrait_expression_literal_list
+
   substrait$Expression$create(
     literal = substrait$Expression$Literal$create(
       list = substrait$Expression$Literal$List$create(
         values = lapply(args, as_substrait, "substrait.Expression.Literal")
+      )
+    )
+  )
+}
+
+substrait_funs[["between"]] <- function(x, left, right) {
+  substrait_eval(x >= left & x <= right)
+}
+
+substrait_expression_literal_list <- function(values) {
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = list(values)
       )
     )
   )
