@@ -523,3 +523,9 @@ local_compiler <- function(compiler, .local_envir = parent.frame()) {
 
 compiler_context_env <- new.env(parent = emptyenv())
 compiler_context_env$compiler <- NULL
+
+#' @importFrom utils head
+#' @export
+head.SubstraitCompiler <- function(x, n = 6L, ...) {
+  substrait_fetch(x, count = n)
+}
