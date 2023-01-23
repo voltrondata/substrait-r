@@ -555,7 +555,6 @@ compiler_function_env$functions[["%in%"]] <- function(lhs, rhs) {
     substrait_eval(lhs | rhs)
   }
 
-  browser()
   Reduce(combine_or, equal_expressions)
 }
 

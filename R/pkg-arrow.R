@@ -260,7 +260,7 @@ arrow_funs$functions[[">="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["is.null"]] <- function(x) {
+arrow_funs$functions[["is.null"]] <- function(x) {
   substrait_call(
     "comparison.is_null",
     x,
@@ -268,7 +268,7 @@ arrow_funs[["is.null"]] <- function(x) {
   )
 }
 
-arrow_funs[["!"]] <- function(x) {
+arrow_funs$functions[["!"]] <- function(x) {
   substrait_call(
     "boolean.not",
     x,
@@ -276,19 +276,19 @@ arrow_funs[["!"]] <- function(x) {
   )
 }
 
-arrow_funs[["between"]] <- function(x, left, right) {
+arrow_funs$functions[["between"]] <- function(x, left, right) {
   substrait_eval(x >= left & x <= right)
 }
 
-arrow_funs[["&"]] <- function(lhs, rhs) {
+arrow_funs$functions[["&"]] <- function(lhs, rhs) {
   substrait_call("boolean.and", lhs, rhs, .output_type = substrait_boolean())
 }
 
-arrow_funs[["|"]] <- function(lhs, rhs) {
+arrow_funs$functions[["|"]] <- function(lhs, rhs) {
   substrait_call("boolean.or", lhs, rhs, .output_type = substrait_boolean())
 }
 
-arrow_funs[["is.na"]] <- function(x) {
+arrow_funs$functions[["is.na"]] <- function(x) {
   is_not_null <- substrait_call(
     "comparison.is_not_null",
     x,
