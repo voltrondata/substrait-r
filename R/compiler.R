@@ -526,6 +526,6 @@ compiler_context_env$compiler <- NULL
 
 #' @importFrom utils head
 #' @export
-head.SubstraitCompiler <- function(x, n = 6L, ...){
+head.SubstraitCompiler <- function(x, n = 6L, ...) {
   substrait_fetch(x, count = n)
 }
