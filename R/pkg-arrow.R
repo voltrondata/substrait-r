@@ -291,6 +291,20 @@ arrow_funs[["grepl"]] <- function(pattern, x, ...) {
   substrait_call("string.contains", x, pattern)
 }
 
+arrow_funs[["year"]] <- function(x) {
+  substrait_call(
+    "datetime.extract",
+    x,
+    .output_type = substrait_i64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "component",
+        preference = "YEAR"
+      )
+    )
+  )
+}
+
 check_na_rm <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")

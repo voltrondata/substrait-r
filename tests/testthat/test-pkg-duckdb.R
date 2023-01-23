@@ -355,3 +355,16 @@ test_that("duckdb translation for n_distinct works", {
     classes = "substrait.n_distinct.approximate"
   )
 })
+
+test_that("duckdb translation for year() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  # Error: Catalog Error: Scalar Function with name extract does not exist!
+  expect_equal(
+    tibble::tibble(x = as.Date("1987-10-09")) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(year = year(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(x = as.Date("1987-10-09"), year = 1987)
+  )
+})
