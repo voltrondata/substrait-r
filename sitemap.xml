@@ -61,6 +61,9 @@
     <loc>/reference/substrait_create.html</loc>
   </url>
   <url>
+    <loc>/reference/substrait_fetch.html</loc>
+  </url>
+  <url>
     <loc>/reference/substrait_filter.html</loc>
   </url>
   <url>
