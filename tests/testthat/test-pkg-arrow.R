@@ -537,3 +537,98 @@ test_that("arrow translation for %in% works", {
     "must be a list literal"
   )
 })
+
+test_that("arrow translation for & and |", {
+  skip_if_not(has_arrow_with_substrait())
+  tbl <- tibble::tibble(col = c(TRUE, FALSE, NA))
+
+  expect_identical(
+    tbl %>%
+      arrow_substrait_compiler() %>%
+      dplyr::transmute(
+        and_true = col & TRUE,
+        and_false = col & FALSE,
+        or_true = col | TRUE,
+        or_false = col | FALSE
+      ) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      and_true = c(TRUE, FALSE, NA),
+      and_false = c(FALSE, FALSE, FALSE),
+      or_true = c(TRUE, TRUE, TRUE),
+      or_false = c(TRUE, FALSE, NA)
+    )
+  )
+})
+
+test_that("arrow translation for ! works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  tbl <- tibble::tibble(col = c(TRUE, FALSE))
+  expect_identical(
+    tbl %>%
+      arrow_substrait_compiler() %>%
+      dplyr::transmute(
+        not = !col
+      ) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      not = c(FALSE, TRUE)
+    )
+  )
+})
+
+test_that("arrow translation for ! handles NULL", {
+  skip_if_not(has_arrow_with_substrait())
+
+  tbl <- tibble::tibble(col = c(TRUE, FALSE, NA))
+  expect_identical(
+    tbl %>%
+      arrow_substrait_compiler() %>%
+      dplyr::transmute(
+        not = !col
+      ) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      not = c(FALSE, TRUE, NA)
+    )
+  )
+})
+
+test_that("arrow translation for comparisons works", {
+  skip_if_not(has_arrow_with_substrait())
+  tbl <- tibble::tibble(col = c(0, 1, 2, 3, NA))
+
+  expect_identical(
+    tbl %>%
+      arrow_substrait_compiler() %>%
+      dplyr::transmute(
+        gt2 = col > 2,
+        gte2 = col >= 2,
+        lt2 = col < 2,
+        lte2 = col <= 2,
+        between_12 = between(col, 1, 2)
+      ) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      gt2 = c(FALSE, FALSE, FALSE, TRUE, NA),
+      gte2 = c(FALSE, FALSE, TRUE, TRUE, NA),
+      lt2 = c(TRUE, TRUE, FALSE, FALSE, NA),
+      lte2 = c(TRUE, TRUE, TRUE, FALSE, NA),
+      between_12 = c(FALSE, TRUE, TRUE, FALSE, NA)
+    )
+  )
+})
+
+test_that("arrow translation for is.na() works",{
+  expect_equal(
+    example_data[6:10, "dbl"] %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl, dbl_na = is.na(dbl)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      dbl = c(3.14159265358979, 99, 10000, 10000, NA),
+      dbl_na = c(FALSE, FALSE, FALSE, FALSE, TRUE)
+    )
+  )
+})
