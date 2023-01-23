@@ -624,7 +624,7 @@ test_that("arrow translation for is.na() works", {
   expect_equal(
     example_data[6:10, "dbl"] %>%
       arrow_substrait_compiler() %>%
-      substrait_project(dbl, dbl_na = is.na(dbl)) %>%
+      dplyr::transmute(dbl, dbl_na = is.na(dbl)) %>%
       dplyr::collect(),
     tibble::tibble(
       dbl = c(3.14159265358979, 99, 10000, 10000, NA),
