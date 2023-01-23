@@ -8,7 +8,7 @@
 #' @return A modified `.compiler`
 #' @export
 #'
-#' @examples
+#' @examplesIf has_duckdb_with_substrait()
 #' substrait_fetch(
 #'   duckdb_substrait_compiler(data.frame(x = 1:10)),
 #'   offset = 2,
