@@ -260,14 +260,6 @@ arrow_funs[[">="]] <- function(lhs, rhs) {
   )
 }
 
-arrow_funs[["is.null"]] <- function(x) {
-  substrait_call(
-    "comparison.is_null",
-    x,
-    .output_type = substrait_boolean()
-  )
-}
-
 arrow_funs[["!"]] <- function(x) {
   substrait_call(
     "boolean.not",
