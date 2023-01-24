@@ -6,7 +6,7 @@ ArrowSubstraitCompiler <- R6::R6Class(
   public = list(
     initialize = function(...) {
       super$initialize(...)
-      self$.fns <- arrow_funs
+      self$.fns <- c(as.list(arrow_funs), as.list(substrait_funs))
       private$extension_uri <- list(
         "arithmetic" = substrait$extensions$SimpleExtensionURI$create(
           extension_uri_anchor = 1L,
@@ -50,6 +50,7 @@ ArrowSubstraitCompiler <- R6::R6Class(
 
 # Scalar functions
 arrow_funs <- new.env(parent = emptyenv())
+arrow_funs <- list()
 
 arrow_funs[["+"]] <- function(lhs, rhs) {
   substrait_call(
@@ -257,6 +258,32 @@ arrow_funs[[">="]] <- function(lhs, rhs) {
     rhs,
     .output_type = substrait_boolean()
   )
+}
+
+arrow_funs[["!"]] <- function(x) {
+  substrait_call(
+    "boolean.not",
+    x,
+    .output_type = substrait_boolean()
+  )
+}
+
+arrow_funs[["&"]] <- function(lhs, rhs) {
+  substrait_call("boolean.and", lhs, rhs, .output_type = substrait_boolean())
+}
+
+arrow_funs[["|"]] <- function(lhs, rhs) {
+  substrait_call("boolean.or", lhs, rhs, .output_type = substrait_boolean())
+}
+
+arrow_funs[["is.na"]] <- function(x) {
+  is_not_null <- substrait_call(
+    "comparison.is_not_null",
+    x,
+    .output_type = substrait_boolean()
+  )
+
+  substrait_eval(!is_not_null)
 }
 
 check_na_rm <- function(na.rm) {

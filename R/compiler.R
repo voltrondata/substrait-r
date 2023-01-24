@@ -166,7 +166,6 @@ SubstraitCompiler <- R6::R6Class(
     #'
     #' @return `self`
     validate = function() {
-
       # DuckDB backend doesn't accept empty SELECT clause
       if (inherits(self, "DuckDBSubstraitCompiler") && length(self$schema$names) == 0) {
         rlang::abort("Column list must not be empty")
@@ -528,4 +527,63 @@ compiler_context_env$compiler <- NULL
 #' @export
 head.SubstraitCompiler <- function(x, n = 6L, ...) {
   substrait_fetch(x, count = n)
+}
+
+substrait_funs <- new.env(parent = emptyenv())
+
+substrait_funs[["%in%"]] <- function(lhs, rhs) {
+  lhs <- as_substrait_expression(lhs)
+  rhs <- as_substrait_expression(rhs)
+
+  # if the rhs is a regular literal, wrap in a list
+  rhs_is_list <- inherits(rhs$literal$list, "substrait_Expression_Literal_List")
+
+  if (!rhs_is_list && inherits(rhs$literal, "substrait_Expression_Literal")) {
+    rhs <- substrait_expression_literal_list(rhs$literal)
+  } else if (!rhs_is_list) {
+    rlang::abort("rhs of %in% must be a list literal (e.g., created using `c()`")
+  }
+
+  if (length(rhs$literal$list$values) == 0) {
+    return(as_substrait_expression(FALSE))
+  } else if (length(rhs$literal$list$values) == 1) {
+    return(substrait_eval(lhs == rhs$literal$list$values[[1]]))
+  }
+
+  equal_expressions <- lapply(rhs$literal$list$values, function(value) {
+    substrait_eval(lhs == value)
+  })
+
+  combine_or <- function(lhs, rhs) {
+    substrait_eval(lhs | rhs)
+  }
+
+  Reduce(combine_or, equal_expressions)
+}
+
+substrait_funs[["c"]] <- function(...) {
+  args <- rlang::list2(...)
+  substrait_expression_literal_list
+
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = lapply(args, as_substrait, "substrait.Expression.Literal")
+      )
+    )
+  )
+}
+
+substrait_funs[["between"]] <- function(x, left, right) {
+  substrait_eval(x >= left & x <= right)
+}
+
+substrait_expression_literal_list <- function(values) {
+  substrait$Expression$create(
+    literal = substrait$Expression$Literal$create(
+      list = substrait$Expression$Literal$List$create(
+        values = list(values)
+      )
+    )
+  )
 }
