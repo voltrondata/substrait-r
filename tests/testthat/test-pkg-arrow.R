@@ -637,7 +637,7 @@ test_that("arrow translation for if_else() works", {
   skip_if_not(has_arrow_with_substrait())
 
   expect_equal(
-    example_data[1:5, "dbl"] %>%
+    tibble::tibble(dbl = c(-999, -99, -9, 0, 9)) %>%
       arrow_substrait_compiler() %>%
       substrait_project(dbl, gt_five = if_else(dbl > 5, "over", "under")) %>%
       dplyr::collect(),
