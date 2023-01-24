@@ -322,5 +322,19 @@ test_that("duckdb translation for grepl works", {
       x = c("cat", "bat")
     )
   )
+})
 
+test_that("duckdb translation for if_else() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(dbl = c(-999, -99, -9, 0, 9)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(dbl, gt_five = if_else(dbl > 5, "over", "under")) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      dbl = c(-999, -99, -9, 0, 9),
+      gt_five = c("under", "under", "under", "under", "over")
+    )
+  )
 })
