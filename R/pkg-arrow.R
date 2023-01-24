@@ -286,7 +286,8 @@ arrow_funs[["is.na"]] <- function(x) {
   substrait_eval(!is_not_null)
 }
 
-arrow_funs[["grepl"]] <- function(pattern, x) {
+arrow_funs[["grepl"]] <- function(pattern, x, ...) {
+  rlang::check_dots_empty()
   substrait_call("string.contains", x, pattern)
 }
 
