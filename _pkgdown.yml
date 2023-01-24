@@ -15,6 +15,7 @@ reference:
     - substrait_select
     - substrait_filter
     - substrait_aggregate
+    - substrait_fetch
 
 - title: "Create substrait objects"
   desc: Functions used to create substrait objects

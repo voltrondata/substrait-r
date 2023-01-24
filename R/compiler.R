@@ -520,8 +520,11 @@ local_compiler <- function(compiler, .local_envir = parent.frame()) {
   compiler_context_env$compiler <- substrait_compiler(compiler)
 }
 
-compiler_context_env <- new.env(parent = emptyenv())
-compiler_context_env$compiler <- NULL
+#' @importFrom utils head
+#' @export
+head.SubstraitCompiler <- function(x, n = 6L, ...) {
+  substrait_fetch(x, count = n)
+}
 
 substrait_funs <- new.env(parent = emptyenv())
 
@@ -543,6 +546,7 @@ substrait_funs[["%in%"]] <- function(lhs, rhs) {
   } else if (length(rhs$literal$list$values) == 1) {
     return(substrait_eval(lhs == rhs$literal$list$values[[1]]))
   }
+}
 
   equal_expressions <- lapply(rhs$literal$list$values, function(value) {
     substrait_eval(lhs == value)
@@ -580,4 +584,4 @@ substrait_expression_literal_list <- function(values) {
       )
     )
   )
-}
+
