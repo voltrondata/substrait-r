@@ -578,6 +578,21 @@ substrait_funs[["between"]] <- function(x, left, right) {
   substrait_eval(x >= left & x <= right)
 }
 
+substrait_funs[["if_else"]] <- function(condition, true, false) {
+  substrait$Expression$create(
+    if_then = substrait$Expression$IfThen$create(
+      ifs = list(
+        substrait$Expression$IfThen$IfClause$create(
+          `if` = as_substrait_expression(condition),
+          `then` = as_substrait_expression(true)
+        )
+      ),
+      `else` = as_substrait_expression(false)
+    )
+  )
+}
+
+
 substrait_expression_literal_list <- function(values) {
   substrait$Expression$create(
     literal = substrait$Expression$Literal$create(
