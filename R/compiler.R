@@ -546,7 +546,6 @@ substrait_funs[["%in%"]] <- function(lhs, rhs) {
   } else if (length(rhs$literal$list$values) == 1) {
     return(substrait_eval(lhs == rhs$literal$list$values[[1]]))
   }
-}
 
   equal_expressions <- lapply(rhs$literal$list$values, function(value) {
     substrait_eval(lhs == value)
@@ -584,4 +583,4 @@ substrait_expression_literal_list <- function(values) {
       )
     )
   )
-
+}
