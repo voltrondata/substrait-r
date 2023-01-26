@@ -338,3 +338,17 @@ test_that("duckdb translation for if_else() works", {
     )
   )
 })
+
+test_that("duckdb translation for n_distinct works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c(1:5, 1:3)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_aggregate(n = n_distinct(x, na.rm = TRUE)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      n = 5
+    )
+  )
+})

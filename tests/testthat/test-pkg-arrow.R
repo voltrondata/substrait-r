@@ -659,7 +659,21 @@ test_that("arrow translation for if_else() works", {
     tibble::tibble(
       dbl = c(-999, -99, -9, 0, 9),
       gt_five = c("under", "under", "under", "under", "over")
+    )
+  )
+})
 
+test_that("arrow translation for n_distinct works", {
+  skip_if_not(has_arrow_with_substrait())
+  skip("Substrait function `approx_count_distinct` not yet implemented in Arrow C++")
+
+  expect_equal(
+    tibble::tibble(x = c(1:5, 1:3)) %>%
+      arrow_substrait_compiler() %>%
+      substrait_aggregate(n = n_distinct(x, na.rm = TRUE)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      n = 5
     )
   )
 })

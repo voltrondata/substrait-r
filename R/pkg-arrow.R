@@ -291,6 +291,11 @@ arrow_funs[["grepl"]] <- function(pattern, x, ...) {
   substrait_call("string.contains", x, pattern)
 }
 
+arrow_funs[["n_distinct"]] <- function(..., na.rm = FALSE) {
+  check_na_rm(na.rm)
+  substrait_call_agg("aggregate_approx.approx_count_distinct", ..., .output_type = substrait_i64(), .phase = 3L, .invocation = 1L)
+}
+
 check_na_rm <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")
