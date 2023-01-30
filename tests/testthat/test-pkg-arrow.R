@@ -659,7 +659,6 @@ test_that("arrow translation for if_else() works", {
     tibble::tibble(
       dbl = c(-999, -99, -9, 0, 9),
       gt_five = c("under", "under", "under", "under", "over")
-
     )
   )
 })

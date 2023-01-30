@@ -287,8 +287,24 @@ duckdb_funs[["grepl"]] <- function(pattern, x) {
   substrait_call("contains", x, pattern)
 }
 
+duckdb_funs[["n_distinct"]] <- function(x, na.rm = FALSE) {
+  check_na_rm_duckdb(na.rm)
+  warn_n_distinct()
+
+  substrait_call_agg("approx_count_distinct", x, .output_type = substrait_i64())
+}
+
 check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
   }
+}
+
+warn_n_distinct <- function() {
+  rlang::warn(
+    "n_distinct() currently returns an approximate count",
+    .frequency = "once",
+    .frequency_id = "substrait.n_distinct.approximate",
+    class = "substrait.n_distinct.approximate"
+  )
 }
