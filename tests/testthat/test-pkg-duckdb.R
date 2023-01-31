@@ -359,7 +359,7 @@ test_that("duckdb translation for n_distinct works", {
 test_that("duckdb translation for year() works", {
   skip_if_not(has_duckdb_with_substrait())
 
-  # Error: Catalog Error: Scalar Function with name extract does not exist!
+  # Error: Binder Error: Positional reference 2 out of range (total 1 columns)
   expect_equal(
     tibble::tibble(x = as.Date("1987-10-09")) %>%
       duckdb_substrait_compiler() %>%
