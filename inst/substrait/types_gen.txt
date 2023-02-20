@@ -71,6 +71,11 @@ substrait.Expression.MaskExpression.StructItem
 substrait.Expression.MaskExpression.StructSelect
 substrait.Expression.MultiOrList
 substrait.Expression.MultiOrList.Record
+substrait.Expression.Nested
+substrait.Expression.Nested.List
+substrait.Expression.Nested.Map
+substrait.Expression.Nested.Map.KeyValue
+substrait.Expression.Nested.Struct
 substrait.Expression.ReferenceSegment
 substrait.Expression.ReferenceSegment.ListElement
 substrait.Expression.ReferenceSegment.MapKey
@@ -93,6 +98,8 @@ substrait.Expression.WindowFunction.Bound.CurrentRow
 substrait.Expression.WindowFunction.Bound.Following
 substrait.Expression.WindowFunction.Bound.Preceding
 substrait.Expression.WindowFunction.Bound.Unbounded
+substrait.ExpressionReference
+substrait.ExtendedExpression
 substrait.ExtensionLeafRel
 substrait.ExtensionMultiRel
 substrait.ExtensionObject
@@ -122,8 +129,12 @@ substrait.FunctionSignature.Implementation.Type
 substrait.FunctionSignature.Scalar
 substrait.FunctionSignature.Window
 substrait.FunctionSignature.Window.WindowType
+substrait.HashJoinRel
+substrait.HashJoinRel.JoinType
 substrait.JoinRel
 substrait.JoinRel.JoinType
+substrait.MergeJoinRel
+substrait.MergeJoinRel.JoinType
 substrait.NamedObjectWrite
 substrait.NamedStruct
 substrait.ParameterizedType
