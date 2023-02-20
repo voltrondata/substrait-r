@@ -382,7 +382,7 @@ test_that("filter() with .data pronoun", {
     engine = "duckdb",
     .input %>%
       filter(.data$dbl == 4) %>%
-      select(.data$chr, .data$int, .data$lgl) %>%
+      select(chr, int, lgl) %>%
       collect(),
     example_data
   )
@@ -393,7 +393,7 @@ test_that("filter() with .data pronoun", {
     engine = "duckdb",
     .input %>%
       filter(is.na(.data$lgl)) %>%
-      select(.data$chr, .data$int, .data$lgl) %>%
+      select(chr, int, lgl) %>%
       collect(),
     example_data
   )
@@ -405,7 +405,7 @@ test_that("filter() with .data pronoun", {
     engine = "duckdb",
     .input %>%
       filter(.data$dbl < .env$chr) %>%
-      select(.data$chr, .data$int, .data$lgl) %>%
+      select(chr, int, lgl) %>%
       collect(),
     example_data
   )
@@ -415,7 +415,7 @@ test_that("filter() with .data pronoun", {
     engine = "duckdb",
     .input %>%
       filter(.data$dbl < .env[["chr"]]) %>%
-      select(.data$chr, .data$int, .data$lgl) %>%
+      select(chr, int, lgl) %>%
       collect(),
     example_data
   )
