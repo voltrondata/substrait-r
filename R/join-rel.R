@@ -101,16 +101,14 @@ as_join_expression <- function(by, names_left, names_right) {
   if (is.character(by_right)) {
     by_left <- match(by_left, names_left)
     by_right <- match(by_right, names_right)
-  } else if (is.integer(by_right)) {
-    by_left <- as.integer(by_left)
   } else {
     rlang::abort(
       "Only join expressions in the form c('name_left' = 'name_right') are supported"
     )
   }
 
-  by_left <- lapply(by_left, simple_integer_field_reference)
-  by_right <- lapply(by_right, simple_integer_field_reference)
+  by_left <- lapply(by_left - 1L, simple_integer_field_reference)
+  by_right <- lapply(by_right - 1L + length(names_left), simple_integer_field_reference)
 
   expr_eq <- Map(function(x, y) substrait_eval(!!x == !!y), by_left, by_right)
   expr_eq <- lapply(expr_eq, as_substrait, "substrait.Expression")
