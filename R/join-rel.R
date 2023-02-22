@@ -66,12 +66,17 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
     as_join_expression(by, left_schema$names, right_schema$names)
   })
 
+  # Usually joins don't emit everything (e.g., join keys are not included
+  # twice). The default behaviour is to concatenate the left and right
+  # tables.
+  output_mapping <- emit(by, left_schema$names, right_schema$names)
+
   # Create the relation
   rel <- substrait$Rel$create(
     join = substrait$JoinRel$create(
       common = substrait$RelCommon$create(
         emit = substrait$RelCommon$Emit$create(
-          output_mapping = emit(by, left_schema$names, right_schema$names)
+          output_mapping = output_mapping
         )
       ),
       left = left_rel,
@@ -122,7 +127,7 @@ as_join_expression <- function(by, names_left, names_right) {
   }
 }
 
-join_name_repair_none <- function(by, names_left, names_right, ...) {
+join_name_repair_none <- function(by, names_left, names_right) {
   c(names_left, names_right)
 }
 
