@@ -4,7 +4,8 @@ substrait_join <- function(compiler_left, compiler_right, by,
                            name_repair = join_name_repair_none,
                            emit = join_emit_all) {
   # Somehow we have to merge these two compilers. If one of them is not yet
-  # a compiler (e.g., a data.frame), this is significantly easier.
+  # a compiler (e.g., a data.frame), this is significantly easier (i.e.,
+  # we just add a new named table).
   if (inherits(compiler_left, "SubstraitCompiler") &&
     !inherits(compiler_right, "SubstraitCompiler")) {
     compiler <- compiler_left$clone()
