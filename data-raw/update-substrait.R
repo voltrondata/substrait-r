@@ -2,16 +2,25 @@
 # Update the substrait .proto files ----
 # Requirements: the protoc command-line utility; python3 with pip3 install protobuf
 
+VERSION <- "0.20.0"
+
 curl::curl_download(
-  "https://github.com/substrait-io/substrait/archive/refs/tags/v0.20.0.zip",
+  glue::glue("https://github.com/substrait-io/substrait/archive/refs/tags/v{VERSION}.zip"),
   "data-raw/substrait.zip"
 )
 
 unzip("data-raw/substrait.zip", exdir = "data-raw")
 
+# We keep a copy of some of google's "well known" proto files because they're
+# not supplied to RProtoBuf in all cases. Before removing the substrait
+# directory, preserve our copy
+google_well_known_types_dir <- tempfile()
+dir.create(google_well_known_types_dir)
+fs::dir_copy("inst/substrait/proto/google", google_well_known_types_dir)
+
 unlink("inst/substrait", recursive = TRUE)
-fs::dir_copy("data-raw/substrait-0.20.0", "inst")
-fs::file_move("inst/substrait-0.20.0", "inst/substrait")
+fs::dir_copy(glue::glue("data-raw/substrait-{VERSION}"), "inst")
+fs::file_move(glue::glue("inst/substrait-{VERSION}"), "inst/substrait")
 
 dotfiles <- list.files(
   "inst/substrait", "^\\.",
@@ -24,7 +33,7 @@ unlink(dotfiles)
 unlink("inst/substrait/.github", recursive = TRUE)
 unlink("inst/substrait/site", recursive = TRUE)
 
-unlink("data-raw/substrait-0.20.0", recursive = TRUE)
+unlink(glue::glue("data-raw/substrait-{VERSION}"), recursive = TRUE)
 unlink("data-raw/substrait.zip")
 
 dir.create("data-raw/tmp")
@@ -84,21 +93,8 @@ readr::write_lines(sort(output), "inst/substrait/types_gen.txt")
 
 unlink("data-raw/tmp", recursive = TRUE)
 
-# We also need to copy some files because RProtoBuf doesn't come with a copy
-# of the well known types (??). This is specific to a homebrew install.
-unlink("inst/substrait/proto/google", recursive = TRUE)
-well_known_types <- list.files(
-  "/opt/homebrew/Cellar/protobuf/21.8/include",
-  "\\.proto$",
-  recursive = TRUE
-)
-
-well_known_types_dst <- file.path("inst/substrait/proto", well_known_types)
-for (d in unique(dirname(well_known_types_dst))) {
-  dir.create(d, recursive = TRUE)
-}
-
-file.copy(
-  file.path("/opt/homebrew/Cellar/protobuf/21.8/include", well_known_types),
-  well_known_types_dst
+# Copy back the google well-known proto files
+fs::dir_copy(
+  list.files(google_well_known_types_dir, full.names = TRUE),
+  "inst/substrait/proto"
 )
