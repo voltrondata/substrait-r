@@ -258,7 +258,7 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
   has_after <- !rlang::quo_is_null(.after)
 
   if (has_before && has_after) {
-    rlang::abort("Must supply only one of `.before` and `.after`.")
+    rlang::abort("Can't supply both `.before` and `.after`.")
   } else if (has_before) {
     where <- min(unname(tidyselect::eval_select(.before, simulate_data_frame(.data))))
     if (!where %in% to_move) {

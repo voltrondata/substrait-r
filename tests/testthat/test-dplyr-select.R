@@ -154,9 +154,11 @@ test_that("relocate with selection helpers", {
     example_data
   )
 
-  compare_dplyr_error(
-    .input %>% relocate(int, lgl, .before = where(is.numeric), .after = dbl) %>% collect(),
-    example_data,
+  expect_error(
+    example_data %>%
+      substrait_compiler() %>%
+      relocate(int, lgl, .before = where(is.numeric), .after = dbl),
+    regexp = "Can't supply both `.before` and `.after`.",
     fixed = TRUE
   )
 
