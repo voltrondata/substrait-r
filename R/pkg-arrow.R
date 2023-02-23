@@ -295,13 +295,8 @@ arrow_funs[["year"]] <- function(x) {
   substrait_call(
     "datetime.extract",
     x,
-    .output_type = substrait_i64(),
-    .options = list(
-      substrait$FunctionOption$create(
-        name = "component",
-        preference = "YEAR"
-      )
-    )
+    component = "YEAR",
+    .output_type = substrait_i64()
   )
 }
 
