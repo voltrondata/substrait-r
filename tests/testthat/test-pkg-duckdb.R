@@ -379,4 +379,27 @@ test_that("duckdb translation for round works", {
       y = c(1, 2, 3, 4)
     )
   )
+
+  expect_equal(
+    tibble::tibble(x = c(1, 2.34, 3.456, 4.5)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(x, y = ceiling(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      x = c(1, 2.34, 3.456, 4.5),
+      y = c(1, 3, 4, 5)
+    )
+  )
+
+  expect_equal(
+    tibble::tibble(x = c(1, 2.34, 3.456, 4.5)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(x, y = floor(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      x = c(1, 2.34, 3.456, 4.5),
+      y = c(1, 2, 3, 4)
+    )
+  )
+
 })

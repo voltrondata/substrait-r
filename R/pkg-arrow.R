@@ -311,6 +311,20 @@ arrow_funs[["round"]] <- function(x, digits = 0) {
   )
 }
 
+arrow_funs[["ceiling"]] <- function(x) {
+  substrait_call(
+    "rounding.ceil",
+    x
+  )
+}
+
+arrow_funs[["floor"]] <- function(x) {
+  substrait_call(
+    "rounding.floor",
+    x
+  )
+}
+
 check_na_rm <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")

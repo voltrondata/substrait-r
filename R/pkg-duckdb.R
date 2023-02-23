@@ -313,6 +313,20 @@ duckdb_funs[["round"]] <- function(x, digits = 0) {
   )
 }
 
+duckdb_funs[["ceiling"]] <- function(x) {
+  substrait_call(
+    "ceil",
+    x
+  )
+}
+
+duckdb_funs[["floor"]] <- function(x) {
+  substrait_call(
+    "floor",
+    x
+  )
+}
+
 check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
