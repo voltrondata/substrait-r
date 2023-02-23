@@ -299,6 +299,17 @@ arrow_funs[["year"]] <- function(x) {
     .output_type = substrait_i64()
   )
 }
+# rounding functions
+arrow_funs[["round"]] <- function(x, digits = 0) {
+  substrait_call(
+    "rounding.round",
+    x,
+    digits,
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
+    )
+  )
+}
 
 check_na_rm <- function(na.rm) {
   if (!na.rm) {

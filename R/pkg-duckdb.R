@@ -302,6 +302,17 @@ duckdb_funs[["year"]] <- function(x) {
   )
 }
 
+duckdb_funs[["round"]] <- function(x, digits = 0) {
+  substrait_call(
+    "round",
+    x,
+    as.integer(digits),
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
+    )
+  )
+}
+
 check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
