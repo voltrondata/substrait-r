@@ -1,8 +1,9 @@
 
 # Update the substrait .proto files ----
 # Requirements: the protoc command-line utility; python3 with pip3 install protobuf
+library(dplyr)
 
-VERSION <- "0.20.0"
+VERSION <- "0.24.0"
 
 curl::curl_download(
   glue::glue("https://github.com/substrait-io/substrait/archive/refs/tags/v{VERSION}.zip"),

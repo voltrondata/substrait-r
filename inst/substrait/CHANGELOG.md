@@ -1,6 +1,48 @@
 Release Notes
 ---
 
+## [0.24.0](https://github.com/substrait-io/substrait/compare/v0.23.0...v0.24.0) (2023-02-12)
+
+
+### Features
+
+* add round function ([#322](https://github.com/substrait-io/substrait/issues/322)) ([57121c8](https://github.com/substrait-io/substrait/commit/57121c8ca6f1fe815e98eda8962f8f84736c58e2))
+
+## [0.23.0](https://github.com/substrait-io/substrait/compare/v0.22.0...v0.23.0) (2023-01-22)
+
+
+### Features
+
+* add extended expression for expression only evaluation ([#405](https://github.com/substrait-io/substrait/issues/405)) ([d35f0ed](https://github.com/substrait-io/substrait/commit/d35f0ed98ccefe31a90d53ff887402636a74bbd1))
+* **spec:** add physical plans for hashJoin and mergeJoin ([#336](https://github.com/substrait-io/substrait/issues/336)) ([431651e](https://github.com/substrait-io/substrait/commit/431651efbd64958d2611b035ffdb25f589b28477))
+
+
+### Bug Fixes
+
+* update extension yaml files to match type-syntax spec ([#423](https://github.com/substrait-io/substrait/issues/423)) ([0608878](https://github.com/substrait-io/substrait/commit/0608878b25e7f9b4b3ffe33662eea9ef0f016548))
+
+## [0.22.0](https://github.com/substrait-io/substrait/compare/v0.21.1...v0.22.0) (2022-12-18)
+
+
+### Features
+
+* add bitwise NOT, AND, OR & XOR functions ([#370](https://github.com/substrait-io/substrait/issues/370)) ([81e34d4](https://github.com/substrait-io/substrait/commit/81e34d4054ff0dbde23ac749fbb8fcc232989c5d))
+
+## [0.21.1](https://github.com/substrait-io/substrait/compare/v0.21.0...v0.21.1) (2022-12-04)
+
+
+### Bug Fixes
+
+* rename regex_string_split to regexp_string_split ([#393](https://github.com/substrait-io/substrait/issues/393)) ([f9f4967](https://github.com/substrait-io/substrait/commit/f9f4967e6785b49eccb64a42497b5b4aaffa63ff))
+
+## [0.21.0](https://github.com/substrait-io/substrait/compare/v0.20.0...v0.21.0) (2022-11-27)
+
+
+### Features
+
+* add nested type constructor expressions ([#351](https://github.com/substrait-io/substrait/issues/351)) ([b64d30b](https://github.com/substrait-io/substrait/commit/b64d30b28077973dd94f1f49e5016662a35bcf56))
+* add title to simple extensions schema ([#387](https://github.com/substrait-io/substrait/issues/387)) ([2819ecc](https://github.com/substrait-io/substrait/commit/2819ecc69175b96eefb8a73fb4b533431890f3da))
+
 ## [0.20.0](https://github.com/substrait-io/substrait/compare/v0.19.0...v0.20.0) (2022-11-20)
 
 
