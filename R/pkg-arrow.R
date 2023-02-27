@@ -317,7 +317,7 @@ arrow_funs[["ceiling"]] <- function(x) {
     "rounding.ceil",
     x,
     .options = list(
-      substrait$FunctionOption$create(name = "rounding",preference = "TIE_TO_EVEN")
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
     ),
     .output_type = substrait_fp64()
   )
@@ -328,7 +328,7 @@ arrow_funs[["floor"]] <- function(x) {
     "rounding.floor",
     x,
     .options = list(
-      substrait$FunctionOption$create(name = "rounding",preference = "TIE_TO_EVEN")
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
     ),
     .output_type = substrait_fp64()
   )

@@ -402,5 +402,4 @@ test_that("duckdb translation for round works", {
       y = c(1, 2, 3, 4)
     )
   )
-
 })
