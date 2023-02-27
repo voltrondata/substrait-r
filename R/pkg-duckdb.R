@@ -296,8 +296,7 @@ duckdb_funs[["n_distinct"]] <- function(x, na.rm = FALSE) {
 
 duckdb_funs[["year"]] <- function(x) {
   substrait_call(
-    "extract",
-    component = substrait$FunctionArgument$create(enum = "YEAR"),
+    "year",
     x,
     .output_type = substrait_i64()
   )

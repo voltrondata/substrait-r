@@ -359,7 +359,6 @@ test_that("duckdb translation for n_distinct works", {
 test_that("duckdb translation for year() works", {
   skip_if_not(has_duckdb_with_substrait())
 
-  # Error: Was not possible to convert binary into Substrait plan
   expect_equal(
     tibble::tibble(x = as.Date("1987-10-09")) %>%
       duckdb_substrait_compiler() %>%
