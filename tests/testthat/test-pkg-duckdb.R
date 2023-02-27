@@ -376,7 +376,7 @@ test_that("duckdb translation for round works", {
       substrait_project(x, y = round(x)) %>%
       dplyr::collect(),
     tibble::tibble(
-      y = c(1, 2, 3, 4)
+      y = c(1, 2, 3, 5)
     )
   )
 
@@ -398,7 +398,7 @@ test_that("duckdb translation for round works", {
       dplyr::collect(),
     tibble::tibble(
       x = c(1, 2.34, 3.456, 4.5),
-      y = c(1, 2, 3, 5)
+      y = c(1, 2, 3, 4)
     )
   )
 
