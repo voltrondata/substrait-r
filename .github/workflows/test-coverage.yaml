@@ -19,7 +19,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       ARROW_R_DEV: TRUE
-      ARROW_REF: '54e17920eee65e4227eba889aadbdfeb66c114cd'
+      ARROW_REF: '7db7e6ac846199678e2694f173df6dd6376ee823'
 
     steps:
       - uses: actions/checkout@v2
