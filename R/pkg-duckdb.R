@@ -307,9 +307,6 @@ duckdb_funs[["round"]] <- function(x, digits = 0) {
     "round",
     x,
     as.integer(digits),
-    .options = list(
-      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
-    ),
     .output_type = substrait_fp64()
   )
 }
