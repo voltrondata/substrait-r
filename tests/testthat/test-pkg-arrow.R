@@ -666,11 +666,10 @@ test_that("arrow translation for if_else() works", {
 test_that("arrow translation for year() works", {
   skip_if_not(has_arrow_with_substrait())
 
-  # Error: Invalid: Expected Substrait call to have an enum argument at index 0 but the argument was not an enum.
   expect_equal(
     tibble::tibble(x = as.Date("1987-10-09")) %>%
       arrow_substrait_compiler() %>%
-      substrait_project(year = year(x)) %>%
+      substrait_project(x, year = year(x)) %>%
       dplyr::collect(),
     tibble::tibble(x = as.Date("1987-10-09"), year = 1987)
   )

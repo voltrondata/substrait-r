@@ -294,8 +294,8 @@ arrow_funs[["grepl"]] <- function(pattern, x, ...) {
 arrow_funs[["year"]] <- function(x) {
   substrait_call(
     "datetime.extract",
+    component = substrait$FunctionArgument$create(enum = "YEAR"),
     x,
-    component = "YEAR",
     .output_type = substrait_i64()
   )
 }
