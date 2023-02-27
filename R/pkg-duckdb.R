@@ -294,6 +294,14 @@ duckdb_funs[["n_distinct"]] <- function(x, na.rm = FALSE) {
   substrait_call_agg("approx_count_distinct", x, .output_type = substrait_i64())
 }
 
+duckdb_funs[["year"]] <- function(x) {
+  substrait_call(
+    "year",
+    x,
+    .output_type = substrait_i64()
+  )
+}
+
 check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")

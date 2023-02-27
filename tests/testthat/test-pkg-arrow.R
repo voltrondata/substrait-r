@@ -662,3 +662,15 @@ test_that("arrow translation for if_else() works", {
     )
   )
 })
+
+test_that("arrow translation for year() works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = as.Date("1987-10-09")) %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(x, year = year(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(x = as.Date("1987-10-09"), year = 1987)
+  )
+})
