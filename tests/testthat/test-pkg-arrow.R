@@ -674,3 +674,40 @@ test_that("arrow translation for year() works", {
     tibble::tibble(x = as.Date("1987-10-09"), year = 1987)
   )
 })
+
+test_that("arrow translation for round works", {
+  skip_if_not(has_arrow_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c(1, 2.34, 3.456, 4.5)) %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(x, y = round(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      x = c(1, 2.34, 3.456, 4.5),
+      y = c(1, 2, 3, 4)
+    )
+  )
+
+  expect_equal(
+    tibble::tibble(x = c(1, 2.34, 3.456, 4.5)) %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(x, y = ceiling(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      x = c(1, 2.34, 3.456, 4.5),
+      y = c(1, 3, 4, 5)
+    )
+  )
+
+  expect_equal(
+    tibble::tibble(x = c(1, 2.34, 3.456, 4.5)) %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(x, y = floor(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      x = c(1, 2.34, 3.456, 4.5),
+      y = c(1, 2, 3, 4)
+    )
+  )
+})

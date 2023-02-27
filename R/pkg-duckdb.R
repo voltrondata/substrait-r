@@ -302,6 +302,37 @@ duckdb_funs[["year"]] <- function(x) {
   )
 }
 
+duckdb_funs[["round"]] <- function(x, digits = 0) {
+  substrait_call(
+    "round",
+    x,
+    as.integer(digits),
+    .output_type = substrait_fp64()
+  )
+}
+
+duckdb_funs[["ceiling"]] <- function(x) {
+  substrait_call(
+    "ceil",
+    x,
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
+    ),
+    .output_type = substrait_fp64()
+  )
+}
+
+duckdb_funs[["floor"]] <- function(x) {
+  substrait_call(
+    "floor",
+    x,
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
+    ),
+    .output_type = substrait_fp64()
+  )
+}
+
 check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")
