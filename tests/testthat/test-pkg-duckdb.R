@@ -366,7 +366,8 @@ test_that("duckdb translation for year() works", {
       dplyr::collect(),
     tibble::tibble(x = as.Date("1987-10-09"), year = 1987)
   )
-}
+})
+
 test_that("duckdb translation for round works", {
   skip_if_not(has_duckdb_with_substrait())
 
