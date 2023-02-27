@@ -309,21 +309,30 @@ duckdb_funs[["round"]] <- function(x, digits = 0) {
     as.integer(digits),
     .options = list(
       substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
-    )
+    ),
+    .output_type = substrait_fp64()
   )
 }
 
 duckdb_funs[["ceiling"]] <- function(x) {
   substrait_call(
     "ceil",
-    x
+    x,
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
+    ),
+    .output_type = substrait_fp64()
   )
 }
 
 duckdb_funs[["floor"]] <- function(x) {
   substrait_call(
     "floor",
-    x
+    x,
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
+    ),
+    .output_type = substrait_fp64()
   )
 }
 

@@ -304,24 +304,33 @@ arrow_funs[["round"]] <- function(x, digits = 0) {
   substrait_call(
     "rounding.round",
     x,
-    digits,
+    as.integer(digits),
     .options = list(
       substrait$FunctionOption$create(name = "rounding", preference = "TIE_TO_EVEN")
-    )
+    ),
+    .output_type = substrait_fp64()
   )
 }
 
 arrow_funs[["ceiling"]] <- function(x) {
   substrait_call(
     "rounding.ceil",
-    x
+    x,
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding",preference = "TIE_TO_EVEN")
+    ),
+    .output_type = substrait_fp64()
   )
 }
 
 arrow_funs[["floor"]] <- function(x) {
   substrait_call(
     "rounding.floor",
-    x
+    x,
+    .options = list(
+      substrait$FunctionOption$create(name = "rounding",preference = "TIE_TO_EVEN")
+    ),
+    .output_type = substrait_fp64()
   )
 }
 
