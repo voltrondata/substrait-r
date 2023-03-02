@@ -592,6 +592,7 @@ substrait_funs[["if_else"]] <- function(condition, true, false) {
   )
 }
 
+substrait_funs[["ifelse"]] <- substrait_funs[["if_else"]]
 
 substrait_expression_literal_list <- function(values) {
   substrait$Expression$create(
