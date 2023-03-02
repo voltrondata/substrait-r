@@ -648,13 +648,24 @@ test_that("arrow translation for grepl works", {
   )
 })
 
-test_that("arrow translation for if_else() works", {
+test_that("arrow translations for if_else() and ifelse() work", {
   skip_if_not(has_arrow_with_substrait())
 
   expect_equal(
     tibble::tibble(dbl = c(-999, -99, -9, 0, 9)) %>%
       arrow_substrait_compiler() %>%
       substrait_project(dbl, gt_five = if_else(dbl > 5, "over", "under")) %>%
+      dplyr::collect(),
+    tibble::tibble(
+      dbl = c(-999, -99, -9, 0, 9),
+      gt_five = c("under", "under", "under", "under", "over")
+    )
+  )
+
+  expect_equal(
+    tibble::tibble(dbl = c(-999, -99, -9, 0, 9)) %>%
+      arrow_substrait_compiler() %>%
+      substrait_project(dbl, gt_five = ifelse(dbl > 5, "over", "under")) %>%
       dplyr::collect(),
     tibble::tibble(
       dbl = c(-999, -99, -9, 0, 9),
