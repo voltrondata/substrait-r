@@ -259,6 +259,62 @@ duckdb_funs[["^"]] <- function(lhs, rhs) {
   substrait_call("^", lhs, rhs, .output_type = function(lhs, rhs) lhs)
 }
 
+duckdb_funs[["sqrt"]] <- function(x) {
+  substrait_call(
+    "sqrt",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+duckdb_funs[["abs"]] <- function(x) {
+  substrait_call(
+    "abs",
+    x,
+    .output_type = function(x) x,
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+duckdb_funs[["exp"]] <- function(x) {
+  substrait_call(
+    "exp",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
+duckdb_funs[["sign"]] <- function(x) {
+  substrait_call(
+    "sign",
+    x,
+    .output_type = substrait_fp64(),
+    .options = list(
+      substrait$FunctionOption$create(
+        name = "overflow",
+        preference = "SILENT"
+      )
+    )
+  )
+}
+
 duckdb_funs[["sum"]] <- function(x, na.rm = FALSE) {
   check_na_rm_duckdb(na.rm)
   substrait_call_agg("sum", x, .output_type = identity)

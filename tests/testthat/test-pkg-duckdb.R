@@ -404,3 +404,51 @@ test_that("duckdb translation for round works", {
     )
   )
 })
+
+test_that("duckdb translation for sqrt() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c(1, 2, 3, 4)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(x = sqrt(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(x = c(1, 1.4142135623731, 1.73205080756888, 2))
+  )
+})
+
+test_that("duckdb translation for abs() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c(-1, -2, 3, 4)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(x = abs(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(x = 1:4)
+  )
+})
+
+test_that("duckdb translation for exp() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c(1, 2, 3, 4)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(x = exp(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(x = c(2.71828182845905, 7.38905609893065, 20.0855369231877, 54.5981500331442))
+  )
+})
+
+test_that("duckdb translation for sign() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c(-1, -2, 0, 4)) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(x = sign(x)) %>%
+      dplyr::collect(),
+    tibble::tibble(x = c(-1, -1, 0, 1))
+  )
+})
