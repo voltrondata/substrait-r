@@ -389,6 +389,15 @@ duckdb_funs[["floor"]] <- function(x) {
   )
 }
 
+duckdb_funs[["substr"]] <- function(x, start, stop) {
+  substrait_call(
+    "substring",
+    x,
+    as.integer(start),
+    as.integer(stop - start + 1)
+  )
+}
+
 check_na_rm_duckdb <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not supported in DuckDB, switching to na.rm = TRUE")

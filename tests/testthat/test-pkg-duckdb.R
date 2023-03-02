@@ -463,3 +463,15 @@ test_that("duckdb translation for sign() works", {
     tibble::tibble(x = c(-1, -1, 0, 1))
   )
 })
+
+test_that("duckdb translation for substr() works", {
+  skip_if_not(has_duckdb_with_substrait())
+
+  expect_equal(
+    tibble::tibble(x = c("foo", "bar", "baz")) %>%
+      duckdb_substrait_compiler() %>%
+      substrait_project(x, y = substr(x, 2, 3)) %>%
+      dplyr::collect(),
+    tibble::tibble(x = c("foo", "bar", "baz"), y = c("oo", "ar", "az"))
+  )
+})
