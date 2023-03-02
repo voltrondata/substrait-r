@@ -25,7 +25,7 @@ substrait_aggregate <- function(.compiler, ...) {
   #   here, we want to do the projection x+1, then aggregate it, then project x + it, then sum that
   # note! this is not supported!
 
-  ctx <- env(
+  ctx <- rlang::env(
     mask = .compiler,
     aggregations = list(),
     post_mutate = list()
@@ -38,8 +38,8 @@ substrait_aggregate <- function(.compiler, ...) {
     quosure = quos[[i]]
 
     # get expr from quosure
-    expr <- quo_get_expr(quosure)
-    quo_env <- quo_get_env(quosure)
+    expr <- rlang::quo_get_expr(quosure)
+    quo_env <- rlang::quo_get_env(quosure)
 
     # get all function calls in the expression
     funs_in_expr <- all_funs(expr)
@@ -84,11 +84,11 @@ substrait_aggregate <- function(.compiler, ...) {
     # It just works by normal arrow_eval, unless there's a mix of aggs and
     # columns in the original data like agg(fun(x, agg(x)))
     # (but that will have been caught in extract_aggregations())
-    ctx$aggregations[[name]] <- as_quosure(expr, ctx$quo_env)
+    ctx$aggregations[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
 
   } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
     # Something like: fun(agg(x), agg(y))
-    ctx$post_mutate[[name]] <- as_quosure(expr, ctx$quo_env)
+    ctx$post_mutate[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
 
   }
 
@@ -233,7 +233,7 @@ extract_aggregations <- function(expr, ctx, agg_funcs) {
     # then insert that name (symbol) back into the expression so that we can
     # mutate() on the result of the aggregation and reference this field.
     tmpname <- paste0("..temp", length(ctx$aggregations))
-    ctx$aggregations[[tmpname]] <- as_quosure(expr, ctx$quo_env)
+    ctx$aggregations[[tmpname]] <- rlang::as_quosure(expr, ctx$quo_env)
     expr <- as.symbol(tmpname)
   }
   expr
