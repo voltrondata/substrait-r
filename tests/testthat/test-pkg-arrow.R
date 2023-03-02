@@ -722,16 +722,3 @@ test_that("arrow translation for round works", {
     )
   )
 })
-
-test_that("arrow translation for n() works", {
-  skip_if_not(has_arrow_with_substrait())
-
-  expect_identical(
-    tibble::tibble(lgl = c(NA, TRUE, NA, TRUE, FALSE, FALSE, NA, TRUE, FALSE, TRUE)) %>%
-      arrow_substrait_compiler() %>%
-      dplyr::group_by(lgl) %>%
-      dplyr::summarise(n = n()) %>%
-      dplyr::collect(),
-    tibble::tibble(lgl = c(NA, TRUE, FALSE), n = c(3L, 4L, 3L))
-  )
-})

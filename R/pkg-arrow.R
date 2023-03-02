@@ -334,15 +334,6 @@ arrow_funs[["floor"]] <- function(x) {
   )
 }
 
-arrow_funs[["n"]] <- function() {
-  substrait_call_agg(
-    "aggregate_generic.count",
-    .output_type = substrait_i64(),
-    .phase = 3L,
-    .invocation = 1L
-  )
-}
-
 check_na_rm <- function(na.rm) {
   if (!na.rm) {
     warning("Missing value removal from aggregate functions not yet supported, switching to na.rm = TRUE")
