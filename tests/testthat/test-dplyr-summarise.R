@@ -1076,3 +1076,13 @@ test_that("count() works as expected", {
 
 })
 
+test_that("summarise can handle more complex expressions", {
+
+  compare_dplyr_binding(
+    .input %>% summarise(y = sum(int, na.rm = TRUE) + 1) %>% collect(),
+    example_data
+  )
+     .input %>% summarise(y = sum(int + 1, na.rm = TRUE)) %>% collect(),
+    example_data
+  )
+})
