@@ -1,7 +1,7 @@
 
 #' dplyr verb implementations
 #'
-#' @param .data,x A [substrait_compiler()]
+#' @param .data,x,y A [substrait_compiler()]
 #' @param ...
 #'   - `select()`: see [dplyr::select()]
 #'   - `rename()`: see [dplyr::rename()]
@@ -19,6 +19,12 @@
 #' @param .before Destination of columns to move; see [dplyr::relocate()]
 #' @param .after Destination of columns to move; see [dplyr::relocate()]
 #' @param .keep Which columns are retained in output; see [dplyr::mutate()]
+#' @param keep For joins, use `TRUE` to keep all output columns;
+#'   see [dplyr::inner_join()].
+#' @param by For joins, a join specifier or `NULL` to use common variables
+#'   across `x` and `y`; see [dplyr::inner_join()].
+#' @param suffix A suffix used to disambiguate columns from `x` and `y` if a
+#'   join would result in duplicate column names.
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -296,6 +302,41 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
   )
 
   substrait_select(.data, !!!new_mask)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr inner_join
+#' @export
+inner_join.SubstraitCompiler <- function(x, y, by = NULL, suffix = c(".x", ".y"),
+                                         ..., keep = NULL) {
+  rlang::check_dots_empty()
+  keep <- keep %||% FALSE
+
+  joined <- substrait_join(
+    x, y,
+    by = by,
+    type = "JOIN_TYPE_INNER",
+    # A join emit doesn't seem to work with DuckDB yet, so to make this work
+    # we add a project if needed instead of applying the output mapping
+    # at the join step
+    output_mapping = join_emit_all
+  )
+
+  if (!keep) {
+    names_left <- x$schema$names
+    names_right <- as_substrait(y, "substrait.NamedStruct")$names
+    output_mapping <- join_emit_default(by, names_left, names_right)
+    output_names <- join_name_repair_suffix_common(suffix)(
+      output_mapping,
+      names_left,
+      names_right
+    )
+
+    select_args <- rlang::set_names(output_mapping + 1L, output_names)
+    joined <- dplyr::select(joined, !!!select_args)
+  }
+
+  joined
 }
 
 # translate desc() call to the equivalent
