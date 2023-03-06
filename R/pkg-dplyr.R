@@ -309,17 +309,47 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
 #' @export
 inner_join.SubstraitCompiler <- function(x, y, by = NULL, suffix = c(".x", ".y"),
                                          ..., keep = NULL) {
+  dplyr_mutating_join("JOIN_TYPE_INNER", x, y, by = by, suffix = suffix, ..., keep = keep)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr left_join
+#' @export
+left_join.SubstraitCompiler <- function(x, y, by = NULL, suffix = c(".x", ".y"),
+                                        ..., keep = NULL) {
+  dplyr_mutating_join("JOIN_TYPE_LEFT", x, y, by = by, suffix = suffix, ..., keep = keep)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr right_join
+#' @export
+right_join.SubstraitCompiler <- function(x, y, by = NULL, suffix = c(".x", ".y"),
+                                         ..., keep = NULL) {
+  dplyr_mutating_join("JOIN_TYPE_RIGHT", x, y, by = by, suffix = suffix, ..., keep = keep)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr full_join
+#' @export
+full_join.SubstraitCompiler <- function(x, y, by = NULL, suffix = c(".x", ".y"),
+                                        ..., keep = NULL) {
+  dplyr_mutating_join("JOIN_TYPE_OUTER", x, y, by = by, suffix = suffix, ..., keep = keep)
+}
+
+dplyr_mutating_join <- function(join_type, x, y, by = NULL, suffix = c(".x", ".y"),
+                                ..., keep = NULL) {
   rlang::check_dots_empty()
   keep <- keep %||% FALSE
 
   joined <- substrait_join(
     x, y,
     by = by,
-    type = "JOIN_TYPE_INNER",
+    type = join_type,
     # A join emit doesn't seem to work with DuckDB yet, so to make this work
     # we add a project if needed instead of applying the output mapping
     # at the join step
-    output_mapping = join_emit_all
+    output_mapping = join_emit_all,
+    name_repair = join_name_repair_suffix_common(suffix)
   )
 
   if (!keep) {

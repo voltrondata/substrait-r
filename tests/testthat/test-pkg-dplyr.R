@@ -225,3 +225,97 @@ test_that("relocate() for substrait_compiler reorders columns", {
     substrait_select(compiler, col2, col1)
   )
 })
+
+test_that("all types of dplyr mutating joins can be created from substrait_comiler", {
+  skip_if_not_installed("dplyr")
+
+  df_left <- data.frame(number = 1:26, letter = letters, stringsAsFactors = FALSE)
+  df_right <- data.frame(number = 1:26, LETTER = LETTERS, stringsAsFactors = FALSE)
+  left <- join_dummy_compiler(df_left)
+
+  joined_left <- dplyr::left_join(left, df_right)
+  expect_s3_class(joined_left, "SubstraitCompiler")
+  expect_identical(
+    joined_left$rel$project$input$join$type,
+    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_LEFT)
+  )
+
+  joined_right <- dplyr::right_join(left, df_right)
+  expect_s3_class(joined_left, "SubstraitCompiler")
+  expect_identical(
+    joined_right$rel$project$input$join$type,
+    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_RIGHT)
+  )
+
+  joined_inner <- dplyr::inner_join(left, df_right)
+  expect_s3_class(joined_left, "SubstraitCompiler")
+  expect_identical(
+    joined_inner$rel$project$input$join$type,
+    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_INNER)
+  )
+
+  joined_full <- dplyr::full_join(left, df_right)
+  expect_s3_class(joined_left, "SubstraitCompiler")
+  expect_identical(
+    joined_full$rel$project$input$join$type,
+    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_OUTER)
+  )
+})
+
+test_that("dplyr mutating joins for substrait_compiler support by, keep, and suffix", {
+  skip_if_not_installed("dplyr")
+
+  df_left <- data.frame(number = 1:26, letter = letters, stringsAsFactors = FALSE)
+  df_right <- data.frame(number = 1:26, LETTER = LETTERS, stringsAsFactors = FALSE)
+
+  joined_default <- dplyr::inner_join(
+    join_dummy_compiler(df_left),
+    df_right
+  )
+
+  expect_identical(
+    joined_default$schema$names,
+    c("number", "letter", "LETTER")
+  )
+
+  # keep = TRUE
+  joined_keep <- dplyr::inner_join(
+    join_dummy_compiler(df_left),
+    df_right,
+    keep = TRUE
+  )
+
+  expect_identical(
+    joined_keep$schema$names,
+    c("number.x", "letter", "number.y", "LETTER")
+  )
+
+
+  # With custom suffix
+  joined_suffixed <- dplyr::inner_join(
+    join_dummy_compiler(df_left),
+    df_right,
+    keep = TRUE,
+    suffix = c("_x", "_y")
+  )
+
+  expect_identical(
+    joined_suffixed$schema$names,
+    c("number_x", "letter", "number_y", "LETTER")
+  )
+
+  # With custom suffix and keep = FALSE
+  df_right2 <- df_right
+  df_right2$letter <- letters
+
+  joined_suffixed2 <- dplyr::inner_join(
+    join_dummy_compiler(df_left),
+    df_right2,
+    suffix = c("_x", "_y")
+  )
+
+  expect_identical(
+    joined_suffixed$schema$names,
+    c("number_x", "letter", "number_y", "LETTER")
+  )
+})

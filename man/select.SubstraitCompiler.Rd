@@ -15,6 +15,9 @@
 \alias{collect.SubstraitCompiler}
 \alias{relocate.SubstraitCompiler}
 \alias{inner_join.SubstraitCompiler}
+\alias{left_join.SubstraitCompiler}
+\alias{right_join.SubstraitCompiler}
+\alias{full_join.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{SubstraitCompiler}(.data, ...)
@@ -44,6 +47,12 @@
 \method{relocate}{SubstraitCompiler}(.data, ..., .before = NULL, .after = NULL)
 
 \method{inner_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{left_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{right_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{full_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
 }
 \arguments{
 \item{.data, x, y}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
