@@ -46,8 +46,12 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
   }
 
   # Update the compiler schema and mask before evaluating the join expression
+  # We haven't applied name_repair or emit yet...these names may contain
+  # duplicates (but these names will not be used to resolve field references
+  # by as_join_expression()). For the purposes of generating the join
+  # expression; however, the compiler needs the full concatenated schema.
   compiler$schema <- substrait$NamedStruct$create(
-    names = name_repair(by, left_schema$names, right_schema$names),
+    names = c(left_schema$names, right_schema$names),
     struct = substrait$Type$Struct$create(
       types = c(left_schema$struct$types, right_schema$struct$types)
     )
@@ -59,17 +63,19 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
   )
   names(compiler$.data) <- compiler$schema$names
 
-  # The `by` expression resolves field references differently and injects them
-  # by value; however, the compiler is needed because the == and & functions
-  # need to be translated and added to the extension set
+  # The compiler is needed here because the == and & functions
+  # need to be translated and possibly added to the extension set
   expression <- with_compiler(compiler, {
     as_join_expression(by, left_schema$names, right_schema$names)
   })
 
-  # Usually joins don't emit everything (e.g., join keys are not included
-  # twice). The default behaviour is to concatenate the left and right
-  # tables.
+  # Generate the output mapping (e.g., remove join keys from the
+  # righthand side)
   output_mapping <- emit(by, left_schema$names, right_schema$names)
+
+  # Calculate column names (e.g., add suffixes to disambiguate left and
+  # right names that both appear in the output)
+  names_out <- name_repair(output_mapping, left_schema$names, right_schema$names)
 
   # Create the relation
   rel <- substrait$Rel$create(
@@ -88,10 +94,101 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
 
   # Update the compiler
   compiler$rel <- rel
+
+  # Reset the schema again to reflect output_mapping and name_repair
+  compiler$schema <- substrait$NamedStruct$create(
+    names = names_out,
+    struct = substrait$Type$Struct$create(
+      types = compiler$schema$struct$types[output_mapping + 1L]
+    )
+  )
+
+  compiler$.data <- lapply(
+    seq_along(compiler$schema$struct$types) - 1L,
+    simple_integer_field_reference
+  )
+  names(compiler$.data) <- compiler$schema$names
+
   compiler$validate()
 }
 
 as_join_expression <- function(by, names_left, names_right) {
+  by <- sanitize_join_by(by, names_left, names_right)
+  by_left <- by$left
+  by_right <- by$right
+
+  by_left <- lapply(by_left - 1L, simple_integer_field_reference)
+  by_right <- lapply(by_right - 1L + length(names_left), simple_integer_field_reference)
+
+  expr_eq <- Map(function(x, y) substrait_eval(!!x == !!y), by_left, by_right)
+  expr_eq <- lapply(expr_eq, as_substrait, "substrait.Expression")
+  if (length(expr_eq) == 0) {
+    NULL
+  } else if (length(expr_eq) == 1) {
+    expr_eq[[1]]
+  } else {
+    expr_all <- Reduce(combine_expressions_and, expr_eq)
+    as_substrait(expr_all, "substrait.Expression")
+  }
+}
+
+# This performs no name repair at all, which may result in non-unique names
+# in the output.
+join_name_repair_none <- function(output_mapping, names_left, names_right) {
+  c(names_left, names_right)[output_mapping + 1L]
+}
+
+# This performs dplyr's default behaviour, which is to disambiguate column
+# names that appear in both the left and the right by applying a suffix.
+join_name_repair_suffix_common <- function(suffix = c(".x", ".y")) {
+  stopifnot(is.character(suffix), length(suffix) == 2, all(!is.na(suffix)))
+
+  function(output_mapping, names_left, names_right) {
+    names_out <- join_name_repair_none(output_mapping, names_left, names_right)
+    names_from_left <- output_mapping < length(names_left)
+    names_from_right <- output_mapping >= length(names_left)
+    names_needs_suffix <- names_out %in% unique(names_out[duplicated(names_out)])
+
+    suffix_left <- names_from_left & names_needs_suffix
+    suffix_right <- names_from_right & names_needs_suffix
+
+    if (any(suffix_left)) {
+      names_out[suffix_left] <- paste0(names_out[suffix_left], suffix[1])
+    }
+
+    if (any(suffix_right)) {
+      names_out[suffix_right] <- paste0(names_out[suffix_right], suffix[2])
+    }
+
+    names_out
+  }
+}
+
+
+# Usually joins don't emit everything (e.g., join keys are not included
+# twice). If everything is emitted, the left and right tables are
+# just concatenated. This would usually be confusing because often
+# names overlap and it would result in non-unique names, so the default
+# is to not include the join key columns from the righthand side of the join.
+join_emit_all <- function(by, names_left, names_right) {
+  seq_len(length(names_left) + length(names_right)) - 1L
+}
+
+join_emit_default <- function(by, names_left, names_right) {
+  by <- sanitize_join_by(by, names_left, names_right)
+
+  seq_left <- seq_along(names_left)
+  seq_right <- seq_along(names_right)
+  seq_right <- setdiff(seq_right, by$right)
+
+  c(seq_left - 1L, seq_right + length(seq_left) - 1L)
+}
+
+# Takes a `by` expression like `c("col1", "col2")` or
+# `c("col1_left" = "col1_right")` and transforms it into (1-based) indices
+# of the left table and right table. If `is.null(by)`, the intersection
+# of the common names is used (i.e., interpret `by` just like dplyr does).
+sanitize_join_by <- function(by, names_left, names_right) {
   if (is.null(by)) {
     by_left <- intersect(names_left, names_right)
     by_right <- by_left
@@ -112,25 +209,5 @@ as_join_expression <- function(by, names_left, names_right) {
     )
   }
 
-  by_left <- lapply(by_left - 1L, simple_integer_field_reference)
-  by_right <- lapply(by_right - 1L + length(names_left), simple_integer_field_reference)
-
-  expr_eq <- Map(function(x, y) substrait_eval(!!x == !!y), by_left, by_right)
-  expr_eq <- lapply(expr_eq, as_substrait, "substrait.Expression")
-  if (length(expr_eq) == 0) {
-    NULL
-  } else if (length(expr_eq) == 1) {
-    expr_eq[[1]]
-  } else {
-    expr_all <- Reduce(combine_expressions_and, expr_eq)
-    as_substrait(expr_all, "substrait.Expression")
-  }
-}
-
-join_name_repair_none <- function(by, names_left, names_right) {
-  c(names_left, names_right)
-}
-
-join_emit_all <- function(by, names_left, names_right) {
-  seq_len(length(names_left) + length(names_right))
+  list(left = by_left, right = by_right)
 }

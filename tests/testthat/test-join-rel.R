@@ -75,3 +75,52 @@ test_that("as_join_expression() can generate join expressions", {
     )
   )
 })
+
+test_that("join_emit_all() generates a concatenated output mapping", {
+  expect_identical(
+    join_emit_all(NULL, c("a", "b", "c"), c("b", "c", "d")),
+    0:5
+  )
+
+  expect_identical(
+    join_emit_all(character(), c("a", "b", "c"), c("b", "c", "d")),
+    0:5
+  )
+})
+
+test_that("join_emit_default() omits join keys from the right", {
+  expect_identical(
+    join_emit_default(NULL, c("a", "b", "c"), c("b", "c", "d")),
+    c(0L, 1L, 2L, 5L)
+  )
+})
+
+test_that("join_name_repair_none() does not disambiguate column names", {
+  expect_identical(
+    join_name_repair_none(0:5, c("a", "b", "c"), c("b", "c", "d")),
+    c("a", "b", "c", "b", "c", "d")
+  )
+
+  expect_identical(
+    join_name_repair_none(5:0, c("a", "b", "c"), c("b", "c", "d")),
+    c("d", "c", "b", "c", "b", "a")
+  )
+})
+
+test_that("join_name_repair_suffix() suffixes common columns correctly", {
+  suffix_default <- join_name_repair_suffix_common(c(".x", ".y"))
+  expect_identical(
+    suffix_default(0:5, c("a", "b", "c"), c("b", "c", "d")),
+    c("a", "b.x", "c.x", "b.y", "c.y", "d")
+  )
+
+  expect_identical(
+    suffix_default(5:0, c("a", "b", "c"), c("b", "c", "d")),
+    c("d", "c.y", "b.y", "c.x", "b.x", "a")
+  )
+
+  expect_identical(
+    suffix_default(c(0, 1, 2, 5), c("a", "b", "c"), c("b", "c", "d")),
+    c("a", "b", "c", "d")
+  )
+})
