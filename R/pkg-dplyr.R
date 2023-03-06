@@ -305,6 +305,46 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
 }
 
 #' @rdname select.SubstraitCompiler
+#' @importFrom dplyr semi_join
+#' @export
+semi_join.SubstraitCompiler <- function(x, y, by = NULL, ...) {
+  rlang::check_dots_empty()
+
+  joined <- substrait_join(
+    x, y,
+    by = by,
+    type = "JOIN_TYPE_SEMI",
+    output_mapping = join_emit_all,
+    name_repair = join_name_repair_none
+  )
+
+  # A join emit doesn't seem to work with DuckDB yet, so to make this work
+  # we add a project instead of applying the output mapping at the join step
+  select_args <- rlang::set_names(seq_along(x$schema$names), x$schema$names)
+  dplyr::select(joined, !!!select_args)
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr anti_join
+#' @export
+anti_join.SubstraitCompiler <- function(x, y, by = NULL, ...) {
+  rlang::check_dots_empty()
+
+  joined <- substrait_join(
+    x, y,
+    by = by,
+    type = "JOIN_TYPE_ANTI",
+    output_mapping = join_emit_all,
+    name_repair = join_name_repair_none
+  )
+
+  # A join emit doesn't seem to work with DuckDB yet, so to make this work
+  # we add a project instead of applying the output mapping at the join step
+  select_args <- rlang::set_names(seq_along(x$schema$names), x$schema$names)
+  dplyr::select(joined, !!!select_args)
+}
+
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr inner_join
 #' @export
 inner_join.SubstraitCompiler <- function(x, y, by = NULL, suffix = c(".x", ".y"),

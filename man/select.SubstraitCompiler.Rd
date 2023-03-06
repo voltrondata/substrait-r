@@ -14,6 +14,8 @@
 \alias{summarize.SubstraitCompiler}
 \alias{collect.SubstraitCompiler}
 \alias{relocate.SubstraitCompiler}
+\alias{semi_join.SubstraitCompiler}
+\alias{anti_join.SubstraitCompiler}
 \alias{inner_join.SubstraitCompiler}
 \alias{left_join.SubstraitCompiler}
 \alias{right_join.SubstraitCompiler}
@@ -45,6 +47,10 @@
 \method{collect}{SubstraitCompiler}(x, ...)
 
 \method{relocate}{SubstraitCompiler}(.data, ..., .before = NULL, .after = NULL)
+
+\method{semi_join}{SubstraitCompiler}(x, y, by = NULL, ...)
+
+\method{anti_join}{SubstraitCompiler}(x, y, by = NULL, ...)
 
 \method{inner_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
 

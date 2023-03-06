@@ -233,6 +233,36 @@ test_that("all types of dplyr mutating joins can be created from substrait_comil
   df_right <- data.frame(number = 1:26, LETTER = LETTERS, stringsAsFactors = FALSE)
   left <- join_dummy_compiler(df_left)
 
+  joined_semi <- dplyr::semi_join(left, df_right)
+  expect_s3_class(joined_left, "SubstraitCompiler")
+  expect_identical(
+    joined_semi$rel$project$input$join$type,
+    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_SEMI)
+  )
+  expect_identical(
+    joined_semi$schema$names,
+    names(df_left)
+  )
+
+  joined_anti <- dplyr::anti_join(left, df_right)
+  expect_s3_class(joined_left, "SubstraitCompiler")
+  expect_identical(
+    joined_anti$rel$project$input$join$type,
+    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_ANTI)
+  )
+  expect_identical(
+    joined_anti$schema$names,
+    names(df_left)
+  )
+})
+
+test_that("all types of dplyr mutating joins can be created from substrait_comiler", {
+  skip_if_not_installed("dplyr")
+
+  df_left <- data.frame(number = 1:26, letter = letters, stringsAsFactors = FALSE)
+  df_right <- data.frame(number = 1:26, LETTER = LETTERS, stringsAsFactors = FALSE)
+  left <- join_dummy_compiler(df_left)
+
   joined_left <- dplyr::left_join(left, df_right)
   expect_s3_class(joined_left, "SubstraitCompiler")
   expect_identical(
