@@ -2,7 +2,7 @@
 substrait_join <- function(compiler_left, compiler_right, by = NULL,
                            type = "JOIN_TYPE_INNER",
                            name_repair = join_name_repair_suffix_common(),
-                           emit = join_emit_default) {
+                           emit = join_emit_all) {
   # Somehow we have to merge these two compilers. If one of them is not yet
   # a compiler (e.g., a data.frame), this is significantly easier (i.e.,
   # we just add a new named table).
