@@ -1,8 +1,8 @@
 
 substrait_join <- function(compiler_left, compiler_right, by = NULL,
                            type = "JOIN_TYPE_INNER",
-                           name_repair = join_name_repair_none,
-                           emit = join_emit_all) {
+                           name_repair = join_name_repair_suffix_common(),
+                           emit = join_emit_default) {
   # Somehow we have to merge these two compilers. If one of them is not yet
   # a compiler (e.g., a data.frame), this is significantly easier (i.e.,
   # we just add a new named table).
@@ -210,4 +210,13 @@ sanitize_join_by <- function(by, names_left, names_right) {
   }
 
   list(left = by_left, right = by_right)
+}
+
+# For substrait_join() to return without error, a compiler must have &
+# and == implemented. This compiler satisfies that minimum requirement.
+join_dummy_compiler <- function(df) {
+  compiler <- substrait_compiler(df)
+  compiler$.fns[["&"]] <- function(lhs, rhs) substrait_call("AND", lhs, rhs)
+  compiler$.fns[["=="]] <- function(lhs, rhs) substrait_call("EQUALS", lhs, rhs)
+  compiler
 }

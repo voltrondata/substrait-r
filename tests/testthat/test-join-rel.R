@@ -1,13 +1,150 @@
 
-test_that("substrait_join() combines data sources correctly", {
-  # Requires that a translation exists for '==' to generate the join
-  # expression, so using duckdb for now
+test_that("substrait_join() works with the duckdb compiler", {
   skip_if_not(has_duckdb_with_substrait())
 
+  cities <- data.frame(
+    city = c("Halifax", "Lancaster", "Chicago"),
+    country = c("Canada", "United Kingdom", "United States"),
+    stringsAsFactors = FALSE
+  )
+
+  countries <- data.frame(
+    country = c("United States", "Canada", "United Kingdom"),
+    continent = c("North America", "North America", "Europe")
+  )
+
+  joined <- substrait_join(
+    duckdb_substrait_compiler(cities),
+    countries
+  )
+
+  expect_identical(
+    dplyr::collect(joined) %>% dplyr::arrange(city),
+    tibble::tibble(
+      city = c("Chicago", "Halifax", "Lancaster"),
+      country = c("United States", "Canada", "United Kingdom"),
+      continent = c("North America", "North America", "Europe")
+    )
+  )
+})
+
+test_that("substrait_join() works with the arrow compiler", {
+  skip_if_not(has_arrow_with_substrait())
+
+  cities <- data.frame(
+    city = c("Halifax", "Lancaster", "Chicago"),
+    country = c("Canada", "United Kingdom", "United States"),
+    stringsAsFactors = FALSE
+  )
+
+  countries <- data.frame(
+    country = c("United States", "Canada", "United Kingdom"),
+    continent = c("North America", "North America", "Europe"),
+    stringsAsFactors = FALSE
+  )
+
+  joined <- substrait_join(
+    arrow_substrait_compiler(cities),
+    countries
+  )
+
+  expect_identical(
+    dplyr::collect(joined) %>% dplyr::arrange(city, country, continent),
+    tibble::tibble(
+      city = c("Chicago", "Halifax", "Lancaster"),
+      country = c("United States", "Canada", "United Kingdom"),
+      continent = c("North America", "North America", "Europe")
+    )
+  )
+})
+
+test_that("substrait_join() calculates the output schema correctly", {
   df_left <- data.frame(number = 1:26, letter = letters, stringsAsFactors = FALSE)
   df_right <- data.frame(number = 1:26, LETTER = LETTERS, stringsAsFactors = FALSE)
 
-  join_compiler_df <- substrait_join(duckdb_substrait_compiler(df_left), df_right)
+  # With no emit/name repair magic
+  joined_all <- substrait_join(
+    join_dummy_compiler(df_left),
+    df_right,
+    name_repair = join_name_repair_none,
+    emit = join_emit_all
+  )
+  expect_identical(
+    joined_all$rel$join$common$emit$output_mapping,
+    0:3
+  )
+
+  expect_identical(
+    joined_all$schema$names,
+    c("number", "letter", "number", "LETTER")
+  )
+  expect_identical(
+    joined_all$schema$struct$types,
+    list(
+      substrait_i32(),
+      substrait_string(),
+      substrait_i32(),
+      substrait_string()
+    )
+  )
+
+  # With all columns and name repair
+  joined_suffixed <- substrait_join(
+    join_dummy_compiler(df_left),
+    df_right,
+    name_repair = join_name_repair_suffix_common(),
+    emit = join_emit_all
+  )
+  expect_identical(
+    joined_suffixed$rel$join$common$emit$output_mapping,
+    0:3
+  )
+
+  expect_identical(
+    joined_suffixed$schema$names,
+    c("number.x", "letter", "number.y", "LETTER")
+  )
+  expect_identical(
+    joined_suffixed$schema$struct$types,
+    list(
+      substrait_i32(),
+      substrait_string(),
+      substrait_i32(),
+      substrait_string()
+    )
+  )
+
+  # With all left columns and name repair
+  joined_default <- substrait_join(
+    join_dummy_compiler(df_left),
+    df_right,
+    name_repair = join_name_repair_suffix_common(),
+    emit = join_emit_default
+  )
+  expect_identical(
+    joined_suffixed$rel$join$common$emit$output_mapping,
+    c(0L, 1L, 3L)
+  )
+
+  expect_identical(
+    joined_default$schema$names,
+    c("number", "letter", "LETTER")
+  )
+  expect_identical(
+    joined_default$schema$struct$types,
+    list(
+      substrait_i32(),
+      substrait_string(),
+      substrait_string()
+    )
+  )
+})
+
+test_that("substrait_join() combines data sources correctly", {
+  df_left <- data.frame(number = 1:26, letter = letters, stringsAsFactors = FALSE)
+  df_right <- data.frame(number = 1:26, LETTER = LETTERS, stringsAsFactors = FALSE)
+
+  join_compiler_df <- substrait_join(join_dummy_compiler(df_left), df_right)
   expect_identical(
     join_compiler_df$rel$join$left$read$base_schema$names,
     names(df_left)
@@ -17,7 +154,7 @@ test_that("substrait_join() combines data sources correctly", {
     names(df_right)
   )
 
-  join_df_compiler <- substrait_join(df_left, duckdb_substrait_compiler(df_right))
+  join_df_compiler <- substrait_join(df_left, join_dummy_compiler(df_right))
   expect_identical(
     join_compiler_df$rel$join$left$read$base_schema$names,
     names(df_left)
@@ -40,14 +177,7 @@ test_that("as_join_expression() can generate join expressions", {
   names(df_sim) <- c(paste0("left.", left), paste0("right.", right))
   df_sim <- as.data.frame(df_sim)
 
-  compiler_with_equals <- substrait_compiler(df_sim)
-  compiler_with_equals$.fns[["=="]] <- function(lhs, rhs) {
-    substrait_call("==", lhs, rhs)
-  }
-  compiler_with_equals$.fns[["&"]] <- function(lhs, rhs) {
-    substrait_call("&", lhs, rhs)
-  }
-  local_compiler(compiler_with_equals)
+  local_compiler(join_dummy_compiler(df_sim))
 
   expect_identical(
     as_join_expression(NULL, left, right),
