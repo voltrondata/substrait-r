@@ -1,8 +1,44 @@
 
+#' Append a Substrait Join relation
+#'
+#' @param compiler_left,compiler_right A [substrait_compiler()] or table-like
+#'   object to use as inputs to the join relation. Currently only one of
+#'   these can be a [substrait_compiler()].
+#' @param by A join specifiation. Join specifications that are currently
+#'   supported include a character vector of column names whose optional
+#'   names indicate the name on `compiler_left` (e.g., `"common_name"` or
+#'   `c("name_left" = "name_right")`).
+#' @param type One of JOIN_TYPE_INNER, JOIN_TYPE_OUTER, JOIN_TYPE_LEFT,
+#'   JOIN_TYPE_RIGHT, JOIN_TYPE_SEMI, JOINT_TYPE_ANTI, or JOIN_TYPE_SINGLE.
+#' @param name_repair A function of `output_mapping`, `names_left`, and
+#'   `names_right` used to calculate the output names (e.g.,
+#'   [join_name_repair_suffix_common()] or [join_name_repair_none()]).
+#' @param output_mapping A function of `by`, `names_left`, and `names_right`
+#'   used to calculate the zero-based indices of the output to include (e.g.,
+#'   [join_emit_all()] or [join_emit_default()]).
+#' @param names_left,names_right Arguments passed to the `name_repair` and
+#'   `output_mapping` functions to allow calculating reasonable output
+#'   parameters.
+#' @param suffix A length 2 character vector of suffixes to use to
+#'   disambiguate columns from the left and right inputs whose name would
+#'   be duplicated in the output.
+#'
+#' @return A modified compiler.
+#' @export
+#'
+#' @examplesIf has_duckdb_with_substrait()
+#' left <- tibble::tibble(number = 1:3, letter = c("a", "b", "c"))
+#' right <- tibble::tibble(number = 2:4, LETTER = c("B", "C", "D"))
+#'
+#' substrait_join(
+#'   duckdb_substrait_compiler(left),
+#'   right
+#' )
+#'
 substrait_join <- function(compiler_left, compiler_right, by = NULL,
                            type = "JOIN_TYPE_INNER",
                            name_repair = join_name_repair_suffix_common(),
-                           emit = join_emit_all) {
+                           output_mapping = join_emit_all) {
   # Somehow we have to merge these two compilers. If one of them is not yet
   # a compiler (e.g., a data.frame), this is significantly easier (i.e.,
   # we just add a new named table).
@@ -35,7 +71,7 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
         by = by,
         type = type,
         name_repair = name_repair,
-        emit = emit
+        output_mapping = output_mapping
       )
     )
   } else {
@@ -71,7 +107,7 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
 
   # Generate the output mapping (e.g., remove join keys from the
   # righthand side)
-  output_mapping <- emit(by, left_schema$names, right_schema$names)
+  output_mapping <- output_mapping(by, left_schema$names, right_schema$names)
 
   # Calculate column names (e.g., add suffixes to disambiguate left and
   # right names that both appear in the output)
@@ -134,12 +170,16 @@ as_join_expression <- function(by, names_left, names_right) {
 
 # This performs no name repair at all, which may result in non-unique names
 # in the output.
+#' @rdname substrait_join
+#' @export
 join_name_repair_none <- function(output_mapping, names_left, names_right) {
   c(names_left, names_right)[output_mapping + 1L]
 }
 
 # This performs dplyr's default behaviour, which is to disambiguate column
 # names that appear in both the left and the right by applying a suffix.
+#' @rdname substrait_join
+#' @export
 join_name_repair_suffix_common <- function(suffix = c(".x", ".y")) {
   stopifnot(is.character(suffix), length(suffix) == 2, all(!is.na(suffix)))
 
@@ -170,10 +210,14 @@ join_name_repair_suffix_common <- function(suffix = c(".x", ".y")) {
 # just concatenated. This would usually be confusing because often
 # names overlap and it would result in non-unique names, so the default
 # is to not include the join key columns from the righthand side of the join.
+#' @rdname substrait_join
+#' @export
 join_emit_all <- function(by, names_left, names_right) {
   seq_len(length(names_left) + length(names_right)) - 1L
 }
 
+#' @rdname substrait_join
+#' @export
 join_emit_default <- function(by, names_left, names_right) {
   by <- sanitize_join_by(by, names_left, names_right)
 

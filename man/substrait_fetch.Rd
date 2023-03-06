@@ -20,10 +20,11 @@ A modified \code{.compiler}
 Append a Substrait Fetch Relation
 }
 \examples{
+\dontshow{if (has_duckdb_with_substrait()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 substrait_fetch(
   duckdb_substrait_compiler(data.frame(x = 1:10)),
   offset = 2,
   count = 2
 )
-
+\dontshow{\}) # examplesIf}
 }

@@ -65,7 +65,7 @@ test_that("substrait_join() calculates the output schema correctly", {
     join_dummy_compiler(df_left),
     df_right,
     name_repair = join_name_repair_none,
-    emit = join_emit_all
+    output_mapping = join_emit_all
   )
   expect_identical(
     joined_all$rel$join$common$emit$output_mapping,
@@ -91,7 +91,7 @@ test_that("substrait_join() calculates the output schema correctly", {
     join_dummy_compiler(df_left),
     df_right,
     name_repair = join_name_repair_suffix_common(),
-    emit = join_emit_all
+    output_mapping = join_emit_all
   )
   expect_identical(
     joined_suffixed$rel$join$common$emit$output_mapping,
@@ -117,7 +117,7 @@ test_that("substrait_join() calculates the output schema correctly", {
     join_dummy_compiler(df_left),
     df_right,
     name_repair = join_name_repair_suffix_common(),
-    emit = join_emit_default
+    output_mapping = join_emit_default
   )
   expect_identical(
     joined_default$rel$join$common$emit$output_mapping,
