@@ -1,5 +1,5 @@
 
-test_that("mutating joins produce identical results with dplyr and duckdb", {
+test_that("joins produce identical results with dplyr and duckdb", {
   skip_if_not(has_duckdb_with_substrait())
 
   cities <- tibble::tibble(
@@ -40,5 +40,14 @@ test_that("mutating joins produce identical results with dplyr and duckdb", {
       dplyr::collect(),
     engine = "duckdb",
     tbl = cities
+  )
+
+  compare_dplyr_binding(
+    .input %>%
+      dplyr::semi_join(cities, by = "country") %>%
+      dplyr::arrange(country) %>%
+      dplyr::collect(),
+    engine = "duckdb",
+    tbl = countries
   )
 })

@@ -233,11 +233,13 @@ test_that("all types of dplyr mutating joins can be created from substrait_comil
   df_right <- data.frame(number = 1:26, LETTER = LETTERS, stringsAsFactors = FALSE)
   left <- join_dummy_compiler(df_left)
 
+  # Semi join currently implemented as inner join + emit because support for that
+  # appears to be better.
   joined_semi <- dplyr::semi_join(left, df_right)
   expect_s3_class(joined_semi, "SubstraitCompiler")
   expect_identical(
-    joined_semi$rel$project$input$join$type,
-    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_SEMI)
+    joined_semi$rel$join$type,
+    as.integer(substrait$JoinRel$JoinType$JOIN_TYPE_INNER)
   )
   expect_identical(
     joined_semi$schema$names,

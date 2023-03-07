@@ -310,18 +310,15 @@ relocate.SubstraitCompiler <- function(.data, ..., .before = NULL, .after = NULL
 semi_join.SubstraitCompiler <- function(x, y, by = NULL, ...) {
   rlang::check_dots_empty()
 
-  joined <- substrait_join(
+  # Semi join support is limited so just do an inner join emitting only
+  # columns from the left.
+  substrait_join(
     x, y,
     by = by,
-    type = "JOIN_TYPE_SEMI",
-    output_mapping = join_emit_all,
+    type = "JOIN_TYPE_INNER",
+    output_mapping = function(by, names_left, names_right) seq_along(names_left) - 1L,
     name_repair = join_name_repair_none
   )
-
-  # A join emit doesn't seem to work with DuckDB yet, so to make this work
-  # we add a project instead of applying the output mapping at the join step
-  select_args <- rlang::set_names(seq_along(x$schema$names), x$schema$names)
-  dplyr::select(joined, !!!select_args)
 }
 
 #' @rdname select.SubstraitCompiler
