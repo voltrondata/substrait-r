@@ -8,8 +8,8 @@
 #'   supported include a character vector of column names whose optional
 #'   names indicate the name on `compiler_left` (e.g., `"common_name"` or
 #'   `c("name_left" = "name_right")`).
-#' @param type One of JOIN_TYPE_INNER, JOIN_TYPE_OUTER, JOIN_TYPE_LEFT,
-#'   JOIN_TYPE_RIGHT, JOIN_TYPE_SEMI, JOINT_TYPE_ANTI, or JOIN_TYPE_SINGLE.
+#' @param type One of "JOIN_TYPE_INNER", "JOIN_TYPE_OUTER", "JOIN_TYPE_LEFT",
+#'   "JOIN_TYPE_RIGHT", "JOIN_TYPE_SEMI", "JOIN_TYPE_ANTI", or "JOIN_TYPE_SINGLE".
 #' @param name_repair_func A function of `output_mapping`, `names_left`, and
 #'   `names_right` used to calculate the output names (e.g.,
 #'   [join_name_repair_suffix_common()] or [join_name_repair_none()]).
