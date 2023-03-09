@@ -32,11 +32,10 @@ substrait_aggregate <- function(.compiler, ...) {
   )
   # get the inner and outer aggregations
   for (i in seq_along(quos)) {
-
     # Iterate over the indices and not the names because names may be repeated
     # (which overwrites the previous name)
-    name = names(quos)[i]
-    quosure = quos[[i]]
+    name <- names(quos)[i]
+    quosure <- quos[[i]]
 
     # get expr from quosure
     expr <- rlang::quo_get_expr(quosure)
@@ -57,40 +56,37 @@ substrait_aggregate <- function(.compiler, ...) {
       ctx$post_mutate[[name]] <- value
     }
 
-  # Start inspecting the expr to see what aggregations it involves
-  # TODO: generate, don't hard-code these
-  agg_funs <- c("sum", "mean", "max", "min")
-  outer_agg <- funs_in_expr[1] %in% agg_funs
-  inner_agg <- funs_in_expr[-1] %in% agg_funs
+    # Start inspecting the expr to see what aggregations it involves
+    # TODO: generate, don't hard-code these
+    agg_funs <- c("sum", "mean", "max", "min")
+    outer_agg <- funs_in_expr[1] %in% agg_funs
+    inner_agg <- funs_in_expr[-1] %in% agg_funs
 
-  # First, pull out any aggregations wrapped in other function calls
-  if (any(inner_agg)) {
-    expr <- extract_aggregations(expr, ctx, agg_funs)
-    # TODO: we need to turn our cts$aggregations into Substrait calls later - they're just quosures right now
-  }
+    # First, pull out any aggregations wrapped in other function calls
+    if (any(inner_agg)) {
+      expr <- extract_aggregations(expr, ctx, agg_funs)
+    }
 
-  # By this point, there are no more aggregation functions in expr
-  # except for possibly the outer function call:
-  # they've all been pulled out to ctx$aggregations, and in their place in expr
-  # there are variable names, which would correspond to field refs in the
-  # query object after aggregation and collapse() or non-field variable
-  # references. So if we want to know if there are any aggregations inside expr,
-  # we have to look for them by their new var names in ctx$aggregations.
-  inner_agg_exprs <- all_vars(expr) %in% names(ctx$aggregations)
-  inner_is_fieldref <- all_vars(expr) %in% names(ctx$mask$.data)
+    # By this point, there are no more aggregation functions in expr
+    # except for possibly the outer function call:
+    # they've all been pulled out to ctx$aggregations, and in their place in expr
+    # there are variable names, which would correspond to field refs in the
+    # query object after aggregation and collapse() or non-field variable
+    # references. So if we want to know if there are any aggregations inside expr,
+    # we have to look for them by their new var names in ctx$aggregations.
+    inner_agg_exprs <- all_vars(expr) %in% names(ctx$aggregations)
+    inner_is_fieldref <- all_vars(expr) %in% names(ctx$mask$.data)
 
-  if (outer_agg) {
-    # This is something like agg(fun(x, y)
-    # It just works by normal arrow_eval, unless there's a mix of aggs and
-    # columns in the original data like agg(fun(x, agg(x)))
-    # (but that will have been caught in extract_aggregations())
-    ctx$aggregations[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
-
-  } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
-    # Something like: fun(agg(x), agg(y))
-    ctx$post_mutate[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
-
-  }
+    if (outer_agg) {
+      # This is something like agg(fun(x, y)
+      # It just works by normal arrow_eval, unless there's a mix of aggs and
+      # columns in the original data like agg(fun(x, agg(x)))
+      # (but that will have been caught in extract_aggregations())
+      ctx$aggregations[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
+    } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
+      # Something like: fun(agg(x), agg(y))
+      ctx$post_mutate[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
+    }
   }
 
   measures <- lapply(
@@ -142,12 +138,10 @@ substrait_aggregate <- function(.compiler, ...) {
   .compiler$groups <- NULL
 
   if (length(ctx$post_mutate)) {
-
     # add in post-mutate cols
-    .compiler = substrait_project(.compiler, !!!ctx$post_mutate)
+    .compiler <- substrait_project(.compiler, !!!ctx$post_mutate)
     vars_to_select <- c(names(grps), names(quos))
     .compiler <- substrait_select(.compiler, !!!syms(vars_to_select))
-
   }
 
   .compiler
@@ -184,16 +178,16 @@ substrait_ungroup <- function(.compiler) {
 }
 
 #' @export
-as_substrait.substrait_AggregateFunction <- function(x, .ptype = NULL, ...){
+as_substrait.substrait_AggregateFunction <- function(x, .ptype = NULL, ...) {
   if (is.null(.ptype)) {
     .ptype <- x
   }
 
   switch(make_qualified_name(.ptype),
-         "substrait.Expression" = {
-           current_compiler()$post_mutate(x)
-         },
-         NextMethod()
+    "substrait.Expression" = {
+      current_compiler()$post_mutate(x)
+    },
+    NextMethod()
   )
 }
 
@@ -214,12 +208,9 @@ extract_aggregations <- function(expr, ctx, agg_funcs) {
     if (any(inner_agg_exprs)) {
       # We can't aggregate over a combination of dataset columns and other
       # aggregations (e.g. sum(x - mean(x)))
-      # TODO: support in ARROW-13926
       abort(
         paste(
-          "Aggregate within aggregate expression",
-          format_expr(original_expr),
-          "not supported in Arrow"
+          "Aggregate within aggregate expression not supported"
         )
       )
     }
