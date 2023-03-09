@@ -13,17 +13,17 @@ substrait_join(
   compiler_right,
   by = NULL,
   type = "JOIN_TYPE_INNER",
-  name_repair = join_name_repair_suffix_common(),
-  output_mapping = join_emit_all
+  name_repair_func = join_name_repair_suffix_common(),
+  output_mapping_func = join_emit_all()
 )
 
-join_name_repair_none(output_mapping, names_left, names_right)
+join_name_repair_none()
 
 join_name_repair_suffix_common(suffix = c(".x", ".y"))
 
-join_emit_all(by, names_left, names_right)
+join_emit_all()
 
-join_emit_default(by, names_left, names_right)
+join_emit_default()
 }
 \arguments{
 \item{compiler_left, compiler_right}{A \code{\link[=substrait_compiler]{substrait_compiler()}} or table-like
@@ -38,21 +38,21 @@ names indicate the name on \code{compiler_left} (e.g., \code{"common_name"} or
 \item{type}{One of JOIN_TYPE_INNER, JOIN_TYPE_OUTER, JOIN_TYPE_LEFT,
 JOIN_TYPE_RIGHT, JOIN_TYPE_SEMI, JOINT_TYPE_ANTI, or JOIN_TYPE_SINGLE.}
 
-\item{name_repair}{A function of \code{output_mapping}, \code{names_left}, and
+\item{name_repair_func}{A function of \code{output_mapping}, \code{names_left}, and
 \code{names_right} used to calculate the output names (e.g.,
 \code{\link[=join_name_repair_suffix_common]{join_name_repair_suffix_common()}} or \code{\link[=join_name_repair_none]{join_name_repair_none()}}).}
 
-\item{output_mapping}{A function of \code{by}, \code{names_left}, and \code{names_right}
+\item{output_mapping_func}{A function of \code{by}, \code{names_left}, and \code{names_right}
 used to calculate the zero-based indices of the output to include (e.g.,
 \code{\link[=join_emit_all]{join_emit_all()}} or \code{\link[=join_emit_default]{join_emit_default()}}).}
-
-\item{names_left, names_right}{Arguments passed to the \code{name_repair} and
-\code{output_mapping} functions to allow calculating reasonable output
-parameters.}
 
 \item{suffix}{A length 2 character vector of suffixes to use to
 disambiguate columns from the left and right inputs whose name would
 be duplicated in the output.}
+
+\item{names_left, names_right}{Arguments passed to the \code{name_repair} and
+\code{output_mapping} functions to allow calculating reasonable output
+parameters.}
 }
 \value{
 A modified compiler.

@@ -317,7 +317,7 @@ semi_join.SubstraitCompiler <- function(x, y, by = NULL, ...) {
     by = by,
     type = "JOIN_TYPE_INNER",
     output_mapping = function(by, names_left, names_right) seq_along(names_left) - 1L,
-    name_repair = join_name_repair_none
+    name_repair = join_name_repair_none()
   )
 }
 
@@ -331,8 +331,8 @@ anti_join.SubstraitCompiler <- function(x, y, by = NULL, ...) {
     x, y,
     by = by,
     type = "JOIN_TYPE_ANTI",
-    output_mapping = join_emit_all,
-    name_repair = join_name_repair_none
+    output_mapping = join_emit_all(),
+    name_repair = join_name_repair_none()
   )
 
   # A join emit doesn't seem to work with DuckDB yet, so to make this work
@@ -385,14 +385,14 @@ dplyr_mutating_join <- function(join_type, x, y, by = NULL, suffix = c(".x", ".y
     # A join emit doesn't seem to work with DuckDB yet, so to make this work
     # we add a project if needed instead of applying the output mapping
     # at the join step
-    output_mapping = join_emit_all,
+    output_mapping = join_emit_all(),
     name_repair = join_name_repair_suffix_common(suffix)
   )
 
   if (!keep) {
     names_left <- x$schema$names
     names_right <- as_substrait(y, "substrait.NamedStruct")$names
-    output_mapping <- join_emit_default(by, names_left, names_right)
+    output_mapping <- join_emit_default()(by, names_left, names_right)
     output_names <- join_name_repair_suffix_common(suffix)(
       output_mapping,
       names_left,

@@ -64,8 +64,8 @@ test_that("substrait_join() calculates the output schema correctly", {
   joined_all <- substrait_join(
     join_dummy_compiler(df_left),
     df_right,
-    name_repair = join_name_repair_none,
-    output_mapping = join_emit_all
+    name_repair = join_name_repair_none(),
+    output_mapping = join_emit_all()
   )
   expect_identical(
     joined_all$rel$join$common$emit$output_mapping,
@@ -91,7 +91,7 @@ test_that("substrait_join() calculates the output schema correctly", {
     join_dummy_compiler(df_left),
     df_right,
     name_repair = join_name_repair_suffix_common(),
-    output_mapping = join_emit_all
+    output_mapping = join_emit_all()
   )
   expect_identical(
     joined_suffixed$rel$join$common$emit$output_mapping,
@@ -117,7 +117,7 @@ test_that("substrait_join() calculates the output schema correctly", {
     join_dummy_compiler(df_left),
     df_right,
     name_repair = join_name_repair_suffix_common(),
-    output_mapping = join_emit_default
+    output_mapping = join_emit_default()
   )
   expect_identical(
     joined_default$rel$join$common$emit$output_mapping,
@@ -206,31 +206,31 @@ test_that("as_join_expression() can generate join expressions", {
 
 test_that("join_emit_all() generates a concatenated output mapping", {
   expect_identical(
-    join_emit_all(NULL, c("a", "b", "c"), c("b", "c", "d")),
+    join_emit_all()(NULL, c("a", "b", "c"), c("b", "c", "d")),
     0:5
   )
 
   expect_identical(
-    join_emit_all(character(), c("a", "b", "c"), c("b", "c", "d")),
+    join_emit_all()(character(), c("a", "b", "c"), c("b", "c", "d")),
     0:5
   )
 })
 
 test_that("join_emit_default() omits join keys from the right", {
   expect_identical(
-    join_emit_default(NULL, c("a", "b", "c"), c("b", "c", "d")),
+    join_emit_default()(NULL, c("a", "b", "c"), c("b", "c", "d")),
     c(0L, 1L, 2L, 5L)
   )
 })
 
 test_that("join_name_repair_none() does not disambiguate column names", {
   expect_identical(
-    join_name_repair_none(0:5, c("a", "b", "c"), c("b", "c", "d")),
+    join_name_repair_none()(0:5, c("a", "b", "c"), c("b", "c", "d")),
     c("a", "b", "c", "b", "c", "d")
   )
 
   expect_identical(
-    join_name_repair_none(5:0, c("a", "b", "c"), c("b", "c", "d")),
+    join_name_repair_none()(5:0, c("a", "b", "c"), c("b", "c", "d")),
     c("d", "c", "b", "c", "b", "a")
   )
 })

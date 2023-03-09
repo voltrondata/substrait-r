@@ -10,10 +10,10 @@
 #'   `c("name_left" = "name_right")`).
 #' @param type One of JOIN_TYPE_INNER, JOIN_TYPE_OUTER, JOIN_TYPE_LEFT,
 #'   JOIN_TYPE_RIGHT, JOIN_TYPE_SEMI, JOINT_TYPE_ANTI, or JOIN_TYPE_SINGLE.
-#' @param name_repair A function of `output_mapping`, `names_left`, and
+#' @param name_repair_func A function of `output_mapping`, `names_left`, and
 #'   `names_right` used to calculate the output names (e.g.,
 #'   [join_name_repair_suffix_common()] or [join_name_repair_none()]).
-#' @param output_mapping A function of `by`, `names_left`, and `names_right`
+#' @param output_mapping_func A function of `by`, `names_left`, and `names_right`
 #'   used to calculate the zero-based indices of the output to include (e.g.,
 #'   [join_emit_all()] or [join_emit_default()]).
 #' @param names_left,names_right Arguments passed to the `name_repair` and
@@ -37,8 +37,8 @@
 #'
 substrait_join <- function(compiler_left, compiler_right, by = NULL,
                            type = "JOIN_TYPE_INNER",
-                           name_repair = join_name_repair_suffix_common(),
-                           output_mapping = join_emit_all) {
+                           name_repair_func = join_name_repair_suffix_common(),
+                           output_mapping_func = join_emit_all()) {
   # Somehow we have to merge these two compilers. If one of them is not yet
   # a compiler (e.g., a data.frame), this is significantly easier (i.e.,
   # we just add a new named table).
@@ -107,11 +107,19 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
 
   # Generate the output mapping (e.g., remove join keys from the
   # righthand side)
-  output_mapping <- output_mapping(by, left_schema$names, right_schema$names)
+  output_mapping <- output_mapping_func(
+    by,
+    left_schema$names,
+    right_schema$names
+  )
 
   # Calculate column names (e.g., add suffixes to disambiguate left and
   # right names that both appear in the output)
-  names_out <- name_repair(output_mapping, left_schema$names, right_schema$names)
+  names_out <- name_repair_func(
+    output_mapping,
+    left_schema$names,
+    right_schema$names
+  )
 
   # Create the relation
   rel <- substrait$Rel$create(
@@ -172,8 +180,10 @@ as_join_expression <- function(by, names_left, names_right) {
 # in the output.
 #' @rdname substrait_join
 #' @export
-join_name_repair_none <- function(output_mapping, names_left, names_right) {
-  c(names_left, names_right)[output_mapping + 1L]
+join_name_repair_none <- function() {
+  function(output_mapping, names_left, names_right) {
+    c(names_left, names_right)[output_mapping + 1L]
+  }
 }
 
 # This performs dplyr's default behaviour, which is to disambiguate column
@@ -184,7 +194,7 @@ join_name_repair_suffix_common <- function(suffix = c(".x", ".y")) {
   stopifnot(is.character(suffix), length(suffix) == 2, all(!is.na(suffix)))
 
   function(output_mapping, names_left, names_right) {
-    names_out <- join_name_repair_none(output_mapping, names_left, names_right)
+    names_out <- join_name_repair_none()(output_mapping, names_left, names_right)
     names_from_left <- output_mapping < length(names_left)
     names_from_right <- output_mapping >= length(names_left)
     names_needs_suffix <- names_out %in% unique(names_out[duplicated(names_out)])
@@ -212,20 +222,24 @@ join_name_repair_suffix_common <- function(suffix = c(".x", ".y")) {
 # is to not include the join key columns from the righthand side of the join.
 #' @rdname substrait_join
 #' @export
-join_emit_all <- function(by, names_left, names_right) {
-  seq_len(length(names_left) + length(names_right)) - 1L
+join_emit_all <- function() {
+  function(by, names_left, names_right) {
+    seq_len(length(names_left) + length(names_right)) - 1L
+  }
 }
 
 #' @rdname substrait_join
 #' @export
-join_emit_default <- function(by, names_left, names_right) {
-  by <- sanitize_join_by(by, names_left, names_right)
+join_emit_default <- function() {
+  function(by, names_left, names_right) {
+    by <- sanitize_join_by(by, names_left, names_right)
 
-  seq_left <- seq_along(names_left)
-  seq_right <- seq_along(names_right)
-  seq_right <- setdiff(seq_right, by$right)
+    seq_left <- seq_along(names_left)
+    seq_right <- seq_along(names_right)
+    seq_right <- setdiff(seq_right, by$right)
 
-  c(seq_left - 1L, seq_right + length(seq_left) - 1L)
+    c(seq_left - 1L, seq_right + length(seq_left) - 1L)
+  }
 }
 
 # Takes a `by` expression like `c("col1", "col2")` or
