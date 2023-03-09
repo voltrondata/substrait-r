@@ -294,7 +294,7 @@ test_that("all types of dplyr mutating joins can be created from substrait_comil
   )
 })
 
-test_that("dplyr mutating joins for substrait_compiler support by, keep, and suffix", {
+test_that("dplyr mutating joins for substrait_compiler support `by`, `keep`, and `suffix`", {
   skip_if_not_installed("dplyr")
 
   df_left <- data.frame(number = 1:26, letter = letters, stringsAsFactors = FALSE)
