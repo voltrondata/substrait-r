@@ -32,6 +32,7 @@ substrait_aggregate <- function(.compiler, ...) {
   )
   # get the inner and outer aggregations
   for (i in seq_along(quos)) {
+
     # Iterate over the indices and not the names because names may be repeated
     # (which overwrites the previous name)
     name = names(quos)[i]
@@ -55,7 +56,6 @@ substrait_aggregate <- function(.compiler, ...) {
       # to be sent to the query engine as an aggregation
       ctx$post_mutate[[name]] <- value
     }
-  }
 
   # Start inspecting the expr to see what aggregations it involves
   # TODO: generate, don't hard-code these
@@ -91,17 +91,8 @@ substrait_aggregate <- function(.compiler, ...) {
     ctx$post_mutate[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
 
   }
+  }
 
-  # TODO: I think the next thing is to work out here how to use our post_mutate
-  # and aggregation things to make the right plan
-  # with these in. also...can we check the duckdb plan that sql generates to
-  # check for temp fields?
-
-  ############
-
-
-  # have to rethink this because we need to keep track of a
-  # post_mutate step for expressions like sum(x) + 1
   measures <- lapply(
     ctx$aggregations,
     as_substrait,
@@ -121,8 +112,7 @@ substrait_aggregate <- function(.compiler, ...) {
     )
   )
 
-  # reset mask and schema here (probably should do this in substrait_select
-  # too)
+  # reset mask and schema here
   types <- c(
     lapply(
       .compiler$groups,
@@ -148,10 +138,16 @@ substrait_aggregate <- function(.compiler, ...) {
   names(.compiler$.data) <- names(types)
 
   # drop groups
+  grps <- .compiler$groups
   .compiler$groups <- NULL
 
   if (length(ctx$post_mutate)) {
-    .compiler = substrait_select(.compiler, !!!ctx$post_mutate)
+
+    # add in post-mutate cols
+    .compiler = substrait_project(.compiler, !!!ctx$post_mutate)
+    vars_to_select <- c(names(grps), names(quos))
+    .compiler <- substrait_select(.compiler, !!!syms(vars_to_select))
+
   }
 
   .compiler
