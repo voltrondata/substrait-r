@@ -61,9 +61,19 @@ Append a Substrait Join relation
 left <- tibble::tibble(number = 1:3, letter = c("a", "b", "c"))
 right <- tibble::tibble(number = 2:4, LETTER = c("B", "C", "D"))
 
-substrait_join(
+# Default join keeps all columns
+joined <- substrait_join(
   duckdb_substrait_compiler(left),
   right
 )
+joined$schema$names
+
+# Use output_mapping_func to change the default output
+joined <- substrait_join(
+  duckdb_substrait_compiler(left),
+  right,
+  output_mapping_func = join_emit_default()
+)
+joined$schema$names
 \dontshow{\}) # examplesIf}
 }
