@@ -16,9 +16,6 @@
 #' @param output_mapping_func A function of `by`, `names_left`, and `names_right`
 #'   used to calculate the zero-based indices of the output to include (e.g.,
 #'   [join_emit_all()] or [join_emit_default()]).
-#' @param names_left,names_right Arguments passed to the `name_repair` and
-#'   `output_mapping` functions to allow calculating reasonable output
-#'   parameters.
 #' @param suffix A length 2 character vector of suffixes to use to
 #'   disambiguate columns from the left and right inputs whose name would
 #'   be duplicated in the output.
@@ -70,8 +67,8 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
         compiler_right,
         by = by,
         type = type,
-        name_repair = name_repair,
-        output_mapping = output_mapping
+        name_repair_func = name_repair_func,
+        output_mapping_func = output_mapping_func
       )
     )
   } else {

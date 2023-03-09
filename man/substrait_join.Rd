@@ -35,8 +35,8 @@ supported include a character vector of column names whose optional
 names indicate the name on \code{compiler_left} (e.g., \code{"common_name"} or
 \code{c("name_left" = "name_right")}).}
 
-\item{type}{One of JOIN_TYPE_INNER, JOIN_TYPE_OUTER, JOIN_TYPE_LEFT,
-JOIN_TYPE_RIGHT, JOIN_TYPE_SEMI, JOINT_TYPE_ANTI, or JOIN_TYPE_SINGLE.}
+\item{type}{One of "JOIN_TYPE_INNER", "JOIN_TYPE_OUTER", "JOIN_TYPE_LEFT",
+"JOIN_TYPE_RIGHT", "JOIN_TYPE_SEMI", "JOIN_TYPE_ANTI", or "JOIN_TYPE_SINGLE".}
 
 \item{name_repair_func}{A function of \code{output_mapping}, \code{names_left}, and
 \code{names_right} used to calculate the output names (e.g.,
@@ -49,10 +49,6 @@ used to calculate the zero-based indices of the output to include (e.g.,
 \item{suffix}{A length 2 character vector of suffixes to use to
 disambiguate columns from the left and right inputs whose name would
 be duplicated in the output.}
-
-\item{names_left, names_right}{Arguments passed to the \code{name_repair} and
-\code{output_mapping} functions to allow calculating reasonable output
-parameters.}
 }
 \value{
 A modified compiler.
