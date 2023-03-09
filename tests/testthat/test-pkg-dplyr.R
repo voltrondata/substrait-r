@@ -226,7 +226,7 @@ test_that("relocate() for substrait_compiler reorders columns", {
   )
 })
 
-test_that("all types of dplyr mutating joins can be created from substrait_comiler", {
+test_that("all types of dplyr mutating joins can be created from substrait_compiler", {
   skip_if_not_installed("dplyr")
 
   df_left <- data.frame(number = 1:26, letter = letters, stringsAsFactors = FALSE)
