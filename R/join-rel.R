@@ -153,6 +153,10 @@ substrait_join <- function(compiler_left, compiler_right, by = NULL,
   compiler$validate()
 }
 
+# Processes the `by` argument into what Substrait requires as the join
+# expression. This join expression is the Substrait equivalent of
+# field_left == field_right & field_left2 == field_right2, etc. The currently
+# supported input for `by` is dplyr style: c("field_left" = "field_right").
 as_join_expression <- function(by, names_left, names_right) {
   by <- sanitize_join_by(by, names_left, names_right)
   by_left <- by$left
