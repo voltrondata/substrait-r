@@ -52,6 +52,7 @@ future grouping (e.g., after calling \code{\link[dplyr:group_by]{dplyr::group_by
 \item \href{#method-SubstraitCompiler-new}{\code{SubstraitCompiler$new()}}
 \item \href{#method-SubstraitCompiler-eval_mask}{\code{SubstraitCompiler$eval_mask()}}
 \item \href{#method-SubstraitCompiler-add_relation}{\code{SubstraitCompiler$add_relation()}}
+\item \href{#method-SubstraitCompiler-add_named_table}{\code{SubstraitCompiler$add_named_table()}}
 \item \href{#method-SubstraitCompiler-named_table}{\code{SubstraitCompiler$named_table()}}
 \item \href{#method-SubstraitCompiler-named_table_list}{\code{SubstraitCompiler$named_table_list()}}
 \item \href{#method-SubstraitCompiler-validate}{\code{SubstraitCompiler$validate()}}
@@ -124,6 +125,30 @@ object.}
 \item{\code{...}}{Unused by the default method}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SubstraitCompiler-add_named_table"></a>}}
+\if{latex}{\out{\hypertarget{method-SubstraitCompiler-add_named_table}{}}}
+\subsection{Method \code{add_named_table()}}{
+Registers an object for use as a named table with this compiler.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SubstraitCompiler$add_named_table(object, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{object}}{An object, most commonly a data.frame or table-like
+object.}
+
+\item{\code{...}}{Unused by the default method}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A substrait.ReadRel that refers to \code{object} when used with this
+compiler.
 }
 }
 \if{html}{\out{<hr>}}

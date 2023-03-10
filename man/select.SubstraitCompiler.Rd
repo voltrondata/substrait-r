@@ -14,6 +14,12 @@
 \alias{summarize.SubstraitCompiler}
 \alias{collect.SubstraitCompiler}
 \alias{relocate.SubstraitCompiler}
+\alias{semi_join.SubstraitCompiler}
+\alias{anti_join.SubstraitCompiler}
+\alias{inner_join.SubstraitCompiler}
+\alias{left_join.SubstraitCompiler}
+\alias{right_join.SubstraitCompiler}
+\alias{full_join.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{SubstraitCompiler}(.data, ...)
@@ -41,9 +47,21 @@
 \method{collect}{SubstraitCompiler}(x, ...)
 
 \method{relocate}{SubstraitCompiler}(.data, ..., .before = NULL, .after = NULL)
+
+\method{semi_join}{SubstraitCompiler}(x, y, by = NULL, ...)
+
+\method{anti_join}{SubstraitCompiler}(x, y, by = NULL, ...)
+
+\method{inner_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{left_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{right_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{full_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
 }
 \arguments{
-\item{.data, x}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
+\item{.data, x, y}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
 
 \item{...}{\itemize{
 \item \code{select()}: see \code{\link[dplyr:select]{dplyr::select()}}
@@ -74,6 +92,15 @@
 \item{.before}{Destination of columns to move; see \code{\link[dplyr:relocate]{dplyr::relocate()}}}
 
 \item{.after}{Destination of columns to move; see \code{\link[dplyr:relocate]{dplyr::relocate()}}}
+
+\item{by}{For joins, a join specifier or \code{NULL} to use common variables
+across \code{x} and \code{y}; see \code{\link[dplyr:mutate-joins]{dplyr::inner_join()}}.}
+
+\item{suffix}{A suffix used to disambiguate columns from \code{x} and \code{y} if a
+join would result in duplicate column names.}
+
+\item{keep}{For joins, use \code{TRUE} to keep all output columns;
+see \code{\link[dplyr:mutate-joins]{dplyr::inner_join()}}.}
 }
 \value{
 A modified \code{\link[=substrait_compiler]{substrait_compiler()}}
