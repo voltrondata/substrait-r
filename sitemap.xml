@@ -67,6 +67,9 @@
     <loc>/reference/substrait_filter.html</loc>
   </url>
   <url>
+    <loc>/reference/substrait_join.html</loc>
+  </url>
+  <url>
     <loc>/reference/substrait_project.html</loc>
   </url>
   <url>
