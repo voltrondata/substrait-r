@@ -134,7 +134,13 @@ as_substrait.substrait_proto_message <- function(x, .ptype = NULL, ...) {
   }
 
   x_qualified_name <- gsub("_", ".", class(x)[1])
-  stopifnot(identical(x_qualified_name, .qualified_name))
+  if(!identical(x_qualified_name, .qualified_name)) {
+    rlang::abort(
+      glue::glue(
+        "Can't convert protobuf of type '{x_qualified_name}' to '{.qualified_name}'"
+      )
+    )
+  }
 
   x
 }
