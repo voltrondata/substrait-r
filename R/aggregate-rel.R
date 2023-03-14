@@ -137,7 +137,7 @@ substrait_aggregate <- function(.compiler, ...) {
   grps <- .compiler$groups
   .compiler$groups <- NULL
 
-  if (length(ctx$post_mutate)) {
+  if (length(ctx$post_mutate) > 0) {
     # add in post-mutate cols
     vars_to_select <- c(names(grps), names(quos))
 
