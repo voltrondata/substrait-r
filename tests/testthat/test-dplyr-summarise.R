@@ -1030,3 +1030,38 @@ test_that("distinct() works as expected", {
     "not yet supported"
   )
 })
+
+test_that("count() works as expected", {
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>% count() %>% collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>% count(lgl) %>%
+      arrange(lgl) %>%
+      collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      count(lgl, dbl2) %>%
+      # ordering not guaranteed
+      arrange(lgl, dbl2) %>%
+      collect(),
+    example_data
+  )
+
+  expect_error(
+    example_data %>%
+      duckdb_substrait_compiler() %>%
+      group_by(lgl) %>%
+      count(),
+    "not yet supported"
+  )
+})
+

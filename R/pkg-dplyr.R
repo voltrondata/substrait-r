@@ -500,7 +500,15 @@ count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = 
     rlang::abort("`count()` with `name != NULL` not supported")
   }
 
-  dplyr::summarise(dplyr::group_by(.data, ...), n = n())
+  out <- dplyr::summarise(dplyr::group_by(.data, ...), n = n())
+
+  if (!is.null(.data$groups)) {
+    rlang::abort("count() on grouped data not yet supported")
+  } else {
+    return(dplyr::ungroup(out))
+  }
+
+  dplyr::ungroup()
 }
 
 #' @importFrom dplyr group_vars
