@@ -366,7 +366,7 @@ test_that("count.SubstraitCompiler works", {
   skip_if_not_installed("dplyr")
 
   compiler <- substrait_compiler(data.frame(a = c(1, 1, 2, 2, 3)))
-  out <- distinct(compiler)
+  out <- count(compiler)
   plan <- out$plan()
   expect_s3_class(plan$relations[[1]]$root$input$aggregate, "substrait_AggregateRel")
   #TODO: work out what to test here
