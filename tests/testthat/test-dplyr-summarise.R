@@ -999,3 +999,34 @@ test_that("summarise() can handle scalars and literal values", {
     example_data
   )
 })
+
+test_that("distinct() works as expected", {
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>% distinct() %>% collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    .input %>% distinct(lgl) %>% collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      distinct(lgl, dbl2) %>%
+      # ordering not guaranteed
+      arrange(lgl, dbl2) %>%
+      collect(),
+    example_data
+  )
+
+  expect_error(
+    example_data %>%
+      duckdb_substrait_compiler() %>%
+      group_by(lgl) %>%
+      distinct(),
+    "not yet supported"
+  )
+})

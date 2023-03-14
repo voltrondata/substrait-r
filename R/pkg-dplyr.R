@@ -460,33 +460,34 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
 #' @importFrom dplyr distinct
 #' @export
 distinct.SubstraitCompiler <- function(.data, ..., .keep_all = FALSE) {
-
   if (.keep_all == TRUE) {
     rlang::abort("`distinct()` with `.keep_all = TRUE` not supported")
   }
 
+  args <- rlang::quos(...)
+
   original_gv <- dplyr::group_vars(.data)
-  if (length(quos(...))) {
+
+  if (length(args) > 0) {
     # group_by() calls mutate() if there are any expressions in ...
-    .data <- dplyr::group_by(.data, ..., .add = TRUE)
+    .data <- dplyr::group_by(.data, !!!args, .add = TRUE)
   } else {
     # distinct() with no vars specified means distinct across all cols
-    .data <- dplyr::group_by(.data, !!!syms(names(.data$.data)))
+    .data <- dplyr::group_by(.data, !!!rlang::syms(names(.data$.data)))
   }
 
-  out <- dplyr::summarize(.data, .groups = "drop")
+  .data <- dplyr::summarize(.data, .groups = "drop")
   # distinct() doesn't modify group by vars, so restore the original ones
-  if (length(original_gv)) {
-    out$group_by_vars <- original_gv
+  if (length(original_gv) > 0) {
+    rlang::abort("distinct() on grouped data not yet supported")
   }
-  out
+  .data
 }
 
 #' rdname count.SubstraitCompiler
 #' @importFrom dplyr count
 #' @export
 count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = NULL) {
-
   if (!is.null(wt)) {
     rlang::abort("`count()` with `wt != NULL` not supported")
   }
@@ -499,12 +500,11 @@ count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = 
     rlang::abort("`count()` with `name != NULL` not supported")
   }
 
-  summarise(group_by(.data, ...), n = n())
-
+  dplyr::summarise(dplyr::group_by(.data, ...), n = n())
 }
 
 #' @importFrom dplyr group_vars
 #' @export
-group_vars.SubstraitCompiler <- function(x){
+group_vars.SubstraitCompiler <- function(x) {
   names(x$groups)
 }
