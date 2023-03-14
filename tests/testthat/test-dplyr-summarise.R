@@ -990,6 +990,7 @@ test_that("summarise() can handle scalars and literal values", {
   )
 
   compare_dplyr_binding(
+    engine = "duckdb",
     .input %>% summarise(y = some_scalar_value) %>% collect(),
     example_data
   )
