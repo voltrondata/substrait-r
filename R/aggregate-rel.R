@@ -82,7 +82,7 @@ substrait_aggregate <- function(.compiler, ...) {
       # It just works by normal arrow_eval, unless there's a mix of aggs and
       # columns in the original data like agg(fun(x, agg(x)))
       # (but that will have been caught in extract_aggregations())
-      ctx$aggregations[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
+      ctx$aggregations[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
     } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
       # Something like: fun(agg(x), agg(y))
       ctx$post_mutate[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
@@ -222,7 +222,7 @@ extract_aggregations <- function(expr, ctx, agg_funcs) {
     # then insert that name (symbol) back into the expression so that we can
     # mutate() on the result of the aggregation and reference this field.
     tmpname <- paste0("..temp", length(ctx$aggregations))
-    ctx$aggregations[[tmpname]] <- rlang::as_quosure(expr, ctx$quo_env)
+    ctx$aggregations[[tmpname]] <- rlang::as_quosure(expr, env = ctx$quo_env)
     expr <- as.symbol(tmpname)
   }
   expr
