@@ -58,7 +58,7 @@ substrait_aggregate <- function(.compiler, ...) {
 
     # Start inspecting the expr to see what aggregations it involves
     # TODO: generate, don't hard-code these
-    agg_funs <- c("sum", "mean", "max", "min")
+    agg_funs <- c("sum", "mean", "max", "min", "n", "n_distinct")
     outer_agg <- funs_in_expr[1] %in% agg_funs
     inner_agg <- funs_in_expr[-1] %in% agg_funs
 
@@ -85,7 +85,7 @@ substrait_aggregate <- function(.compiler, ...) {
       ctx$aggregations[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
     } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
       # Something like: fun(agg(x), agg(y))
-      ctx$post_mutate[[name]] <- rlang::as_quosure(expr, ctx$quo_env)
+      ctx$post_mutate[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
     }
   }
 
