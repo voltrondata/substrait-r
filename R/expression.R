@@ -10,8 +10,19 @@ as_substrait.quosure <- function(x, .ptype = NULL, ...) {
     "substrait.AggregateRel.Measure" = {
       result <- substrait_eval_quo(x)
 
-      # The only valid result here is an AggregateFunction (other values
-      # aren't yet supported)
+      # If we get something other than an AggregateFunction here, we can't
+      # return a Measure. Instead, we signal a classed error that contains
+      # information that a caller can use to possibly modify the input
+      # expression and try again. The most common reason this might happen
+      # is if `result` evaluates to a literal value (or function thereof).
+      if (!inherits(result, "substrait_AggregateFunction")) {
+        rlang::abort(
+          "Can't convert non-aggregate expression to AggregateRel.Measure",
+          class = "substrait_cant_convert_AggregateRel_Measure",
+          substrait_x = result
+        )
+      }
+
       substrait$AggregateRel$Measure$create(
         measure = as_substrait(result, "substrait.AggregateFunction")
       )
@@ -125,6 +136,29 @@ as_substrait.substrait_FunctionArgument <- function(x, .ptype = NULL, ...) {
       } else {
         substrait$Type$create()
       }
+    },
+    NextMethod()
+  )
+}
+
+#' @export
+as_substrait.substrait_AggregateFunction <- function(x, .ptype = NULL, ...) {
+  if (is.null(.ptype)) {
+    .ptype <- x
+  }
+
+  switch(make_qualified_name(.ptype),
+    "substrait.Expression" = {
+      # This happens when, during expression evaluation, one of the arguments
+      # that is supposed to be a substrait.Expression is actually the result
+      # of an aggregate expression (e.g., sum(x) + 1). We can return a field
+      # reference here: instead, signal a condition with information the caller
+      # might be able to use to fix the input expression.
+      rlang::abort(
+        "Can't convert AggregateFunction to Expression",
+        class = "substrait_cant_convert_Expression",
+        substrait_x = x
+      )
     },
     NextMethod()
   )

@@ -90,7 +90,7 @@ test_that("as_substrait() works for substrait", {
 
   expect_error(
     as_substrait(substrait$Type$Boolean$create(), "substrait.Type.Awesome"),
-    "is not TRUE"
+    "Can't convert protobuf of type"
   )
 })
 
