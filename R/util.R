@@ -119,7 +119,7 @@ all_funs <- function(expr) {
       }
     }
   }
-  names[purrr::map_lgl(names, ~ is_function(expr, .))]
+  names[lapply(names, ~ is_function(expr, .))]
 }
 
 is_function <- function(expr, name) {
@@ -135,7 +135,7 @@ is_function <- function(expr, name) {
     }
     out <- lapply(expr, is_function, name)
   }
-  any(purrr::map_lgl(out, isTRUE))
+  any(lapply(out, isTRUE))
 }
 
 r_symbolic_constants <- c(

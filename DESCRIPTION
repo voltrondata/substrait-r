@@ -34,8 +34,7 @@ Imports:
     RProtoBuf,
     vctrs,
     dplyr,
-    R6,
-    purrr
+    R6
 Depends: 
     R (>= 2.10)
 LazyData: true
