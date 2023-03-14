@@ -139,8 +139,10 @@ substrait_aggregate <- function(.compiler, ...) {
 
   if (length(ctx$post_mutate)) {
     # add in post-mutate cols
-    .compiler <- substrait_project(.compiler, !!!ctx$post_mutate)
     vars_to_select <- c(names(grps), names(quos))
+
+    .compiler <- substrait_project(.compiler, !!!syms(.compiler$schema$names), !!!ctx$post_mutate)
+
     .compiler <- substrait_select(.compiler, !!!syms(vars_to_select))
   }
 
