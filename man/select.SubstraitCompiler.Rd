@@ -20,6 +20,8 @@
 \alias{left_join.SubstraitCompiler}
 \alias{right_join.SubstraitCompiler}
 \alias{full_join.SubstraitCompiler}
+\alias{distinct.SubstraitCompiler}
+\alias{count.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{SubstraitCompiler}(.data, ...)
@@ -59,6 +61,10 @@
 \method{right_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
 
 \method{full_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{distinct}{SubstraitCompiler}(.data, ..., .keep_all = FALSE)
+
+\method{count}{SubstraitCompiler}(.data, ..., wt = NULL, sort = FALSE, name = NULL)
 }
 \arguments{
 \item{.data, x, y}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
