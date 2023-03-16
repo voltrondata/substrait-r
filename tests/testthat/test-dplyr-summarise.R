@@ -1022,13 +1022,16 @@ test_that("distinct() works as expected", {
     example_data
   )
 
-  expect_error(
-    example_data %>%
-      duckdb_substrait_compiler() %>%
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
       group_by(lgl) %>%
-      distinct(),
-    "not yet supported"
+      distinct() %>%
+      arrange(lgl) %>%
+      collect(),
+    example_data
   )
+
 })
 
 test_that("count() works as expected", {

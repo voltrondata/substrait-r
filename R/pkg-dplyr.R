@@ -513,6 +513,8 @@ count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = 
 
   if (!is.null(grps)) {
     out <- dplyr::group_by(out, !!!rlang::syms(names(grps)))
+  } else {
+    out <- dplyr::ungroup(out)
   }
 
   out
