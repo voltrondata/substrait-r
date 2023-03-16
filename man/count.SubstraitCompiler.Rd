@@ -2,10 +2,10 @@
 % Please edit documentation in R/pkg-dplyr.R
 \name{count.SubstraitCompiler}
 \alias{count.SubstraitCompiler}
-\title{rdname count.SubstraitCompiler}
+\title{rdname select.SubstraitCompiler}
 \usage{
 \method{count}{SubstraitCompiler}(.data, ..., wt = NULL, sort = FALSE, name = NULL)
 }
 \description{
-rdname count.SubstraitCompiler
+rdname select.SubstraitCompiler
 }

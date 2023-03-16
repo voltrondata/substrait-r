@@ -8,6 +8,8 @@
 #'   - `filter()`: see [dplyr::filter()]
 #'   - `mutate()`: see [dplyr::mutate()]
 #'   - `arrange()`: see [dplyr::arrange()]
+#'   - `count()`: see [dplyr::count()]
+#'   - `distinct()`: see [dplyr::distinct()]
 #' @param .drop Not supported, see [dplyr::group_by()]
 #' @param .add Use `TRUE` to add the groupings to the current groupings and
 #'   `FALSE` to reset the grouping.
@@ -25,6 +27,10 @@
 #'   across `x` and `y`; see [dplyr::inner_join()].
 #' @param suffix A suffix used to disambiguate columns from `x` and `y` if a
 #'   join would result in duplicate column names.
+#' @param .keep_all If TRUE, keep all variables in .data; see [dplyr::distinct()]
+#' @param wt Frequency weights; see [dplyr::count()]
+#' @param sort If TRUE, will show the largest groups at the top; see [dplyr::count()]
+#' @param name The name of the new column in the output; see [dplyr::count()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -456,7 +462,7 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
   }
 }
 
-#' rdname distinct.SubstraitCompiler
+#' rdname select.SubstraitCompiler
 #' @importFrom dplyr distinct
 #' @export
 distinct.SubstraitCompiler <- function(.data, ..., .keep_all = FALSE) {
@@ -484,7 +490,7 @@ distinct.SubstraitCompiler <- function(.data, ..., .keep_all = FALSE) {
   .data
 }
 
-#' rdname count.SubstraitCompiler
+#' rdname select.SubstraitCompiler
 #' @importFrom dplyr count
 #' @export
 count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = NULL) {

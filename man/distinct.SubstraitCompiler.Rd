@@ -2,10 +2,10 @@
 % Please edit documentation in R/pkg-dplyr.R
 \name{distinct.SubstraitCompiler}
 \alias{distinct.SubstraitCompiler}
-\title{rdname distinct.SubstraitCompiler}
+\title{rdname select.SubstraitCompiler}
 \usage{
 \method{distinct}{SubstraitCompiler}(.data, ..., .keep_all = FALSE)
 }
 \description{
-rdname distinct.SubstraitCompiler
+rdname select.SubstraitCompiler
 }
