@@ -462,7 +462,7 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
   }
 }
 
-#' rdname select.SubstraitCompiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr distinct
 #' @export
 distinct.SubstraitCompiler <- function(.data, ..., .keep_all = FALSE) {
@@ -490,7 +490,7 @@ distinct.SubstraitCompiler <- function(.data, ..., .keep_all = FALSE) {
   .data
 }
 
-#' rdname select.SubstraitCompiler
+#' @rdname select.SubstraitCompiler
 #' @importFrom dplyr count
 #' @export
 count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = NULL) {
@@ -506,15 +506,16 @@ count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = 
     rlang::abort("`count()` with `name != NULL` not supported")
   }
 
-  out <- dplyr::summarise(dplyr::group_by(.data, ...), n = n())
+  grps <- .data$groups
 
-  if (!is.null(.data$groups)) {
-    rlang::abort("count() on grouped data not yet supported")
-  } else {
-    return(dplyr::ungroup(out))
+  out <- dplyr::summarise(dplyr::group_by(.data, !!!grps, ...), n = n())
+
+  if (!is.null(grps)) {
+    out <- dplyr::group_by(out, !!!rlang::syms(names(grps)))
   }
 
-  dplyr::ungroup()
+  out
+
 }
 
 #' @importFrom dplyr group_vars

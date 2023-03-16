@@ -1032,12 +1032,15 @@ test_that("distinct() works as expected", {
 })
 
 test_that("count() works as expected", {
+
+  # count with no columns
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>% count() %>% collect(),
     example_data
   )
 
+  # count with 1 column
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>% count(lgl) %>%
@@ -1046,6 +1049,7 @@ test_that("count() works as expected", {
     example_data
   )
 
+  # count multiple columns
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>%
@@ -1056,12 +1060,16 @@ test_that("count() works as expected", {
     example_data
   )
 
-  expect_error(
-    example_data %>%
-      duckdb_substrait_compiler() %>%
-      group_by(lgl) %>%
-      count(),
-    "not yet supported"
+  # count after grouping
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      group_by(lgl, false) %>%
+      count(false) %>%
+      arrange(lgl) %>%
+      collect(),
+    example_data
   )
+
 })
 
