@@ -355,8 +355,8 @@ test_that("dplyr mutating joins for substrait_compiler support `by`, `keep`, and
 test_that("distinct.SubstraitCompiler works", {
   skip_if_not_installed("dplyr")
 
-  get_grouping_fields <- function(plan) {
-    grouping_expressions <- plan$relations[[1]]$root$input$aggregate$groupings[[1]]$grouping_expressions
+  get_grouping_fields <- function(agg_fields) {
+    grouping_expressions <- agg_fields$grouping_expressions
     lapply(grouping_expressions, function(x) {
       x$selection$direct_reference$struct_field$field
     })
@@ -368,30 +368,37 @@ test_that("distinct.SubstraitCompiler works", {
   compiler <- substrait_compiler(df)
   out <- distinct(compiler)
   plan <- out$plan()
-  expect_s3_class(plan$relations[[1]]$root$input$aggregate, "substrait_AggregateRel")
+  agg <- plan$relations[[1]]$root$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
   expect_equal(plan$relations[[1]]$root$names, c("a", "b", "c"))
-  expect_equal(get_grouping_fields(plan), list(NULL, 1, 2))
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(NULL, 1, 2))
 
   # distinct() with single field
   compiler <- substrait_compiler(df)
   out <- distinct(compiler, b)
   plan <- out$plan()
-  expect_s3_class(plan$relations[[1]]$root$input$aggregate, "substrait_AggregateRel")
+  agg <- plan$relations[[1]]$root$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
   expect_equal(plan$relations[[1]]$root$names, "b")
-  expect_equal(get_grouping_fields(plan), list(1))
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1))
 
   # distinct() with multiple fields
   compiler <- substrait_compiler(df)
   out <- distinct(compiler, b, c)
   plan <- out$plan()
-  expect_s3_class(plan$relations[[1]]$root$input$aggregate, "substrait_AggregateRel")
+  agg <- plan$relations[[1]]$root$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
   expect_equal(plan$relations[[1]]$root$names, c("b", "c"))
-  expect_equal(get_grouping_fields(plan), list(1, 2))
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1, 2))
 
   # distinct() on grouped data
   compiler <- substrait_compiler(df)
-  expect_error(
-    compiler %>% group_by(b) %>% distinct(),
-    "not yet supported"
-  )
+  out <- compiler %>%
+    group_by(b) %>%
+    distinct(c)
+  plan <- out$plan()
+  agg <- plan$relations[[1]]$root$input$project$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
+  expect_equal(plan$relations[[1]]$root$names, c("b", "c"))
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1, 2))
 })

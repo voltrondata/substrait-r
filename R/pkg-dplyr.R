@@ -485,8 +485,9 @@ distinct.SubstraitCompiler <- function(.data, ..., .keep_all = FALSE) {
   .data <- dplyr::summarize(.data, .groups = "drop")
   # distinct() doesn't modify group by vars, so restore the original ones
   if (length(original_gv) > 0) {
-    rlang::abort("distinct() on grouped data not yet supported")
+    .data <- dplyr::group_by(.data, !!!rlang::syms(original_gv))
   }
+
   .data
 }
 
@@ -515,7 +516,6 @@ count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = 
   }
 
   out
-
 }
 
 #' @importFrom dplyr group_vars
