@@ -400,5 +400,6 @@ test_that("distinct.SubstraitCompiler works", {
   agg <- plan$relations[[1]]$root$input$project$input$aggregate
   expect_s3_class(agg, "substrait_AggregateRel")
   expect_equal(plan$relations[[1]]$root$names, c("b", "c"))
+  expect_named(out$groups, "b")
   expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1, 2))
 })
