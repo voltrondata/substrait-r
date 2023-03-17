@@ -1,6 +1,5 @@
 
 compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
-
   engine <- match.arg(engine, several.ok = TRUE)
 
   expr <- rlang::enquo(expr)
@@ -119,7 +118,8 @@ all_funs <- function(expr) {
       }
     }
   }
-  names[lapply(names, ~ is_function(expr, .))]
+
+  names[vapply(names, is_function, expr = expr, logical(1))]
 }
 
 is_function <- function(expr, name) {
@@ -135,7 +135,7 @@ is_function <- function(expr, name) {
     }
     out <- lapply(expr, is_function, name)
   }
-  any(lapply(out, isTRUE))
+  any(vapply(out, isTRUE, logical(1)))
 }
 
 r_symbolic_constants <- c(

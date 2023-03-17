@@ -136,24 +136,3 @@ test_that("simple aggregations can be evaluated by DuckDB", {
     )
   )
 })
-
-test_that("Unsupported aggregate expressions signal reasonable errors", {
-  compiler <- substrait_compiler(data.frame(x = 1L))
-  compiler$.fns[["+"]] <- function(lhs, rhs) {
-    substrait_call("+", lhs, rhs)
-  }
-
-  compiler$.fns[["sum"]] <- function(x) {
-    substrait_call_agg("sum", x)
-  }
-
-  expect_error(
-    substrait_aggregate(compiler, new_col = 1L),
-    "Can't convert non-aggregate expression"
-  )
-
-  expect_error(
-    substrait_aggregate(compiler, new_col = sum(x) + 1L),
-    "Can't convert AggregateFunction to Expression"
-  )
-})

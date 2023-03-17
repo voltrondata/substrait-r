@@ -96,6 +96,11 @@ substrait_aggregate <- function(.compiler, ...) {
     template = substrait$AggregateFunction$create()
   )
 
+  if (rlang::is_empty(measures) && !rlang::is_empty(quos)) {
+    browser()
+    rlang::abort("Calling aggregate functions without aggregations is not supported.")
+  }
+
   .compiler$rel <- substrait$Rel$create(
     aggregate = substrait$AggregateRel$create(
       input = .compiler$rel,
@@ -141,9 +146,9 @@ substrait_aggregate <- function(.compiler, ...) {
     # add in post-mutate cols
     vars_to_select <- c(names(grps), names(quos))
 
-    .compiler <- substrait_project(.compiler, !!!syms(.compiler$schema$names), !!!ctx$post_mutate)
+    .compiler <- substrait_project(.compiler, !!!rlang::syms(.compiler$schema$names), !!!ctx$post_mutate)
 
-    .compiler <- substrait_select(.compiler, !!!syms(vars_to_select))
+    .compiler <- substrait_select(.compiler, !!!rlang::syms(vars_to_select))
   }
 
   .compiler
@@ -177,20 +182,6 @@ substrait_group_by <- function(.compiler, ...) {
 #' @export
 substrait_ungroup <- function(.compiler) {
   substrait_group_by(.compiler)
-}
-
-#' @export
-as_substrait.substrait_AggregateFunction <- function(x, .ptype = NULL, ...) {
-  if (is.null(.ptype)) {
-    .ptype <- x
-  }
-
-  switch(make_qualified_name(.ptype),
-    "substrait.Expression" = {
-      current_compiler()$post_mutate(x)
-    },
-    NextMethod()
-  )
 }
 
 # This function recurses through expr, pulls out any aggregation expressions,

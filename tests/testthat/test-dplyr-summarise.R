@@ -1032,11 +1032,9 @@ test_that("distinct() works as expected", {
       collect(),
     example_data
   )
-
 })
 
 test_that("count() works as expected", {
-
   # count with no columns
   compare_dplyr_binding(
     engine = "duckdb",
@@ -1074,11 +1072,9 @@ test_that("count() works as expected", {
       collect(),
     example_data
   )
-
 })
 
 test_that("summarise can handle more complex expressions", {
-
   compare_dplyr_binding(
     .input %>% summarise(y = sum(int, na.rm = TRUE) + 1) %>% collect(),
     example_data
@@ -1087,6 +1083,18 @@ test_that("summarise can handle more complex expressions", {
   compare_dplyr_binding(
     engine = "duckdb",
     .input %>% summarise(y = sum(int + 1, na.rm = TRUE)) %>% collect(),
+    example_data
+  )
+
+  expect_error(
+    example_data %>%
+      substrait_compiler() %>%
+      summarise(y = 1L),
+    "Calling aggregate functions without aggregations is not supported"
+  )
+
+  compare_dplyr_binding(
+    .input %>% summarise(y = sum(.data$int, na.rm = TRUE) + 1) %>% collect(),
     example_data
   )
 })
