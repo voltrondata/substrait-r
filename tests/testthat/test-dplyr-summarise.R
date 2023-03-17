@@ -999,3 +999,80 @@ test_that("summarise() can handle scalars and literal values", {
     example_data
   )
 })
+
+test_that("distinct() works as expected", {
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>% distinct() %>% collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    .input %>% distinct(lgl) %>% collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      distinct(lgl, dbl2) %>%
+      # ordering not guaranteed
+      arrange(lgl, dbl2) %>%
+      collect(),
+    example_data
+  )
+
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      group_by(lgl) %>%
+      distinct() %>%
+      arrange(lgl) %>%
+      collect(),
+    example_data
+  )
+
+})
+
+test_that("count() works as expected", {
+
+  # count with no columns
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>% count() %>% collect(),
+    example_data
+  )
+
+  # count with 1 column
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>% count(lgl) %>%
+      arrange(lgl) %>%
+      collect(),
+    example_data
+  )
+
+  # count multiple columns
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      count(lgl, dbl2) %>%
+      # ordering not guaranteed
+      arrange(lgl, dbl2) %>%
+      collect(),
+    example_data
+  )
+
+  # count after grouping
+  compare_dplyr_binding(
+    engine = "duckdb",
+    .input %>%
+      group_by(lgl, false) %>%
+      count(false) %>%
+      arrange(lgl) %>%
+      collect(),
+    example_data
+  )
+
+})
+

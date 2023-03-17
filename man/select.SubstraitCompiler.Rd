@@ -20,6 +20,8 @@
 \alias{left_join.SubstraitCompiler}
 \alias{right_join.SubstraitCompiler}
 \alias{full_join.SubstraitCompiler}
+\alias{distinct.SubstraitCompiler}
+\alias{count.SubstraitCompiler}
 \title{dplyr verb implementations}
 \usage{
 \method{select}{SubstraitCompiler}(.data, ...)
@@ -59,6 +61,10 @@
 \method{right_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
 
 \method{full_join}{SubstraitCompiler}(x, y, by = NULL, suffix = c(".x", ".y"), ..., keep = NULL)
+
+\method{distinct}{SubstraitCompiler}(.data, ..., .keep_all = FALSE)
+
+\method{count}{SubstraitCompiler}(.data, ..., wt = NULL, sort = FALSE, name = NULL)
 }
 \arguments{
 \item{.data, x, y}{A \code{\link[=substrait_compiler]{substrait_compiler()}}}
@@ -70,6 +76,8 @@
 \item \code{filter()}: see \code{\link[dplyr:filter]{dplyr::filter()}}
 \item \code{mutate()}: see \code{\link[dplyr:mutate]{dplyr::mutate()}}
 \item \code{arrange()}: see \code{\link[dplyr:arrange]{dplyr::arrange()}}
+\item \code{count()}: see \code{\link[dplyr:count]{dplyr::count()}}
+\item \code{distinct()}: see \code{\link[dplyr:distinct]{dplyr::distinct()}}
 }
 }}
 
@@ -101,6 +109,14 @@ join would result in duplicate column names.}
 
 \item{keep}{For joins, use \code{TRUE} to keep all output columns;
 see \code{\link[dplyr:mutate-joins]{dplyr::inner_join()}}.}
+
+\item{.keep_all}{If TRUE, keep all variables in .data; see \code{\link[dplyr:distinct]{dplyr::distinct()}}}
+
+\item{wt}{Frequency weights; see \code{\link[dplyr:count]{dplyr::count()}}}
+
+\item{sort}{If TRUE, will show the largest groups at the top; see \code{\link[dplyr:count]{dplyr::count()}}}
+
+\item{name}{The name of the new column in the output; see \code{\link[dplyr:count]{dplyr::count()}}}
 }
 \value{
 A modified \code{\link[=substrait_compiler]{substrait_compiler()}}

@@ -351,3 +351,55 @@ test_that("dplyr mutating joins for substrait_compiler support `by`, `keep`, and
     c("number_x", "letter", "number_y", "LETTER")
   )
 })
+
+test_that("distinct.SubstraitCompiler works", {
+  skip_if_not_installed("dplyr")
+
+  get_grouping_fields <- function(agg_fields) {
+    grouping_expressions <- agg_fields$grouping_expressions
+    lapply(grouping_expressions, function(x) {
+      x$selection$direct_reference$struct_field$field
+    })
+  }
+
+  df <- data.frame(a = c(1, 1, 2, 2, 3), b = 5, c = c(10, 10, 11, 12, 10))
+
+  # distinct() with no fields
+  compiler <- substrait_compiler(df)
+  out <- distinct(compiler)
+  plan <- out$plan()
+  agg <- plan$relations[[1]]$root$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
+  expect_equal(plan$relations[[1]]$root$names, c("a", "b", "c"))
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(NULL, 1, 2))
+
+  # distinct() with single field
+  compiler <- substrait_compiler(df)
+  out <- distinct(compiler, b)
+  plan <- out$plan()
+  agg <- plan$relations[[1]]$root$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
+  expect_equal(plan$relations[[1]]$root$names, "b")
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1))
+
+  # distinct() with multiple fields
+  compiler <- substrait_compiler(df)
+  out <- distinct(compiler, b, c)
+  plan <- out$plan()
+  agg <- plan$relations[[1]]$root$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
+  expect_equal(plan$relations[[1]]$root$names, c("b", "c"))
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1, 2))
+
+  # distinct() on grouped data
+  compiler <- substrait_compiler(df)
+  out <- compiler %>%
+    group_by(b) %>%
+    distinct(c)
+  plan <- out$plan()
+  agg <- plan$relations[[1]]$root$input$project$input$aggregate
+  expect_s3_class(agg, "substrait_AggregateRel")
+  expect_equal(plan$relations[[1]]$root$names, c("b", "c"))
+  expect_named(out$groups, "b")
+  expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1, 2))
+})

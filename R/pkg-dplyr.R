@@ -8,6 +8,8 @@
 #'   - `filter()`: see [dplyr::filter()]
 #'   - `mutate()`: see [dplyr::mutate()]
 #'   - `arrange()`: see [dplyr::arrange()]
+#'   - `count()`: see [dplyr::count()]
+#'   - `distinct()`: see [dplyr::distinct()]
 #' @param .drop Not supported, see [dplyr::group_by()]
 #' @param .add Use `TRUE` to add the groupings to the current groupings and
 #'   `FALSE` to reset the grouping.
@@ -25,6 +27,10 @@
 #'   across `x` and `y`; see [dplyr::inner_join()].
 #' @param suffix A suffix used to disambiguate columns from `x` and `y` if a
 #'   join would result in duplicate column names.
+#' @param .keep_all If TRUE, keep all variables in .data; see [dplyr::distinct()]
+#' @param wt Frequency weights; see [dplyr::count()]
+#' @param sort If TRUE, will show the largest groups at the top; see [dplyr::count()]
+#' @param name The name of the new column in the output; see [dplyr::count()]
 #'
 #' @return A modified [substrait_compiler()]
 #' @importFrom dplyr select
@@ -454,4 +460,68 @@ check_transmute_args <- function(..., .keep, .before, .after, error_call = rlang
   if (!missing(.after)) {
     rlang::abort("The `.after` argument is not supported.", call = error_call)
   }
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr distinct
+#' @export
+distinct.SubstraitCompiler <- function(.data, ..., .keep_all = FALSE) {
+  if (.keep_all == TRUE) {
+    rlang::abort("`distinct()` with `.keep_all = TRUE` not supported")
+  }
+
+  args <- rlang::quos(...)
+
+  original_gv <- dplyr::group_vars(.data)
+
+  if (length(args) > 0) {
+    # group_by() calls mutate() if there are any expressions in ...
+    .data <- dplyr::group_by(.data, !!!args, .add = TRUE)
+  } else {
+    # distinct() with no vars specified means distinct across all cols
+    .data <- dplyr::group_by(.data, !!!rlang::syms(names(.data$.data)))
+  }
+
+  .data <- dplyr::summarize(.data, .groups = "drop")
+  # distinct() doesn't modify group by vars, so restore the original ones
+  if (length(original_gv) > 0) {
+    .data <- dplyr::group_by(.data, !!!rlang::syms(original_gv))
+  }
+
+  .data
+}
+
+#' @rdname select.SubstraitCompiler
+#' @importFrom dplyr count
+#' @export
+count.SubstraitCompiler <- function(.data, ..., wt = NULL, sort = FALSE, name = NULL) {
+  if (!is.null(wt)) {
+    rlang::abort("`count()` with `wt != NULL` not supported")
+  }
+
+  if (sort) {
+    rlang::abort("`count()` with `sort = TRUE` not supported")
+  }
+
+  if (!is.null(name)) {
+    rlang::abort("`count()` with `name != NULL` not supported")
+  }
+
+  grps <- .data$groups
+
+  out <- dplyr::summarise(dplyr::group_by(.data, !!!grps, ...), n = n())
+
+  if (!is.null(grps)) {
+    out <- dplyr::group_by(out, !!!rlang::syms(names(grps)))
+  } else {
+    out <- dplyr::ungroup(out)
+  }
+
+  out
+}
+
+#' @importFrom dplyr group_vars
+#' @export
+group_vars.SubstraitCompiler <- function(x) {
+  names(x$groups)
 }
