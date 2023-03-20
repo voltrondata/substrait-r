@@ -24,70 +24,7 @@ substrait_aggregate <- function(.compiler, ...) {
   # both == sum(x + sum(x + 1)) [i.e. an aggregate exists at both inner and outer levels]
   #   here, we want to do the projection x+1, then aggregate it, then project x + it, then sum that
   # note! this is not supported!
-
-  ctx <- rlang::env(
-    mask = .compiler,
-    aggregations = list(),
-    post_mutate = list()
-  )
-  # get the inner and outer aggregations
-  for (i in seq_along(quos)) {
-    # Iterate over the indices and not the names because names may be repeated
-    # (which overwrites the previous name)
-    name <- names(quos)[i]
-    quosure <- quos[[i]]
-
-    # get expr from quosure
-    expr <- rlang::quo_get_expr(quosure)
-    quo_env <- rlang::quo_get_env(quosure)
-
-    # get all function calls in the expression
-    funs_in_expr <- all_funs(expr)
-
-    if (length(funs_in_expr) == 0) {
-      # This branch only gets called at the top level, where expr is something
-      # that is not a function call (could be a quosure, a symbol, or atomic
-      # value). This needs to evaluate to a scalar or something that can be
-      # converted to one.
-      value <- as_substrait_expression(quosure, compiler = .compiler)
-
-      # Scalars need to be added to post_mutate because they don't need
-      # to be sent to the query engine as an aggregation
-      ctx$post_mutate[[name]] <- value
-    }
-
-    # Start inspecting the expr to see what aggregations it involves
-    # TODO: generate, don't hard-code these
-    agg_funs <- c("sum", "mean", "max", "min", "n", "n_distinct")
-    outer_agg <- funs_in_expr[1] %in% agg_funs
-    inner_agg <- funs_in_expr[-1] %in% agg_funs
-
-    # First, pull out any aggregations wrapped in other function calls
-    if (any(inner_agg)) {
-      expr <- extract_aggregations(expr, ctx, agg_funs)
-    }
-
-    # By this point, there are no more aggregation functions in expr
-    # except for possibly the outer function call:
-    # they've all been pulled out to ctx$aggregations, and in their place in expr
-    # there are variable names, which would correspond to field refs in the
-    # query object after aggregation and collapse() or non-field variable
-    # references. So if we want to know if there are any aggregations inside expr,
-    # we have to look for them by their new var names in ctx$aggregations.
-    inner_agg_exprs <- all_vars(expr) %in% names(ctx$aggregations)
-    inner_is_fieldref <- all_vars(expr) %in% names(ctx$mask$.data)
-
-    if (outer_agg) {
-      # This is something like agg(fun(x, y)
-      # It just works by normal arrow_eval, unless there's a mix of aggs and
-      # columns in the original data like agg(fun(x, agg(x)))
-      # (but that will have been caught in extract_aggregations())
-      ctx$aggregations[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
-    } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
-      # Something like: fun(agg(x), agg(y))
-      ctx$post_mutate[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
-    }
-  }
+  ctx <- separate_agg_from_post_mutate(.compiler, quos)
 
   measures <- lapply(
     ctx$aggregations,
@@ -213,4 +150,74 @@ extract_aggregations <- function(expr, ctx, agg_funcs) {
     expr <- as.symbol(tmpname)
   }
   expr
+}
+
+separate_agg_from_post_mutate <- function(.compiler, quos){
+
+  ctx <- rlang::env(
+    mask = .compiler,
+    aggregations = list(),
+    post_mutate = list()
+  )
+
+  # get the inner and outer aggregations
+  for (i in seq_along(quos)) {
+    # Iterate over the indices and not the names because names may be repeated
+    # (which overwrites the previous name)
+    name <- names(quos)[i]
+    quosure <- quos[[i]]
+
+    # get expr from quosure
+    expr <- rlang::quo_get_expr(quosure)
+    quo_env <- rlang::quo_get_env(quosure)
+
+    # get all function calls in the expression
+    funs_in_expr <- all_funs(expr)
+
+    if (length(funs_in_expr) == 0) {
+      # This branch only gets called at the top level, where expr is something
+      # that is not a function call (could be a quosure, a symbol, or atomic
+      # value). This needs to evaluate to a scalar or something that can be
+      # converted to one.
+      value <- as_substrait_expression(quosure, compiler = .compiler)
+
+      # Scalars need to be added to post_mutate because they don't need
+      # to be sent to the query engine as an aggregation
+      ctx$post_mutate[[name]] <- value
+    }
+
+    # Start inspecting the expr to see what aggregations it involves
+    # TODO: generate, don't hard-code these
+    agg_funs <- c("sum", "mean", "max", "min", "n", "n_distinct")
+    outer_agg <- funs_in_expr[1] %in% agg_funs
+    inner_agg <- funs_in_expr[-1] %in% agg_funs
+
+    # First, pull out any aggregations wrapped in other function calls
+    if (any(inner_agg)) {
+      expr <- extract_aggregations(expr, ctx, agg_funs)
+    }
+
+    # By this point, there are no more aggregation functions in expr
+    # except for possibly the outer function call:
+    # they've all been pulled out to ctx$aggregations, and in their place in expr
+    # there are variable names, which would correspond to field refs in the
+    # query object after aggregation and collapse() or non-field variable
+    # references. So if we want to know if there are any aggregations inside expr,
+    # we have to look for them by their new var names in ctx$aggregations.
+    inner_agg_exprs <- all_vars(expr) %in% names(ctx$aggregations)
+    inner_is_fieldref <- all_vars(expr) %in% names(ctx$mask$.data)
+
+    if (outer_agg) {
+      # This is something like agg(fun(x, y)
+      # It just works by normal arrow_eval, unless there's a mix of aggs and
+      # columns in the original data like agg(fun(x, agg(x)))
+      # (but that will have been caught in extract_aggregations())
+      ctx$aggregations[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
+    } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
+      # Something like: fun(agg(x), agg(y))
+      ctx$post_mutate[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
+    }
+  }
+
+  ctx
 }
