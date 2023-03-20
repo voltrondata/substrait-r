@@ -1097,4 +1097,16 @@ test_that("summarise can handle more complex expressions", {
     .input %>% summarise(y = sum(.data$int, na.rm = TRUE) + 1) %>% collect(),
     example_data
   )
+
+  summarise_me <- function(data, var) {
+    summarise(data, sum({{ var }}, na.rm = TRUE))
+  }
+
+  compare_dplyr_binding(
+    .input %>%
+      summarise_me(dbl) %>%
+      collect(),
+    example_data,
+    tolerance = 1e6
+  )
 })
