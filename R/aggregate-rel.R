@@ -152,8 +152,7 @@ extract_aggregations <- function(expr, ctx, agg_funcs) {
   expr
 }
 
-separate_agg_from_post_mutate <- function(.compiler, quos){
-
+separate_agg_from_post_mutate <- function(.compiler, quos) {
   ctx <- rlang::env(
     mask = .compiler,
     aggregations = list(),
