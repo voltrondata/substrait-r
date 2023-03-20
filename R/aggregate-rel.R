@@ -197,7 +197,7 @@ extract_aggregations <- function(expr, ctx, agg_funcs) {
     if (any(inner_agg_exprs)) {
       # We can't aggregate over a combination of dataset columns and other
       # aggregations (e.g. sum(x - mean(x)))
-      abort(
+      rlang::abort(
         paste(
           "Aggregate within aggregate expression not supported"
         )
