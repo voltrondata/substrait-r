@@ -97,7 +97,6 @@ substrait_aggregate <- function(.compiler, ...) {
   )
 
   if (rlang::is_empty(measures) && !rlang::is_empty(quos)) {
-    browser()
     rlang::abort("Calling aggregate functions without aggregations is not supported.")
   }
 
@@ -145,10 +144,7 @@ substrait_aggregate <- function(.compiler, ...) {
   if (length(ctx$post_mutate) > 0) {
     # add in post-mutate cols
     vars_to_select <- c(names(grps), names(quos))
-
-    .compiler <- substrait_project(.compiler, !!!rlang::syms(.compiler$schema$names), !!!ctx$post_mutate)
-
-    .compiler <- substrait_select(.compiler, !!!rlang::syms(vars_to_select))
+    .compiler <- substrait_select(.compiler, !!!ctx$post_mutate, !!!rlang::syms(vars_to_select))
   }
 
   .compiler
