@@ -1081,6 +1081,12 @@ test_that("summarise can handle more complex expressions", {
   )
 
   compare_dplyr_binding(
+    .input %>% summarise(y = sum(int, na.rm = TRUE) + sum(dbl, na.rm = TRUE)) %>% collect(),
+    example_data,
+    tolerance = 1e6
+  )
+
+  compare_dplyr_binding(
     engine = "duckdb",
     .input %>% summarise(y = sum(int + 1, na.rm = TRUE)) %>% collect(),
     example_data
