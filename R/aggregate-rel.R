@@ -17,13 +17,14 @@ substrait_aggregate <- function(.compiler, ...) {
 
   quos <- rlang::enquos(..., .named = TRUE)
 
-  # inner == sum(x) + 1 [i.e. one of the inner functions is an aggregate func]
-  #   here, we have to first do the aggregation and then the projection
-  # outer == sum(x+1) [i.e. the outermost function is an aggregate func]
-  #   here, we have to first calculate the projection x+1, and then the sum
+  # There are several cases to consider here:
+  # outer == sum(<any expression that is not an aggregation>) [i.e. only the outermost 
+  #   function is an aggregate func]. This requires no extra projections.
+  # inner == sum(x) + 1 [i.e. one of the inner functions is an aggregate func but 
+  #   not the outer one]. Here, we have to first do the aggregation and then
+  #   the projection
   # both == sum(x + sum(x + 1)) [i.e. an aggregate exists at both inner and outer levels]
-  #   here, we want to do the projection x+1, then aggregate it, then project x + it, then sum that
-  # note! this is not supported!
+  #   This is not currently supported.
   ctx <- separate_agg_from_post_mutate(.compiler, quos)
 
   measures <- lapply(
