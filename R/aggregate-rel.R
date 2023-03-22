@@ -213,7 +213,7 @@ separate_agg_from_post_mutate <- function(.compiler, quos) {
       ctx$aggregations[[name]] <- rlang::as_quosure(expr, env = quo_env)
     } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
       # Something like: fun(agg(x), agg(y))
-      ctx$post_mutate[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
+      ctx$post_mutate[[name]] <- rlang::as_quosure(expr, env = quo_env)
     }
   }
 
