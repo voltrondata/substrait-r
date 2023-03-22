@@ -209,7 +209,7 @@ separate_agg_from_post_mutate <- function(.compiler, quos) {
       # It just works by normal arrow_eval, unless there's a mix of aggs and
       # columns in the original data like agg(fun(x, agg(x)))
       # (but that will have been caught in extract_aggregations())
-      ctx$aggregations[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
+      ctx$aggregations[[name]] <- rlang::as_quosure(expr, env = quo_env)
     } else if (all(inner_agg_exprs | !inner_is_fieldref)) {
       # Something like: fun(agg(x), agg(y))
       ctx$post_mutate[[name]] <- rlang::as_quosure(expr, env = ctx$quo_env)
