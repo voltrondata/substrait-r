@@ -16,7 +16,7 @@ test_that("substrait_group_by() / substrait_ungroup() (un) set the grouping", {
 test_that("substrait_aggregate() can evaluate a simple aggregation expression", {
   compiler <- substrait_compiler(data.frame(a = c(1, 1, 2, 2, 3), b = 1:5))
   compiler$.fns$sum <- function(x) substrait_call_agg("sum", x)
-  compiler$agg_functions <- c("sum")
+  compiler$.agg_functions <- c("sum")
   compiler$.fns[["+"]] <- function(lhs, rhs) substrait_call("+", lhs, rhs)
 
   grouped <- substrait_group_by(compiler, a)
