@@ -187,8 +187,8 @@ separate_agg_from_post_mutate <- function(.compiler, quos) {
     }
 
     # Start inspecting the expr to see what aggregations it involves
-    outer_agg <- funs_in_expr[1] %in% .compiler$agg_functions
-    inner_agg <- funs_in_expr[-1] %in% .compiler$agg_functions
+    outer_agg <- funs_in_expr[1] %in% .compiler$.agg_functions
+    inner_agg <- funs_in_expr[-1] %in% .compiler$.agg_functions
 
     # First, pull out any aggregations wrapped in other function calls
     if (any(inner_agg)) {
