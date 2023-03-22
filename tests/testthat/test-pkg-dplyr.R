@@ -176,6 +176,7 @@ test_that("summarise() for substrait_compiler wraps substrait_aggregate()", {
 
   compiler <- substrait_compiler(df)
   compiler$.fns$sum <- function(x) substrait_call_agg("sum", x)
+  compiler$.agg_functions <- c("sum")
 
   expect_identical(
     dplyr::summarise(compiler, sum(c)),
