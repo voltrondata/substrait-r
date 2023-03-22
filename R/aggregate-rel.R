@@ -186,8 +186,7 @@ separate_agg_from_post_mutate <- function(.compiler, quos) {
     }
 
     # Start inspecting the expr to see what aggregations it involves
-    # TODO: generate, don't hard-code these
-    agg_funs <- c("sum", "mean", "max", "min", "n", "n_distinct")
+    agg_funs <- .compiler$.list_agg_functions()
     outer_agg <- funs_in_expr[1] %in% agg_funs
     inner_agg <- funs_in_expr[-1] %in% agg_funs
 

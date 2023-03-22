@@ -89,6 +89,12 @@ SubstraitCompiler <- R6::R6Class(
     },
 
     #' @description
+    #' List the aggregate functions implemented by this compiler
+    .list_agg_functions = function() {
+      list()
+    },
+
+    #' @description
     #' Returns the [data mask][rlang::as_data_mask] that will be
     #' used within `substrait_eval()`.
     #'
