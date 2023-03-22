@@ -186,13 +186,12 @@ separate_agg_from_post_mutate <- function(.compiler, quos) {
     }
 
     # Start inspecting the expr to see what aggregations it involves
-    agg_funs <- .compiler$.list_agg_functions()
-    outer_agg <- funs_in_expr[1] %in% agg_funs
-    inner_agg <- funs_in_expr[-1] %in% agg_funs
+    outer_agg <- funs_in_expr[1] %in% .compiler$agg_functions
+    inner_agg <- funs_in_expr[-1] %in% .compiler$agg_functions
 
     # First, pull out any aggregations wrapped in other function calls
     if (any(inner_agg)) {
-      expr <- extract_aggregations(expr, ctx, agg_funs)
+      expr <- extract_aggregations(expr, ctx, .compiler$agg_functions)
     }
 
     # By this point, there are no more aggregation functions in expr

@@ -152,9 +152,7 @@ DuckDBSubstraitCompiler <- R6::R6Class(
         as_data_frame = FALSE
       )
     },
-    .list_agg_functions = function(){
-      list("sum", "mean", "max", "min", "n", "n_distinct")
-    }
+    agg_functions = list("sum", "mean", "max", "min", "n", "n_distinct")
   )
 )
 
