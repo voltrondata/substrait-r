@@ -1,6 +1,5 @@
 
 compare_dplyr_binding <- function(expr, tbl, engine = c("arrow", "duckdb"), ...) {
-
   engine <- match.arg(engine, several.ok = TRUE)
 
   expr <- rlang::enquo(expr)
@@ -99,4 +98,52 @@ with_language <- function(lang, expr) {
     testthat::skip(paste("This OS either does not support changing languages to", lang, "or it caches translations"))
   }
   force(expr)
+}
+
+all_funs <- function(expr) {
+  # It is not sufficient to simply do: setdiff(all.names, all.vars)
+  # here because that would fail to return the names of functions that
+  # share names with variables.
+  # To preserve duplicates, call `all.names()` not `all_names()` here.
+  if (rlang::is_quosure(expr)) {
+    expr <- rlang::quo_get_expr(expr)
+  }
+  names <- all.names(expr)
+  # if we have namespace-qualified functions, we rebuild the function name with
+  # the `pkg::` prefix
+  if ("::" %in% names) {
+    for (i in seq_along(names)) {
+      if (names[i] == "::") {
+        names[i] <- paste0(names[i + 1], names[i], names[i + 2])
+      }
+    }
+  }
+
+  names[vapply(names, is_function, expr = expr, logical(1))]
+}
+
+is_function <- function(expr, name) {
+  # We could have a quosure here if we have an expression like `sum({{ var }})`
+  if (rlang::is_quosure(expr)) {
+    expr <- rlang::quo_get_expr(expr)
+  }
+  if (!is.call(expr)) {
+    return(FALSE)
+  } else {
+    if (deparse(expr[[1]]) == name) {
+      return(TRUE)
+    }
+    out <- lapply(expr, is_function, name)
+  }
+  any(vapply(out, isTRUE, logical(1)))
+}
+
+r_symbolic_constants <- c(
+  "pi", "TRUE", "FALSE", "NULL", "Inf", "NA", "NaN",
+  "NA_integer_", "NA_real_", "NA_complex_", "NA_character_"
+)
+
+
+all_vars <- function(expr) {
+  setdiff(all.vars(expr), r_symbolic_constants)
 }

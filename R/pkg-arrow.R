@@ -44,7 +44,8 @@ ArrowSubstraitCompiler <- R6::R6Class(
       }
 
       plan
-    }
+    },
+    .agg_functions = c("sum", "mean", "max", "min", "n_distinct")
   )
 )
 
