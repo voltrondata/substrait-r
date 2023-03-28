@@ -404,3 +404,13 @@ test_that("distinct.SubstraitCompiler works", {
   expect_named(out$groups, "b")
   expect_equal(get_grouping_fields(agg$groupings[[1]]), list(1, 2))
 })
+
+test_that("select() works on date columns", {
+  skip_if_not_installed("dplyr")
+
+  df <- data.frame(x = as.Date("2012-09-16"))
+  compiler <- substrait_compiler(df)
+  out <- compiler %>%
+    select(x)
+  expect_named(out$.data, "x")
+})

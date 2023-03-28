@@ -95,6 +95,7 @@ from_substrait.vctrs_unspecified <- function(msg, x, ...) {
         "i32" = integer(),
         "fp64" = double(),
         "string" = character(),
+        "date" = structure(numeric(0), class = "Date"),
         stop(sprintf("Can't convert substrait.Type<%s> to ptype<any>", type))
       )
     },
