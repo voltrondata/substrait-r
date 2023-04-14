@@ -355,7 +355,7 @@ duckdb_funs[["year"]] <- function(x) {
   substrait_call(
     "year",
     x,
-    .output_type = substrait_i64()
+    .output_type = substrait_i32()
   )
 }
 
