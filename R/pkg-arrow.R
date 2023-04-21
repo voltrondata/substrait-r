@@ -297,7 +297,7 @@ arrow_funs[["year"]] <- function(x) {
     "datetime.extract",
     component = substrait$FunctionArgument$create(enum = "YEAR"),
     x,
-    .output_type = substrait_i64()
+    .output_type = substrait_i32()
   )
 }
 # rounding functions
